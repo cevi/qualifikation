@@ -11,10 +11,23 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['middleware' => 'campleader'], function(){
+
+    Route::get('/admin','AdminController@index');
+
+    Route::resource('admin/users', 'AdminUsersController');
+
+    Route::resource('admin/answers', 'AdminAnswersController');
+
+    Route::resource('admin/camps', 'AdminCampsController');
+
+    Route::resource('admin/questions', 'AdminQuestionsController');
+
+    Route::resource('admin/surveys', 'AdminSurveysController');
+});

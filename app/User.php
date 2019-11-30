@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id'
     ];
 
     /**
@@ -36,4 +36,30 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function role(){
+        return $this->belongsTo('App\Role');
+    }
+
+    public function camp(){
+        return $this->belongsTo('App\Camp');
+    } 
+    
+    public function leader(){
+        return $this->belongsTo('App\User');
+    }
+
+    public function isAdmin(){
+        if($this->role['is_admin'] == 1 && $this->is_active == 1){
+            return true;
+        }
+        return false;
+    }
+
+    public function isCampleader(){
+        if(($this->role['is_campleader'] == 1 || $this->role['is_admin'] == 1) && $this->is_active == 1){
+            return true;
+        }
+        return false;
+    }
 }
