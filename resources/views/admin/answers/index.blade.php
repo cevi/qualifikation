@@ -5,7 +5,7 @@
         <div class="container-fluid">
           <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="admin/">Dashboard</a></li>
-            <li class="breadcrumb-item active">Lager</li>
+            <li class="breadcrumb-item active">Antworten</li>
           </ul>
         </div>
     </div>
@@ -13,46 +13,42 @@
         <div class="container-fluid">
             <!-- Page Header-->
             <header> 
-                <h1 class="h3 display">Lager</h1>
+                <h1 class="h3 display">Antworten</h1>
             </header>
             <div class="row">
                 <div class="col-sm-3">
-                    {!! Form::open(['action'=>'AdminCampsController@store']) !!}
+                    {!! Form::open(['action'=>'AdminAnswersController@store']) !!}
                         <div class="form-group">
-                            {!! Form::label('name', 'Name:') !!}
+                            {!! Form::label('name', 'Antwort:') !!}
                             {!! Form::text('name', null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::label('year', 'Jahr:') !!}
-                            {!! Form::text('year', null, ['class' => 'form-control']) !!}
+                            {!! Form::label('count', 'Wertung:') !!}
+                            {!! Form::text('count', null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::submit('Lager erstellen', ['class' => 'btn btn-primary'])!!}
+                            {!! Form::submit('Antwort erstellen', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
                 </div>    
                 <div class="col-sm-9">
-                    @if ($camps)
+                    @if ($answers)
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Jahr</th>
+                                    <th scope="col">Wertung</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Lagerleiter</th>
-                                    <th scope="col">Status</th>
                                     <th scope="col">Created Date</th>
                                     <th scope="col">Updated Date</th>
                                 </tr>
                             </thead>
-                        @foreach ($camps as $camp)
+                        @foreach ($answers as $answer)
                             <tbody>
                                 <tr>
-                                    <td>{{$camp->year}}</a></td>
-                                    <td><a href="{{route('camps.edit',$camp->id)}}">{{$camp->name}}</a></td>
-                                    <td>{{$camp->user['username']}}</a></td>
-                                    <td>{{$camp->camp_status['name']}}</a></td>
-                                    <td>{{$camp->created_at ? $camp->created_at->diffForHumans() : 'no date'}}</td>
-                                    <td>{{$camp->updated_at ? $camp->updated_at->diffForHumans() : 'no date'}}</td>
+                                    <td>{{$answer->count}}</a></td>
+                                    <td><a href="{{route('answers.edit',$answer->id)}}">{{$answer->name}}</a></td>
+                                    <td>{{$answer->created_at ? $answer->created_at->diffForHumans() : 'no date'}}</td>
+                                    <td>{{$answer->updated_at ? $answer->updated_at->diffForHumans() : 'no date'}}</td>
                                 </tr>
                             </tbody>
                         @endforeach

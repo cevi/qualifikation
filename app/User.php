@@ -62,4 +62,12 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    public function own_survey(){
+        return $this->hasMany('App\Survey', 'user_id', 'user_id');
+    }
+
+    public function responsible_survey(){
+        return $this->hasMany('App\Survey', 'responsible_id', 'user_id');
+    }
 }

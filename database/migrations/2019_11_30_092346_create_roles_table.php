@@ -18,11 +18,20 @@ class CreateRolesTable extends Migration
             $table->string('name');
             $table->integer('is_admin')->default(0);
             $table->integer('is_campleader')->default(0);
+            $table->integer('is_leader')->default(0);
             $table->timestamps();
         });
+        // Insert some stuff
+        DB::table('roles')->insert(
+           array(
+               ['name' => 'Administrator', 'is_admin' => true, 'is_campleader' => false, 'is_leader' => false],
+               ['name' => 'Lagerleiter', 'is_admin' => false, 'is_campleader' => true, 'is_leader' => false],
+               ['name' => 'Gruppenleiter', 'is_admin' => false, 'is_campleader' => false, 'is_leader' => true],
+               ['name' => 'Teilnehmer', 'is_admin' => false, 'is_campleader' => false, 'is_leader' => false],
+           )
+       );
     }
-//INSERT INTO `roles` (`id`, `name`, `is_admin`, `is_campleader`, `created_at`, `updated_at`) VALUES (NULL, 'Administrator', '1', '0', NULL, NULL), (NULL, 'Lagerleiter', '0', '1', NULL, NULL), (NULL, 'Gruppenleiter', '0', '0', NULL, NULL), (NULL, 'Teilnehmer', '0', '0', NULL, NULL);
-    /**
+  /**
      * Reverse the migrations.
      *
      * @return void

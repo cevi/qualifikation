@@ -19,13 +19,12 @@
                 <h1 class="h3 display">Teilnehmer</h1>
             </header>
             <div class="row">
-                <table class="table">
+                <table id="users" class="table">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Rolle</th>
                             <th scope="col">Leiter</th>
-                            <th scope="col">Umfrage</th>
                             @if ((Auth::user()->isAdmin()))
                                 <th scope="col">Lager</th>
                             @endif
@@ -41,9 +40,8 @@
                                 <td><a href="{{route('users.edit', $user->id)}}">{{$user->username}}</a></td>
                                 <td>{{$user->role['name']}}</td>
                                 <td>{{$user->leader['username']}}</td>
-                                <td><a href="{{route('users.edit', $user->id)}}">Umfrage</a></td>
                                 @if ((Auth::user()->isAdmin()))
-                                    <td>{{$user->group['name']}}</td>
+                                    <td>{{$user->camp['name']}}</td>
                                 @endif
                                 <td>{{$user->is_active == 1 ? "Aktiv" : "Nicht Aktiv"}}</td>
                                 <td>{{$user->created_at->diffForHumans()}}</td>

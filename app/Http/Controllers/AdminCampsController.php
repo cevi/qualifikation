@@ -18,7 +18,13 @@ class AdminCampsController extends Controller
     {
         //
         if(!Auth::user()->isAdmin()){
-            $camps = Auth::user()->camp->get();
+            if(isset(Auth::user()->camp)){
+                $camps = Auth::user()->camp->get();
+            }
+            else
+            {
+                $camps = null;
+            }
         }
         else{
             $camps = Camp::all();
@@ -81,6 +87,9 @@ class AdminCampsController extends Controller
     public function edit($id)
     {
         //
+        $camp = Camp::findOrFail($id);
+        $users = User::where('role_id',2)->pluck('username','id')->all();
+        return view('admin.camps.edit', compact('camp', 'users'));
     }
 
     /**
@@ -93,6 +102,9 @@ class AdminCampsController extends Controller
     public function update(Request $request, $id)
     {
         //
+        Camp::findOrFail($id)->update($request->all());
+
+        return redirect('/admin/camps');
     }
 
     /**
@@ -104,5 +116,7 @@ class AdminCampsController extends Controller
     public function destroy($id)
     {
         //
+        Camp::findOrFail($id)->delete();
+        return redirect('/admin/camps');
     }
 }

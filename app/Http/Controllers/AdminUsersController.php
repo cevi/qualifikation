@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Camp;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -19,13 +18,27 @@ class AdminUsersController extends Controller
     {
         if(!Auth::user()->isAdmin()){
             $camp = Auth::user()->camp;
+            $users = User::where('camp_id', $camp['id'])->where('is_active', true)->get();
+        }
+        else{
+            $users = User::where('is_active', true)->get();
+        }
+        return view('admin.users.index', compact('users'));
+    }
+
+    public function usersList()
+    {
+        if(!Auth::user()->isAdmin()){
+            $camp = Auth::user()->camp;
             $users = User::where('camp_id', $camp['id'])->get();
         }
         else{
             $users = User::all();
         }
-        return view('admin.users.index', compact('users'));
+        return Datatables::of($users)->make(true);
     }
+
+    
 
     /**
      * Show the form for creating a new resource.
@@ -127,5 +140,7 @@ class AdminUsersController extends Controller
     public function destroy($id)
     {
         //
+        User::findOrFail($id)->delete();
+        return redirect('/admin/users');
     }
 }

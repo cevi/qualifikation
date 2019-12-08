@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeysToQuestions extends Migration
+class CreateChaptersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class AddForeignKeysToQuestions extends Migration
      */
     public function up()
     {
-        Schema::table('questions', function (Blueprint $table) {
-            //
-            $table->foreign('survey_id')->references('id')->on('surveys');
+        Schema::create('chapters', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('number');
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -26,9 +28,6 @@ class AddForeignKeysToQuestions extends Migration
      */
     public function down()
     {
-        Schema::table('questions', function (Blueprint $table) {
-            //
-            $table->dropForeign('questions_survey_id_foreign');
-        });
+        Schema::dropIfExists('chapters');
     }
 }

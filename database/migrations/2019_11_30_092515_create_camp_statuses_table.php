@@ -15,11 +15,18 @@ class CreateCampStatusesTable extends Migration
     {
         Schema::create('camp_statuses', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
             $table->string('name');
+            $table->timestamps();
         });
+        DB::table('camp_statuses')->insert( 
+            array(
+                ['id' => 5,
+                'name' => 'Aktiv'],
+                ['id' => 10,
+                'name' => 'Abgeschlossen']
+            )
+        );
     }
-    //INSERT INTO `camp_statuses` (`id`, `created_at`, `updated_at`, `name`) VALUES ('5', NULL, NULL, 'Aktiv'), ('10', NULL, NULL, 'Abgeschlossen');
     /**
      * Reverse the migrations.
      *

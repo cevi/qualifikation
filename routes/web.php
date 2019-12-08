@@ -22,6 +22,7 @@ Route::group(['middleware' => 'campleader'], function(){
     Route::get('/admin','AdminController@index');
 
     Route::resource('admin/users', 'AdminUsersController');
+    Route::get('usersList', 'AdminUsersController@usersList');
 
     Route::resource('admin/answers', 'AdminAnswersController');
 
@@ -30,4 +31,6 @@ Route::group(['middleware' => 'campleader'], function(){
     Route::resource('admin/questions', 'AdminQuestionsController');
 
     Route::resource('admin/surveys', 'AdminSurveysController');
+
+    Route::resource('admin/chapters', 'AdminChaptersController');
 });

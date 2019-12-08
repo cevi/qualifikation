@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Answer;
 use Illuminate\Http\Request;
 
 class AdminAnswersController extends Controller
@@ -14,6 +15,8 @@ class AdminAnswersController extends Controller
     public function index()
     {
         //
+        $answers = Answer::all();
+        return view('admin.answers.index', compact('answers'));
     }
 
     /**
@@ -35,6 +38,9 @@ class AdminAnswersController extends Controller
     public function store(Request $request)
     {
         //
+        Answer::create($request->all());
+
+        return redirect('admin/answers');
     }
 
     /**
@@ -57,6 +63,8 @@ class AdminAnswersController extends Controller
     public function edit($id)
     {
         //
+        $answer = Answer::findOrFail($id);
+        return view('admin.answers.edit', compact('answer'));
     }
 
     /**
@@ -69,6 +77,9 @@ class AdminAnswersController extends Controller
     public function update(Request $request, $id)
     {
         //
+        Answer::findOrFail($id)->update($request->all());
+
+        return redirect('/admin/answers');
     }
 
     /**
@@ -80,5 +91,7 @@ class AdminAnswersController extends Controller
     public function destroy($id)
     {
         //
+        Answer::findOrFail($id)->delete();
+        return redirect('/admin/answers');
     }
 }

@@ -15,13 +15,18 @@ class CreateAnswersTable extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
             $table->string('name');
             $table->integer('count');
-            $table->bigInteger('question_id')->index()->unsigned()->nullable();
-
-            // $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
+            $table->timestamps();
         });
+        DB::table('answers')->insert(
+            array(
+                ['name' => '-', 'count' => -1],
+                ['name' => '0', 'count' => 0],
+                ['name' => '+', 'count' => 1],
+                ['name' => '++', 'count' => 2]
+            )
+        );
     }
 
     /**

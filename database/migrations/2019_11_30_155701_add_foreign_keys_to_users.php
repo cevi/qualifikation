@@ -18,8 +18,6 @@ class AddForeignKeysToUsers extends Migration
             $table->foreign('role_id')->references('id')->on('roles');
             $table->foreign('leader_id')->references('id')->on('users');
             $table->foreign('camp_id')->references('id')->on('camps')->onDelete('cascade');
-            $table->foreign('survey_own_id')->references('id')->on('surveys');
-            $table->foreign('survey_leader_id')->references('id')->on('surveys');
         });
     }
 
@@ -35,8 +33,6 @@ class AddForeignKeysToUsers extends Migration
             $table->dropForeign('users_role_id_foreign');
             $table->dropForeign('users_leader_id_foreign');
             $table->dropForeign('users_camp_id_foreign');
-            $table->dropForeign('users_survey_own_id_foreign');
-            $table->dropForeign('users_survey_leader_id_foreign');
         });
     }
 }

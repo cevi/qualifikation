@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Chapter;
+use App\Question;
 use Illuminate\Http\Request;
 
 class AdminQuestionsController extends Controller
@@ -14,6 +16,8 @@ class AdminQuestionsController extends Controller
     public function index()
     {
         //
+        $questions = Question::all();
+        return view('admin.questions.index', compact('questions'));
     }
 
     /**
@@ -23,7 +27,9 @@ class AdminQuestionsController extends Controller
      */
     public function create()
     {
-        //
+        // 
+        $chapters = Chapter::pluck('name','id')->all();
+        return view('admin.questions.create', compact('chapters'));
     }
 
     /**
@@ -35,6 +41,8 @@ class AdminQuestionsController extends Controller
     public function store(Request $request)
     {
         //
+        Question::create($request->all());
+        return view('admin.questions.create');
     }
 
     /**
@@ -57,6 +65,9 @@ class AdminQuestionsController extends Controller
     public function edit($id)
     {
         //
+        $question = Question::findOrFail($id);
+        $chapters = Chapter::pluck('name','id')->all();
+        return view('admin.questions.edit', compact('question','chapters'));
     }
 
     /**
@@ -69,6 +80,9 @@ class AdminQuestionsController extends Controller
     public function update(Request $request, $id)
     {
         //
+        Question::findOrFail($id)->update($request->all());
+
+        return redirect('/admin/questions');
     }
 
     /**
@@ -80,5 +94,7 @@ class AdminQuestionsController extends Controller
     public function destroy($id)
     {
         //
+        Question::findOrFail($id)->delete();
+        return redirect('/admin/questions');
     }
 }

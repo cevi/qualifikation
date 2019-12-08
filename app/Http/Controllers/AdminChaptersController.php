@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Survey;
+use App\Chapter;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Validator;
+use App\Http\Controllers\Controller;
 
-class AdminSurveysController extends Controller
+class AdminChaptersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,17 +17,8 @@ class AdminSurveysController extends Controller
     public function index()
     {
         //
-        if(!Auth::user()->isAdmin()){
-            $camp = Auth::user()->camp;
-            $surveys = Survey::whereHas('user', function($query) use($camp){
-                $query->where('camp_id', $camp['id'])->where('role_id', 4)->where('is_active', true);
-            })->get();
-        }
-        else{
-            $surveys = Survey::whereHas('user', function($query){
-                    $query->where('role_id', 4)->where('is_active', true);})->get();
-        }
-        return view('admin.surveys.index', compact('surveys'));
+        $chapters = Chapter::all();
+        return view('admin.chapters.index', compact('chapters'));
     }
 
     /**
@@ -37,7 +29,6 @@ class AdminSurveysController extends Controller
     public function create()
     {
         //
-
     }
 
     /**
@@ -49,6 +40,25 @@ class AdminSurveysController extends Controller
     public function store(Request $request)
     {
         //
+        $attributes = [
+            'number' => 'Nummer',
+            'name' => 'Name',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'number' => 'required',
+            'name' => 'required',
+        ], [], $attributes);
+
+        if ($validator->fails()) {
+            return redirect('admin/chapters')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        Chapter::create($request->all());
+
+        return redirect('admin/chapters');
     }
 
     /**
@@ -71,6 +81,8 @@ class AdminSurveysController extends Controller
     public function edit($id)
     {
         //
+        $chapter = Chapter::findOrFail($id);
+        return view('admin.chapters.edit', compact('chapter'));
     }
 
     /**
@@ -83,6 +95,9 @@ class AdminSurveysController extends Controller
     public function update(Request $request, $id)
     {
         //
+        Chapter::findOrFail($id)->update($request->all());
+
+        return redirect('/admin/chapters');
     }
 
     /**
@@ -94,5 +109,9 @@ class AdminSurveysController extends Controller
     public function destroy($id)
     {
         //
+        Chapter::findOrFail($id)->delete();
+        return redirect('/admin/chapters');
     }
+
+
 }
