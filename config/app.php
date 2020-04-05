@@ -162,6 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Froiden\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
 
         /*
          * Package Service Providers...
