@@ -20,21 +20,29 @@
                 <div class="col-sm-6">
                     {!! Form::model($camp, ['method' => 'Patch', 'action'=>['AdminCampsController@update',$camp->id]]) !!}
                         <div class="form-group">
-                            {!! Form::label('name', 'Name:') !!}
-                            {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                            {!! Form::label('year', 'Jahr:') !!}
+                            {!! Form::text('year', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::label('user_id', 'Gruppenleiter:') !!}
+                            {!! Form::label('name', 'Name:') !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('user_id', 'Lagerleiter:') !!}
                             {!! Form::select('user_id', $users, null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::submit('Update Gruppe', ['class' => 'btn btn-primary'])!!}
+                            {!! Form::label('survey_status_id', 'Status:') !!}
+                            {!! Form::select('survey_status_id', $survey_status, null, ['class' => 'form-control']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::submit('Update Lager', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
 
                     {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id]]) !!}
                     <div class="form-group">
-                        {!! Form::submit('Gruppe löschen', ['class' => 'btn btn-danger'])!!}
+                        {!! Form::submit('Lager löschen', ['class' => 'btn btn-danger'])!!}
                     </div>
                     {!! Form::close()!!}
                  </div>

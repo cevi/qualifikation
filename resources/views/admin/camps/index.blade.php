@@ -20,11 +20,11 @@
                     {!! Form::open(['action'=>'AdminCampsController@store']) !!}
                         <div class="form-group">
                             {!! Form::label('name', 'Name:') !!}
-                            {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('year', 'Jahr:') !!}
-                            {!! Form::text('year', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('year', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::submit('Lager erstellen', ['class' => 'btn btn-primary'])!!}

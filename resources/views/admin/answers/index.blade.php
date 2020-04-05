@@ -20,11 +20,11 @@
                     {!! Form::open(['action'=>'AdminAnswersController@store']) !!}
                         <div class="form-group">
                             {!! Form::label('name', 'Antwort:') !!}
-                            {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('count', 'Wertung:') !!}
-                            {!! Form::text('count', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('count', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::submit('Antwort erstellen', ['class' => 'btn btn-primary'])!!}

@@ -88,12 +88,12 @@ $(document).ready(function () {
     // ------------------------------------------------------- //
     // Jquery Progress Circle
     // ------------------------------------------------------ //
-    // var progress_circle = $("#progress-circle").gmpc({
-    //     color: brandPrimary,
-    //     line_width: 5,
-    //     percent: 80
-    // });
-    // progress_circle.gmpc('animate', 80, 3000);
+    var progress_circle = $("#progress-circle").gmpc({
+        color: brandPrimary,
+        line_width: 5,
+        percent: 80
+    });
+    progress_circle.gmpc('animate', 80, 3000);
 
     // ------------------------------------------------------- //
     // External links to new window
@@ -104,4 +104,6 @@ $(document).ready(function () {
         e.preventDefault();
         window.open($(this).attr("href"));
     });
+
+
 });

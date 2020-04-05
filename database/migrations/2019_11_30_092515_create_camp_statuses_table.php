@@ -20,9 +20,9 @@ class CreateCampStatusesTable extends Migration
         });
         DB::table('camp_statuses')->insert( 
             array(
-                ['id' => 5,
+                ['id' => config('status.camp_aktiv'),
                 'name' => 'Aktiv'],
-                ['id' => 10,
+                ['id' => config('status.camp_abgeschlossen'),
                 'name' => 'Abgeschlossen']
             )
         );

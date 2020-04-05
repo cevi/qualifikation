@@ -15,6 +15,10 @@
             <header> 
                 <h1 class="h3 display">Fragen</h1>
             </header>
+            {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@uploadFile', 'enctype' => 'multipart/form-data']) !!}
+            <input type='file' name='file' >
+            <input type='submit' name='submit' value='Import'>
+            {!! Form::close()!!}
             <div class="row">
                 @if ($questions)
                     <table class="table">

@@ -20,30 +20,29 @@
                     {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@store']) !!}
                     <div class="form-group">
                         {!! Form::label('chapter_id', 'Kapitel:') !!}
-                        {!! Form::select('chapter_id', [''=>'Wähle Kapitel'] + $chapters, null,  ['class' => 'form-control']) !!}
+                        {!! Form::select('chapter_id', [''=>'Wähle Kapitel'] + $chapters, null,  ['class' => 'form-control', 'required']) !!}
                     </div>
 
                     <div class="form-group">
                             {!! Form::label('number', 'Nummer:') !!}
-                            {!! Form::text('number', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('number', null, ['class' => 'form-control', 'required']) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('name', 'Name:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                     </div>
 
 
                     <div class="form-group">
                             {!! Form::label('competence', 'Kompetenz:') !!}
-                            {!! Form::text('competence', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('competence', null, ['class' => 'form-control', 'required']) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::submit('Frage Erstellen', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
-
                     @include('includes.form_error')
                 </div>
             </div>

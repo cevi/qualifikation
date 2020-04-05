@@ -55,6 +55,24 @@
                 </table>
                 <a href="{{route('users.create')}}" class="btn btn-info" role="button">Leiter hinzufügen</a>
             </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-4">
+                    {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
+                        <div class="form-group">
+                            {{ Form::file('csv_file',['class' => 'dropify'])}}
+                        </div>
+                        {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}  
+                    {!! Form::close() !!}
+                </div>
+            </div>
         </div>  
     </section>
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            $('.dropify').dropify();
+        });
+    </script>
 @endsection

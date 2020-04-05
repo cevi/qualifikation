@@ -17,11 +17,9 @@ class AddResponsibleToSurvey extends Migration
             //
             $table->bigInteger('user_id')->index()->unsigned()->nullable();
             $table->bigInteger('responsible_id')->index()->unsigned()->nullable();
-            $table->bigInteger('survey_status_id')->index()->unsigned()->nullable();
             //
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('responsible_id')->references('id')->on('users');
-            $table->foreign('survey_status_id')->references('id')->on('camp_statuses');
         });
     }
 

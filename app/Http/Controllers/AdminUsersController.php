@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Camp;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
@@ -49,8 +50,121 @@ class AdminUsersController extends Controller
     {
         //
         $roles = Role::pluck('name','id')->all();
-        $leaders = User::where('role_id',3)->pluck('username','id')->all();
+        $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         return view('admin.users.create', compact('roles', 'leaders'));
+    }
+
+    public function uploadFile(Request $request){
+        if($request->hasFile('csv_file')){
+            $file = $request->file('csv_file');
+      
+            // File Details 
+            $filename = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $tempPath = $file->getRealPath();
+            $fileSize = $file->getSize();
+            $mimeType = $file->getMimeType();
+      
+            // Valid File Extensions
+            $valid_extension = array("csv");
+      
+            // 2MB in Bytes
+            $maxFileSize = 2097152; 
+      
+            // Check file extension
+            if(in_array(strtolower($extension),$valid_extension)){
+      
+              // Check file size
+              if($fileSize <= $maxFileSize){
+      
+                // File upload location
+                $location = 'uploads';
+      
+                // Upload file
+                $file->move($location,$filename);
+      
+                // Import CSV to Database
+                $filepath = public_path($location."/".$filename);
+      
+                // Reading file
+                $file = fopen($filepath,"r");
+      
+                $importData_arr = array();
+                $i = 0;
+      
+                while (($filedata = fgetcsv($file, 1000, ";")) !== FALSE) {
+                   $num = count($filedata );
+                   
+                   // Skip first row (Remove below comment if you want to skip the first row)
+                   if($i == 0){
+                      $i++;
+                      continue; 
+                   }
+                   for ($c=0; $c < $num; $c++) {
+                      $importData_arr[$i][] = $filedata [$c];
+                   }
+                   $i++;
+                }
+                fclose($file);
+
+      
+                // Insert to MySQL database
+                foreach($importData_arr as $importData){
+                    if($importData[1]==='K'){
+                        $user = Auth::user();
+
+                        $insertData = array(
+                        
+                            "username"=>$importData[3],
+                            "password"=>bcrypt($importData[4]),
+                            "role_id"=>config('status.role_Lagerleiter'),
+                            "is_active"=>true,
+                            "camp_id"=>$user['camp_id']);
+                        User::create($insertData);
+                    }
+                    elseif($importData[1]==='G'){
+                        
+                        $user = Auth::user();
+
+                        $insertData = array(
+                        
+                            "username"=>$importData[3],
+                            "password"=>bcrypt($importData[4]),
+                            "role_id"=>config('status.role_Gruppenleiter'),
+                            "is_active"=>true,
+                            "camp_id"=>$user['camp_id']);
+                        User::create($insertData);
+                    }
+
+      
+                }
+                foreach($importData_arr as $importData){
+                    if($importData[1]==='T'){
+                        
+                        $user = Auth::user();
+                        $leader = User::where('username', $importData[5])->first();
+
+                        $insertData = array(
+                        
+                            "username"=>$importData[3],
+                            "password"=>bcrypt($importData[4]),
+                            "role_id"=>config('status.role_Teilnehmer'),
+                            "is_active"=>true,
+                            "camp_id"=>$user['camp_id'],
+                            "leader_id"=>$leader['id']);
+                        User::create($insertData);
+                    }
+      
+                }
+              }
+      
+            }
+        }
+
+        
+        return redirect()->action('AdminUsersController@index');
+
+        
     }
 
     /**
@@ -102,7 +216,7 @@ class AdminUsersController extends Controller
         //
         $user = User::findOrFail($id);
         $roles = Role::pluck('name','id')->all();
-        $leaders = User::where('role_id',3)->pluck('username','id')->all();
+        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         return view('admin.users.edit', compact('user','roles', 'leaders'));
     }
 

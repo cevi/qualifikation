@@ -34,9 +34,18 @@ class LoginController extends Controller
         if(Auth::user()->isAdmin()){
             return '/admin';
         }else{
-            return '/admin';
+            return '/';
         }
     
+    }
+
+    public function authenticated(Request $request, $user)
+    {
+        if (!($user['is_active'])) {
+            auth()->logout();
+            return back()->with('warning', 'Du musst zuerst noch freigeschalten werden.');
+        }
+        return redirect()->intended($this->redirectPath());
     }
 
     // protected $redirectTo = '/home';

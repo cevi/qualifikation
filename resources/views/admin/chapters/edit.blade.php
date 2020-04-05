@@ -21,11 +21,11 @@
                     {!! Form::model($chapter, ['method' => 'Patch', 'action'=>['AdminChaptersController@update',$chapter->id]]) !!}
                         <div class="form-group">
                             {!! Form::label('number', 'Nummer:') !!}
-                            {!! Form::text('number', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('number', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('name', 'Kapitel:') !!}
-                            {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::submit('Update Kapitel', ['class' => 'btn btn-primary'])!!}

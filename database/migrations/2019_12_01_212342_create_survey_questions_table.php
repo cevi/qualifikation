@@ -17,7 +17,7 @@ class CreateSurveyQuestionsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('survey_chapter_id')->index()->unsigned()->nullable();
             $table->bigInteger('question_id')->index()->unsigned()->nullable();
-            $table->text('comment');
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
         Schema::table('survey_questions', function (Blueprint $table) {

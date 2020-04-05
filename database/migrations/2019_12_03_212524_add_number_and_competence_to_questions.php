@@ -15,7 +15,7 @@ class AddNumberAndCompetenceToQuestions extends Migration
     {
         Schema::table('questions', function (Blueprint $table) {
             //
-            $table->string('competence',20);
+            $table->string('competence',50);
             $table->string('number',5);
         });
     }

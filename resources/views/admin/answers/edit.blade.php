@@ -21,11 +21,11 @@
                     {!! Form::model($answer, ['method' => 'Patch', 'action'=>['AdminAnswersController@update',$answer->id]]) !!}
                         <div class="form-group">
                             {!! Form::label('name', 'Antwort:') !!}
-                            {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('count', 'Wertung:') !!}
-                            {!! Form::text('count', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('count', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::submit('Update Antwort', ['class' => 'btn btn-primary'])!!}

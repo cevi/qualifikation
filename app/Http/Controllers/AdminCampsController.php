@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Camp;
 use App\User;
+use App\SurveyStatus;
+use App\SurveyStatuses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -58,7 +60,7 @@ class AdminCampsController extends Controller
             $input['user_id'] = $user->id;
         }
 
-        $input['camp_status_id'] = 5;
+        $input['camp_status_id'] = config('status.camp_aktiv');
         $camp = Camp::create($input);
         if(!$user->isAdmin()){
             $user->update(['camp_id' => $camp->id]);
@@ -88,8 +90,9 @@ class AdminCampsController extends Controller
     {
         //
         $camp = Camp::findOrFail($id);
-        $users = User::where('role_id',2)->pluck('username','id')->all();
-        return view('admin.camps.edit', compact('camp', 'users'));
+        $survey_status = SurveyStatus::pluck('name','id')->all(); 
+        $users = User::where('role_id', config('status.role_Lagerleiter'))->pluck('username','id')->all();
+        return view('admin.camps.edit', compact('camp', 'users', 'survey_status'));
     }
 
     /**

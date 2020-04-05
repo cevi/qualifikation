@@ -20,11 +20,11 @@
                     {!! Form::open(['action'=>'AdminChaptersController@store']) !!}
                         <div class="form-group">
                             {!! Form::label('number', 'Nummer:') !!}
-                            {!! Form::text('number', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('number', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('name', 'Kapitel:') !!}
-                            {!! Form::text('name', null, ['class' => 'form-control']) !!}
+                            {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::submit('Kapitel erstellen', ['class' => 'btn btn-primary'])!!}

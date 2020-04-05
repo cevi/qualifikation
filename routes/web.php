@@ -17,18 +17,24 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/survey/{id}', ['as'=>'home.survey', 'uses'=>'SurveysController@survey']);
+Route::patch('/survey/{id}', ['as'=>'home.survey', 'uses'=>'SurveysController@update']);
+Route::get('/compare/{id}', ['as'=>'home.compare', 'uses'=>'SurveysController@compare']);
+
 Route::group(['middleware' => 'campleader'], function(){
 
     Route::get('/admin','AdminController@index');
 
     Route::resource('admin/users', 'AdminUsersController');
     Route::get('usersList', 'AdminUsersController@usersList');
+    Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
 
     Route::resource('admin/answers', 'AdminAnswersController');
 
     Route::resource('admin/camps', 'AdminCampsController');
 
     Route::resource('admin/questions', 'AdminQuestionsController');
+    Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
 
     Route::resource('admin/surveys', 'AdminSurveysController');
 

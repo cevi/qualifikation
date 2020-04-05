@@ -41,9 +41,6 @@
                         <li>
                             <a href="{{route('camps.index')}}">Alle Lager</a>
                         </li>
-                        <li>
-                            <a href="{{route('camps.create')}}">Lager erstellen</a>
-                        </li>
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>

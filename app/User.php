@@ -63,11 +63,18 @@ class User extends Authenticatable
         return false;
     }
 
-    public function own_survey(){
-        return $this->hasMany('App\Survey', 'user_id', 'user_id');
+    public function isLeader(){
+        if(($this->role['is_leader'] == 1) && $this->is_active == 1){
+            return true;
+        }
+        return false;
     }
 
-    public function responsible_survey(){
-        return $this->hasMany('App\Survey', 'responsible_id', 'user_id');
+    public function own_surveys(){
+        return $this->hasMany('App\Survey', 'user_id', 'id');
+    }
+
+    public function responsible_surveys(){
+        return $this->hasMany('App\Survey', 'responsible_id', 'id');
     }
 }

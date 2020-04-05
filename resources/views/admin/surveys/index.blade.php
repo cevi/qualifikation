@@ -25,7 +25,6 @@
                             <th scope="col">Name</th>
                             <th scope="col">Leiter</th>
                             <th scope="col">TN-Umfrage</th>
-                            <th scope="col">Leiter-Umfrage</th>
                             @if ((Auth::user()->isAdmin()))
                                 <th scope="col">Lager</th>
                             @endif
@@ -37,7 +36,7 @@
                             <tr>
                                 <td>{{$survey->user['username']}}</td>
                                 <td>{{$survey->responsible['username']}}</td>
-                                <td><a href="{{route('surveys.edit', $survey->id)}}">Zur Umfrage</a></td>
+                                <td><a href="{{route('home.compare', $survey->user['id'])}}">Zur Umfrage</a></td>
                                 @if ((Auth::user()->isAdmin()))
                                     <td>{{$survey->user->camp['name']}}</td>
                                 @endif

@@ -20,12 +20,12 @@
                     {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@store']) !!}
                     <div class="form-group">
                             {!! Form::label('username', 'Name:') !!}
-                            {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'name@abt']) !!}
+                            {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'name@abt', 'required']) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::label('role_id', 'Role:') !!}
-                        {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control']) !!}
+                        {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
                     </div>
 
                     <div class="form-group">
@@ -40,7 +40,7 @@
 
                     <div class="form-group">
                         {!! Form::label('password', 'Password:') !!}
-                        {!! Form::password('password', ['class' => 'form-control']) !!}
+                        {!! Form::password('password', ['class' => 'form-control', 'required']) !!}
                     </div>
 
                     <div class="form-group">

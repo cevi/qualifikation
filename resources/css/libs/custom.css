@@ -1,5 +1,20 @@
 /* your styles go here */
 
+
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  background-color:#f8fafc;
+}
+
+@media (min-width: 1200px) {
+  .container, .container-sm, .container-md, .container-lg, .container-xl {
+    max-width: 80%;
+  }
+}
+
   /* latin-ext */
   @font-face {
     font-family: 'Roboto';

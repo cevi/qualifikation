@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Answer;
+use App\User;
 use App\Survey;
+use App\Chapter;
+use App\Question;
+use App\SurveyChapter;
+use App\SurveyQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,12 +25,12 @@ class AdminSurveysController extends Controller
         if(!Auth::user()->isAdmin()){
             $camp = Auth::user()->camp;
             $surveys = Survey::whereHas('user', function($query) use($camp){
-                $query->where('camp_id', $camp['id'])->where('role_id', 4)->where('is_active', true);
+                $query->where('camp_id', $camp['id'])->where('role_id', config('status.role_Teilnehmer'))->where('is_active', true);
             })->get();
         }
         else{
             $surveys = Survey::whereHas('user', function($query){
-                    $query->where('role_id', 4)->where('is_active', true);})->get();
+                    $query->where('role_id', config('status.role_Teilnehmer'))->where('is_active', true);})->get();
         }
         return view('admin.surveys.index', compact('surveys'));
     }
@@ -37,6 +43,32 @@ class AdminSurveysController extends Controller
     public function create()
     {
         //
+        $camp = Auth::user()->camp;
+        $users = User::where('camp_id', $camp['id'])->where('role_id', config('status.role_Teilnehmer'))->where('is_active', true)->doesntHave('own_surveys')->get();
+        $chapters = Chapter::all();
+        $answer = Answer::where('name','0')->first();
+
+        foreach($users as $user){
+            $input['name'] = 'Teilnehmerumfrage';
+            $input['user_id'] = $user->id;
+            $input['responsible_id'] =  $user['leader_id'];
+            $input['survey_status_id'] = config('status.survey_aktiv');
+            $survey = Survey::create($input);
+            foreach($chapters as $chapter){
+                $input['chapter_id'] = $chapter->id;
+                $input['survey_id'] = $survey->id;
+                $survey_chapter = SurveyChapter::create($input);
+                $questions = Question::where('chapter_id', $chapter->id)->get();
+                foreach($questions as $question){
+                    $input['survey_chapter_id'] = $survey_chapter->id;
+                    $input['question_id'] = $question->id;
+                    $input['answer_id'] = $answer->id;
+                    $input['answer_leader_id'] = $answer->id;
+                    SurveyQuestion::create($input);
+                }
+            }
+        }
+        return redirect('admin/surveys');
 
     }
 
@@ -48,7 +80,7 @@ class AdminSurveysController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -95,4 +127,5 @@ class AdminSurveysController extends Controller
     {
         //
     }
+
 }
