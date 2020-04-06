@@ -15,6 +15,7 @@ class AddSurveyStatusesToSurvey extends Migration
     {
         Schema::table('surveys', function (Blueprint $table) {
             //
+            $table->bigInteger('survey_status_id')->index()->unsigned()->nullable();
             $table->foreign('survey_status_id')->references('id')->on('survey_statuses');
         });
 
