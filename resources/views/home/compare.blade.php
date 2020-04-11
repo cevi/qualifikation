@@ -53,9 +53,6 @@
               <canvas id="radarChart"></canvas>
             </div>
           </div>
-          <div class="card-footer d-flex align-items-center">
-            Die Grafik wird erst nach dem Speichern aktualisiert.
-          </div>
         </div>
 
    

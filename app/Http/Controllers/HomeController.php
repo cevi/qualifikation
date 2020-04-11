@@ -36,7 +36,7 @@ class HomeController extends Controller
         {
             $users = User::where('leader_id',$user['id'])->pluck('id')->all();
         }
-        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get();
+        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         $answers = Answer::all();
         return view('home.surveys', compact('user', 'surveys', 'answers'));
     }

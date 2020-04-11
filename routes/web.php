@@ -39,4 +39,8 @@ Route::group(['middleware' => 'campleader'], function(){
     Route::resource('admin/surveys', 'AdminSurveysController');
 
     Route::resource('admin/chapters', 'AdminChaptersController');
+
+    Route::get('admin/run-migrations', function () {
+    	return Artisan::call('migrate', ["--force" => true ]);
+	});
 });

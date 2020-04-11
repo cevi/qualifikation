@@ -15,7 +15,7 @@
         <!-- Bootstrap Core CSS -->
         <link href="{{asset('css/libs.css')}}" rel="stylesheet">
         <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
-        {{-- <link href="{{asset('css/app.css')}}" rel="stylesheet"> --}}
+        {{-- <script src="{{asset('js/smartsupp.js')}}"></script> --}}
 
         @yield('styles')
 

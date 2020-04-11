@@ -52,7 +52,7 @@ class AdminSurveysController extends Controller
             $input['name'] = 'Teilnehmerumfrage';
             $input['user_id'] = $user->id;
             $input['responsible_id'] =  $user['leader_id'];
-            $input['survey_status_id'] = config('status.survey_aktiv');
+            $input['survey_status_id'] = config('status.survey_neu');
             $survey = Survey::create($input);
             foreach($chapters as $chapter){
                 $input['chapter_id'] = $chapter->id;

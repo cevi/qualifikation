@@ -16,7 +16,7 @@ class SurveysController extends Controller
     {
         $user = Auth::user();
         $users = User::where('leader_id',$user['id'])->pluck('id')->all();
-        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get();
+        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         $survey = Survey::FindOrFail($id);
         $user_survey = $survey->user;
         $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->first();
@@ -64,7 +64,7 @@ class SurveysController extends Controller
         {
             $users = User::where('leader_id',$user['id'])->pluck('id')->all();
         }
-        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get();
+        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader', 'user', 'responsible'])->where('user_id', $id)->first();
         return view('home.compare', compact('user','surveys','survey'));
     }
