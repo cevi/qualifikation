@@ -21,12 +21,17 @@
                         <ul class="list-unstyled">
                             @if($user->iscampleader())
                                 @foreach ($surveys as $survey)
-                                    <li><a href="{{route('home.compare',$survey['user_id'])}}">{{$survey->name}} ({{$survey->user['username']}})</a></li>
+                                    <li><a href="{{route('survey.compare',$survey['user_id'])}}">{{$survey->name}} ({{$survey->user['username']}})</a></li>
                                 @endforeach
 
                             @else
                                 @foreach ($surveys as $survey)
-                                    <li><a href="{{route('home.survey',$survey->id)}}">{{$survey->name}} ({{$survey->user['username']}})</a></li>
+                                    @if (($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] < config('status.survey_abgeschlossen')) || ($user->isLeader()))
+                                        <li><a href="{{route('survey.survey', $survey->id)}}">{{$survey->user['username']}}</a></li>
+                                    @endif
+                                    @if ($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] >= config('status.survey_abgeschlossen'))
+                                        <li><a href="{{route('survey.compare', $survey->user['id'])}}">{{$survey->user['username']}}</a></li>
+                                    @endif
                                 @endforeach
                             @endif
                         </ul>

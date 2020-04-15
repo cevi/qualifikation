@@ -16,10 +16,19 @@ class SurveysController extends Controller
     {
         $user = Auth::user();
         $users = User::where('leader_id',$user['id'])->pluck('id')->all();
-        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
+        $surveys = Survey::where(function($query) use ($user){
+            $query->where('user_id', $user['id']);
+            $query->whereIn('survey_status_id', [config('status.survey_neu'),  config('status.survey_offen')]);
+            })
+            ->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         $survey = Survey::FindOrFail($id);
         $user_survey = $survey->user;
-        $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->first();
+        if(((!$user->isLeader()) && (!$user->isCampLeader()) && $survey['survey_status_id'] > config('status.survey_offen'))){
+            return redirect(404);
+        }
+        else{
+            $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->first();
+        }
         $answers = Answer::all();
         return view('home.survey', compact('user','surveys','survey', 'answers'));
     }
@@ -27,7 +36,13 @@ class SurveysController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::user();
+        $survey = Survey::findOrFail($id);
         $answers = $request->answers;
+        if(!$user->isLeader()){
+            if ($survey['survey_status_id']===config('status.survey_neu')){
+                $survey->update(['survey_status_id' => config('status.survey_offen')]);    
+            }
+        }
         foreach($answers as $index => $answer){
             $surveyquestion = SurveyQuestion::findOrFail($index);
             if($user->isLeader()){
@@ -67,5 +82,18 @@ class SurveysController extends Controller
         $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader', 'user', 'responsible'])->where('user_id', $id)->first();
         return view('home.compare', compact('user','surveys','survey'));
+    }
+
+    public function finish($id)
+    {
+        $survey = Survey::findOrFail($id);
+        $user = Auth::user();
+        if ($survey['survey_status_id']===config('status.survey_offen')){
+            $survey->update(['survey_status_id' => config('status.survey_abgeschlossen')]);    
+        }
+        if ($survey['survey_status_id']===config('status.survey_abgeschlossen') && $user->isleader()){
+            $survey->update(['survey_status_id' => config('status.survey_fertig')]);    
+        }
+        return redirect()->back();
     }
 }

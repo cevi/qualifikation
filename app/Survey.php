@@ -27,7 +27,7 @@ class Survey extends Model
         return $this->hasManyThrough('App\SurveyQuestion', 'App\SurveyChapter');
     }
     
-    public function status(){
-        return $this->belongsTo('App\CampStatus', 'survey_status_id');
+    public function survey_status(){
+        return $this->belongsTo('App\SurveyStatus');
     } 
 }

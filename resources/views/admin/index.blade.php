@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
 @section('content')
-<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+<button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
        <!-- Counts Section -->
 	<section class="dashboard-counts section-padding">
         <div class="container-fluid">
           <div class="row">
             <!-- Count item widget-->
-            <div class="col-xl-3 col-md-4 col-6">
+            <div class="col-xl-4 col-md-4 col-6">
                 <div class="wrapper count-title d-flex">
                   <div class="icon"><i class="icon-padnote"></i></div>
                   <div class="name"><strong class="text-uppercase">Total Stao-Gespräche</strong>
@@ -16,25 +16,16 @@
                 </div>
             </div>
             <!-- Count item widget-->
-            <div class="col-xl-3 col-md-4 col-6">
+            <div class="col-xl-4 col-md-4 col-6">
               <div class="wrapper count-title d-flex">
                 <div class="icon"><i class="icon-padnote"></i></div>
-                <div class="name"><strong class="text-uppercase">1. Stao ausgefüllt</strong>
-                    <div class="count-number">{{$surveys_1_abgeschlossen ?? ''}}</div>
+                <div class="name"><strong class="text-uppercase">Stao ausgefüllt</strong>
+                    <div class="count-number">{{$surveys_abgeschlossen ?? ''}}</div>
                 </div>
               </div>
             </div>
             <!-- Count item widget-->
-            <div class="col-xl-3 col-md-4 col-6">
-                <div class="wrapper count-title d-flex">
-                    <div class="icon"><i class="icon-padnote"></i></div>
-                    <div class="name"><strong class="text-uppercase">2. Stao ausgefüllt</strong>
-                        <div class="count-number">{{$surveys_2_abgeschlossen ?? ''}}</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Count item widget-->
-            <div class="col-xl-3 col-md-4 col-6">
+            <div class="col-xl-4 col-md-4 col-6">
               <div class="wrapper count-title d-flex">
                 <div class="icon"><i class="icon-padnote"></i></div>
                 <div class="name"><strong class="text-uppercase">Stao-Gespräche geführt</strong>
@@ -52,9 +43,12 @@
                         <div class="col-lg-6 col-md-4" id="Chart-{{$loop->iteration}}">
                             <!-- Recent Activities Widget      -->
                             <div class="card updates activities">
-                                <div  class="card-header d-flex justify-content-between align-items-center">
-                                    <h2 class="h5 display">{{$survey->user['username']}}</h2>
-                                </div>
+                                <a href="{{route('survey.compare',$survey->user_id)}}" target="blank">
+                                    <div  class="card-header d-flex justify-content-between align-items-center">
+                                        <h2 class="h5 display">{{$survey->user['username']}}</h2>
+                                        <h2 class="h5 display">{{$survey->survey_status['name']}}</h2>
+                                    </div>
+                                </a>
                                 <div role="tabpanel" class="collapse show">
                                     <div class="card-body">
                                     <div class="chart-container">

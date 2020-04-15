@@ -1,6 +1,7 @@
 @extends('layouts.layout')
 
 @section('survey_content')
+<button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
      <!-- Blog Post -->
 
     <!-- Title -->
@@ -15,17 +16,15 @@
     {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->id]]) !!}
     @foreach ($survey->chapters as $chapter)
         <div id="recent-activities-wrapper-{{$chapter->chapter['number']}}" class="card updates activities">
-            <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="h5 display">
-                <a data-toggle="collapse" data-parent="#recent-activities-wrapper-{{$chapter->chapter['number']}}" href="#activities-box-{{$chapter->chapter['number']}}" aria-expanded="true" aria-controls="activities-box">
-                    {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
-                    </a>
-                </h2>
-                <a data-toggle="collapse" data-parent="#recent-activities-wrapper-{{$chapter->chapter['number']}}" href="#activities-box-{{$chapter->chapter['number']}}" aria-expanded="true" aria-controls="activities-box">
-                <i class="fa fa-angle-down">
-                    </i>
-                </a>
-            </div>
+            <a data-toggle="collapse" data-parent="#recent-activities-wrapper-{{$chapter->chapter['number']}}" href="#activities-box-{{$chapter->chapter['number']}}" aria-expanded="true" aria-controls="activities-box">
+                <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 display">
+                        {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
+                    </h2>
+                    <i class="fa fa-angle-down"></i>
+                </div> 
+            </a>
+
             <div id="activities-box-{{$chapter->chapter['number']}}" role="tabpanel" class="collapse">
 
                         @foreach ($chapter->questions as $question)  

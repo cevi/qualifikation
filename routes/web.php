@@ -17,9 +17,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/survey/{id}', ['as'=>'home.survey', 'uses'=>'SurveysController@survey']);
-Route::patch('/survey/{id}', ['as'=>'home.survey', 'uses'=>'SurveysController@update']);
-Route::get('/compare/{id}', ['as'=>'home.compare', 'uses'=>'SurveysController@compare']);
+Route::get('/survey/{id}', ['as'=>'survey.survey', 'uses'=>'SurveysController@survey']);
+Route::patch('/survey/{id}', ['as'=>'survey.survey', 'uses'=>'SurveysController@update']);
+Route::get('/compare/{id}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
+Route::get('/finish/{id}', ['as'=>'survey.finish', 'uses'=>'SurveysController@finish']);
 
 Route::group(['middleware' => 'campleader'], function(){
 

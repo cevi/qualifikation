@@ -22,14 +22,10 @@ class CreateSurveyStatusesTable extends Migration
             array(
                 ['id' => config('status.survey_neu'),
                 'name' => 'Neu'],
-                ['id' => config('status.survey_1_offen'),
-                'name' => '1. Offen'],
-                ['id' => config('status.survey_1_abgeschlossen'),
-                'name' => '1. Abgeschlossen'],
-                ['id' => config('status.survey_2_offen'),
-                'name' => '2. Offen'],
-                ['id' => config('status.survey_2_abgeschlossen'),
-                'name' => '2. Abgeschlossen'],
+                ['id' => config('status.survey_offen'),
+                'name' => 'Offen'],
+                ['id' => config('status.survey_abgeschlossen'),
+                'name' => 'Abgeschlossen'],
                 ['id' => config('status.survey_fertig'),
                 'name' => 'Fertig'],
             )
