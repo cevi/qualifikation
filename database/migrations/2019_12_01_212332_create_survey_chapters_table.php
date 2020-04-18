@@ -35,8 +35,8 @@ class CreateSurveyChaptersTable extends Migration
     {
         Schema::table('survey_chapters', function (Blueprint $table) {
             //
-            $table->dropForeign('survey_chapters_chapter_id_foreign');
-            $table->dropForeign('survey_chapters_survey_id_foreign');
+            $table->dropForeign(['chapter_id']);
+            $table->dropForeign(['survey_id']);
         });
         Schema::dropIfExists('survey_chapters');
     }

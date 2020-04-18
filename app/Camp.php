@@ -9,15 +9,11 @@ class Camp extends Model
     //
 
     protected $fillable = [
-        'name', 'year', 'camp_status_id', 'user_id'
+        'name', 'year', 'user_id'
     ];
 
     public function users(){
         return $this->hasMany('App\User');
-    }
-
-    public function camp_status(){
-        return $this->belongsTo('App\CampStatus');
     }
 
     public function user(){

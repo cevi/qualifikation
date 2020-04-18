@@ -17,8 +17,7 @@ class AddCampleadertoCamp extends Migration
             //
             $table->bigInteger('user_id')->index()->unsigned()->nullable();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('camp_status_id')->references('id')->on('camp_statuses');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set Null');
         });
     }
 
@@ -31,8 +30,7 @@ class AddCampleadertoCamp extends Migration
     {
         Schema::table('camps', function (Blueprint $table) {
             //
-            $table->dropForeign('camps_user_id_foreign');
-            $table->dropForeign('camps_camp_status_id_foreign');
+            $table->dropForeign(['user_id']);
             $table->dropColumn('user_id');
         });
     }

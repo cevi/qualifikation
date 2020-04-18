@@ -31,7 +31,7 @@ class AddSurveyStatusesToSurvey extends Migration
     {
         Schema::table('surveys', function (Blueprint $table) {
             //
-            $table->dropForeign('survey_survey_status_id_foreign');
+            $table->dropForeign(['survey_status_id']);
             $table->dropColumn('survey_status_id');
         });
     }

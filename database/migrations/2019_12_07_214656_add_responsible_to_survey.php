@@ -18,8 +18,8 @@ class AddResponsibleToSurvey extends Migration
             $table->bigInteger('user_id')->index()->unsigned()->nullable();
             $table->bigInteger('responsible_id')->index()->unsigned()->nullable();
             //
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('responsible_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('responsible_id')->references('id')->on('users')->onDelete('set null');;
         });
     }
 
@@ -32,12 +32,10 @@ class AddResponsibleToSurvey extends Migration
     {
         Schema::table('surveys', function (Blueprint $table) {
             //
-            $table->dropForeign('surveys_user_id_foreign');
-            $table->dropForeign('surveys_responsible_id_foreign');
-            $table->dropForeign('surveys_survey_status_id_foreign');
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['responsible_id']);
             $table->dropColumn('user_id');
             $table->dropColumn('responsible_id');
-            $table->dropColumn('survey_status_id');
         });
     }
 }

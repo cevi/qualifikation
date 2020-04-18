@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Camp;
 use App\User;
-use App\SurveyStatus;
-use App\SurveyStatuses;
+use App\CampStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,7 +59,6 @@ class AdminCampsController extends Controller
             $input['user_id'] = $user->id;
         }
 
-        $input['camp_status_id'] = config('status.camp_aktiv');
         $camp = Camp::create($input);
         if(!$user->isAdmin()){
             $user->update(['camp_id' => $camp->id]);
@@ -90,9 +88,8 @@ class AdminCampsController extends Controller
     {
         //
         $camp = Camp::findOrFail($id);
-        $survey_status = SurveyStatus::pluck('name','id')->all(); 
         $users = User::where('role_id', config('status.role_Lagerleiter'))->pluck('username','id')->all();
-        return view('admin.camps.edit', compact('camp', 'users', 'survey_status'));
+        return view('admin.camps.edit', compact('camp', 'users', ));
     }
 
     /**
@@ -104,7 +101,6 @@ class AdminCampsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         Camp::findOrFail($id)->update($request->all());
 
         return redirect('/admin/camps');
@@ -119,6 +115,15 @@ class AdminCampsController extends Controller
     public function destroy($id)
     {
         //
+        
+        $user = Auth::user();
+        $camp = Camp::where('user_id',$user['id'])->first();
+        $users = User::where('camp_id',$camp['id'])->where(function($query){
+                $query->where('role_id', config('status.role_Teilnehmer'))->orWhere('role_id', config('status.role_Gruppenleiter'));
+            });
+        if(count($users->get())>0){
+            $users->delete();
+        }
         Camp::findOrFail($id)->delete();
         return redirect('/admin/camps');
     }

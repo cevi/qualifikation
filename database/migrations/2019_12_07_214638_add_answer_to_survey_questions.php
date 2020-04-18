@@ -29,7 +29,7 @@ class AddAnswerToSurveyQuestions extends Migration
     {
         Schema::table('survey_questions', function (Blueprint $table) {
             //
-            $table->dropForeign('survey_questions_answer_id_foreign');
+            $table->dropForeign(['answer_id']);
             $table->dropColumn('answer_id');
         });
     }

@@ -28,7 +28,7 @@ class AddForeignKeyToQuestions extends Migration
     {
         Schema::table('questions', function (Blueprint $table) {
             //
-            $table->dropForeign('questions_chapter_id_foreign');
+            $table->dropForeign(['chapter_id']);
         });
     }
 }

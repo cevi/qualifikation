@@ -36,7 +36,7 @@
                             <tr>
                                 <td>{{$survey->user['username']}}</td>
                                 <td>{{$survey->responsible['username']}}</td>
-                                <td><a href="{{route('home.compare', $survey->user['id'])}}">Zur Umfrage</a></td>
+                                <td><a href="{{route('survey.compare', $survey->user['id'])}}">Zur Umfrage</a></td>
                                 @if ((Auth::user()->isAdmin()))
                                     <td>{{$survey->user->camp['name']}}</td>
                                 @endif

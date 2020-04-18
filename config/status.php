@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'camp_aktiv' => 10,
-    'camp_abgeschlossen' => 20,
-
     'survey_neu' => 5,
     'survey_offen' => 10,
     'survey_abgeschlossen' => 20,

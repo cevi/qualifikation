@@ -36,23 +36,9 @@
         <div class="admin-menu">
             <h5 class="sidenav-heading">Administration</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">  
-                <li><a href="#CampsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-campground"></i> Lager</a>
-                    <ul id="CampsDropdown" class="collapse list-unstyled ">
-                        <li>
-                            <a href="{{route('camps.index')}}">Alle Lager</a>
-                        </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
+                <li><a href="{{route('camps.index')}}"> <i class="fas fa-campground"></i> Lager</a></li>
                 @if (Auth::user()->isCampleader())
-                    <li><a href="#SurveysDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-poll-h"></i> Umfragen</a>
-                        <ul id="SurveysDropdown" class="collapse list-unstyled ">
-                            <li>
-                                <a href="{{route('surveys.index')}}">Alle Umfragen</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
+                    <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Umfragen</a>
                 @endif
                 @if (Auth::user()->isAdmin())
                     <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Fragen</a>

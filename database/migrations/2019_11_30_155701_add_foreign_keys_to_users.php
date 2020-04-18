@@ -16,8 +16,8 @@ class AddForeignKeysToUsers extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
             $table->foreign('role_id')->references('id')->on('roles');
-            $table->foreign('leader_id')->references('id')->on('users');
-            $table->foreign('camp_id')->references('id')->on('camps')->onDelete('cascade');
+            $table->foreign('leader_id')->references('id')->on('users')->onDelete('set Null');
+            $table->foreign('camp_id')->references('id')->on('camps')->onDelete('set Null');
         });
     }
 
@@ -30,9 +30,9 @@ class AddForeignKeysToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->dropForeign('users_role_id_foreign');
-            $table->dropForeign('users_leader_id_foreign');
-            $table->dropForeign('users_camp_id_foreign');
+            $table->dropForeign(['role_id']);
+            $table->dropForeign(['leader_id']);
+            $table->dropForeign(['camp_id']);
         });
     }
 }

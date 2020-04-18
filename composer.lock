@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6bc7e1156423fb479699ced81d7dcdb8",
+    "content-hash": "bc8d101430d5b539a7f1113ea51ea891",
     "packages": [
         {
             "name": "caouecs/laravel-lang",
@@ -376,42 +376,6 @@
                 "trusted proxy"
             ],
             "time": "2020-02-22T01:51:47+00:00"
-        },
-        {
-            "name": "froiden/laravel-installer",
-            "version": "1.6.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Froiden/laravel-installer.git",
-                "reference": "7687ca5040b4ab9ca27514bc5032fef1fc036d73"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Froiden/laravel-installer/zipball/7687ca5040b4ab9ca27514bc5032fef1fc036d73",
-                "reference": "7687ca5040b4ab9ca27514bc5032fef1fc036d73",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Froiden\\LaravelInstaller\\": "src/"
-                },
-                "files": [
-                    "src/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ajay Kumar Choudhary",
-                    "email": "ajay@froiden.com"
-                }
-            ],
-            "description": "Laravel web installer",
-            "time": "2019-12-03T12:23:20+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1607,6 +1571,72 @@
                 "uuid"
             ],
             "time": "2020-02-21T04:36:14+00:00"
+        },
+        {
+            "name": "realrashid/sweet-alert",
+            "version": "v3.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/realrashid/sweet-alert.git",
+                "reference": "d78f0ff7a9e065da2c79fa1c35a5fe243ae9bb02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/realrashid/sweet-alert/zipball/d78f0ff7a9e065da2c79fa1c35a5fe243ae9bb02",
+                "reference": "d78f0ff7a9e065da2c79fa1c35a5fe243ae9bb02",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^5.4|^6.0|^7.0",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "symfony/thanks": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "RealRashid\\SweetAlert\\SweetAlertServiceProvider"
+                    ],
+                    "aliases": {
+                        "Alert": "RealRashid\\SweetAlert\\Facades\\Alert"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "RealRashid\\SweetAlert\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rashid Ali",
+                    "email": "realrashid05@gmail.com",
+                    "homepage": "https://realrashid.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A BEAUTIFUL, RESPONSIVE, CUSTOMIZABLE, ACCESSIBLE (WAI-ARIA) REPLACEMENT FOR JAVASCRIPT'S POPUP BOXES FOR LARAVEL BY RASHID ALI",
+            "homepage": "https://github.com/realrashid/sweet-alert",
+            "keywords": [
+                "alert",
+                "laravel",
+                "laravel-package",
+                "notifier",
+                "noty",
+                "sweet-alert",
+                "sweet-alert2",
+                "toast"
+            ],
+            "time": "2020-03-31T15:40:35+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -3508,6 +3538,42 @@
                 "whoops"
             ],
             "time": "2020-01-15T10:00:00+00:00"
+        },
+        {
+            "name": "froiden/laravel-installer",
+            "version": "1.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Froiden/laravel-installer.git",
+                "reference": "7687ca5040b4ab9ca27514bc5032fef1fc036d73"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Froiden/laravel-installer/zipball/7687ca5040b4ab9ca27514bc5032fef1fc036d73",
+                "reference": "7687ca5040b4ab9ca27514bc5032fef1fc036d73",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Froiden\\LaravelInstaller\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ajay Kumar Choudhary",
+                    "email": "ajay@froiden.com"
+                }
+            ],
+            "description": "Laravel web installer",
+            "time": "2019-12-03T12:23:20+00:00"
         },
         {
             "name": "fzaninotto/faker",

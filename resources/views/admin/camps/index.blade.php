@@ -16,6 +16,7 @@
                 <h1 class="h3 display">Lager</h1>
             </header>
             <div class="row">
+                @if (!$camps)
                 <div class="col-sm-3">
                     {!! Form::open(['action'=>'AdminCampsController@store']) !!}
                         <div class="form-group">
@@ -31,6 +32,7 @@
                         </div>
                     {!! Form::close()!!}
                 </div>    
+                @endif
                 <div class="col-sm-9">
                     @if ($camps)
                         <table class="table">
@@ -39,7 +41,6 @@
                                     <th scope="col">Jahr</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Lagerleiter</th>
-                                    <th scope="col">Status</th>
                                     <th scope="col">Created Date</th>
                                     <th scope="col">Updated Date</th>
                                 </tr>
@@ -49,8 +50,7 @@
                                 <tr>
                                     <td>{{$camp->year}}</a></td>
                                     <td><a href="{{route('camps.edit',$camp->id)}}">{{$camp->name}}</a></td>
-                                    <td>{{$camp->user['username']}}</a></td>
-                                    <td>{{$camp->camp_status['name']}}</a></td>
+                                    <td>{{$camp->user['username']}}</a></td> 
                                     <td>{{$camp->created_at ? $camp->created_at->diffForHumans() : 'no date'}}</td>
                                     <td>{{$camp->updated_at ? $camp->updated_at->diffForHumans() : 'no date'}}</td>
                                 </tr>

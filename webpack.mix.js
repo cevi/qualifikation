@@ -35,5 +35,6 @@ mix.scripts([
    'resources/js/libs/jquery.mCustomScrollbar.js',
    'resources/js/libs/front.js',
    'resources/js/libs/jqBootstrapValidation.js',
+   'resources/js/libs/sweetalert.min.js',
    'resources/js/libs/custom.js',
 ], 'public/js/libs.js');  

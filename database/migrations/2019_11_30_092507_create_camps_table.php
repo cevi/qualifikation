@@ -18,9 +18,6 @@ class CreateCampsTable extends Migration
             $table->timestamps();
             $table->string('name');
             $table->integer('year');
-            $table->bigInteger('camp_status_id')->index()->unsigned()->nullable();
-
-            // $table->foreign('camp_status_id')->references('id')->on('camps_statuses');
         });
     }
 
