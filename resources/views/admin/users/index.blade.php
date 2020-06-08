@@ -28,6 +28,7 @@
                             @if ((Auth::user()->isAdmin()))
                                 <th scope="col">Lager</th>
                             @endif
+                            <th scope="col">Passwortänderung</th>
                             <th scope="col">Status</th>
                             <th scope="col">Created</th>
                             <th scope="col">Updated</th>
@@ -43,6 +44,7 @@
                                 @if ((Auth::user()->isAdmin()))
                                     <td>{{$user->camp['name']}}</td>
                                 @endif
+                                <td>{{isset($user->password_change_at) ? "Ja" : "Nein"}}</td>
                                 <td>{{$user->is_active == 1 ? "Aktiv" : "Nicht Aktiv"}}</td>
                                 <td>{{$user->created_at->diffForHumans()}}</td>
                                 <td>{{$user->updated_at->diffForHumans()}}</td>

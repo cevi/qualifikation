@@ -14,7 +14,7 @@
 
         <!-- Sidebar Navigation Menus-->
         <div class="main-menu">
-            <h5 class="sidenav-heading">Zopfaktion</h5>
+            <h5 class="sidenav-heading">Qualifikation</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">                  
                 <li><a href="/admin"> <i class="fas fa-home"></i>Dashboard</a></li>
                 @if ((isset(Auth::user()->camp) OR (Auth::user()->isAdmin())))

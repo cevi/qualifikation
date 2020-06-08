@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Camp;
 use App\Role;
 use App\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,7 +50,13 @@ class AdminUsersController extends Controller
     public function create()
     {
         //
-        $roles = Role::pluck('name','id')->all();
+        
+        if(Auth::user()->isAdmin()){
+            $roles = Role::pluck('name','id')->all();
+        }
+        else{
+            $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all(); 
+        }
         $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         return view('admin.users.create', compact('roles', 'leaders'));
     }
@@ -188,6 +195,7 @@ class AdminUsersController extends Controller
             $camp = Auth::user()->camp;
             $input['camp_id'] = $camp['id'];
         }
+        $input['api_token'] = Str::random(60);
 
         User::create($input);
 
