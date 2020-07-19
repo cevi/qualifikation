@@ -23,14 +23,18 @@
                     @if ($surveys)
                         @foreach ($surveys as $survey)
                         <tr>
-                            @if (($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] < config('status.survey_abgeschlossen')) || ($user->isLeader()))
-                                <td><a href="{{route('survey.survey', $survey->id)}}">{{$survey['name']}}</a></td></td>
+                            @if (($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] < config('status.survey_abgeschlossen')) || (($user->isLeader())))
+                                @if ($survey['survey_status_id'] < config('status.survey_fertig'))
+                                    <td><a href="{{route('survey.survey', $survey->id)}}">{{$survey['name']}}</a></td>
+                                @else
+                                    <td>{{$survey['name']}}</td>
+                                @endif
                             @endif
                             @if ($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] >= config('status.survey_abgeschlossen'))
-                                <td><a href="{{route('survey.compare', $survey->user['id'])}}">{{$survey['name']}}</a></td></td>
+                                <td><a href="{{route('survey.compare', $survey->user['id'])}}">{{$survey['name']}}</a></td>
                             @endif
                             @if ($user->isLeader() || $user->isCampleader())
-                                <td><a href="{{route('survey.compare', $survey->user['id'])}}">Vergleich</a></td></td>
+                                <td><a href="{{route('survey.compare', $survey->user['id'])}}">Vergleich</a></td>
                             @endif
                             <td>{{$survey->user['username']}}</td>
                             <td>{{$survey->survey_status['name']}}</td> 

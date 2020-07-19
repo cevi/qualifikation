@@ -27,21 +27,16 @@
                     @if ($surveys)
                         
                         <ul class="list-unstyled">
-                            @if($user->iscampleader())
-                                @foreach ($surveys as $survey)
-                                    <li><a href="{{route('survey.compare',$survey['user_id'])}}">{{$survey->name}} ({{$survey->user['username']}})</a></li>
-                                @endforeach
-
-                            @else
-                                @foreach ($surveys as $survey)
-                                    @if (($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] < config('status.survey_abgeschlossen')) || ($user->isLeader()))
-                                        <li><a href="{{route('survey.survey', $survey->id)}}">{{$survey->user['username']}}</a></li>
+                            @foreach ($surveys as $survey)
+                                <li>
+                                    @if($user->iscampleader() || $survey['survey_status_id'] >= config('status.survey_fertig') || 
+                                        ($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] >= config('status.survey_abgeschlossen')))
+                                        <a href="{{route('survey.compare',$survey['user_id'])}}">{{$survey->user['username']}}</a>
+                                    @else
+                                        <a href="{{route('survey.survey', $survey->id)}}">{{$survey->user['username']}}</a>
                                     @endif
-                                    @if ($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] >= config('status.survey_abgeschlossen'))
-                                        <li><a href="{{route('survey.compare', $survey->user['id'])}}">{{$survey->user['username']}}</a></li>
-                                    @endif
-                                @endforeach
-                            @endif
+                                </li>
+                            @endforeach
                         </ul>
                     @endif
                     <!-- /.row -->
