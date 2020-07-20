@@ -26,8 +26,8 @@
                         @foreach ($chapter->questions as $question)  
                             <table class="table">
                                 <tbody>
-                                    <tr style="color: {{($question->question['competence_js1'] && $camp['camp_type_id']===config('status.camptype_JS1')) ||
-                                           ($question->question['competence_js2'] && $camp['camp_type_id']===config('status.camptype_JS2'))? 'red':'black'}}">
+                                    <tr class="{{($question->question['competence_js1'] && $camp['camp_type_id']===config('status.camptype_JS1')) ||
+                                           ($question->question['competence_js2'] && $camp['camp_type_id']===config('status.camptype_JS2'))? 'core_competence':''}}">
                                         <td width="50px">{{$question->question['number']}}</td>
                                         <td width="150px">{{$question->question['competence']}}</td>
                                         <td width="300px">{{$question->question['name']}}</td>

@@ -57,20 +57,6 @@
                     <!-- /.nav-second-level -->
                 </li>
                 @if (Auth::user()->isAdmin())
-                    <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Fragen</a>
-                        <ul id="QuestionsDropdown" class="collapse list-unstyled ">
-                            <li>
-                                <a href="{{route('questions.index')}}">Alle Fragen</a>
-                            </li>
-                            <li>
-                                <a href="{{route('questions.create')}}">Frage erstellen</a>
-                            </li>
-                            <li>
-                                <a href="{{route('chapters.index')}}">Kapitel</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
                     <li><a href="#AnswersDropdown" aria-expanded="false" data-toggle="collapse"><i class="fas fa-edit"></i> Antworten</a>
                         <ul id="AnswersDropdown" class="collapse list-unstyled ">
                             <li>

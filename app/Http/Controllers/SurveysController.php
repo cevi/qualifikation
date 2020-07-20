@@ -31,7 +31,8 @@ class SurveysController extends Controller
             $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->first();
         }
         $answers = Answer::all();
-        return view('home.survey', compact('user','surveys','survey', 'answers'));
+        $camp = Camp::FindOrFail($user['camp_id']);
+        return view('home.survey', compact('user','surveys','survey', 'answers' ,'camp'));
     }
     
     public function update(Request $request, $id)
