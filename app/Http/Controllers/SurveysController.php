@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Camp;
 use App\User;
 use App\Answer;
 use App\Survey;
@@ -81,7 +82,8 @@ class SurveysController extends Controller
         }
         $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader', 'user', 'responsible'])->where('user_id', $id)->first();
-        return view('home.compare', compact('user','surveys','survey'));
+        $camp = Camp::FindOrFail($user['camp_id']);
+        return view('home.compare', compact('user','surveys','survey','camp'));
     }
 
     public function finish($id)

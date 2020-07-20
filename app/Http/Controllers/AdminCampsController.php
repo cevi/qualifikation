@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Camp;
 use App\User;
 use App\CampStatus;
+use App\CampType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +31,8 @@ class AdminCampsController extends Controller
         else{
             $camps = Camp::all();
         }
-        return view('admin.camps.index', compact('camps'));
+        $camptypes = CampType::pluck('name','id')->all();
+        return view('admin.camps.index', compact('camps', 'camptypes'));
     }
 
     /**
@@ -88,8 +90,9 @@ class AdminCampsController extends Controller
     {
         //
         $camp = Camp::findOrFail($id);
+        $camptypes = CampType::pluck('name','id')->all();
         $users = User::where('role_id', config('status.role_Lagerleiter'))->pluck('username','id')->all();
-        return view('admin.camps.edit', compact('camp', 'users', ));
+        return view('admin.camps.edit', compact('camp', 'users', 'camptypes'));
     }
 
     /**

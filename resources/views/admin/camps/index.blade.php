@@ -28,6 +28,10 @@
                             {!! Form::text('year', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
+                            {!! Form::label('Camp_type_id', 'Lagertyp:') !!}
+                            {!! Form::select('Camp_type_id', [''=>'Wähle Lagertyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::submit('Lager erstellen', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
@@ -41,6 +45,7 @@
                                     <th scope="col">Jahr</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Lagerleiter</th>
+                                    <th scope="col">Lagertyp</th>
                                     <th scope="col">Created Date</th>
                                     <th scope="col">Updated Date</th>
                                 </tr>
@@ -51,6 +56,7 @@
                                     <td>{{$camp->year}}</a></td>
                                     <td><a href="{{route('camps.edit',$camp->id)}}">{{$camp->name}}</a></td>
                                     <td>{{$camp->user['username']}}</a></td> 
+                                    <td>{{$camp->camp_type['name']}}</a></td> 
                                     <td>{{$camp->created_at ? $camp->created_at->diffForHumans() : 'no date'}}</td>
                                     <td>{{$camp->updated_at ? $camp->updated_at->diffForHumans() : 'no date'}}</td>
                                 </tr>

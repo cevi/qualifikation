@@ -44,17 +44,17 @@
                                         <tbody>
                                             <tr>
                                                 @foreach ($answers as $answer)  
-                                                    @if($user->isLeader())
-                                                        <td width="50px">
-                                                            {{ Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_leader_id']===NULL && $answer['name']==='0') ? true : ($question['answer_leader_id']===$answer['id']) ? true : false, ["id" => $question->question['number'].$answer['id']]) }}
-                                                            {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
-                                                        </td>
-                                                    @else
-                                                        <td width="50px">
-                                                            {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_id']===NULL && $answer['name']==='0') ? true : ($question['answer_id']===$answer['id']) ? true : false, ["id" => $question->question['number'].$answer['id']]) }}
-                                                            {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
-                                                        </td>
-                                                    @endif
+                                                @if ($user->isLeader())
+                                                <td width="50px">
+                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ((($question['answer_leader_id']===NULL) && ($answer['name']==='0')) ? true) : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
+                                                    {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
+                                            </td>
+                                            @else
+                                                <td width="50px">
+                                                    {{Form::radio('answers['.$question['id'].']', $answer['id'],  ((($question['answer_id']===NULL) && ($answer['name']==='0')) ? true) : (($question['answer_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
+                                                    {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
+                                              </td>
+                                            @endif 
                                                 @endforeach  
                                             </tr>
                                         </tbody>

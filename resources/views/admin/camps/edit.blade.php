@@ -32,6 +32,10 @@
                             {!! Form::select('user_id', $users, null, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
+                            {!! Form::label('camp_type_id', 'Lagertyp:') !!}
+                            {!! Form::select('camp_type_id', [''=>'Wähle Lagertyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::submit('Update Lager', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}

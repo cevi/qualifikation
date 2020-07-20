@@ -10,5 +10,8 @@ return [
     'role_Lagerleiter' => 2,
     'role_Gruppenleiter' => 3,
     'role_Teilnehmer' => 4,
+
+    'camptype_JS1' => 10,
+    'camptype_JS2' => 20,
 ]
 ?>

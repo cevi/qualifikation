@@ -8,10 +8,11 @@ class Question extends Model
 {
     //
     protected $fillable = [
-    'name', 'number', 'competence', 'chapter_id'
+    'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2'
     ];
 
     public function chapter(){
         return $this->belongsTo('App\Chapter');
     }
+
 }

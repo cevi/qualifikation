@@ -81,6 +81,14 @@ class AdminQuestionsController extends Controller
     public function update(Request $request, $id)
     {
         //
+        // return $request;
+        if($request['competence_js1']===null){
+          $request['competence_js1'] = 0;
+        }
+        if($request['competence_js2']===null){
+          $request['competence_js2'] = 0;
+        }
+        // return $request;
         Question::findOrFail($id)->update($request->all());
 
         return redirect('/admin/questions');

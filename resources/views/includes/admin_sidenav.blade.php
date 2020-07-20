@@ -40,6 +40,22 @@
                 @if (Auth::user()->isCampleader())
                     <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Umfragen</a>
                 @endif
+                <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Fragen</a>
+                    <ul id="QuestionsDropdown" class="collapse list-unstyled ">
+                        <li>
+                            <a href="{{route('questions.index')}}">Alle Fragen</a>
+                        </li>
+                        @if (Auth::user()->isAdmin())
+                            <li>
+                                <a href="{{route('questions.create')}}">Frage erstellen</a>
+                            </li>
+                            <li>
+                                <a href="{{route('chapters.index')}}">Kapitel</a>
+                            </li>
+                        @endif
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
                 @if (Auth::user()->isAdmin())
                     <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Fragen</a>
                         <ul id="QuestionsDropdown" class="collapse list-unstyled ">

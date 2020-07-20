@@ -15,10 +15,12 @@
             <header> 
                 <h1 class="h3 display">Fragen</h1>
             </header>
-            {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@uploadFile', 'enctype' => 'multipart/form-data']) !!}
-            <input type='file' name='file' >
-            <input type='submit' name='submit' value='Import'>
-            {!! Form::close()!!}
+            @if (Auth::user()->isAdmin())
+                {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@uploadFile', 'enctype' => 'multipart/form-data']) !!}
+                <input type='file' name='file' >
+                <input type='submit' name='submit' value='Import'>
+                {!! Form::close()!!}
+            @endif
             <div class="row">
                 @if ($questions)
                     <table class="table">
@@ -29,6 +31,7 @@
                                 <th scope="col">Nummer</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Kompetenz</th>
+                                <th scope="col">Kernkompetenz</th>
                                 <th scope="col">Created Date</th>
                                 <th scope="col">Updated Date</th>
                             </tr>
@@ -41,6 +44,7 @@
                                 <td>{{$question->number}}</td>
                                 <td><a href="{{route('questions.edit',$question->id)}}">{{$question->name}}</a></td>
                                 <td>{{$question->competence}}</td>
+                                <td>{{$question['competence_js1'] ? 'J+S 1 ':''}}{{$question['competence_js2'] ? 'J+S 2':''}}</td>
                                 <td>{{$question->created_at ? $question->created_at->diffForHumans() : 'no date'}}</td>
                                 <td>{{$question->updated_at ? $question->updated_at->diffForHumans() : 'no date'}}</td>
                             </tr>

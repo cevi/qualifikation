@@ -64,7 +64,7 @@ class User extends Authenticatable
     }
 
     public function isLeader(){
-        if(($this->role['is_leader'] == 1) && $this->is_active == 1){
+        if(($this->role['is_leader']=== 1) && ($this->is_active == 1)){
             return true;
         }
         return false;
