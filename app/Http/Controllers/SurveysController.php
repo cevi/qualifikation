@@ -28,7 +28,17 @@ class SurveysController extends Controller
             return redirect(404);
         }
         else{
-            $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->first();
+            if(((!$user->isLeader()) && (!$user->isCampLeader()) && $user_survey['id'] != $user['id'])){
+                return redirect(404);
+            }
+            else{
+                if((($user->isLeader()) && $user_survey['leader_id'] != $user['id'])){
+                    return redirect(404);
+                }
+                else{
+                    $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->first();
+                }
+            }
         }
         $answers = Answer::all();
         $camp = Camp::FindOrFail($user['camp_id']);
@@ -84,7 +94,12 @@ class SurveysController extends Controller
         $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader', 'user', 'responsible'])->where('user_id', $id)->first();
         $camp = Camp::FindOrFail($user['camp_id']);
-        return view('home.compare', compact('user','surveys','survey','camp'));
+        if(((!$user->isLeader()) && (!$user->isCampLeader()) && $id != $user['id'])){
+            return redirect(404);
+        }
+        else{
+            return view('home.compare', compact('user','surveys','survey','camp'));
+        }
     }
 
     public function finish($id)

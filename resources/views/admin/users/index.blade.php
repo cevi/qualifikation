@@ -19,7 +19,7 @@
                 <h1 class="h3 display">Teilnehmer</h1>
             </header>
             <div class="row">
-                <table id="users" class="table">
+                <table id="user_list" class="table">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>
@@ -40,7 +40,7 @@
                             <tr>
                                 <td><a href="{{route('users.edit', $user->id)}}">{{$user->username}}</a></td>
                                 <td>{{$user->role['name']}}</td>
-                                <td>{{$user->leader['username']}}</td>
+                                <td>{{$user->leader ? $user->leader['username'] : ''}}</td>
                                 @if ((Auth::user()->isAdmin()))
                                     <td>{{$user->camp['name']}}</td>
                                 @endif
