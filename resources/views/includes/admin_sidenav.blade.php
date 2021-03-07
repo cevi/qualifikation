@@ -65,6 +65,14 @@
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
+                    <li><a href="#ClassificationsDropdown" aria-expanded="false" data-toggle="collapse"><i class="fas fa-edit"></i> Klassifizierungen</a>
+                        <ul id="ClassificationsDropdown" class="collapse list-unstyled ">
+                            <li>
+                                <a href="{{route('classifications.index')}}">Alle Klassifizierungen</a>
+                            </li>
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
                 @endif
             </ul>
         </div>

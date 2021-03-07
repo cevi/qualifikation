@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item active">Teilnehmer</li>
+            <li class="breadcrumb-item active">Personen</li>
             </ul>
         </div>
     </div>
@@ -16,46 +16,26 @@
         <div class="container-fluid">
             <!-- Page Header-->
             <header> 
-                <h1 class="h3 display">Teilnehmer</h1>
+                <h1 class="h3 display">Personen</h1>
+                {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
             </header>
+            <table class="table table-striped table-bordered" style="width:100%" id="datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col" width="10%">Bild</th>
+                        <th scope="col">Rolle</th>
+                        <th scope="col">Leiter</th>
+                        <th scope="col">Klassifizierung</th>
+                        <th scope="col">Lager</th>
+                        <th scope="col">Passwortänderung</th>
+                    </tr>
+                </thead>
+            </table>
             <div class="row">
-                <table id="user_list" class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Rolle</th>
-                            <th scope="col">Leiter</th>
-                            @if ((Auth::user()->isAdmin()))
-                                <th scope="col">Lager</th>
-                            @endif
-                            <th scope="col">Passwortänderung</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Created</th>
-                            <th scope="col">Updated</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if ($users)
-                            @foreach ($users as $user)
-                            <tr>
-                                <td><a href="{{route('users.edit', $user->id)}}">{{$user->username}}</a></td>
-                                <td>{{$user->role['name']}}</td>
-                                <td>{{$user->leader ? $user->leader['username'] : ''}}</td>
-                                @if ((Auth::user()->isAdmin()))
-                                    <td>{{$user->camp['name']}}</td>
-                                @endif
-                                <td>{{isset($user->password_change_at) ? "Ja" : "Nein"}}</td>
-                                <td>{{$user->is_active == 1 ? "Aktiv" : "Nicht Aktiv"}}</td>
-                                <td>{{$user->created_at->diffForHumans()}}</td>
-                                <td>{{$user->updated_at->diffForHumans()}}</td>
-                            </tr>    
-                            @endforeach
-
-                        @endif
-
-                    </tbody>
-                </table>
-                <a href="{{route('users.create')}}" class="btn btn-info" role="button">Leiter hinzufügen</a>
+                <div class="col-lg-4">
+                    <a href="{{route('users.create')}}" class="btn btn-info" role="button">Person hinzufügen</a>
+                </div>
             </div>
             <br>
             <div class="row">
@@ -75,6 +55,26 @@
     <script>
         $(document).ready(function(){
             $('.dropify').dropify();
+            $('#datatable').DataTable({
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                pageLength: 25,
+                language: {
+                    "url": "/lang/Datatables.json"
+                },
+                ajax: "{!! route('users.CreateDataTables') !!}",
+                columns: [
+                    { data: 'user', name: 'user' },
+                    { data: 'picture', name: 'picture', orderable:false,serachable:false},
+                    { data: 'role', name: 'role' },
+                    { data: 'leader', name: 'leader' },
+                    { data: 'classification', name: 'classification' },
+                    { data: 'camp', name: 'camp' },
+                    { data: 'password_changed', name: 'password_changed' },
+                    
+                    ]
+            });
         });
     </script>
 @endsection

@@ -30,6 +30,7 @@ mix.scripts([
    'resources/js/libs/jquery-ui.js',
    'resources/js/libs/dropify.min.js',
    'resources/js/libs/bootstrap.js',
+   'resources/js/libs/datatables.js',
    'resources/js/libs/grasp_mobile_progress_circle-1.0.0.min.js',
    'resources/js/libs/chart.bundle.min.js',
    'resources/js/libs/jquery.mCustomScrollbar.js',

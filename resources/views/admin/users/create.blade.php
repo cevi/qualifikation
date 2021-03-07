@@ -34,6 +34,11 @@
                     </div>
 
                     <div class="form-group">
+                        {!! Form::label('classification_id', 'Klassifizierung:') !!}
+                        {!! Form::select('classification_id', [''=>'Wähle Klassifizierung'] + $classifications, null, ['class' => 'form-control']) !!}
+                    </div>
+
+                    <div class="form-group">
                         {!! Form::label('is_active', 'Status:') !!}
                         {!! Form::select('is_active', array(1 => "Aktiv", 0 => 'Nicht Aktiv'), null,  ['class' => 'form-control']) !!}
                     </div>

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Answer;
 use App\User;
+use App\Answer;
 use App\Survey;
 use App\Chapter;
 use App\Question;
@@ -11,6 +11,7 @@ use App\SurveyChapter;
 use App\SurveyQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class AdminSurveysController extends Controller
 {
@@ -22,6 +23,13 @@ class AdminSurveysController extends Controller
     public function index()
     {
         //
+        return view('admin.surveys.index');
+    }
+
+    public function createDataTables()
+    {
+        //
+
         if(!Auth::user()->isAdmin()){
             $camp = Auth::user()->camp;
             $surveys = Survey::whereHas('user', function($query) use($camp){
@@ -32,8 +40,34 @@ class AdminSurveysController extends Controller
             $surveys = Survey::whereHas('user', function($query){
                     $query->where('role_id', config('status.role_Teilnehmer'))->where('is_active', true);})->get();
         }
-        return view('admin.surveys.index', compact('surveys'));
+        
+        return DataTables::of($surveys)
+            ->addColumn('user', function($survey) {
+                $username = $survey->user ? $survey->user['username'] : '';
+                return '<a href='.\URL::route('home.profile', $survey->user['id']).'>'.$username.'</a>';
+            })
+            ->addColumn('responsible', function (Survey $survey) {
+                return $survey->responsible ? $survey->responsible['username'] : '';})
+            ->addColumn('camp', function (Survey $survey) {
+                return $survey->user ? $survey->user->camp['name'] : '';})
+            ->addIndexColumn()
+            ->addColumn('status', function($survey) {
+                return '
+                <div class="card card-progress">
+                <ul id="progressbar" class="text-center">
+                <li class="active step0"></li>
+                <li class="active step0"></li>
+                <li class="active step0"></li>
+                <li class="step0"></li>
+            </ul></div>';
+            })
+            ->addColumn('Actions', function($survey) {
+                return '<a href='. \URL::route('survey.compare', $survey->user['id']).'>Zur Umfrage</a>';
+            })
+            ->rawColumns(['user', 'Actions', 'status'])
+            ->make(true);
     }
+    
 
     /**
      * Show the form for creating a new resource.

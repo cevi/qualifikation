@@ -18,36 +18,42 @@
             <div class="row" style="margin-bottom: 10px;">
                 <a href="{{route('surveys.create')}}" class="btn btn-info" role="button">Umfragen erstellen</a>
             </div>
-            <div class="row">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Leiter</th>
-                            <th scope="col">TN-Umfrage</th>
-                            @if ((Auth::user()->isAdmin()))
-                                <th scope="col">Lager</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if ($surveys)
-                            @foreach ($surveys as $survey)
-                            <tr>
-                                <td>{{$survey->user['username']}}</td>
-                                <td>{{$survey->responsible['username']}}</td>
-                                <td><a href="{{route('survey.compare', $survey->user['id'])}}">Zur Umfrage</a></td>
-                                @if ((Auth::user()->isAdmin()))
-                                    <td>{{$survey->user->camp['name']}}</td>
-                                @endif
-                            </tr>    
-                            @endforeach
-
-                        @endif
-
-                    </tbody>
-                </table>
-            </div>
-        </div>  
+            <table class="table table-striped table-bordered" style="width:100%" id="datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">Teilnehmer</th>
+                        <th scope="col">Leiter</th>
+                        <th scope="col">Lager</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">TN-Umfrage</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </section>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            $('#datatable').DataTable({
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                pageLength: 25,
+                language: {
+                    "url": "/lang/Datatables.json"
+                },
+                ajax: "{!! route('surveys.CreateDataTables') !!}",
+                columns: [
+                    { data: 'user', name: 'user' },
+                    { data: 'responsible', name: 'responsible' },
+                    { data: 'camp', name: 'camp' },
+                    { data: 'status', name: 'status', orderable:false,serachable:false},
+                    { data: 'Actions', name: 'Actions', orderable:false,serachable:false},
+                    
+                    ]
+            });
+        });
+    </script>
 @endsection

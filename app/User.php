@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 'api_token'
+        'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 'api_token', 'avatar', 'classification_id'
     ];
 
     /**
@@ -25,8 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'password_change_at', 'api_token'
-    ];
+        'password', 'remember_token', 'password_change_at', 'api_token'];
 
     /**
      * The attributes that should be cast to native types.
@@ -76,5 +75,9 @@ class User extends Authenticatable
 
     public function responsible_surveys(){
         return $this->hasMany('App\Survey', 'responsible_id', 'id');
+    }
+
+    public function classification(){
+        return $this->belongsTo('App\Classification');
     }
 }

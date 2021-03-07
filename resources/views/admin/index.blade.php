@@ -79,17 +79,6 @@
 
 @section('scripts')
     <script>
-        // $(document).scroll(function() { 
-        //     var top = $(this).scrollTop();
-        //     console.log(top);
-        //     if(top >160){
-        //         top = top - 165;
-        //     }else{
-        //         top=0;
-        //     }
-        //     $('#Sidepanel').animate({top:top},1, 'swing');
-        // })
-
         $(document).ready(function () {
 
             'use strict';

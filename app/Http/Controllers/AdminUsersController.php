@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Camp;
+use App\Classification;
 use App\Role;
 use App\User;
 use Illuminate\Support\Str;
+use App\Imports\UsersImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class AdminUsersController extends Controller
 {
@@ -18,6 +23,12 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
+        return view('admin.users.index');
+    }
+
+    public function createDataTables()
+    {
+        //
         if(!Auth::user()->isAdmin()){
             $camp = Auth::user()->camp;
             $users = User::where('camp_id', $camp['id'])->where('is_active', true)->get();
@@ -25,19 +36,32 @@ class AdminUsersController extends Controller
         else{
             $users = User::where('is_active', true)->get();
         }
-        return view('admin.users.index', compact('users'));
-    }
 
-    public function usersList()
-    {
-        if(!Auth::user()->isAdmin()){
-            $camp = Auth::user()->camp;
-            $users = User::where('camp_id', $camp['id'])->get();
-        }
-        else{
-            $users = User::all();
-        }
-        return Datatables::of($users)->make(true);
+        return DataTables::of($users)
+            ->addColumn('picture', function($user) {
+                $path = $user->avatar ? $user->avatar : 'http://placehold.it/50x50';
+                return '<a href='.\URL::route('home.profile', $user['id']).'><img height="50" src="'.$path .'" alt=""></a>';
+            })
+            ->addColumn('user', function($user) {
+                return '<a href='.\URL::route('users.edit', $user['id']).'>'.$user['username'].'</a>';
+            })
+            ->addColumn('role', function (User $user) {
+                return $user->role ? $user->role['name'] : '';})
+            ->addColumn('leader', function (User $user) {
+                return $user->leader ? $user->leader['username'] : '';})
+                ->addColumn('classification', function (User $user) {
+                    return $user->classification ? $user->classification['name'] : '';})
+            ->addColumn('camp', function (User $user) {
+                return $user->camp ? $user->camp['name'] : '';})
+            ->addColumn('password_changed', function (User $user) {
+                if(isset($user->password_change_at)){
+                    return 'Ja';
+                }
+                else{
+                    return 'Nein';
+                }})
+            ->rawColumns(['picture','user'])
+            ->make(true);
     }
 
     
@@ -57,121 +81,87 @@ class AdminUsersController extends Controller
         else{
             $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all(); 
         }
+        $classifications = Classification::pluck('name','id')->all();
         $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->pluck('username','id')->all();
-        return view('admin.users.create', compact('roles', 'leaders'));
+        return view('admin.users.create', compact('roles', 'leaders', 'classifications'));
     }
 
     public function uploadFile(Request $request){
         if($request->hasFile('csv_file')){
-            $file = $request->file('csv_file');
+          
+            $array = (new UsersImport)->toArray(request()->file('csv_file'));
+            $importData_arr = $array[0];
+            
       
-            // File Details 
-            $filename = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-            $tempPath = $file->getRealPath();
-            $fileSize = $file->getSize();
-            $mimeType = $file->getMimeType();
-      
-            // Valid File Extensions
-            $valid_extension = array("csv");
-      
-            // 2MB in Bytes
-            $maxFileSize = 2097152; 
-      
-            // Check file extension
-            if(in_array(strtolower($extension),$valid_extension)){
-      
-              // Check file size
-              if($fileSize <= $maxFileSize){
-      
-                // File upload location
-                $location = 'uploads';
-      
-                // Upload file
-                $file->move($location,$filename);
-      
-                // Import CSV to Database
-                $filepath = public_path($location."/".$filename);
-      
-                // Reading file
-                $file = fopen($filepath,"r");
-      
-                $importData_arr = array();
-                $i = 0;
-      
-                while (($filedata = fgetcsv($file, 1000, ";")) !== FALSE) {
-                   $num = count($filedata );
-                   
-                   // Skip first row (Remove below comment if you want to skip the first row)
-                   if($i == 0){
-                      $i++;
-                      continue; 
-                   }
-                   for ($c=0; $c < $num; $c++) {
-                      $importData_arr[$i][] = $filedata [$c];
-                   }
-                   $i++;
+            // Insert to MySQL database
+            $user = Auth::user();
+            foreach($importData_arr as $importData){
+
+                $username = mb_strtolower($importData['username']);
+
+                if($importData['rollen']==='K'){
+                    
+                    $insertData = array(
+                    
+                        "username"=> $username,
+                        "password"=>bcrypt($importData['password']),
+                        "role_id"=>config('status.role_Lagerleiter'),
+                        "is_active"=>true,
+                        "camp_id"=>$user['camp_id'],
+                        'classification_id' => config('status.classification_green'));
+
+                    User::firstOrCreate(['username' => $username], $insertData);
+
                 }
-                fclose($file);
+                elseif($importData['rollen']==='G'){
+                    
 
-      
-                // Insert to MySQL database
-                foreach($importData_arr as $importData){
-                    if($importData[1]==='K'){
-                        $user = Auth::user();
+                    $insertData = array(
+                    
+                        "username"=> $username,
+                        "password"=>bcrypt($importData['password']),
+                        "role_id"=>config('status.role_Gruppenleiter'),
+                        "is_active"=>true,
+                        "camp_id"=>$user['camp_id'],
+                        'classification_id' => config('status.classification_green'));
 
-                        $insertData = array(
-                        
-                            "username"=>$importData[3],
-                            "password"=>bcrypt($importData[4]),
-                            "role_id"=>config('status.role_Lagerleiter'),
-                            "is_active"=>true,
-                            "camp_id"=>$user['camp_id']);
-                        User::create($insertData);
-                    }
-                    elseif($importData[1]==='G'){
-                        
-                        $user = Auth::user();
-
-                        $insertData = array(
-                        
-                            "username"=>$importData[3],
-                            "password"=>bcrypt($importData[4]),
-                            "role_id"=>config('status.role_Gruppenleiter'),
-                            "is_active"=>true,
-                            "camp_id"=>$user['camp_id']);
-                        User::create($insertData);
-                    }
-
-      
+                    User::firstOrCreate(['username' => $username], $insertData);
                 }
-                foreach($importData_arr as $importData){
-                    if($importData[1]==='T'){
-                        
-                        $user = Auth::user();
-                        $leader = User::where('username', $importData[5])->first();
 
-                        $insertData = array(
-                        
-                            "username"=>$importData[3],
-                            "password"=>bcrypt($importData[4]),
-                            "role_id"=>config('status.role_Teilnehmer'),
-                            "is_active"=>true,
-                            "camp_id"=>$user['camp_id'],
-                            "leader_id"=>$leader['id']);
-                        User::create($insertData);
-                    }
-      
+    
+            }
+            foreach($importData_arr as $importData){
+
+                $username = mb_strtolower($importData['username']);
+
+                if($importData['rollen']==='T'){
+                    
+                    $user = Auth::user();
+                    $leader = User::where('username', $importData['leiter'])->first();
+
+                    $insertData = array(
+                    
+                        "username"=> $username,
+                        "password"=>bcrypt($importData['password']),
+                        "role_id"=>config('status.role_Teilnehmer'),
+                        "is_active"=>true,
+                        "camp_id"=>$user['camp_id'],
+                        "leader_id"=>$leader['id'],
+                        'classification_id' => config('status.classification_green'));
+
+                    User::firstOrCreate(['username' => $username], $insertData);
                 }
-              }
-      
+    
             }
         }
-
         
         return redirect()->action('AdminUsersController@index');
 
         
+    }
+
+    public function download(){
+        return Storage::download('file.jpg', 'Teilnehmerliste.xlsx');
     }
 
     /**
@@ -196,6 +186,7 @@ class AdminUsersController extends Controller
             $input['camp_id'] = $camp['id'];
         }
         $input['api_token'] = Str::random(60);
+        $input['classification_id'] = config('status.classification_green');
 
         User::create($input);
 
@@ -225,7 +216,8 @@ class AdminUsersController extends Controller
         $user = User::findOrFail($id);
         $roles = Role::pluck('name','id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
-        return view('admin.users.edit', compact('user','roles', 'leaders'));
+        $classifications = Classification::pluck('name','id')->all();
+        return view('admin.users.edit', compact('user','roles', 'leaders', 'classifications'));
     }
 
     /**
@@ -239,6 +231,7 @@ class AdminUsersController extends Controller
     {
         //
         $user = User::findOrFail($id);
+        $aktuser = Auth::user();
 
         if(trim($request->password) == ''){
             $input = $request->except('password');
@@ -246,6 +239,17 @@ class AdminUsersController extends Controller
         else{
             $input = $request->all();
             $input['password'] = bcrypt($request->password);
+        }
+        if($file = $request->file('avatar')){
+            if($input['cropped_photo_id']){
+                $save_path = 'images/'.$aktuser->camp['name'];
+                if (!file_exists($save_path)) {
+                    mkdir($save_path, 666, true);
+                }
+                $name = time() . str_replace(' ', '', $file->getClientOriginalName());
+                Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);  
+                $input['avatar'] = '/'.$save_path.'/'.$name;
+            }
         }
 
         $user->update($input);

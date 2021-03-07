@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,7 +25,11 @@ Route::patch('/survey/{id}', ['as'=>'survey.survey', 'uses'=>'SurveysController@
 Route::get('/compare/{id}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
 Route::get('/finish/{id}', ['as'=>'survey.finish', 'uses'=>'SurveysController@finish']);
 
+Route::post('/post', ['as'=>'posts.store', 'uses'=>'PostController@store']);
+
 Route::get('/user/{id}', ['as'=>'home.user', 'uses'=>'UsersController@index']);
+Route::get('/profile/{id}', ['as'=>'home.profile', 'uses'=>'UsersController@edit']);
+Route::patch('/changeClassifications/{id}/{color}', ['as'=>'users.changeClassifications', 'uses'=>'UsersController@changeClassifications']);
 Route::patch('/user/{id}', ['as'=>'home.user', 'uses'=>'UsersController@update']);
 
 Route::group(['middleware' => 'campleader'], function(){
@@ -31,8 +37,9 @@ Route::group(['middleware' => 'campleader'], function(){
     Route::get('/admin','AdminController@index');
 
     Route::resource('admin/users', 'AdminUsersController');
-    Route::get('usersList', 'AdminUsersController@usersList');
+    Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'AdminUsersController@createDataTables']);
     Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
+    Route::get('admin/users/download',  ['as'=>'users.download', 'uses'=>'AdminUsersController@download']);
 
     Route::resource('admin/answers', 'AdminAnswersController');
 
@@ -42,8 +49,10 @@ Route::group(['middleware' => 'campleader'], function(){
     Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
 
     Route::resource('admin/surveys', 'AdminSurveysController');
+    Route::get('surveys/createDataTables', ['as'=>'surveys.CreateDataTables','uses'=>'AdminSurveysController@createDataTables']);
 
     Route::resource('admin/chapters', 'AdminChaptersController');
+    Route::resource('admin/classifications', 'AdminClassificationController');
 
 
 });

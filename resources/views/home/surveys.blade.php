@@ -36,15 +36,18 @@
                             @if ($user->isLeader() || $user->isCampleader())
                                 <td><a href="{{route('survey.compare', $survey->user['id'])}}">Vergleich</a></td>
                             @endif
-                            <td>{{$survey->user['username']}}</td>
-                            <td>{{$survey->survey_status['name']}}</td> 
-                            @if($survey['survey_status_id']===config('status.survey_offen'))
-                                <td><a href="{{route('survey.finish', $survey->id)}}" type="button" class="btn btn-success btn-sm">Abschliessen</a></td>
-                            @elseif($survey['survey_status_id']===config('status.survey_abgeschlossen') && $user->isleader())
-                                <td><a href="{{route('survey.finish', $survey->id)}}" type="button" class="btn btn-success btn-sm">Abschliessen</a></td>
+                            <td>
+                            @if ($user->isLeader() || $user->isCampleader())
+                                <a href="{{route('home.profile', $survey->user['id'])}}">{{$survey->user['username']}}</a>
                             @else
-                            <td></td>
+                                {{$survey->user['username']}}</td>
                             @endif
+                            <td>{{$survey->survey_status['name']}}</td> 
+                            <td>
+                                @if(($survey['survey_status_id']===config('status.survey_offen')) || ($survey['survey_status_id']===config('status.survey_abgeschlossen') && $user->isleader()))
+                                    <a href="{{route('survey.finish', $survey->id)}}" type="button" class="btn btn-success btn-sm">Abschliessen</a>                       
+                                @endif
+                            </td>
                         </tr>    
                         @endforeach
 
