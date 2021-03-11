@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Survey extends Model
@@ -17,7 +18,23 @@ class Survey extends Model
 
     public function responsible(){
         return $this->belongsTo('App\User', 'responsible_id', 'id');
-    } 
+    }
+    
+    public function MySurvey(){
+        $aktUser = Auth::user();
+        return ($this->user_id === $aktUser['id'] || $this->responsible_id === $aktUser['id']);
+    }
+
+    public function SurveyName(){
+        $aktUser = Auth::user();
+        if($aktUser->isTeilnehmer()){
+            return $this['survey_status_id'] <= config('status.survey_1offen') ? "1. Selbsteinschätzung" : "2. Selbsteinschätzung";
+        }
+        else
+        {
+            return "Qualifizierung";
+        }
+    }
 
     public function chapters(){
         return $this->HasMany('App\SurveyChapter');

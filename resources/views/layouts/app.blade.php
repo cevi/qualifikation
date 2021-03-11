@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Qualifikation">
-    <meta name="author" content="Jérôme Sigg">
+    <meta name="author" content="Jérôme Sigg v/o Amigo">
     <meta name="robots" content="all,follow">
 
     <title>{{ config('app.name', 'Qualifikationen') }}</title>
@@ -23,13 +23,22 @@
     <link href="{{asset('css/libs.css')}}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="page mainpage">
         @include('includes/topnav')
         
 
         <main class="py-4">
             @yield('content')
         </main>
+        <footer class="main-footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <p>Design by Amigo</a></p>
+                  </div>
+                </div>
+            </div>
+        </footer>
     </div>
     <!-- jQuery -->
     <script src="{{ asset('js/libs.js') }}"></script>

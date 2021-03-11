@@ -33,7 +33,7 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('home.user',$user->id) }}">
+                            <a class="dropdown-item" href="{{ route('home.user',Auth::user()->id) }}">
                                 Profil
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"

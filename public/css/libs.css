@@ -20234,7 +20234,7 @@ body {
 #progressbar li {
     list-style-type: none;
     font-size: 13px;
-    width: 25%;
+    width: 20%;
     float: left;
     position: relative;
     font-weight: 400
@@ -20276,8 +20276,8 @@ body {
     left: -50%
 }
 
-#progressbar li:nth-child(2):after,
-#progressbar li:nth-child(3):after {
+#progressbar li:not(:first-child):after,
+#progressbar li:not(:last-child):after {
     left: -50%
 }
 
@@ -20319,7 +20319,7 @@ body {
 }
 
 .img-bor {
-  width: 150px;
+  width: 300px;
   border-radius: 30px;
   display: initial;
 }
@@ -20388,4 +20388,8 @@ img {
 .circle.green {
   background-color: #2ecc71;
   box-shadow: 0 0 20px 5px #2ecc71;
+}
+
+.mainpage {
+  width: 100vw;
 }

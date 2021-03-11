@@ -13,28 +13,22 @@
         <div class="row">
 
             <!-- Blog Post Content Column -->
-            <div class="col-lg-8">
+            <div class="col-lg-10">
 
              @yield('survey_content')   
 
             </div>
 
             <!-- Blog Sidebar Widgets Column -->
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <!-- Blog Categories Well -->
                 <div class="well">
-                    <h4>Deine Umfragen</h4>
-                    @if ($surveys)
-                        
+                    @if ($users)
+                        <h4>Teilnehmer</h4>
                         <ul class="list-unstyled">
-                            @foreach ($surveys as $survey)
+                            @foreach ($users as $user_profile)
                                 <li>
-                                    @if($user->iscampleader() || $survey['survey_status_id'] >= config('status.survey_fertig') || 
-                                        ($user['role_id'] === config('status.role_Teilnehmer') && $survey['survey_status_id'] >= config('status.survey_abgeschlossen')))
-                                        <a href="{{route('survey.compare',$survey['user_id'])}}">{{$survey->user['username']}}</a>
-                                    @else
-                                        <a href="{{route('survey.survey', $survey->id)}}">{{$survey->user['username']}}</a>
-                                    @endif
+                                    <a href="{{route('home.profile', $user_profile->id)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a> 
                                 </li>
                             @endforeach
                         </ul>
@@ -42,7 +36,6 @@
                     <!-- /.row -->
                 </div>
             </div>
-
         </div>
     </div>
 @endsection

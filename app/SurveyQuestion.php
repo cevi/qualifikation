@@ -8,13 +8,16 @@ class SurveyQuestion extends Model
 {
     //
     protected $fillable = [
-    'survey_chapter_id', 'question_id', 'comment', 'answer_id', 'comment_leader', 'answer_leader_id'
+    'survey_chapter_id', 'question_id', 'comment_second', 'comment_first', 'answer_first_id','answer_second_id', 'comment_leader', 'answer_leader_id'
     ];
 
-    public function answer(){
-        return $this->belongsTo('App\Answer', 'answer_id');
+    public function answer_first(){
+        return $this->belongsTo('App\Answer', 'answer_first_id', 'id');
     } 
 
+    public function answer_second(){
+        return $this->belongsTo('App\Answer', 'answer_second_id', 'id');
+    } 
     public function answer_leader(){
         return $this->belongsTo('App\Answer', 'answer_leader_id', 'id');
     } 

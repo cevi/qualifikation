@@ -1,34 +1,43 @@
 @extends('layouts.admin')
 
 @section('content')
-<button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
        <!-- Counts Section -->
 	<section class="dashboard-counts section-padding">
         <div class="container-fluid">
           <div class="row">
             <!-- Count item widget-->
-            <div class="col-xl-4 col-md-4 col-6">
+            <div class="col-xl-3 col-md-3 col-6">
                 <div class="wrapper count-title d-flex">
                   <div class="icon"><i class="icon-padnote"></i></div>
-                  <div class="name"><strong class="text-uppercase">Total Stao-Gespräche</strong>
+                  <div class="name"><strong class="text-uppercase">Total Qualifikationsprozesse</strong>
                     <div class="count-number">{{$surveys_all ?? ''}}</div>
                   </div>
                 </div>
             </div>
             <!-- Count item widget-->
-            <div class="col-xl-4 col-md-4 col-6">
+            <div class="col-xl-3 col-md-3 col-6">
               <div class="wrapper count-title d-flex">
                 <div class="icon"><i class="icon-padnote"></i></div>
-                <div class="name"><strong class="text-uppercase">Stao ausgefüllt</strong>
-                    <div class="count-number">{{$surveys_abgeschlossen ?? ''}}</div>
+                <div class="name"><strong class="text-uppercase">1. Selbsteinschätzung ausgefüllt</strong>
+                    <div class="count-number">{{$surveys_1offen ?? ''}}</div>
                 </div>
               </div>
             </div>
             <!-- Count item widget-->
-            <div class="col-xl-4 col-md-4 col-6">
+            <div class="col-xl-3 col-md-3 col-6">
               <div class="wrapper count-title d-flex">
                 <div class="icon"><i class="icon-padnote"></i></div>
-                <div class="name"><strong class="text-uppercase">Stao-Gespräche geführt</strong>
+                <div class="name"><strong class="text-uppercase">2. Selbsteinschätzung ausgefüllt</strong>
+                    <div class="count-number">{{$surveys_2offen ?? ''}}</div>
+                </div>
+              </div>
+            </div>
+            <!-- Count item widget-->
+            <div class="col-xl-3 col-md-3 col-6">
+              <div class="wrapper count-title d-flex">
+                <div class="icon"><i class="icon-padnote"></i></div>
+                <div class="name"><strong class="text-uppercase">Qualifikationsprozesse abgeschlossen</strong>
                     <div class="count-number">{{$surveys_fertig ?? ''}}</div>
                 </div>
               </div>
@@ -62,8 +71,8 @@
                 </div>
             </div>
         </section>
-        <section class="col-lg-2 dashboard-header section-padding" id="Sidepanel">
-            <div class="container-fluid">
+        <section class="col-lg-2 dashboard-header section-padding">
+            <div class="container-fluid"  id="Sidepanel">
                 <div class="row d-flex align-items-md-stretch"> 
                     <ul class="list-unstyled">
                         @foreach ($surveys as $survey)
@@ -78,79 +87,23 @@
 @endsection
 
 @section('scripts')
+    @include('home.radar')
     <script>
-        $(document).ready(function () {
-
-            'use strict';
-
-            var brandleader = 'rgba(51, 179, 90, 0.2)';
-            var branduser = 'rgba(179,181,198,0.2)';
-
-            var surveys = @json($surveys);
-            // surveys.forEach(function(survey, i) {
-            for (var [i, survey] of Object.entries(surveys)){
-                var RADARCHART  = $('#radarChart-'+(parseInt(i)+1));
-
-                var labelstring = [];
-                var datapoints = [];
-                var datasets = [];
-                var datapoints_leader = [];
-
-                
-     
-
-                survey.chapters.forEach(chapter => {
-                    var questions = chapter.questions;
-                    questions.forEach(question => {
-                        labelstring.push(question.question.competence);
-                        datapoints.push(question.answer.count);
-                        datapoints_leader.push(question.answer_leader.count);
-                    });
-                }); 
-
-                datasets.push({
-                                label: survey.user.username,
-                                backgroundColor: branduser,
-                                borderWidth: 2,
-                                borderColor: branduser,
-                                pointBackgroundColor: branduser,
-                                pointBorderColor: "#fff",
-                                pointHoverBackgroundColor: "#fff",
-                                pointHoverBorderColor: branduser,
-                                data: datapoints
-                            });
-                    datasets.push({
-                                label: survey.responsible.username,
-                                backgroundColor: brandleader,
-                                borderWidth: 2,
-                                borderColor: brandleader,
-                                pointBackgroundColor: brandleader,
-                                pointBorderColor: "#fff",
-                                pointHoverBackgroundColor: "#fff",
-                                pointHoverBorderColor: brandleader,
-                                data: datapoints_leader
-                            });     
-
-                var radarChart = new Chart(RADARCHART, {
-                    type: 'radar',
-                    data: {
-                        labels:  labelstring,
-                        datasets: datasets
-                    },
-                    options: {
-                        scale : {
-                            ticks: {
-                                min: -2,
-                                max: 2,
-                                maxTicksLimit:5,
-                            }
-                        }
-                    }
+        var     $sidebar   = $("#Sidepanel"), 
+                $window    = $(window),
+                offset     = $sidebar.offset(),
+                topPadding = 20;
+        console.log($sidebar);
+        $window.scroll(function() {
+            if ($window.scrollTop() > offset.top) {
+                $sidebar.stop().animate({
+                    marginTop: $window.scrollTop() - offset.top + topPadding
                 });
-                var radarChart = {
-                    responsive: true
-                };
-            };
+            } else {
+                $sidebar.stop().animate({
+                    marginTop: 0
+                });
+            }
         });
     </script>
 @endsection

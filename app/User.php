@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'password_change_at', 'api_token'];
+        'remember_token', 'password_change_at', 'api_token'];
 
     /**
      * The attributes that should be cast to native types.
@@ -67,6 +67,10 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function isTeilnehmer(){
+        return (!$this->isLeader() && !$this->isCampleader());
     }
 
     public function own_surveys(){

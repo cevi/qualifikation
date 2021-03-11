@@ -9,6 +9,7 @@ use App\Chapter;
 use App\Question;
 use App\SurveyChapter;
 use App\SurveyQuestion;
+use App\SurveyStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -52,17 +53,23 @@ class AdminSurveysController extends Controller
                 return $survey->user ? $survey->user->camp['name'] : '';})
             ->addIndexColumn()
             ->addColumn('status', function($survey) {
-                return '
-                <div class="card card-progress">
-                <ul id="progressbar" class="text-center">
-                <li class="active step0"></li>
-                <li class="active step0"></li>
-                <li class="active step0"></li>
-                <li class="step0"></li>
-            </ul></div>';
+                $survey_statuses_id = [config('status.survey_neu'), 
+                config('status.survey_1offen'),
+                config('status.survey_2offen'),
+                config('status.survey_tnAbgeschlossen'),
+                config('status.survey_fertig')];
+                $result = '<div class="card card-progress">
+                <ul id="progressbar" class="text-center">';
+                foreach($survey_statuses_id as $status_id){
+                    $survey_status = SurveyStatus::findOrFail($status_id);
+                    $step = $survey->survey_status_id >= $survey_status['id'] ? 'active' : '';
+                    $result = $result.'<li class="'.$step.' step0" title="'.$survey_status['name'].'"></li>';
+                }
+                return $result;
             })
             ->addColumn('Actions', function($survey) {
-                return '<a href='. \URL::route('survey.compare', $survey->user['id']).'>Zur Umfrage</a>';
+                return '<a href='. \URL::route('survey.compare', $survey->user['id']).'>Zur Qualifikationen</a><br><br>
+                <a href='. \URL::route('surveys.edit', $survey->id).'>Bearbeiten</a>';
             })
             ->rawColumns(['user', 'Actions', 'status'])
             ->make(true);
@@ -83,7 +90,7 @@ class AdminSurveysController extends Controller
         $answer = Answer::where('name','0')->first();
 
         foreach($users as $user){
-            $input['name'] = 'Teilnehmerumfrage';
+            $input['name'] = 'Qualifikationsprozess';
             $input['user_id'] = $user->id;
             $input['responsible_id'] =  $user['leader_id'];
             $input['survey_status_id'] = config('status.survey_neu');
@@ -96,7 +103,8 @@ class AdminSurveysController extends Controller
                 foreach($questions as $question){
                     $input['survey_chapter_id'] = $survey_chapter->id;
                     $input['question_id'] = $question->id;
-                    $input['answer_id'] = $answer->id;
+                    $input['answer_first_id'] = $answer->id;
+                    $input['answer_second_id'] = $answer->id;
                     $input['answer_leader_id'] = $answer->id;
                     SurveyQuestion::create($input);
                 }
@@ -137,6 +145,12 @@ class AdminSurveysController extends Controller
     public function edit($id)
     {
         //
+        $survey = Survey::findOrFail($id);
+        $users = User::where('role_id', config('status.role_Teilnehmer'))->pluck('username','id')->all();
+        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
+        $survey_statuses_id = SurveyStatus::pluck('name','id')->all();
+        return view('admin.surveys.edit', compact('survey','users', 'leaders', 'survey_statuses_id'));
+
     }
 
     /**
@@ -149,6 +163,10 @@ class AdminSurveysController extends Controller
     public function update(Request $request, $id)
     {
         //
+        // return $request;
+          Survey::findOrFail($id)->update($request->all());
+  
+          return redirect('/admin/surveys');
     }
 
     /**

@@ -4,7 +4,7 @@
         <div class="container-fluid">
             <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="/admin/users">Teilnehmer</a></li>
+            <li class="breadcrumb-item"><a href="/admin/surveys">Qualifikationen</a></li>
             <li class="breadcrumb-item active">Bearbeiten</li>
             </ul>
         </div>
@@ -13,38 +13,28 @@
         <div class="container-fluid">
             <!-- Page Header-->
             <header> 
-                <h1 class="h3 display">Teilnehmer</h1>
+                <h1 class="h3 display">Qualifikation</h1>
             </header>
             <div class="row">
                 <div class="col-sm-6">
-                    {!! Form::model($user, ['method' => 'PATCH', 'action'=>['AdminUsersController@update', $user->id]]) !!}
-                    <div class="form-group">
-                            {!! Form::label('username', 'Name:') !!}
-                            {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'name@abt']) !!}
+                    {!! Form::model($survey, ['method' => 'PATCH', 'action'=>['AdminSurveysController@update', $survey->id]]) !!}
+                       <div class="form-group">
+                        {!! Form::label('user_id', 'Teilnehmer:') !!}
+                        {!! Form::select('user_id', [''=>'Wähle Teilnehmer'] + $users, null, ['class' => 'form-control']) !!}
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('role_id', 'Role:') !!}
-                        {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control']) !!}
+                        {!! Form::label('responsible_id', 'Gruppenleiter:') !!}
+                        {!! Form::select('responsible_id', [''=>'Wähle Gruppenleiter'] + $leaders, null,  ['class' => 'form-control']) !!}
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('leader_id', 'Gruppenleiter:') !!}
-                        {!! Form::select('leader_id', [''=>'Wähle Gruppenleiter'] + $leaders, null,  ['class' => 'form-control']) !!}
+                        {!! Form::label('survey_status_id', 'Status:') !!}
+                        {!! Form::select('survey_status_id', [''=>'Wähle Status'] + $survey_statuses_id, null,  ['class' => 'form-control']) !!}
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('is_active', 'Status:') !!}
-                        {!! Form::select('is_active', array(1 => "Aktiv", 0 => 'Nicht Aktiv'), null,  ['class' => 'form-control']) !!}
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::label('password', 'Password:') !!}
-                        {!! Form::password('password', ['class' => 'form-control']) !!}
-                    </div>
-
-                    <div class="form-group">
-                        {!! Form::submit('Teilnehmer Updaten', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Qualifikation Updaten', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
 

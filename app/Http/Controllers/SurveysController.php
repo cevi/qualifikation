@@ -5,100 +5,118 @@ namespace App\Http\Controllers;
 use App\Camp;
 use App\User;
 use App\Answer;
+use App\Helper\Helper;
 use App\Survey;
 use App\SurveyQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\TextUI\Help;
 
 class SurveysController extends Controller
 {
     //
     public function survey($id)
     {
-        $user = Auth::user();
-        $users = User::where('leader_id',$user['id'])->pluck('id')->all();
-        $surveys = Survey::where(function($query) use ($user){
-            $query->where('user_id', $user['id']);
-            $query->whereIn('survey_status_id', [config('status.survey_neu'),  config('status.survey_offen')]);
-            })
-            ->orWhereIn('user_id', $users)->get()->sortBy('user.username');
+        $aktUser = Auth::user();
+        $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
         $survey = Survey::FindOrFail($id);
         $user_survey = $survey->user;
-        if(((!$user->isLeader()) && (!$user->isCampLeader()) && $survey['survey_status_id'] > config('status.survey_offen'))){
-            return redirect(404);
+        $surveys = [];
+        if(($aktUser->isTeilnehmer() && $survey['survey_status_id'] > config('status.survey_2offen'))){
+            return redirect()->back();
         }
         else{
-            if(((!$user->isLeader()) && (!$user->isCampLeader()) && $user_survey['id'] != $user['id'])){
-                return redirect(404);
+            if(($aktUser->isTeilnehmer() && $user_survey['id'] != $aktUser['id'])){
+                return redirect()->back();
             }
             else{
-                if((($user->isLeader()) && $user_survey['leader_id'] != $user['id'])){
-                    return redirect(404);
+                if((($aktUser->isLeader()) && $user_survey['leader_id'] != $aktUser['id'])){
+                    return redirect()->back();
                 }
                 else{
-                    $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->first();
+                    $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->get()->sortBy('user.username')->values();
                 }
             }
         }
+        $users = Helper::getUsers($aktUser);
         $answers = Answer::all();
-        $camp = Camp::FindOrFail($user['camp_id']);
-        return view('home.survey', compact('user','surveys','survey', 'answers' ,'camp'));
+        $camp = Camp::FindOrFail($aktUser['camp_id']);
+        return view('home.survey', compact('aktUser','surveys', 'answers' ,'camp', 'users'));
     }
     
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
+        $aktUser = Auth::user();
         $survey = Survey::findOrFail($id);
         $answers = $request->answers;
-        if(!$user->isLeader()){
-            if ($survey['survey_status_id']===config('status.survey_neu')){
-                $survey->update(['survey_status_id' => config('status.survey_offen')]);    
+        if(!$aktUser->isLeader()){
+            if($request->action === 'close'){
+                if ($survey['survey_status_id'] < config('status.survey_2offen')){
+                    $survey->update(['survey_status_id' => config('status.survey_2offen')]); 
+                }
+                else {
+                    $survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]); 
+                }
+            }
+            else if ($survey['survey_status_id'] === config('status.survey_neu')){
+                $survey->update(['survey_status_id' => config('status.survey_1offen')]); 
             }
         }
+
         foreach($answers as $index => $answer){
             $surveyquestion = SurveyQuestion::findOrFail($index);
-            if($user->isLeader()){
+            if($aktUser->isLeader()){
                 $surveyquestion->update(['answer_leader_id' => $answer]);
             }
             else
             {
-                $surveyquestion->update(['answer_id' => $answer]);
+                if ($survey['survey_status_id'] < config('status.survey_2offen')){
+                    $surveyquestion->update(['answer_first_id' => $answer]);
+                }
+                else {
+                    $surveyquestion->update(['answer_second_id' => $answer]);
+                }
             }
         }
         
         $comments = $request->comments;
         foreach($comments as $index => $comment){
             $surveyquestion = SurveyQuestion::findOrFail($index);
-            if($user->isLeader()){
+            if($aktUser->isLeader()){
                 $surveyquestion->update(['comment_leader' => $comment]);
             }
             else
             {
-                $surveyquestion->update(['comment' => $comment]);
+                if ($survey['survey_status_id'] < config('status.survey_2offen')){
+                    $surveyquestion->update(['comment_first' => $comment]);
+                }
+                else {
+                    $surveyquestion->update(['comment_second' => $comment]);
+                }
             }
         }
-        return redirect()->back();
+        return redirect('/');
 
     }
 
     public function compare($id)
     {
-        $user = Auth::user();
-        if($user->isCampleader()){
-            $users = User::where('camp_id',$user['camp_id'])->pluck('id')->all();
+        $aktUser = Auth::user();
+        if($aktUser->isCampleader()){
+            $users = User::where('camp_id',$aktUser['camp_id'])->pluck('id')->all();
         }
         else
         {
-            $users = User::where('leader_id',$user['id'])->pluck('id')->all();
+            $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
         }
-        $surveys = Survey::where('user_id', $user['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
-        $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader', 'user', 'responsible'])->where('user_id', $id)->first();
-        $camp = Camp::FindOrFail($user['camp_id']);
-        if(((!$user->isLeader()) && (!$user->isCampLeader()) && $id != $user['id'])){
-            return redirect(404);
+        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'responsible'])->where('user_id', $id)->get()->sortBy('user.username')->values();
+        $camp = Camp::FindOrFail($aktUser['camp_id']);
+        if($aktUser->isTeilnehmer() && $id != $aktUser['id']){
+            return redirect()->back();
         }
         else{
-            return view('home.compare', compact('user','surveys','survey','camp'));
+            $users = Helper::getUsers($aktUser);
+            return view('home.compare', compact('aktUser','surveys','camp', 'users'));
         }
     }
 
@@ -106,10 +124,7 @@ class SurveysController extends Controller
     {
         $survey = Survey::findOrFail($id);
         $user = Auth::user();
-        if ($survey['survey_status_id']===config('status.survey_offen')){
-            $survey->update(['survey_status_id' => config('status.survey_abgeschlossen')]);    
-        }
-        if ($survey['survey_status_id']===config('status.survey_abgeschlossen') && $user->isleader()){
+        if ($survey['survey_status_id'] === config('status.survey_tnAbgeschlossen') && $user->isleader()){
             $survey->update(['survey_status_id' => config('status.survey_fertig')]);    
         }
         return redirect()->back();

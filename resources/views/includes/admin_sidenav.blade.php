@@ -15,17 +15,18 @@
         <!-- Sidebar Navigation Menus-->
         <div class="main-menu">
             <h5 class="sidenav-heading">Qualifikation</h5>
-            <ul id="side-main-menu" class="side-menu list-unstyled">                  
-                <li><a href="/admin"> <i class="fas fa-home"></i>Dashboard</a></li>
+            <ul id="side-main-menu" class="side-menu list-unstyled">           
+                <li><a href="/"> <i class="fas fa-home"></i> Home</a></li>       
+                <li><a href="/admin"> <i class="fas fa-home"></i> Dashboard</a></li>
                 @if ((isset(Auth::user()->camp) OR (Auth::user()->isAdmin())))
-                    <li><a href="#UsersDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-users"></i>Teilnehmer</a>
+                    <li><a href="#UsersDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-users"></i> Personen</a>
                         <ul id="UsersDropdown" class="collapse list-unstyled ">
                             <li>
-                                <a href="{{route('users.index')}}">Alle Teilnehmer</a>
+                                <a href="{{route('users.index')}}">Alle Personen</a>
                             </li>
 
                             <li>
-                            <a href="{{route('users.create')}}">Teilnehmer erstellen</a>
+                            <a href="{{route('users.create')}}">Person erstellen</a>
                             </li>
                         </ul>
                             <!-- /.nav-second-level -->
@@ -38,16 +39,16 @@
             <ul id="side-main-menu" class="side-menu list-unstyled">  
                 <li><a href="{{route('camps.index')}}"> <i class="fas fa-campground"></i> Lager</a></li>
                 @if (Auth::user()->isCampleader())
-                    <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Umfragen</a>
+                    <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Qualifikationen</a>
                 @endif
-                <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Fragen</a>
+                <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Kompetenzen</a>
                     <ul id="QuestionsDropdown" class="collapse list-unstyled ">
                         <li>
-                            <a href="{{route('questions.index')}}">Alle Fragen</a>
+                            <a href="{{route('questions.index')}}">Alle Kompetenzen</a>
                         </li>
                         @if (Auth::user()->isAdmin())
                             <li>
-                                <a href="{{route('questions.create')}}">Frage erstellen</a>
+                                <a href="{{route('questions.create')}}">Kompetenz erstellen</a>
                             </li>
                             <li>
                                 <a href="{{route('chapters.index')}}">Kapitel</a>

@@ -19,6 +19,12 @@
                 <h1 class="h3 display">Personen</h1>
                 {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
             </header>
+            <div class="row">
+                <div class="col-lg-4">
+                    <a href="{{route('users.create')}}" class="btn btn-info" role="button">Person erstellen</a>
+                </div>
+            </div>
+            <br>
             <table class="table table-striped table-bordered" style="width:100%" id="datatable">
                 <thead>
                     <tr>
@@ -34,7 +40,7 @@
             </table>
             <div class="row">
                 <div class="col-lg-4">
-                    <a href="{{route('users.create')}}" class="btn btn-info" role="button">Person hinzufügen</a>
+                    <a href="{{route('users.create')}}" class="btn btn-info" role="button">Person erstellen</a>
                 </div>
             </div>
             <br>

@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="/admin/answers">Antworten</a></li>
+            <li class="breadcrumb-item"><a href="/admin/classification">Antworten</a></li>
             <li class="breadcrumb-item active">Klassifizierungen</li>
             </ul>
         </div>

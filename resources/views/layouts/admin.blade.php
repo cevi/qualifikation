@@ -30,7 +30,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6 text-right">
-                            <p>Design by Amigo, V2</a></p>
+                            <p>Design by Amigo, V3</a></p>
                       </div>
                     </div>
                 </div>

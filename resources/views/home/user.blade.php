@@ -14,13 +14,12 @@
                 </div>
                 <div class="form-group">
                     {!! Form::label('leader', 'Leiter:') !!}
-                    {!! Form::text('leader', $aktUser->leader['username'], ['class' => 'form-control', 'readonly' => true]) !!}
+                    {!! Form::text('leader', $aktUser->leader ? $aktUser->leader ['username'] : '', ['class' => 'form-control', 'readonly' => true]) !!}
                 </div>
-                <div class="form-group">
-                    {!! Form::label('password', 'Passwort:') !!}
-                    {{-- {!! Form::password('password', null, ['class' => 'form-control']) !!} --}}
-                    <input name="password" id="password" type="password" value="password" class="form-control">
-                </div>
+               <div class="form-group">
+                    {!! Form::label('password', 'Password:') !!}
+                    {!! Form::password('password', ['class' => 'form-control']) !!}
+                </div> 
             </div>
             <div class="card-footer text-right">
                 {!! Form::submit('Speichern', ['class' => 'btn btn-primary'])!!}

@@ -43,7 +43,7 @@ class AdminUsersController extends Controller
                 return '<a href='.\URL::route('home.profile', $user['id']).'><img height="50" src="'.$path .'" alt=""></a>';
             })
             ->addColumn('user', function($user) {
-                return '<a href='.\URL::route('users.edit', $user['id']).'>'.$user['username'].'</a>';
+                return '<a name='.$user['username'].' href='.\URL::route('users.edit', $user['id']).'>'.$user['username'].'</a>';
             })
             ->addColumn('role', function (User $user) {
                 return $user->role ? $user->role['name'] : '';})

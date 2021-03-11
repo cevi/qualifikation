@@ -6,6 +6,7 @@ use App\Post;
 use App\Role;
 use App\User;
 use App\Survey;
+use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -16,17 +17,14 @@ class UsersController extends Controller
     public function index($id)
     {   
         $aktUser = Auth::user();
-        if($aktUser->isCampleader()){
-            $users = User::where('camp_id',$aktUser['camp_id'])->pluck('id')->all();
+        $users = Helper::getUsers($aktUser);
+        $users_id = [];
+        if($users){
+            $users_id = $users->pluck('id')->all();
         }
-        else
-        {
-            $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
-        }
-        $surveys = Survey::where('user_id', $aktUser['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
         if($aktUser->id == $id)
         {
-            return view('home.user', compact('aktUser','surveys'));
+            return view('home.user', compact('aktUser', 'users'));
         }
         else
         {
@@ -38,21 +36,24 @@ class UsersController extends Controller
     {
         //
         $aktUser = Auth::user();
-        if($aktUser->isCampleader()){
-            $users = User::where('camp_id',$aktUser['camp_id'])->pluck('id')->all();
+        if(!$aktUser->isTeilnehmer()){
+            $users = Helper::getUsers($aktUser);
+            $users_id = [];
+            if($users){
+                $users_id = $users->pluck('id')->all();
+            }
+
+            $user = User::findOrFail($id);
+            $posts = Post::where('user_id',$id)->get()->sortByDesc('created_at');
+            $roles = Role::pluck('name','id')->all();
+            $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
+            $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'responsible', 'chapters.questions.question'])
+                ->where('user_id', $id)->get()->values();
+            return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users'));
         }
-        else
-        {
-            $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
+        else {
+            return redirect()->back();
         }
-        $user = User::findOrFail($id);
-        $posts = Post::where('user_id',$id)->get();
-        $roles = Role::pluck('name','id')->all();
-        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
-        $survey = Survey::with(['chapters.questions.answer','chapters.questions.answer_leader', 'user', 'responsible', 'chapters.questions.question'])
-            ->where('user_id', $id)->get()->values();
-        $surveys = Survey::where('user_id', $aktUser['id'])->orWhereIn('user_id', $users)->get()->sortBy('user.username');
-        return view('home.profile', compact('user','roles', 'leaders', 'survey', 'surveys', 'posts'));
     }
 
     public function update(Request $request, $id)

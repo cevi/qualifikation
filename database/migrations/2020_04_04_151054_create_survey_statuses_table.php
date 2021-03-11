@@ -23,12 +23,14 @@ class CreateSurveyStatusesTable extends Migration
             array(
                 ['id' => config('status.survey_neu'),
                 'name' => 'Neu'],
-                ['id' => config('status.survey_offen'),
-                'name' => 'Offen'],
-                ['id' => config('status.survey_abgeschlossen'),
-                'name' => 'Abgeschlossen'],
+                ['id' => config('status.survey_1offen'),
+                'name' => '1. Selbsteinschätzung Offen'],
+                ['id' => config('status.survey_2offen'),
+                'name' => '2 Selbsteinschätzung Offen'],
+                ['id' => config('status.survey_tnAbgeschlossen'),
+                'name' => 'TN Selbsteinschätzung Abgeschlossen'],
                 ['id' => config('status.survey_fertig'),
-                'name' => 'Fertig'],
+                'name' => 'Qualifikationsprozess Abgeschlossen'],
             )
         );
     }

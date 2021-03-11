@@ -60,7 +60,7 @@
 
                 swal({
                     title: 'Lager löschen?',
-                    text: 'Beim Lager löschen werden alle Leiter, Teilnehmer und Umfragen gelöscht.',
+                    text: 'Beim Lager löschen werden alle Leiter, Teilnehmer und Qualifikationen gelöscht.',
                     icon: 'warning',
                     buttons: ["Abbrechen", "Ja!"],
                 }).then((willDelete) => {

@@ -18,7 +18,7 @@
         <div class="container-fluid">
             <!-- Page Header-->
             <header> 
-                <h1 class="h3 display">Personen</h1>
+                <h1 class="h3 display">Person</h1>
             </header>
             <div class="row">
                 <div class="col-sm-6">
@@ -61,13 +61,13 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::submit('Teilnehmer Updaten', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Person Updaten', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
 
                     {!! Form::model($user, ['method' => 'DELETE', 'action'=>['AdminUsersController@destroy',$user->id]]) !!}
                     <div class="form-group">
-                        {!! Form::submit('Teilnehmer löschen', ['class' => 'btn btn-danger'])!!}
+                        {!! Form::submit('Person löschen', ['class' => 'btn btn-danger'])!!}
                     </div>
                     {!! Form::close()!!}
 

@@ -2,135 +2,94 @@
 
 @section('survey_content')
 <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
-     <!-- Blog Post -->
+    @foreach ($surveys as $survey)
+        <h1>Übersicht</h1>
 
-    <!-- Title -->
-    <h1>Übersicht</h1>
+        <p class="lead">
+            von {{$survey->user['username']}}
+        </p>
+        <p>
+            Die <span class = 'core_competence'>blau hinterlegten Kompetenzen</span>  sind die Kernkompetenzen für deine Ausbildungsstufe.
+        </p>
+        @foreach ($survey->chapters as $chapter)
+            <div id="recent-activities-wrapper-{{$chapter->chapter['number']}}" class="card updates activities">
+                <a data-toggle="collapse" data-parent="#recent-activities-wrapper-{{$chapter->chapter['number']}}" href="#activities-box-{{$chapter->chapter['number']}}" aria-expanded="true" aria-controls="activities-box">
+                    <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h5 display">
+                            {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
+                        </h2>
+                        <i class="fa fa-angle-down"></i>
+                    </div> 
+                </a>
+                <div id="activities-box-{{$chapter->chapter['number']}}" role="tabpanel" class="collapse">
 
-    <!-- Author -->
-    <p class="lead">
-        von {{$survey->user['username']}}
-    </p>
-    @foreach ($survey->chapters as $chapter)
-        <div id="recent-activities-wrapper-{{$chapter->chapter['number']}}" class="card updates activities">
-            <a data-toggle="collapse" data-parent="#recent-activities-wrapper-{{$chapter->chapter['number']}}" href="#activities-box-{{$chapter->chapter['number']}}" aria-expanded="true" aria-controls="activities-box">
-                <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="h5 display">
-                        {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
-                    </h2>
-                    <i class="fa fa-angle-down"></i>
-                </div> 
-            </a>
-            <div id="activities-box-{{$chapter->chapter['number']}}" role="tabpanel" class="collapse">
-
-                        @foreach ($chapter->questions as $question)  
-                            <table class="table">
-                                <tbody>
-                                    <tr class="{{($question->question['competence_js1'] && $camp['camp_type_id']===config('status.camptype_JS1')) ||
-                                           ($question->question['competence_js2'] && $camp['camp_type_id']===config('status.camptype_JS2'))? 'core_competence':''}}">
-                                        <td width="50px">{{$question->question['number']}}</td>
-                                        <td width="150px">{{$question->question['competence']}}</td>
-                                        <td width="300px">{{$question->question['name']}}</td>
-                                        <td width="50px">{{$question->answer['name']}}</td>
-                                        <td width="200px">{{$question['comment']}}</td>
-                                        @if($user->isleader() || $user->isCampleader())
-                                            <td width="50px">{{$question->answer_leader['name']}}</td>
-                                            <td width="200px">{{$question['comment_leader']}}</td> 
-                                        @endif
-                                    </tr> 
-                                </tbody>
-                            </table>
-                        @endforeach  
-                    
-            </div>
-        </div>  
+                    <table class="table">
+                        <head>
+                            <tr>
+                                <th rowspan="2" width="50px">Nr.</th>
+                                <th rowspan="2" width="150px">Kompetenz</th>
+                                <th rowspan="2" width="300px">Thema</th>
+                                <th colspan="2" width="250">1. Selbsteinschätzung</th>
+                                <th colspan="2" width="250">2. Selbsteinschätzung</th>
+                                @if(!$aktUser->isTeilnehmer())
+                                    <th colspan="2" width="250">Leiter</th>
+                                @endif
+                            </tr> 
+                            <tr>
+                                <th width="50px"></th>
+                                <th width="200px">Kommentar</th>
+                                <th width="50px"></th>
+                                <th width="200px">Kommentar</th>
+                                @if(!$aktUser->isTeilnehmer())
+                                    <th width="50px"></th>
+                                    <th width="200px">Kommentar</th> 
+                                @endif
+                            </tr> 
+                        </thead>
+                        <tbody>
+                            @foreach ($chapter->questions as $question)  
+                                <tr class="{{($question->question['competence_js1'] && $camp['camp_type_id']===config('status.camptype_JS1')) ||
+                                        ($question->question['competence_js2'] && $camp['camp_type_id']===config('status.camptype_JS2'))? 'core_competence':''}}">
+                                    <td width="50px">{{$question->question['number']}}</td>
+                                    <td width="150px">{{$question->question['competence']}}</td>
+                                    <td width="300px">{{$question->question['name']}}</td>
+                                    <td width="50px">{{$question->answer_first['name']}}</td>
+                                    <td width="200px">{{$question['comment_first']}}</td>
+                                    <td width="50px">{{$question->answer_second['name']}}</td>
+                                    <td width="200px">{{$question['comment_second']}}</td>
+                                    @if(!$aktUser->isTeilnehmer())
+                                        <td width="50px">{{$question->answer_leader['name']}}</td>
+                                        <td width="200px">{{$question['comment_leader']}}</td> 
+                                    @endif
+                                </tr> 
+                            @endforeach  
+                        </tbody>
+                    </table>       
+                </div>
+            </div>  
         @endforeach
         <div class="card radar-chart-example">
-          <div class="card-header d-flex align-items-center">
-            <h4>Kompetenzendarstellung</h4>
-          </div>
-          <div class="card-body">
-            <div class="chart-container">
-              <canvas id="radarChart"></canvas>
+            <div class="card-header d-flex align-items-center">
+                <h4>Kompetenzendarstellung</h4>
             </div>
-          </div>
+            <div class="card-body">
+                <div class="chart-container">
+                <canvas id="radarChart-1"></canvas>
+                </div>
+            </div>
         </div>
+        @if ($aktUser->isLeader())
+            <div class="form-group row">
+                {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@finish',$survey->id]]) !!}
+                    {!! Form::submit('Qualifikationsprozess abschliessen', ['class' => 'btn btn-primary'])!!}
+                {!! Form::close()!!} 
+            </div>
+        @endif
+    @endforeach
 
    
 @endsection
 
 @section('scripts')
-    <script>
-        $(document).ready(function () {
-
-            'use strict';
-
-            var brandleader = 'rgba(51, 179, 90, 0.2)';
-            var branduser = 'rgba(179,181,198,0.2)';
-
-            var RADARCHART  = $('#radarChart');
-
-            var labelstring = [];
-            var datapoints = [];
-            var datasets = [];
-            var datapoints_leader = [];
-            var survey = @json($survey);
-            var chapters = @json($survey->chapters);
-            var user = @json($user);
-
-            chapters.forEach(chapter => {
-                var questions = chapter.questions;
-                questions.forEach(question => {
-                    labelstring.push(question.question.competence);
-                    datapoints.push(question.answer.count);
-                    datapoints_leader.push(question.answer_leader.count);
-                });
-            }); 
-
-            datasets.push({
-                            label: survey.user.username,
-                            backgroundColor: branduser,
-                            borderWidth: 2,
-                            borderColor: branduser,
-                            pointBackgroundColor: branduser,
-                            pointBorderColor: "#fff",
-                            pointHoverBackgroundColor: "#fff",
-                            pointHoverBorderColor: branduser,
-                            data: datapoints
-                        });
-            if(@json(($user->isleader()) || $user->iscampleader())){
-                datasets.push({
-                            label: survey.responsible.username,
-                            backgroundColor: brandleader,
-                            borderWidth: 2,
-                            borderColor: brandleader,
-                            pointBackgroundColor: brandleader,
-                            pointBorderColor: "#fff",
-                            pointHoverBackgroundColor: "#fff",
-                            pointHoverBorderColor: brandleader,
-                            data: datapoints_leader
-                        });     
-            }
-
-            var radarChart = new Chart(RADARCHART, {
-                type: 'radar',
-                data: {
-                    labels:  labelstring,
-                    datasets: datasets
-                },
-                options: {
-                    scale : {
-                        ticks: {
-                            min: -2,
-                            max: 2,
-                            maxTicksLimit:5,
-                        }
-                    }
-                }
-            });
-            var radarChart = {
-                responsive: true
-            };
-        });
-    </script>
+    @include('home.radar')
 @endsection

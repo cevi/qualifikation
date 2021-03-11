@@ -2,8 +2,9 @@
 
 return [
     'survey_neu' => 5,
-    'survey_offen' => 10,
-    'survey_abgeschlossen' => 20,
+    'survey_1offen' => 10,
+    'survey_2offen' => 15,
+    'survey_tnAbgeschlossen' => 20,
     'survey_fertig' => 50,
 
     'role_Administrator' => 1,
