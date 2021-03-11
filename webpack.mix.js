@@ -10,16 +10,11 @@ const mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
-
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
-
 mix.styles([
       'resources/css/libs/bootstrap.css',
       'resources/css/libs/datatables.css',
       'resources/css/libs/font-awesome_new.css',
       'resources/css/libs/fontastic.css',
-      'resources/css/libs/grasp_mobile_progress_circle-1.0.0.css',
       'resources/css/libs/jquery.mCustomScrollbar.css',
       'resources/css/libs/style.default.premium.css',
       'resources/css/libs/dropify.min.css',
@@ -31,7 +26,6 @@ mix.scripts([
    'resources/js/libs/dropify.min.js',
    'resources/js/libs/bootstrap.js',
    'resources/js/libs/datatables.js',
-   'resources/js/libs/grasp_mobile_progress_circle-1.0.0.min.js',
    'resources/js/libs/chart.bundle.min.js',
    'resources/js/libs/jquery.mCustomScrollbar.js',
    'resources/js/libs/front.js',
