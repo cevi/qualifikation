@@ -18,7 +18,7 @@ class AdminController extends Controller
     public function index(){
         $user = Auth::user();
         $users = User::where('camp_id',$user['camp_id'])->where('is_active',true)->pluck('id')->all();
-        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'responsible', 'chapters.questions.question'])
+        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'chapters.questions.question'])
             ->whereIn('user_id', $users)->get()->sortBy('user.username')->values();
         $surveys_all = Survey::whereIn('user_id', $users)->count();
         $surveys_1offen = Survey::whereIn('user_id', $users)->where('survey_status_id', '>', config('status.survey_1offen'))->count();

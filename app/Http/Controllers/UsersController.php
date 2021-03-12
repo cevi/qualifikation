@@ -47,7 +47,7 @@ class UsersController extends Controller
             $posts = Post::where('user_id',$id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name','id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
-            $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'responsible', 'chapters.questions.question'])
+            $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'chapters.questions.question'])
                 ->where('user_id', $id)->get()->values();
             return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users'));
         }

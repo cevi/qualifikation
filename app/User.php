@@ -77,10 +77,6 @@ class User extends Authenticatable
         return $this->hasMany('App\Survey', 'user_id', 'id');
     }
 
-    public function responsible_surveys(){
-        return $this->hasMany('App\Survey', 'responsible_id', 'id');
-    }
-
     public function classification(){
         return $this->belongsTo('App\Classification');
     }

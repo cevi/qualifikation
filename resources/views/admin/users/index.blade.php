@@ -70,6 +70,7 @@
                     "url": "/lang/Datatables.json"
                 },
                 ajax: "{!! route('users.CreateDataTables') !!}",
+                order: [[ 2, "asc" ], [ 0, "asc" ]],
                 columns: [
                     { data: 'user', name: 'user' },
                     { data: 'picture', name: 'picture', orderable:false,serachable:false},

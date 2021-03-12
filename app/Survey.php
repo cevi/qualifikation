@@ -9,20 +9,16 @@ class Survey extends Model
 {
     //
     protected $fillable = [
-        'name', 'user_id', 'responsible_id', 'survey_status_id'
+        'user_id', 'survey_status_id'
     ];
 
     public function user(){
         return $this->belongsTo('App\User', 'user_id');
     }
 
-    public function responsible(){
-        return $this->belongsTo('App\User', 'responsible_id', 'id');
-    }
-    
     public function MySurvey(){
         $aktUser = Auth::user();
-        return ($this->user_id === $aktUser['id'] || $this->responsible_id === $aktUser['id']);
+        return ($this->user_id === $aktUser['id'] || $this->user->leader_id === $aktUser['id']);
     }
 
     public function SurveyName(){

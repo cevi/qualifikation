@@ -30,15 +30,18 @@
         <main class="py-4">
             @yield('content')
         </main>
-        <footer class="main-footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-6 text-right">
-                        <p>Design by Amigo</a></p>
-                  </div>
+        @guest
+        @else
+            <footer class="main-footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6 text-right">
+                            <p>Made by Amirli</p>
+                    </div>
+                    </div>
                 </div>
-            </div>
-        </footer>
+            </footer>
+        @endif
     </div>
     <!-- jQuery -->
     <script src="{{ asset('js/libs.js') }}"></script>

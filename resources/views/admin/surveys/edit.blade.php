@@ -24,11 +24,6 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('responsible_id', 'Gruppenleiter:') !!}
-                        {!! Form::select('responsible_id', [''=>'Wähle Gruppenleiter'] + $leaders, null,  ['class' => 'form-control']) !!}
-                    </div>
-
-                    <div class="form-group">
                         {!! Form::label('survey_status_id', 'Status:') !!}
                         {!! Form::select('survey_status_id', [''=>'Wähle Status'] + $survey_statuses_id, null,  ['class' => 'form-control']) !!}
                     </div>

@@ -109,7 +109,7 @@ class SurveysController extends Controller
         {
             $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
         }
-        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'responsible'])->where('user_id', $id)->get()->sortBy('user.username')->values();
+        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user'])->where('user_id', $id)->get()->sortBy('user.username')->values();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         if($aktUser->isTeilnehmer() && $id != $aktUser['id']){
             return redirect()->back();

@@ -48,7 +48,7 @@ class AdminSurveysController extends Controller
                 return '<a href='.\URL::route('home.profile', $survey->user['id']).'>'.$username.'</a>';
             })
             ->addColumn('responsible', function (Survey $survey) {
-                return $survey->responsible ? $survey->responsible['username'] : '';})
+                return $survey->user->leader ? $survey->user->leader['username'] : '';})
             ->addColumn('camp', function (Survey $survey) {
                 return $survey->user ? $survey->user->camp['name'] : '';})
             ->addIndexColumn()
@@ -92,7 +92,6 @@ class AdminSurveysController extends Controller
         foreach($users as $user){
             $input['name'] = 'Qualifikationsprozess';
             $input['user_id'] = $user->id;
-            $input['responsible_id'] =  $user['leader_id'];
             $input['survey_status_id'] = config('status.survey_neu');
             $survey = Survey::create($input);
             foreach($chapters as $chapter){
