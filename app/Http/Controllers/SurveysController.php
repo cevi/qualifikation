@@ -15,11 +15,11 @@ use PHPUnit\TextUI\Help;
 class SurveysController extends Controller
 {
     //
-    public function survey($id)
+    public function survey(Survey $survey)
     {
         $aktUser = Auth::user();
         $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
-        $survey = Survey::FindOrFail($id);
+        // $survey = Survey::FindOrFail($id);
         $user_survey = $survey->user;
         $surveys = [];
         if(($aktUser->isTeilnehmer() && $survey['survey_status_id'] > config('status.survey_2offen'))){
@@ -99,7 +99,7 @@ class SurveysController extends Controller
 
     }
 
-    public function compare($id)
+    public function compare(User $user)
     {
         $aktUser = Auth::user();
         if($aktUser->isCampleader()){
@@ -109,9 +109,9 @@ class SurveysController extends Controller
         {
             $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
         }
-        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user'])->where('user_id', $id)->get()->sortBy('user.username')->values();
+        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user'])->where('user_id', $user->id)->get()->sortBy('user.username')->values();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
-        if($aktUser->isTeilnehmer() && $id != $aktUser['id']){
+        if($aktUser->isTeilnehmer() && $user->id != $aktUser['id']){
             return redirect()->back();
         }
         else{

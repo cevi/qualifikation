@@ -28,7 +28,7 @@
                         <ul class="list-unstyled">
                             @foreach ($users as $user_profile)
                                 <li>
-                                    <a href="{{route('home.profile', $user_profile->id)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a> 
+                                    <a href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a> 
                                 </li>
                             @endforeach
                         </ul>

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Session;
 class UsersController extends Controller
 {
     //
-    public function index($id)
+    public function index(User $user)
     {   
         $aktUser = Auth::user();
         $users = Helper::getUsers($aktUser);
@@ -22,7 +22,7 @@ class UsersController extends Controller
         if($users){
             $users_id = $users->pluck('id')->all();
         }
-        if($aktUser->id == $id)
+        if($aktUser->id == $user ->id)
         {
             return view('home.user', compact('aktUser', 'users'));
         }
@@ -32,7 +32,7 @@ class UsersController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
         //
         $aktUser = Auth::user();
@@ -43,12 +43,12 @@ class UsersController extends Controller
                 $users_id = $users->pluck('id')->all();
             }
 
-            $user = User::findOrFail($id);
-            $posts = Post::where('user_id',$id)->get()->sortByDesc('created_at');
+            // $user = User::findOrFail($id);
+            $posts = Post::where('user_id',$user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name','id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
             $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'chapters.questions.question'])
-                ->where('user_id', $id)->get()->values();
+                ->where('user_id', $user->id)->get()->values();
             return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users'));
         }
         else {

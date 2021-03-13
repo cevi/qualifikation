@@ -20,15 +20,15 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-Route::get('/survey/{id}', ['as'=>'survey.survey', 'uses'=>'SurveysController@survey']);
+Route::get('/survey/{survey}', ['as'=>'survey.survey', 'uses'=>'SurveysController@survey']);
 Route::patch('/survey/{id}', ['as'=>'survey.survey', 'uses'=>'SurveysController@update']);
-Route::get('/compare/{id}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
+Route::get('/compare/{user}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
 Route::patch('/compare/{id}', ['as'=>'survey.finish', 'uses'=>'SurveysController@finish']);
 
 Route::post('/post', ['as'=>'posts.store', 'uses'=>'PostController@store']);
 
-Route::get('/user/{id}', ['as'=>'home.user', 'uses'=>'UsersController@index']);
-Route::get('/profile/{id}', ['as'=>'home.profile', 'uses'=>'UsersController@edit']);
+Route::get('/user/{user}', ['as'=>'home.user', 'uses'=>'UsersController@index']);
+Route::get('/profile/{user}', ['as'=>'home.profile', 'uses'=>'UsersController@edit']);
 Route::patch('/changeClassifications/{id}/{color}', ['as'=>'users.changeClassifications', 'uses'=>'UsersController@changeClassifications']);
 Route::patch('/user/{id}', ['as'=>'home.user', 'uses'=>'UsersController@update']);
 

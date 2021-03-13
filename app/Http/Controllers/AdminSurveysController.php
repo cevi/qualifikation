@@ -7,9 +7,10 @@ use App\Answer;
 use App\Survey;
 use App\Chapter;
 use App\Question;
+use App\SurveyStatus;
 use App\SurveyChapter;
 use App\SurveyQuestion;
-use App\SurveyStatus;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -45,7 +46,7 @@ class AdminSurveysController extends Controller
         return DataTables::of($surveys)
             ->addColumn('user', function($survey) {
                 $username = $survey->user ? $survey->user['username'] : '';
-                return '<a href='.\URL::route('home.profile', $survey->user['id']).'>'.$username.'</a>';
+                return '<a href='.\URL::route('home.profile', $survey->user['slug']).'>'.$username.'</a>';
             })
             ->addColumn('responsible', function (Survey $survey) {
                 return $survey->user->leader ? $survey->user->leader['username'] : '';})
@@ -68,8 +69,8 @@ class AdminSurveysController extends Controller
                 return $result;
             })
             ->addColumn('Actions', function($survey) {
-                return '<a href='. \URL::route('survey.compare', $survey->user['id']).'>Zur Qualifikationen</a><br><br>
-                <a href='. \URL::route('surveys.edit', $survey->id).'>Bearbeiten</a>';
+                return '<a href='. \URL::route('survey.compare', $survey->user['slug']).'>Zur Qualifikationen</a><br><br>
+                <a href='. \URL::route('surveys.edit', $survey->slug).'>Bearbeiten</a>';
             })
             ->rawColumns(['user', 'Actions', 'status'])
             ->make(true);
@@ -92,6 +93,7 @@ class AdminSurveysController extends Controller
         foreach($users as $user){
             $input['name'] = 'Qualifikationsprozess';
             $input['user_id'] = $user->id;
+            $input['slug'] = Str::slug($user['username']);
             $input['survey_status_id'] = config('status.survey_neu');
             $survey = Survey::create($input);
             foreach($chapters as $chapter){
@@ -141,10 +143,10 @@ class AdminSurveysController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Survey $survey)
     {
         //
-        $survey = Survey::findOrFail($id);
+        // $survey = Survey::findOrFail($id);
         $users = User::where('role_id', config('status.role_Teilnehmer'))->pluck('username','id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         $survey_statuses_id = SurveyStatus::pluck('name','id')->all();
@@ -163,9 +165,12 @@ class AdminSurveysController extends Controller
     {
         //
         // return $request;
-          Survey::findOrFail($id)->update($request->all());
+        $input = $request->all();
+        $user = User::findorFail($input['user_id']);
+        $input['slug'] = Str::slug($user['username']);
+        Survey::findOrFail($id)->update($input);
   
-          return redirect('/admin/surveys');
+        return redirect('/admin/surveys');
     }
 
     /**

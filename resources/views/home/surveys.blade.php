@@ -16,7 +16,6 @@
                         @endif
                         <th scope="col">Teilnehmer</th>
                         <th scope="col">Status</th>
-                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,29 +26,24 @@
                                     @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen')) || 
                                         (($aktUser->isLeader())))
                                         @if ($survey['survey_status_id'] < config('status.survey_fertig'))
-                                            <td><a href="{{route('survey.survey', $survey->id)}}">{{$survey->SurveyName()}}</a></td>
+                                            <td><a href="{{route('survey.survey', $survey->slug)}}">{{$survey->SurveyName()}}</a></td>
                                         @else
                                             <td>{{$survey->SurveyName()}}</td>
                                         @endif
                                     @endif
                                     @if ($aktUser->isTeilnehmer() && $survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen'))
-                                        <td><a href="{{route('survey.compare', $survey->user['id'])}}">{{$survey->SurveyName()}}</a></td>
+                                        <td><a href="{{route('survey.compare', $survey->user->slug)}}">{{$survey->SurveyName()}}</a></td>
                                     @endif
                                     @if (!$aktUser->isTeilnehmer())
-                                        <td><a href="{{route('survey.compare', $survey->user['id'])}}">Vergleich</a></td>
+                                        <td><a href="{{route('survey.compare', $survey->user->slug)}}">Vergleich</a></td>
                                     @endif
                                     <td>
                                     @if (!$aktUser->isTeilnehmer())
-                                        <a href="{{route('home.profile', $survey->user['id'])}}">{{$survey->user['username']}}</a>
+                                        <a href="{{route('home.profile', $survey->user->slug)}}">{{$survey->user['username']}}</a>
                                     @else
                                         {{$survey->user['username']}}</td>
                                     @endif
-                                    <td>{{$survey->survey_status['name']}}</td> 
-                                    <td>
-                                        @if(($survey['survey_status_id']===config('status.survey_offen')) || ($survey['survey_status_id']===config('status.survey_tnAbgeschlossen') && $aktUser->isleader()))
-                                            <a href="{{route('survey.finish', $survey->id)}}" type="button" class="btn btn-success btn-sm">Abschliessen</a>                       
-                                        @endif
-                                    </td>
+                                    <td>{{$survey->survey_status['name']}}</td>
                                 </tr>    
                             @endif
                         @endforeach

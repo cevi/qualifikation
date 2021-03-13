@@ -16,7 +16,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 'api_token', 'avatar', 'classification_id'
+        'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 
+        'api_token', 'avatar', 'classification_id', 'slug'
     ];
 
     /**
@@ -79,5 +80,10 @@ class User extends Authenticatable
 
     public function classification(){
         return $this->belongsTo('App\Classification');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

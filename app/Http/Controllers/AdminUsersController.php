@@ -40,10 +40,10 @@ class AdminUsersController extends Controller
         return DataTables::of($users)
             ->addColumn('picture', function($user) {
                 $path = $user->avatar ? $user->avatar : 'http://placehold.it/50x50';
-                return '<a href='.\URL::route('home.profile', $user['id']).'><img height="50" src="'.$path .'" alt=""></a>';
+                return '<a href='.\URL::route('home.profile', $user['slug']).'><img height="50" src="'.$path .'" alt=""></a>';
             })
             ->addColumn('user', function($user) {
-                return '<a name='.$user['username'].' href='.\URL::route('users.edit', $user['id']).'>'.$user['username'].'</a>';
+                return '<a name='.$user['username'].' href='.\URL::route('users.edit', $user['slug']).'>'.$user['username'].'</a>';
             })
             ->addColumn('role', function (User $user) {
                 return $user->role ? $user->role['name'] : '';})
@@ -187,6 +187,7 @@ class AdminUsersController extends Controller
         }
         $input['api_token'] = Str::random(60);
         $input['classification_id'] = config('status.classification_green');
+        $input['slug'] = Str::slug($input['username']);
 
         User::create($input);
 
@@ -210,10 +211,10 @@ class AdminUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
         //
-        $user = User::findOrFail($id);
+        // $user = User::findOrFail($id);
         $roles = Role::pluck('name','id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         $classifications = Classification::pluck('name','id')->all();
@@ -251,6 +252,7 @@ class AdminUsersController extends Controller
                 $input['avatar'] = '/'.$save_path.'/'.$name;
             }
         }
+        $input['slug'] = Str::slug($input['username']);
 
         $user->update($input);
 

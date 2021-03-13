@@ -9,7 +9,7 @@ class Survey extends Model
 {
     //
     protected $fillable = [
-        'user_id', 'survey_status_id'
+        'user_id', 'survey_status_id', 'slug'
     ];
 
     public function user(){
@@ -43,4 +43,9 @@ class Survey extends Model
     public function survey_status(){
         return $this->belongsTo('App\SurveyStatus');
     } 
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }
