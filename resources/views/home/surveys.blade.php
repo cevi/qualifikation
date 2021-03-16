@@ -61,7 +61,7 @@
                     @foreach($surveys as $survey) 
                         <div class="col-lg-6 col-md-4" id="Chart-{{$loop->iteration}}">
                             <div class="card">
-                                <a href="{{route('survey.compare',$survey->user_id)}}" target="blank">
+                                <a href="{{route('survey.compare',$survey->slug)}}">
                                     <div  class="card-header d-flex justify-content-between align-items-center">
                                         <h2 class="h5 display">{{$survey->user['username']}}</h2>
                                         <h2 class="h5 display">{{$survey->survey_status['name']}}</h2>
