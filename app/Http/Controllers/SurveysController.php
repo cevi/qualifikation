@@ -44,24 +44,11 @@ class SurveysController extends Controller
         return view('home.survey', compact('aktUser','surveys', 'answers' ,'camp', 'users'));
     }
     
-    public function update(Request $request, $id)
+    public function update(Request $request, Survey $survey)
     {
         $aktUser = Auth::user();
-        $survey = Survey::findOrFail($id);
+        // $survey = Survey::findOrFail($id);
         $answers = $request->answers;
-        if(!$aktUser->isLeader()){
-            if($request->action === 'close'){
-                if ($survey['survey_status_id'] < config('status.survey_2offen')){
-                    $survey->update(['survey_status_id' => config('status.survey_2offen')]); 
-                }
-                else {
-                    $survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]); 
-                }
-            }
-            else if ($survey['survey_status_id'] === config('status.survey_neu')){
-                $survey->update(['survey_status_id' => config('status.survey_1offen')]); 
-            }
-        }
 
         foreach($answers as $index => $answer){
             $surveyquestion = SurveyQuestion::findOrFail($index);
@@ -95,8 +82,23 @@ class SurveysController extends Controller
                 }
             }
         }
-        return redirect('/');
 
+        if(!$aktUser->isLeader()){
+            if($request->action === 'close'){
+                if ($survey['survey_status_id'] < config('status.survey_2offen')){
+                    $survey->update(['survey_status_id' => config('status.survey_2offen')]); 
+                }
+                else {
+                    $survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]); 
+                }
+                return redirect('/');
+            }
+            else if ($survey['survey_status_id'] === config('status.survey_neu')){
+                $survey->update(['survey_status_id' => config('status.survey_1offen')]); 
+            }
+        }
+        return redirect()->refresh();
+        
     }
 
     public function compare(User $user)

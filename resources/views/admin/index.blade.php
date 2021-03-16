@@ -49,7 +49,7 @@
             <div class="container-fluid">
                 <div class="row d-flex align-items-md-stretch"> 
                     @foreach($surveys as $survey) 
-                        <div class="col-lg-6 col-md-4" id="Chart-{{$loop->iteration}}">
+                        <div class="col-lg-6 col-md-12" id="Chart-{{$loop->iteration}}">
                             <!-- Recent Activities Widget      -->
                             <div class="card updates activities">
                                 <a href="{{route('survey.compare',$survey->user_id)}}" target="blank">

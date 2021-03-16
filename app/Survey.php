@@ -23,13 +23,11 @@ class Survey extends Model
 
     public function SurveyName(){
         $aktUser = Auth::user();
-        if($aktUser->isTeilnehmer()){
-            return $this['survey_status_id'] <= config('status.survey_1offen') ? "1. Selbsteinschätzung" : "2. Selbsteinschätzung";
+        $name = "Qualifikation";
+        if($aktUser->isTeilnehmer() && $this['survey_status_id'] < config('status.survey_tnAbgeschlossen') ){
+            $name = $this['survey_status_id'] <= config('status.survey_1offen') ? "1. Selbsteinschätzung" : "2. Selbsteinschätzung";
         }
-        else
-        {
-            return "Qualifizierung";
-        }
+        return $name;
     }
 
     public function chapters(){

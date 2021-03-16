@@ -13,7 +13,7 @@
         <p>
             Die <span class = 'core_competence'>blau hinterlegten Kompetenzen</span>  sind die Kernkompetenzen für deine Ausbildungsstufe.
         </p>
-        {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->id]]) !!}
+        {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->slug]]) !!}
             @foreach ($survey->chapters as $chapter)
                 <div id="recent-activities-wrapper-{{$chapter->chapter['number']}}" class="card updates activities">
                     <a data-toggle="collapse" data-parent="#recent-activities-wrapper-{{$chapter->chapter['number']}}" href="#activities-box-{{$chapter->chapter['number']}}" aria-expanded="true" aria-controls="activities-box">
@@ -52,15 +52,14 @@
                                                         {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                     </td>
                                                 @else
-                                                    
-                                                    @if ($survey->survey_status_id === config('config.status_2Offen'))
+                                                    @isFirstSurvey($survey->survey_status_id)
                                                         <td width="50px">
-                                                            {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
+                                                            {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
                                                             {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                         </td>
                                                     @else
                                                         <td width="50px">
-                                                            {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
+                                                            {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
                                                             {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                         </td>
                                                     @endif
@@ -75,10 +74,10 @@
                                     @if($aktUser->isLeader())
                                         {!! Form::label('comment_leader', 'Kommentar:') !!}
                                     @else
-                                        @if ($survey->survey_status_id === config('config.status_2Offen'))
-                                            {!! Form::label('comment_second', 'Kommentar:') !!}
-                                        @else
+                                        @isFirstSurvey($survey->survey_status_id)
                                             {!! Form::label('comment_first', 'Kommentar:') !!}
+                                        @else
+                                            {!! Form::label('comment_second', 'Kommentar:') !!}
                                         @endif
                                     @endif
                                 </div>
@@ -86,13 +85,13 @@
                                     @if($aktUser->isLeader())
                                         {!! Form::textarea('comments['.$question['id'].']', $question['comment_leader'], ['class' => 'form-control', 'rows'=> 2]) !!}
                                     @else
-                                    @if ($survey->survey_status_id === config('config.status_2Offen'))
-                                        {!! Form::textarea('comments['.$question['id'].']', $question['comment_second'], ['class' => 'form-control', 'rows'=> 2]) !!} 
-                                    @else
-                                        {!! Form::textarea('comments['.$question['id'].']', $question['comment_first'], ['class' => 'form-control', 'rows'=> 2]) !!}
+                                        @isFirstSurvey($survey->survey_status_id)
+                                            {!! Form::textarea('comments['.$question['id'].']', $question['comment_first'], ['class' => 'form-control', 'rows'=> 2]) !!}
+                                        @else
+                                            {!! Form::textarea('comments['.$question['id'].']', $question['comment_second'], ['class' => 'form-control', 'rows'=> 2]) !!} 
+                                        @endif
                                     @endif
-                                            @endif
-                                        </div>
+                                </div>
                             </div>
                         @endforeach  
                             

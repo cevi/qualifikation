@@ -10,7 +10,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <div class="text-center mbl">
-                                    <img src="{{$user->avatar ? $user->avatar : 'http://placehold.it/300x300'}}" alt="img" class="img-circle img-bor">
+                                    <img src="{{$user->avatar ? $user->avatar : 'https://placehold.it/300x300'}}" alt="img" class="img-circle img-bor">
                                 </div>
                             </div>
                             <div class="profile_user">
@@ -53,9 +53,9 @@
                                                     <td style="width:80%">
                                                         {!! nl2br($post->comment) !!}
                                                     </td>
-                                                    <td style="width:20%">
+                                                    <td style="width:20%; text-align: right;">
                                                         {{$post->leader['username']}}<br>
-                                                        {{$post->created_at ? $post->created_at->diffForHumans() : 'no date'}}
+                                                        {{$post->created_at ? $post->created_at->isoFormat('LL') : 'no date'}}
                                                     </td>
                                                 </tr>  
                                             @endforeach

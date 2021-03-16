@@ -21,7 +21,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/survey/{survey}', ['as'=>'survey.survey', 'uses'=>'SurveysController@survey']);
-Route::patch('/survey/{id}', ['as'=>'survey.survey', 'uses'=>'SurveysController@update']);
+Route::patch('/survey/{survey}', ['as'=>'survey.survey', 'uses'=>'SurveysController@update']);
 Route::get('/compare/{user}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
 Route::patch('/compare/{id}', ['as'=>'survey.finish', 'uses'=>'SurveysController@finish']);
 

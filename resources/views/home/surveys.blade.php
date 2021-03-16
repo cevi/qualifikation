@@ -4,7 +4,7 @@
         <h1>Hallo {{$aktUser->username}}</h1> 
 
         @if ($surveys)
-                      
+            <div class="card">           
             <table class="table">
                 <thead>
                     <tr>
@@ -25,11 +25,13 @@
                                 <tr>
                                     @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen')) || 
                                         (($aktUser->isLeader())))
-                                        @if ($survey['survey_status_id'] < config('status.survey_fertig'))
-                                            <td><a href="{{route('survey.survey', $survey->slug)}}">{{$survey->SurveyName()}}</a></td>
-                                        @else
-                                            <td>{{$survey->SurveyName()}}</td>
-                                        @endif
+                                        <td>
+                                            @if ($survey['survey_status_id'] < config('status.survey_fertig'))
+                                                <a href="{{route('survey.survey', $survey->slug)}}">{{$survey->SurveyName()}}</a>
+                                            @else
+                                                {{$survey->SurveyName()}}</td>
+                                            @endif
+                                        </td>
                                     @endif
                                     @if ($aktUser->isTeilnehmer() && $survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen'))
                                         <td><a href="{{route('survey.compare', $survey->user->slug)}}">{{$survey->SurveyName()}}</a></td>
@@ -38,11 +40,12 @@
                                         <td><a href="{{route('survey.compare', $survey->user->slug)}}">Vergleich</a></td>
                                     @endif
                                     <td>
-                                    @if (!$aktUser->isTeilnehmer())
+                                        @if (!$aktUser->isTeilnehmer())
                                         <a href="{{route('home.profile', $survey->user->slug)}}">{{$survey->user['username']}}</a>
-                                    @else
-                                        {{$survey->user['username']}}</td>
-                                    @endif
+                                        @else
+                                            {{$survey->user['username']}}
+                                        @endif
+                                    </td>
                                     <td>{{$survey->survey_status['name']}}</td>
                                 </tr>    
                             @endif
@@ -52,11 +55,12 @@
 
                 </tbody>
             </table>
+            </div>
             @if ($aktUser->isLeader())       
                 <div class="row d-flex align-items-md-stretch"> 
                     @foreach($surveys as $survey) 
                         <div class="col-lg-6 col-md-4" id="Chart-{{$loop->iteration}}">
-                            <div class="card updates activities">
+                            <div class="card">
                                 <a href="{{route('survey.compare',$survey->user_id)}}" target="blank">
                                     <div  class="card-header d-flex justify-content-between align-items-center">
                                         <h2 class="h5 display">{{$survey->user['username']}}</h2>
@@ -81,5 +85,7 @@
 @endsection
 
 @section('scripts')
-    @include('home.radar')
+    @if ($aktUser->isLeader()) 
+        @include('home.radar')
+    @endif
 @endsection

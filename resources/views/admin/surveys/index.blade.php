@@ -52,7 +52,11 @@
                                 }
                         });
                         $.ajax({
-                            url : "{!! route('surveys.create') !!}"})
+                            url : "{!! route('surveys.create') !!}",
+                            success: function(res) {
+                                location.reload();
+                            }
+                        });
                     }
                 });
             });

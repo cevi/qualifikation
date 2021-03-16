@@ -46,7 +46,7 @@ class AdminSurveysController extends Controller
         return DataTables::of($surveys)
             ->addColumn('user', function($survey) {
                 $username = $survey->user ? $survey->user['username'] : '';
-                return '<a href='.\URL::route('home.profile', $survey->user['slug']).'>'.$username.'</a>';
+                return '<a href='.\URL::route('home.profile', $survey->user['slug']).' title="Zum Profil">'.$username.'</a>';
             })
             ->addColumn('responsible', function (Survey $survey) {
                 return $survey->user->leader ? $survey->user->leader['username'] : '';})
@@ -111,8 +111,7 @@ class AdminSurveysController extends Controller
                 }
             }
         }
-        return redirect('admin/surveys');
-
+        return true;
     }
 
     /**
