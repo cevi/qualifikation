@@ -604,6 +604,7 @@ nav.navbar a.menu-btn:hover {
 @media (max-width: 1199px) {
   .page {
     width: 100%;
+    padding-left: 15px;
   }
   .page.active {
     width: 100%;
