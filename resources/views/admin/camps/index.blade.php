@@ -28,8 +28,8 @@
                             {!! Form::text('year', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::label('Camp_type_id', 'Lagertyp:') !!}
-                            {!! Form::select('Camp_type_id', [''=>'Wähle Lagertyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
+                            {!! Form::label('camp_type_id', 'Lagertyp:') !!}
+                            {!! Form::select('camp_type_id', [''=>'Wähle Lagertyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::submit('Lager erstellen', ['class' => 'btn btn-primary'])!!}

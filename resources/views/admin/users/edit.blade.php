@@ -22,6 +22,7 @@
             </header>
             <div class="row">
                 <div class="col-sm-6">
+                    @include('includes.form_error')
                     {!! Form::model($user, ['method' => 'PATCH', 'action'=>['AdminUsersController@update', $user->id],  'files' => true]) !!}
                     <div class="form-group">
                         {!! Form::label('avatar', 'Photo:') !!}
@@ -71,7 +72,6 @@
                     </div>
                     {!! Form::close()!!}
 
-                    @include('includes.form_error')
                 </div>
             </div>
         </div>

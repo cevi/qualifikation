@@ -19,9 +19,10 @@ class AdminCampsController extends Controller
     public function index()
     {
         //
-        if(!Auth::user()->isAdmin()){
-            if(isset(Auth::user()->camp)){
-                $camps = Auth::user()->camp->get();
+        $aktUser = Auth::user();
+        if(!$aktUser->isAdmin()){
+            if(isset($aktUser->camp)){
+                $camps = [$aktUser->camp];
             }
             else
             {

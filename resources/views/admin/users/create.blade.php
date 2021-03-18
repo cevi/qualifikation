@@ -22,6 +22,7 @@
             </header>
             <div class="row">
                 <div class="col-sm-6">
+                    @include('includes.form_error')
                     {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@store',  'files' => true]) !!}
                     <div class="form-group">
                             {!! Form::label('username', 'Name:') !!}
@@ -65,7 +66,6 @@
                     </div>
                     {!! Form::close()!!}
 
-                    @include('includes.form_error')
                 </div>
             </div>
         </div>

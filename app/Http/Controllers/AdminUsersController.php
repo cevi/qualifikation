@@ -74,15 +74,15 @@ class AdminUsersController extends Controller
     public function create()
     {
         //
-        
-        if(Auth::user()->isAdmin()){
+        $aktUser = Auth::user();
+        if( $aktUser->isAdmin()){
             $roles = Role::pluck('name','id')->all();
         }
         else{
             $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all(); 
         }
         $classifications = Classification::pluck('name','id')->all();
-        $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->pluck('username','id')->all();
+        $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         return view('admin.users.create', compact('roles', 'leaders', 'classifications'));
     }
 
@@ -173,6 +173,10 @@ class AdminUsersController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request, [
+            'username' => 'required|unique:users|max:255',
+        ]);
+
         $aktUser = Auth::user();
         if(trim($request->password) == ''){
             $input = $request->except('password');
@@ -199,7 +203,6 @@ class AdminUsersController extends Controller
         }
 
         $input['api_token'] = Str::random(60);
-        $input['classification_id'] = config('status.classification_green');
         $input['slug'] = Str::slug($input['username']);
 
         User::create($input);
@@ -228,8 +231,9 @@ class AdminUsersController extends Controller
     {
         //
         // $user = User::findOrFail($id);
+        $aktUser = Auth::user();
         $roles = Role::pluck('name','id')->all();
-        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
+        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         $classifications = Classification::pluck('name','id')->all();
         return view('admin.users.edit', compact('user','roles', 'leaders', 'classifications'));
     }
@@ -244,6 +248,9 @@ class AdminUsersController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'username' => 'required|unique:users|max:255',
+        ]);
         $user = User::findOrFail($id);
         $aktuser = Auth::user();
 
