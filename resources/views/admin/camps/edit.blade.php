@@ -39,7 +39,7 @@
                             {!! Form::submit('Update Lager', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
-                    {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "myForm"]) !!}
+                    {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
                     <div class="form-group">
                         {!! Form::submit('Lager löschen', ['class' => 'btn btn-danger confirm'])!!}
                     </div>
@@ -65,7 +65,7 @@
                     buttons: ["Abbrechen", "Ja!"],
                 }).then((willDelete) => {
                     if (willDelete) {
-                        document.getElementById("myForm").submit();
+                        document.getElementById("DeleteForm").submit();
                     }
                 });
             });

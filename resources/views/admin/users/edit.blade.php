@@ -66,9 +66,9 @@
                     </div>
                     {!! Form::close()!!}
 
-                    {!! Form::model($user, ['method' => 'DELETE', 'action'=>['AdminUsersController@destroy',$user->id]]) !!}
+                    {!! Form::model($user, ['method' => 'DELETE', 'action'=>['AdminUsersController@destroy',$user->id], 'id'=> "DeleteForm"]) !!}
                     <div class="form-group">
-                        {!! Form::submit('Person löschen', ['class' => 'btn btn-danger'])!!}
+                        {!! Form::submit('Person löschen', ['class' => 'btn btn-danger confirm'])!!}
                     </div>
                     {!! Form::close()!!}
 
@@ -108,5 +108,23 @@
 @endsection
 
 @section('scripts')
-    @include('admin/users/photo_cropped_js')
+    @include('admin/users/photo_cropped_js')@section('scripts')
+    <script>
+        $(document).ready(function(){
+            $('.confirm').on('click', function(e){
+                e.preventDefault(); //cancel default action
+
+                swal({
+                    title: 'Person löschen?',
+                    text: 'Sicher, dass die Person gelöscht werden soll?',
+                    icon: 'warning',
+                    buttons: ["Abbrechen", "Ja!"],
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        document.getElementById("DeleteForm").submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
