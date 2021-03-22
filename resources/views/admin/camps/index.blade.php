@@ -5,7 +5,7 @@
         <div class="container-fluid">
           <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="admin/">Dashboard</a></li>
-            <li class="breadcrumb-item active">Lager</li>
+            <li class="breadcrumb-item active">Kurs</li>
           </ul>
         </div>
     </div>
@@ -13,7 +13,7 @@
         <div class="container-fluid">
             <!-- Page Header-->
             <header> 
-                <h1 class="h3 display">Lager</h1>
+                <h1 class="h3 display">Kurs</h1>
             </header>
             <div class="row">
                 @if (!$camps)
@@ -28,11 +28,21 @@
                             {!! Form::text('year', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::label('camp_type_id', 'Lagertyp:') !!}
-                            {!! Form::select('camp_type_id', [''=>'Wähle Lagertyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
+                            {!! Form::label('camp_type_id', 'Kurstyp:') !!}
+                            {!! Form::select('camp_type_id', [''=>'Wähle Kurstyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
                         </div>
+                        @if (config('app.import_db'))
+                            <div class="form-group">
+                                {!! Form::label('group_id', 'Organisierende Gruppe:') !!}
+                                {!! Form::select('group_id', [''=>'Wähle Gruppe'] + $groups, null,  ['class' => 'form-control']) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('foreign_id', 'Kurs ID (Cevi-DB):') !!}
+                                {!! Form::text('foreign_id', null,  ['class' => 'form-control']) !!}
+                            </div>
+                        @endif
                         <div class="form-group">
-                            {!! Form::submit('Lager erstellen', ['class' => 'btn btn-primary'])!!}
+                            {!! Form::submit('Kurs erstellen', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
                 </div>    
@@ -44,8 +54,8 @@
                                 <tr>
                                     <th scope="col">Jahr</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Lagerleiter</th>
-                                    <th scope="col">Lagertyp</th>
+                                    <th scope="col">Kursleiter</th>
+                                    <th scope="col">Kurstyp</th>
                                     <th scope="col">Created Date</th>
                                     <th scope="col">Updated Date</th>
                                 </tr>

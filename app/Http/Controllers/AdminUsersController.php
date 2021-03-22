@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Camp;
-use App\Classification;
 use App\Role;
 use App\User;
+use App\Group;
+use App\Classification;
 use Illuminate\Support\Str;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
+use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
@@ -77,13 +79,103 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         if( $aktUser->isAdmin()){
             $roles = Role::pluck('name','id')->all();
+            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('is_active', true)->pluck('username','id')->all();
         }
         else{
             $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all(); 
+            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('is_active', true)->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         }
         $classifications = Classification::pluck('name','id')->all();
-        $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         return view('admin.users.create', compact('roles', 'leaders', 'classifications'));
+    }
+
+    public function import(Request $request){
+        $aktUser = Auth::user();
+        $camp = $aktUser->camp;
+        if($camp->foreign_id && $camp->group){
+            $input = $request->all();
+            $response = Curl::to('https://db.cevi.ch/users/sign_in.json')
+                ->withData( 
+                    array( 
+                        'person[email]' => $input['name'],
+                        'person[password]' => $input['password'] ))
+                ->post();
+            $response = json_decode($response);
+            $aktUser_id = $response->people[0]->id;
+            $token = $response->people[0]->authentication_token;
+            $response = Curl::to('https://db.cevi.ch/groups/' .$camp->group['foreign_id']. '/events/' .$camp['foreign_id']. '/participations.json')
+                ->withData( 
+                    array( 
+                        'user_email' => $input['name'],
+                        'user_token' => $token))
+                ->get();
+            $response = json_decode($response);
+            $participants = $response->event_participations;
+            foreach($participants as $participant){
+                if ($participant->roles[0]->type === "Event::Course::Role::Participant" ||
+                        $participant->roles[0]->type === "Event::Role::AssistantLeader" ||
+                        $participant->roles[0]->type === "Event::Role::Leader"){
+                    $response = Curl::to('https://db.cevi.ch/groups/' . $participant->ortsgruppe_id . '.json')
+                        ->withData( 
+                            array( 
+                                'user_email' => $input['name'],
+                                'user_token' => $token))
+                        ->get();
+                    $response = json_decode($response);
+                    $group_response = $response->groups;
+                    $insertData = array(
+                        
+                        "shortname" => $group_response[0]->short_name,
+                        "name" => $group_response[0]->name,
+                        "foreign_id" => $group_response[0]->id,
+                        "campgroup" => false);
+
+                    $group = Group::firstOrCreate(['foreign_id' => $group_response[0]->id], $insertData);
+
+                    if ($participant->links->person != $aktUser_id){
+                        $username = mb_strtolower($participant->nickname . '@' . $group['shortname']);
+                        switch($participant->roles[0]->type){
+                            case  'Event::Course::Role::Participant':
+                                $role_id = config('status.role_Teilnehmer');
+                                break;
+                            case  'Event::Role::AssistantLeader':
+                                $role_id = config('status.role_Gruppenleiter');
+                                break;
+                            case  'Event::Role::Leader':
+                                $role_id = config('status.role_Kursleiter');
+                                break;
+
+                        }
+                        $insertData = array(
+                            
+                            "username" =>  $username,
+                            "slug" => $username,
+                            "password" => bcrypt($username),
+                            "role_id" => $role_id,
+                            "is_active" => true,
+                            "camp_id" => $camp['id'],
+                            'classification_id' => config('status.classification_green'));
+
+                        $user = User::firstOrCreate(['foreign_id' => $participant->links->person], $insertData);
+                    }
+                    else{
+                        $user = Auth::user();
+                    }
+                    if(!$user->avatar){
+                        $user->update(['avatar' => 'https://db.cevi.ch'. $participant->picture->url]);     
+                    }
+                    if(!$user->group_id)  {
+                        $user->update(['group_id' => $group->id]);   
+
+                    }  
+                    if(!$user->foreign_id)  {
+                        $user->update(['foreign_id' => $participant->links->person]);   
+                    }   
+                }            
+            }
+                        
+        }
+        return true;
     }
 
     public function uploadFile(Request $request){
@@ -105,7 +197,7 @@ class AdminUsersController extends Controller
                     
                         "username"=> $username,
                         "password"=>bcrypt($importData['password']),
-                        "role_id"=>config('status.role_Lagerleiter'),
+                        "role_id"=>config('status.role_Kursleiter'),
                         "is_active"=>true,
                         "camp_id"=>$user['camp_id'],
                         'classification_id' => config('status.classification_green'));
@@ -201,8 +293,6 @@ class AdminUsersController extends Controller
                 }
             }
         }
-
-        $input['api_token'] = Str::random(60);
         $input['slug'] = Str::slug($input['username']);
 
         User::create($input);

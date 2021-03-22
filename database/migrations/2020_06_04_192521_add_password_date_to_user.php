@@ -16,7 +16,6 @@ class AddPasswordDateToUser extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
             $table->dateTime('password_change_at')->nullable();
-            $table->string('api_token', 80)->after('password')
             ->unique()
             ->nullable()
             ->default(null);
@@ -33,7 +32,6 @@ class AddPasswordDateToUser extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
             $table->dropColumn('password_change_at');
-            $table->dropColumn('api_token');
         });
     }
 }

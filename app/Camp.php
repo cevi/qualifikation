@@ -9,7 +9,7 @@ class Camp extends Model
     //
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id'
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id'
     ];
 
     public function users(){
@@ -22,5 +22,9 @@ class Camp extends Model
 
     public function camp_type(){
         return $this->belongsTo('App\CampType');
+    } 
+
+    public function group(){
+        return $this->belongsTo('App\Group');
     } 
 }

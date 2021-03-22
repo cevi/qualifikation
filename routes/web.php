@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +42,7 @@ Route::group(['middleware' => 'campleader'], function(){
     Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'AdminUsersController@createDataTables']);
     Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
     Route::get('admin/users/download',  ['as'=>'users.download', 'uses'=>'AdminUsersController@download']);
+    Route::post('admin/users/import',  ['as'=>'users.import', 'uses'=>'AdminUsersController@import']);
 
     Route::resource('admin/answers', 'AdminAnswersController');
 
@@ -59,4 +62,12 @@ Route::group(['middleware' => 'campleader'], function(){
 
 Route::get('admin/run-migrations', function () {
     return Artisan::call('migrate', ["--force" => true ]);
+});
+
+Route::get('admin/run-deployment', function () {
+    echo 'config:cache <br>';
+    Artisan::call('config:cache');
+    echo 'view:cache <br>';
+    Artisan::call('view:cache');
+    return true;
 });

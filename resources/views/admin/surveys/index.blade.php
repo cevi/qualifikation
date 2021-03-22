@@ -23,7 +23,7 @@
                     <tr>
                         <th scope="col">Teilnehmer</th>
                         <th scope="col">Leiter</th>
-                        <th scope="col">Lager</th>
+                        <th scope="col">Kurs</th>
                         <th scope="col">Status</th>
                         <th scope="col">TN Qualifikation</th>
                     </tr>

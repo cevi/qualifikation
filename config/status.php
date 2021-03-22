@@ -8,7 +8,7 @@ return [
     'survey_fertig' => 50,
 
     'role_Administrator' => 1,
-    'role_Lagerleiter' => 2,
+    'role_Kursleiter' => 2,
     'role_Gruppenleiter' => 3,
     'role_Teilnehmer' => 4,
 

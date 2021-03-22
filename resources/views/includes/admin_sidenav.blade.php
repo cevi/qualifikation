@@ -37,7 +37,7 @@
         <div class="admin-menu">
             <h5 class="sidenav-heading">Administration</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">  
-                <li><a href="{{route('camps.index')}}"> <i class="fas fa-campground"></i> Lager</a></li>
+                <li><a href="{{route('camps.index')}}"> <i class="fas fa-campground"></i> Kurs</a></li>
                 @if (Auth::user()->isCampleader())
                     <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Qualifikationen</a>
                 @endif

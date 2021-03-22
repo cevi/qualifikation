@@ -6,6 +6,7 @@ use App\Camp;
 use App\User;
 use App\CampStatus;
 use App\CampType;
+use App\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,7 +34,8 @@ class AdminCampsController extends Controller
             $camps = Camp::all();
         }
         $camptypes = CampType::pluck('name','id')->all();
-        return view('admin.camps.index', compact('camps', 'camptypes'));
+        $groups = Group::where('campgroup',true)->pluck('name','id')->all();
+        return view('admin.camps.index', compact('camps', 'camptypes', 'groups'));
     }
 
     /**
@@ -92,8 +94,9 @@ class AdminCampsController extends Controller
         //
         $camp = Camp::findOrFail($id);
         $camptypes = CampType::pluck('name','id')->all();
-        $users = User::where('role_id', config('status.role_Lagerleiter'))->pluck('username','id')->all();
-        return view('admin.camps.edit', compact('camp', 'users', 'camptypes'));
+        $groups = Group::where('campgroup',true)->pluck('name','id')->all();
+        $users = User::where('role_id', config('status.role_Kursleiter'))->pluck('username','id')->all();
+        return view('admin.camps.edit', compact('camp', 'users', 'camptypes', 'groups'));
     }
 
     /**

@@ -17,9 +17,9 @@ class CreateGroupsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->string('shortname')->nullable();
+            $table->string('shortname', 10)->nullable();
             $table->integer('foreign_id');
-            $table->integer('campgroup')->default(0);
+            $table->boolean('campgroup')->default(false);
         });
     }
 
