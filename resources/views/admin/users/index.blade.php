@@ -72,7 +72,7 @@
                     <ul>
                         <li>Zugewiesene Gruppe für den Kurs.</li>
                         <li>Zugewiesene Kurs ID für den Kurs.</li>
-                        <li>Bis auf den Kursleiter-Benutzer (aktiver Benutzer) wurden alle Personen über den DB-Import erstellt.</li>
+                        <li>Namen als Ceviname@Ortsgruppen-Kürzel.</li>
                     </ul>
                     <p>Benutzername und Passwort werden nirgendwo gespeichert.</p>
                     <p>Erstellte Personen haben Passwort als Benutzernamen (unter Profil (oben rechts) änderbar).</p>
