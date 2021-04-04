@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPasswordDateToUser extends Migration
+class AddDescriptionToAnswers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddPasswordDateToUser extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('answers', function (Blueprint $table) {
             //
-            $table->dateTime('password_change_at')->nullable();
+            $table->string('description')->nullable();
         });
     }
 
@@ -26,9 +26,9 @@ class AddPasswordDateToUser extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('answers', function (Blueprint $table) {
             //
-            $table->dropColumn('password_change_at');
+            $table->dropColumn('description');
         });
     }
 }

@@ -38,6 +38,10 @@
                             {!! Form::label('competence', 'Kompetenz:') !!}
                             {!! Form::text('competence', null, ['class' => 'form-control', 'required']) !!}
                     </div>
+                    <div class="form-group">
+                        {!! Form::label('description', 'Beschreibung:') !!}
+                        {!! Form::text('description', null, ['class' => 'form-control']) !!}
+                    </div>
 
                     <div class="form-group">
                         {!! Form::submit('Kompetenz Erstellen', ['class' => 'btn btn-primary'])!!}

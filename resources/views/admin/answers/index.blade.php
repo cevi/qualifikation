@@ -27,6 +27,10 @@
                             {!! Form::text('count', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
+                            {!! Form::label('description', 'Beschreibung:') !!}
+                            {!! Form::text('description', null, ['class' => 'form-control', 'required']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::submit('Antwort erstellen', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
@@ -38,6 +42,7 @@
                                 <tr>
                                     <th scope="col">Wertung</th>
                                     <th scope="col">Name</th>
+                                    <th scope="col">Beschreibung</th>
                                     <th scope="col">Created Date</th>
                                     <th scope="col">Updated Date</th>
                                 </tr>
@@ -47,6 +52,7 @@
                                 <tr>
                                     <td>{{$answer->count}}</a></td>
                                     <td><a href="{{route('answers.edit',$answer->id)}}">{{$answer->name}}</a></td>
+                                    <td>{{$answer->description}}</a></td>
                                     <td>{{$answer->created_at ? $answer->created_at->diffForHumans() : 'no date'}}</td>
                                     <td>{{$answer->updated_at ? $answer->updated_at->diffForHumans() : 'no date'}}</td>
                                 </tr>

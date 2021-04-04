@@ -28,13 +28,17 @@
                     <div id="activities-box-{{$chapter->chapter['number']}}" role="tabpanel" class="collapse">
 
                         @foreach ($chapter->questions as $question)  
-                            <table class="table">
+                            <table class="table" >
                                 <tbody>
-                                <tr class="{{($question->question['competence_js1'] && $camp['camp_type_id']===config('status.camptype_JS1')) ||
-                                    ($question->question['competence_js2'] && $camp['camp_type_id']===config('status.camptype_JS2'))? 'core_competence':''}}">
+                                <tr class="{{$question->isCoreCompetence($camp) ? 'core_competence':''}}">
                                     <td width="50px">{{$question->question['number']}}</td>
                                     <td width="150px">{{$question->question['competence']}}</td>
-                                    <td width="300px">{{$question->question['name']}}</td>
+                                    <td width="300px" >{{$question->question['name']}} 
+                                        @if($question->isCoreCompetence($camp))
+                                            <i class="fas fa-info-circle"   {{Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(10)->pop($question->question['description'] ?:'')}}
+                                                ></i>
+                                        @endif
+                                    </td>
                                 </tr>
                                 </tbody>
             
@@ -47,7 +51,7 @@
                                                 @foreach ($answers as $answer)  
                                                 @if ($aktUser->isLeader())
                                                 
-                                                    <td width="50px">     
+                                                    <td width="50px" {{ Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(0)->pop($answer['description'])}}>     
                                                         {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']])}}
                                                         {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                     </td>
@@ -128,5 +132,6 @@
 @endsection
 
 @section('scripts')
+    @include('popper::assets')
     @include('home.radar')
 @endsection

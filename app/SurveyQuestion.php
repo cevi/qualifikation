@@ -26,4 +26,9 @@ class SurveyQuestion extends Model
         return $this->belongsTo('App\Question');
     } 
 
+    public function isCoreCompetence($camp){
+        return ($this->question['competence_js1'] && $camp['camp_type_id']===config('status.camptype_JS1')) ||
+                                    ($this->question['competence_js2'] && $camp['camp_type_id']===config('status.camptype_JS2'));
+    }
+
 }

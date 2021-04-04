@@ -108,7 +108,7 @@
 @endsection
 
 @section('scripts')
-    @include('admin/users/photo_cropped_js')@section('scripts')
+    @include('admin/users/photo_cropped_js')
     <script>
         $(document).ready(function(){
             $('.confirm').on('click', function(e){

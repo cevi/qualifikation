@@ -8,6 +8,6 @@ class Answer extends Model
 {
     //
     protected $fillable = [
-    'name', 'count', 'competence'
+        'name', 'count', 'description'
     ];
 }

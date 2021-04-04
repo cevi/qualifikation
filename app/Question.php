@@ -8,7 +8,7 @@ class Question extends Model
 {
     //
     protected $fillable = [
-    'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2'
+    'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description'
     ];
 
     public function chapter(){

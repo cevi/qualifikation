@@ -31,6 +31,7 @@
                                 <th scope="col">Nummer</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Kompetenz</th>
+                                <th scope="col">Beschreibung</th>
                                 <th scope="col">Kernkompetenz</th>
                                 <th scope="col">Created Date</th>
                                 <th scope="col">Updated Date</th>
@@ -44,6 +45,7 @@
                                 <td>{{$question->number}}</td>
                                 <td><a href="{{route('questions.edit',$question->id)}}">{{$question->name}}</a></td>
                                 <td>{{$question->competence}}</td>
+                                <td>{{$question->description}}</td>
                                 <td>{{$question['competence_js1'] ? 'J+S 1 ':''}}{{$question['competence_js2'] ? 'J+S 2':''}}</td>
                                 <td>{{$question->created_at ? $question->created_at->diffForHumans() : 'no date'}}</td>
                                 <td>{{$question->updated_at ? $question->updated_at->diffForHumans() : 'no date'}}</td>

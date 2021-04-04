@@ -124,15 +124,20 @@ class AdminUsersController extends Controller
                                     'user_token' => $token))
                             ->get();
                         $response = json_decode($response);
-                        $group_response = $response->groups;
-                        $insertData = array(
-                            
-                            "shortname" => $group_response[0]->short_name,
-                            "name" => $group_response[0]->name,
-                            "foreign_id" => $group_response[0]->id,
-                            "campgroup" => false);
+                        if(isset($response)){
+                            $group_response = $response->groups;
+                            $insertData = array(
+                                
+                                "shortname" => $group_response[0]->short_name,
+                                "name" => $group_response[0]->name,
+                                "foreign_id" => $group_response[0]->id,
+                                "campgroup" => false);
 
-                        $group = Group::firstOrCreate(['foreign_id' => $group_response[0]->id], $insertData);
+                            $group = Group::firstOrCreate(['foreign_id' => $group_response[0]->id], $insertData);
+                        }
+                        else{
+                            $group = Group::where('foreign_id', 1)->first();    
+                        }
 
                         if ($participant->links->person != $aktUser_id){
                             $username = $participant->nickname . '@' . $group['shortname'];
@@ -151,14 +156,13 @@ class AdminUsersController extends Controller
                             $insertData = array(
                                 
                                 "username" =>  $username,
-                                "slug" => $username,
+                                "slug" => Str::slug(mb_strtolower($username)),
                                 "password" => bcrypt(mb_strtolower($username)),
                                 "role_id" => $role_id,
                                 "is_active" => true,
                                 "camp_id" => $camp['id'],
                                 'classification_id' => config('status.classification_green'));
-
-                            $user = User::where(DB::raw('LOWER(`username`) LIKE "' . mb_strtolower($username). '"'))->Orwhere('foreign_id', $participant->links->person)->first();
+                            $user = User::whereraw('LOWER(`username`) LIKE "' . mb_strtolower($username). '"')->Orwhere('foreign_id', $participant->links->person)->first();
                             if(!$user){
                                 $user = User::create($insertData);
                             }
@@ -345,7 +349,7 @@ class AdminUsersController extends Controller
     {
         //
         $this->validate($request, [
-            'username' => 'required|unique:users|max:255',
+            'username' => 'required|max:255|unique:users,username,' . $id,
         ]);
         $user = User::findOrFail($id);
         $aktuser = Auth::user();
@@ -361,7 +365,7 @@ class AdminUsersController extends Controller
             if($input['cropped_photo_id']){
                 $save_path = 'images/'.$aktuser->camp['name'];
                 if (!file_exists($save_path)) {
-                    mkdir($save_path, 666, true);
+                    mkdir($save_path);
                 }
                 $name = time() . str_replace(' ', '', $file->getClientOriginalName());
                 Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);  

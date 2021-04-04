@@ -28,6 +28,10 @@
                             {!! Form::text('count', null, ['class' => 'form-control', 'required']) !!}
                         </div>
                         <div class="form-group">
+                            {!! Form::label('description', 'Beschreibung:') !!}
+                            {!! Form::text('description', null, ['class' => 'form-control', 'required']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::submit('Update Antwort', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
