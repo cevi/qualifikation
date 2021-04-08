@@ -6,7 +6,6 @@
       <div class="col-md-5 col-lg-6 col-xl-4 px-lg-5 d-flex align-items-center">
         <div class="w-100 py-5">
           <div class="text-center"><img src="img/logo.png" alt="..." style="max-width: 6rem;" class="img-fluid mb-4">
-            <h1 class="display-4 mb-3">{{ __('Login') }}</h1>
           </div>
           <form method="POST" action="{{ route('login') }}">
             @csrf

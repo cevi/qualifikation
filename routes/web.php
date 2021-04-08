@@ -34,6 +34,7 @@ Route::get('/profile/{user}', ['as'=>'home.profile', 'uses'=>'UsersController@ed
 Route::patch('/changeClassifications/{id}/{color}', ['as'=>'users.changeClassifications', 'uses'=>'UsersController@changeClassifications']);
 Route::patch('/user/{id}', ['as'=>'home.user', 'uses'=>'UsersController@update']);
 
+
 Route::group(['middleware' => 'campleader'], function(){
 
     Route::get('/admin','AdminController@index');
