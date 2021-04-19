@@ -10,7 +10,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <div class="text-center mbl">
-                                    <img src="{{$user->avatar ? $user->avatar : 'https://placehold.it/300x300'}}" alt="img" class="img-circle img-bor">
+                                    <img src="{{$user->avatar ? $user->avatar : '/img/default_avatar.svg'}}" alt="img" class="img-circle img-bor">
                                 </div>
                             </div>
                             <div class="profile_user">

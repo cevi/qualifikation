@@ -9,7 +9,11 @@ class Camp extends Model
     //
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id'
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen'
+    ];
+
+    protected $casts = [
+        'secondsurveyopen' => 'boolean',
     ];
 
     public function users(){

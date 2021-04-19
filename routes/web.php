@@ -23,7 +23,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/survey/{survey}', ['as'=>'survey.survey', 'uses'=>'SurveysController@survey']);
-Route::patch('/survey/{survey}', ['as'=>'survey.survey', 'uses'=>'SurveysController@update']);
+Route::patch('/survey/{survey}', ['as'=>'survey.update', 'uses'=>'SurveysController@update']);
 Route::get('/compare/{user}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
 Route::patch('/compare/{id}', ['as'=>'survey.finish', 'uses'=>'SurveysController@finish']);
 
@@ -32,7 +32,7 @@ Route::post('/post', ['as'=>'posts.store', 'uses'=>'PostController@store']);
 Route::get('/user/{user}', ['as'=>'home.user', 'uses'=>'UsersController@index']);
 Route::get('/profile/{user}', ['as'=>'home.profile', 'uses'=>'UsersController@edit']);
 Route::patch('/changeClassifications/{id}/{color}', ['as'=>'users.changeClassifications', 'uses'=>'UsersController@changeClassifications']);
-Route::patch('/user/{id}', ['as'=>'home.user', 'uses'=>'UsersController@update']);
+Route::patch('/user/{id}', ['as'=>'home.update', 'uses'=>'UsersController@update']);
 
 
 Route::group(['middleware' => 'campleader'], function(){
@@ -47,6 +47,7 @@ Route::group(['middleware' => 'campleader'], function(){
 
     Route::resource('admin/answers', 'AdminAnswersController');
 
+    Route::post('admin/camps/opensurvey', ['as'=>'camps.opensurvey','uses'=>'AdminCampsController@opensurvey']);
     Route::resource('admin/camps', 'AdminCampsController');
 
     Route::resource('admin/questions', 'AdminQuestionsController');

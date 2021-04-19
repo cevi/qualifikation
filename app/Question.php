@@ -11,6 +11,11 @@ class Question extends Model
     'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description'
     ];
 
+    protected $casts = [
+        'competence_js1' => 'boolean',
+        'competence_js2' => 'boolean',
+    ];
+
     public function chapter(){
         return $this->belongsTo('App\Chapter');
     }

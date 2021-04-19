@@ -42,6 +42,20 @@ class Survey extends Model
         return $this->belongsTo('App\SurveyStatus');
     } 
 
+    public function TNisAllowed(){
+        $aktUser = Auth::user();
+        $result = $this['survey_status_id'] < config('status.survey_fertig');
+        if($result && $aktUser->isTeilnehmer()){
+            $result = $this['survey_status_id'] <= config('status.survey_1offen');
+            if(!$result){
+                $camp = $aktUser->camp;
+                $result = $camp['secondsurveyopen'];
+            }
+        }
+        return $result;
+    } 
+
+
     public function getRouteKeyName()
     {
         return 'slug';

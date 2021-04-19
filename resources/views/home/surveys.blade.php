@@ -23,10 +23,10 @@
                         @foreach ($surveys as $survey)
                             @if($survey->MySurvey() || $aktUser->isCampleader())
                                 <tr>
-                                    @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen')) || 
-                                        (($aktUser->isLeader())))
+                                    @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen'))|| 
+                                        $aktUser->isLeader())
                                         <td>
-                                            @if ($survey['survey_status_id'] < config('status.survey_fertig'))
+                                            @if ($survey->TNisAllowed())
                                                 <a href="{{route('survey.survey', $survey->slug)}}">{{$survey->SurveyName()}}</a>
                                             @else
                                                 {{$survey->SurveyName()}}</td>

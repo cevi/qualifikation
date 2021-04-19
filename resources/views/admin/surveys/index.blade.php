@@ -15,8 +15,15 @@
             <header> 
                 <h1 class="h3 display">Qualifikationen</h1>
             </header>
-            <div class="row" style="margin-bottom: 10px;">
-                <a href="javascript:;" class="btn btn-info create" role="button">Qualifikationen erstellen</a>
+            <div class="row">
+                <div class="col-sm-3" style="margin-bottom: 10px;">
+                    <a href="javascript:;" class="btn btn-info create" role="button">Qualifikationen erstellen</a>
+                </div>
+                @if(!$camp['secondsurveyopen'])
+                <div class="col-sm-4" style="margin-bottom: 10px;">
+                   <a href="javascript:;" class="btn btn-info opensurvey" role="button">Zweite Selbsteinschätzung freigeben</a>
+                </div>
+                @endif
             </div>
             <table class="table table-striped table-bordered" style="width:100%" id="datatable">
                 <thead>
@@ -57,6 +64,22 @@
                                 location.reload();
                             }
                         });
+                    }
+                });
+            });
+            $('.opensurvey').on('click', function(e){
+                e.preventDefault(); //cancel default action
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                $.ajax({
+                    url : "{!! route('camps.opensurvey') !!}",
+                    type: 'POST',
+                    data: {},
+                    success: function(res) {
+                        location.reload();
                     }
                 });
             });

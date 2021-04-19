@@ -134,4 +134,11 @@ class AdminCampsController extends Controller
         Camp::findOrFail($id)->delete();
         return redirect('/admin/camps');
     }
+
+    public function opensurvey()
+    {
+        $camp = Auth::user()->camp;
+        $camp->update(['secondsurveyopen' => true]);
+        return redirect('/admin/surveys');
+    }
 }

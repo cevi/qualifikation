@@ -42,7 +42,7 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('picture', function($user) {
-                $path = $user->avatar ? $user->avatar : 'https://placehold.it/50x50';
+                $path = $user->avatar ? $user->avatar : '/img/default_avatar.svg';
                 return '<a href='.\URL::route('home.profile', $user['slug']).' title="Zum Profil"><img height="50" src="'.$path .'" alt=""></a>';
             })
             ->addColumn('user', function($user) {

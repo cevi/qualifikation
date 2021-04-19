@@ -25,7 +25,8 @@ class AdminSurveysController extends Controller
     public function index()
     {
         //
-        return view('admin.surveys.index');
+        $camp = Auth::user()->camp;
+        return view('admin.surveys.index',compact('camp'));
     }
 
     public function createDataTables()
@@ -163,7 +164,6 @@ class AdminSurveysController extends Controller
     public function update(Request $request, $id)
     {
         //
-        // return $request;
         $input = $request->all();
         $user = User::findorFail($input['user_id']);
         $input['slug'] = Str::slug($user['username']);
@@ -182,5 +182,7 @@ class AdminSurveysController extends Controller
     {
         //
     }
+
+
 
 }
