@@ -29,6 +29,11 @@
                     </div>
 
                     <div class="form-group">
+                        {!! Form::label('update', 'Allfällige Einträge löschen:') !!}
+                        {!! Form::checkbox('update',   '1', null) !!}
+                    </div>
+
+                    <div class="form-group">
                         {!! Form::submit('Qualifikation Updaten', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}

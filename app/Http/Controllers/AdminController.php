@@ -26,4 +26,9 @@ class AdminController extends Controller
         $surveys_fertig = Survey::whereIn('user_id', $users)->where('survey_status_id', config('status.survey_fertig'))->count();
         return view('admin/index', compact('user','surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig'));
     }
+
+    public function changes(){
+        $user = Auth::user();
+        return view('admin/changes', compact('user'));
+    }
 }

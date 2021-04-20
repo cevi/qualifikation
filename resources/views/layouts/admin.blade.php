@@ -30,7 +30,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6 text-right">
-                            <p>Made by Amirli, V3</p>
+                            <p>Made by Amirli, V3.1</p>
                       </div>
                     </div>
                 </div>

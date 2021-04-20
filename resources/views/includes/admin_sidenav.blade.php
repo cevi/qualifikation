@@ -41,23 +41,24 @@
                 @if (Auth::user()->isCampleader())
                     <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Qualifikationen</a>
                 @endif
-                <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Kompetenzen</a>
-                    <ul id="QuestionsDropdown" class="collapse list-unstyled ">
-                        <li>
-                            <a href="{{route('questions.index')}}">Alle Kompetenzen</a>
-                        </li>
-                        @if (Auth::user()->isAdmin())
-                            <li>
-                                <a href="{{route('questions.create')}}">Kompetenz erstellen</a>
-                            </li>
-                            <li>
-                                <a href="{{route('chapters.index')}}">Kapitel</a>
-                            </li>
-                        @endif
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
+                
                 @if (Auth::user()->isAdmin())
+                    <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Kompetenzen</a>
+                        <ul id="QuestionsDropdown" class="collapse list-unstyled ">
+                            <li>
+                                <a href="{{route('questions.index')}}">Alle Kompetenzen</a>
+                            </li>
+                            @if (Auth::user()->isAdmin())
+                                <li>
+                                    <a href="{{route('questions.create')}}">Kompetenz erstellen</a>
+                                </li>
+                                <li>
+                                    <a href="{{route('chapters.index')}}">Kapitel</a>
+                                </li>
+                            @endif
+                        </ul>
+                        <!-- /.nav-second-level -->
+                    </li>
                     <li><a href="#AnswersDropdown" aria-expanded="false" data-toggle="collapse"><i class="fas fa-edit"></i> Antworten</a>
                         <ul id="AnswersDropdown" class="collapse list-unstyled ">
                             <li>
@@ -75,6 +76,7 @@
                         <!-- /.nav-second-level -->
                     </li>
                 @endif
+                <li><a href="/admin/changes"><i class="fas fa-clipboard-list"></i> Änderungen</a></li>
             </ul>
         </div>
     </div>

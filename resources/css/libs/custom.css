@@ -289,3 +289,9 @@ img {
       padding-left: 3rem!important;
   }
 }
+
+.section-features{
+  margin: 2rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+}

@@ -39,6 +39,8 @@ Route::group(['middleware' => 'campleader'], function(){
 
     Route::get('/admin','AdminController@index');
 
+    Route::get('/admin/changes','AdminController@changes');
+
     Route::resource('admin/users', 'AdminUsersController');
     Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'AdminUsersController@createDataTables']);
     Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');

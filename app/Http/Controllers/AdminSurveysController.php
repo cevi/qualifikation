@@ -8,6 +8,7 @@ use App\Survey;
 use App\Chapter;
 use App\Question;
 use App\SurveyStatus;
+use App\Helper\Helper;
 use App\SurveyChapter;
 use App\SurveyQuestion;
 use Illuminate\Support\Str;
@@ -165,9 +166,18 @@ class AdminSurveysController extends Controller
     {
         //
         $input = $request->all();
+        $survey = Survey::findOrFail($id);
+        if(isset($input['update'])){
+            if($input['survey_status_id'] == config('status.survey_neu')){
+                Helper::clearsurvey($survey, 'first');
+            }
+            if($input['survey_status_id'] <= config('status.survey_1offen')){
+                Helper::clearsurvey($survey, 'second');
+            }
+        }
         $user = User::findorFail($input['user_id']);
         $input['slug'] = Str::slug($user['username']);
-        Survey::findOrFail($id)->update($input);
+        $survey->update($input);
   
         return redirect('/admin/surveys');
     }
