@@ -19,6 +19,11 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AdminUsersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -173,6 +178,9 @@ class AdminUsersController extends Controller
                         if(!$user->avatar){
                             $user->update(['avatar' => 'https://db.cevi.ch'. $participant->picture->url]);     
                         }
+                        if(!$user->email){
+                            $user->update(['email' => $participant->email]);     
+                        }
                         if(!$user->group_id)  {
                             $user->update(['group_id' => $group->id]);   
 
@@ -182,10 +190,23 @@ class AdminUsersController extends Controller
                         }   
                     }            
                 }
+                return true;
+            }
+            else{
+                abort(400, $response->error);
             }
                         
         }
-        return true;
+        else{
+            $errorText = '';
+            if(!$camp->foreign_id){
+                $errorText = 'Keine Cevi-DB-ID auf dem Kurs hinterlegt.';
+            }
+            elseif(!$camp->group){
+                $errorText = $errorText + ' Keine Gruppe auf dem Kurs hinterlegt.';
+            }
+            abort(412, $errorText);
+        }
     }
 
     public function uploadFile(Request $request){

@@ -10,13 +10,23 @@ use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(User $user)
     {   
         $aktUser = Auth::user();
+        if(!$aktUser){
+            return redirect('/home');
+        }
         $users = Helper::getUsers($aktUser);
         $users_id = [];
         if($users){
@@ -61,15 +71,19 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         if(trim($request->password) == ''){
             $input = $request->except('password');
+            $user->update($input);
         }
         else{
+            $request->validate([
+                'password' => ['required', 'confirmed'],
+            ]);
             $input = $request->all();
             $input['password'] = bcrypt($request->password);
+            $input['password_change_at'] = now();
+            $user->update($input);
+            Session::flash('message', 'Passwort erfolgreich verändert!'); 
         }
-        $input['password_change_at'] = now();
-        $user->update($input);
 
-        Session::flash('message', 'Passwort erfolgreich verändert!'); 
 
         return redirect('/home');
 

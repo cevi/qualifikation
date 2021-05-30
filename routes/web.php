@@ -27,7 +27,7 @@ Route::patch('/survey/{survey}', ['as'=>'survey.update', 'uses'=>'SurveysControl
 Route::get('/compare/{user}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
 Route::patch('/compare/{id}', ['as'=>'survey.finish', 'uses'=>'SurveysController@finish']);
 
-Route::post('/post', ['as'=>'posts.store', 'uses'=>'PostController@store']);
+Route::resource('/post', 'PostController');
 
 Route::get('/user/{user}', ['as'=>'home.user', 'uses'=>'UsersController@index']);
 Route::get('/profile/{user}', ['as'=>'home.profile', 'uses'=>'UsersController@edit']);
@@ -75,3 +75,7 @@ Route::get('admin/run-deployment', function () {
     Artisan::call('view:cache');
     return true;
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

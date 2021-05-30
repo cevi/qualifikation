@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Qualifizierungen'),
+    'name' => env('APP_NAME', 'Cevi Qualifizierungen'),
 
     /*
     |--------------------------------------------------------------------------

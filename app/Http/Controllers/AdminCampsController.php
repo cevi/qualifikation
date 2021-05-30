@@ -21,6 +21,9 @@ class AdminCampsController extends Controller
     {
         //
         $aktUser = Auth::user();
+        if(!$aktUser){
+            return redirect('/home');
+        }
         if(!$aktUser->isAdmin()){
             if(isset($aktUser->camp)){
                 $camps = [$aktUser->camp];

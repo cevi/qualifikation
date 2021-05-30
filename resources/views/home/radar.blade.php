@@ -82,7 +82,7 @@
                         },
                         pointLabels: {
                             callback: function(pointLabel, index, labels) {
-                                return window.innerWidth > 1000 ? pointLabel : ' ';
+                                return window.innerWidth > 1600 ? pointLabel : ' ';
                             } 
                         }
                     },

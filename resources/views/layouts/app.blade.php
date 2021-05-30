@@ -12,11 +12,11 @@
     <meta name="author" content="Jérôme Sigg v/o Amigo">
     <meta name="robots" content="all,follow">
 
-    <title>{{ config('app.name', 'Qualifikationen') }}</title>
+    <title>{{ config('app.name', 'Cevi Qualifikationen') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
     <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
 
     <!-- Styles -->

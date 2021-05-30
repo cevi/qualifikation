@@ -35,6 +35,10 @@
                             {!! Form::label('username', 'Name:') !!}
                             {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'name@abt']) !!}
                     </div>
+                    <div class="form-group">
+                            {!! Form::label('email', 'E-Mail:') !!}
+                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'name@abt.ch']) !!}
+                    </div>
 
                     <div class="form-group">
                         {!! Form::label('role_id', 'Role:') !!}

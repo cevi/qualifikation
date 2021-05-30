@@ -15,6 +15,11 @@ use PHPUnit\TextUI\Help;
 class SurveysController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function survey(Survey $survey)
     {
         $aktUser = Auth::user();

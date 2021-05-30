@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use Facade\FlareClient\Stacktrace\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -38,8 +43,19 @@ class PostController extends Controller
     {
         //
         $aktUser = Auth::user();
+        $camp = $aktUser->camp;
         $input = $request->all();
         $input['leader_id'] = $aktUser->id;
+        if($file = $request->file('file')){
+            $save_path = 'images/'.$camp['name'].'/files';
+            if (!file_exists($save_path)) {
+                mkdir($save_path, 666, true);
+            }
+            $name = time() . '_' . str_replace(' ', '', $file->getClientOriginalName());
+            
+            $file->move($save_path, $name);            
+            $input['file'] = $save_path . '/' . $name;
+        }
         Post::create($input);
         return redirect()->back();
     }
@@ -87,5 +103,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+        $post->delete();
+        return redirect()->back();
     }
 }

@@ -5,12 +5,12 @@
     <div class="row" style="min-height: 85vh !important;">
       <div class="col-md-5 col-lg-6 col-xl-4 px-lg-5 d-flex align-items-center">
         <div class="w-100 py-5">
-          <div class="text-center"><img src="img/logo.png" alt="..." style="max-width: 6rem;" class="img-fluid mb-4">
+          <div class="text-center"><img src="/img/logo.svg" alt="..."  class="img-fluid mb-4">
           </div>
           <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="form-group">
-              <label for="username">{{ __('Benutzer') }}</label>
+              <label for="username">Benutzer</label>
               <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" placeholder = "name@abt" value="{{ old('username') }}" required autocomplete="email" autofocus>
               @error('username')
                   <span class="invalid-feedback" role="alert">
@@ -21,8 +21,15 @@
             <div class="form-group mb-4">
               <div class="row">
                 <div class="col">
-                  <label for="password">{{ __('Password') }}</label>
+                  <label for="password">Passwort</label>
                 </div>
+                @if (Route::has('password.request'))
+                  <div class="col-auto">
+                    <a tabindex="-1" class="form-text small text-muted" href="{{ route('password.request') }}">
+                        Passwort vergessen?
+                      </a>
+                  </div>
+                @endif
               </div>
               <input id="password" placeholder = "Passwort" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
 

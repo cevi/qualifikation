@@ -50,25 +50,42 @@
                                         <tbody>
                                             @foreach ($posts as $post)
                                                 <tr>
-                                                    <td style="width:80%">
+                                                    <td style="width:75%">
                                                         {!! nl2br($post->comment) !!}
                                                     </td>
                                                     <td style="width:20%; text-align: right;">
                                                         {{$post->leader['username']}}<br>
-                                                        {{$post->created_at ? $post->created_at->isoFormat('LL') : 'no date'}}
+                                                        {{$post->created_at ? $post->created_at->isoFormat('LL') : 'no date'}}<br>
+                                                        @if ($post->file)
+                                                            <a href="/{{$post->file}}" target="_blank">{{substr(basename($post->file, '.'.pathinfo($post->file, PATHINFO_EXTENSION)), 11)}}</a>    
+                                                        @endif
+                                                    </td>
+                                                    <td style="width:5%; text-align: right;">
+                                                        @if ($post->leader['id'] === Auth::user()->id)
+                                                            {!! Form::model($post, ['method' => 'DELETE', 'action'=>['PostController@destroy',$post]]) !!}
+                                                            <div class="form-group">
+                                                               {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-sm'])!!}
+                                                            </div>
+                                                            {!! Form::close()!!}
+                                                            
+                                                        @endif
                                                     </td>
                                                 </tr>  
                                             @endforeach
                                         </tbody>
                                     </table>  
                                     <hr>
-                                    {!! Form::open(['method' => 'POST', 'action'=>'PostController@store']) !!}
+                                    {!! Form::open(['method' => 'POST', 'action'=>'PostController@store',  'files' => true]) !!}
                                         <div class="form-group">
                                             {!! Form::hidden('user_id', $user->id) !!}
                                         </div>
                                         <div class="form-group">
                                             {!! Form::label('comment', 'Rückmeldung:') !!}
                                             {!! Form::textarea('comment', null, ['class' => 'form-control', 'rows' => 3]) !!}
+                                        </div>
+                                        <div class="form-group">
+                                            {!! Form::label('file', 'Datei:') !!}
+                                            {!! Form::file('file') !!}
                                         </div>
                                         <div class="form-group">
                                             {!! Form::submit('Rückmeldung Erstellen', ['class' => 'btn btn-primary'])!!}

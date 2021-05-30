@@ -59,7 +59,7 @@
             @if ($aktUser->isLeader())       
                 <div class="row d-flex align-items-md-stretch"> 
                     @foreach($surveys as $survey) 
-                        <div class="col-lg-6 col-md-4" id="Chart-{{$loop->iteration}}">
+                        <div class="col-lg-6 col-md-12" id="Chart-{{$loop->iteration}}">
                             <div class="card">
                                 <a href="{{route('survey.compare',$survey->slug)}}">
                                     <div  class="card-header d-flex justify-content-between align-items-center">

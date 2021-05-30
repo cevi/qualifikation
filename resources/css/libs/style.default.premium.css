@@ -224,7 +224,7 @@ nav.navbar .navbar-holder {
 }
 
 nav.navbar a {
-  font-size: .8rem;
+  /* font-size: .8rem; */
   color: #fff;
   position: relative;
 }

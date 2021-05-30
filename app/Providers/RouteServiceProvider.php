@@ -57,6 +57,13 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
+     * The path to the "home" route for your application.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
+    /**
      * Define the "api" routes for the application.
      *
      * These routes are typically stateless.

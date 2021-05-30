@@ -29,6 +29,10 @@
                             {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'name@abt', 'required']) !!}
                     </div>
                     <div class="form-group">
+                            {!! Form::label('email', 'E-Mail:') !!}
+                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'name@abt.ch', 'required']) !!}
+                    </div>
+                    <div class="form-group">
                         {!! Form::label('avatar', 'Photo:') !!}
                         {!! Form::file('avatar', ['class' => 'photo']) !!}
                     </div>

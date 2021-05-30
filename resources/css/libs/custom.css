@@ -3,7 +3,7 @@
 
 
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.9rem;
   line-height: 1.6;
   background-color:#f8fafc;
@@ -294,4 +294,9 @@ img {
   margin: 2rem;
   padding: 1.5rem;
   border-radius: 1rem;
+}
+
+/*Hidden class for adding and removing*/
+.display-none {
+  display: none !important;
 }

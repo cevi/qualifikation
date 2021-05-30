@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'comment', 'user_id', 'leader_id'
+        'comment', 'user_id', 'leader_id', 'file'
     ];
 
     public function user(){

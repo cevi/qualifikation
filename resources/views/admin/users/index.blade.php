@@ -35,6 +35,7 @@
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col" width="10%">Bild</th>
+                        <th scope="col">E-Mail</th>
                         <th scope="col">Rolle</th>
                         <th scope="col">Leiter</th>
                         <th scope="col">Klassifizierung</th>
@@ -74,19 +75,19 @@
                         <li>Zugewiesene Kurs ID für den Kurs.</li>
                         <li>Namen als Ceviname@Ortsgruppen-Kürzel.</li>
                     </ul>
-                    <p>Benutzername und Passwort werden nirgendwo gespeichert.</p>
+                    <p>Das Passwort wird nicht gespeichert.</p>
                     <p>Erstellte Personen haben Passwort als Benutzernamen (unter Profil (oben rechts) änderbar).</p>
                     <form id="modal-form" method="POST" action="javascript:void(0)">
                         <div class="form-group">
-                            {!! Form::label('username', 'Benutzername / Email:') !!}
-                            {!! Form::text('username', null, ['class' => 'form-control']) !!}
+                            {!! Form::label('email', 'Benutzername / Email:') !!}
+                            {!! Form::text('email', Auth::user()->email, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('password', 'Password:') !!}
                             {!! Form::password('password', ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            <button data-remote='{{route('users.import')}}' id="importUsers" class="btn btn-info btn-sm">Personen importieren</button>
+                            <button data-remote='{{route('users.import')}}' id="importUsers" class="btn btn-info btn-sm"><i class="fa fa-spinner fa-spin display-none" id="loading-spinner"></i> Personen importieren</button>
                         </div>
                     </form>
                 </div>
@@ -112,6 +113,7 @@
                 columns: [
                     { data: 'user', name: 'user' },
                     { data: 'picture', name: 'picture', orderable:false,serachable:false},
+                    { data: 'email', name: 'email' },
                     { data: 'role', name: 'role' },
                     { data: 'leader', name: 'leader' },
                     { data: 'classification', name: 'classification' },
@@ -138,13 +140,19 @@
                 url: url,
                 method: 'POST',
                 data:{
-                name: $('#modal-form input[name="username"]').val(),
+                name: $('#modal-form input[name="email"]').val(),
                 password: $('#modal-form input[name="password"]').val()},
+                beforeSend: function() { $('#loading-spinner').removeClass('display-none')},
+                complete: function() {  $('#loading-spinner').addClass('display-none') },
                 success:function(res)
                 {   
+                    console.log("success");
                     $('#modal-form').trigger('reset');
                     $('#importModal').modal('hide');
                     location.reload();
+                },
+                error: function(xhr, errorType, exception) {
+                    alert(exception + ': ' + xhr.responseJSON.message);
                 }
             });
         });

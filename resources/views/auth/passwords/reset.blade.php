@@ -5,24 +5,34 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Passwort zurücksetzen</div>
+                <div class="card-header">{{ __('Reset Password') }}</div>
 
                 <div class="card-body">
-                    {!! Form::model($user,['method' => 'PATCH', 'action'=>route('password.update')]) !!}
+                    <form method="POST" action="{{ route('password.update') }}">
+                        @csrf
 
+                        <input type="hidden" name="token" value="{{ $token }}">
 
                         <div class="form-group row">
-                            {!! Form::label('username', 'Benutzer:', ['class' => 'col-md-4 col-form-label text-md-right']) !!}
+                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+
                             <div class="col-md-6">
-                                {!! Form::text('username', null, ['class' => 'form-control', 'readonly'=> 'true']) !!}
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
+
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            {!! Form::label('password', 'Password:', ['class' => 'col-md-4 col-form-label text-md-right']) !!}
+                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                             <div class="col-md-6">
-                                {!! Form::password('password', null, ['class' => 'form-control']) !!}
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -32,10 +42,10 @@
                         </div>
 
                         <div class="form-group row">
-                            {!! Form::label('password-confirm', 'Password bestätigen:', ['class' => 'col-md-4 col-form-label text-md-right']) !!}
+                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
 
                             <div class="col-md-6">
-                                {!! Form::password('password-confirm', null, ['class' => 'form-control']) !!}
+                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
                         </div>
 
@@ -46,7 +56,7 @@
                                 </button>
                             </div>
                         </div>
-                    {!! Form::close()!!}
+                    </form>
                 </div>
             </div>
         </div>
