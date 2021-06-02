@@ -9,6 +9,7 @@
 
         var surveys = @json($surveys);
         var user = @json(Auth::user());
+        
         for (var [i, survey] of Object.entries(surveys)){
             var RADARCHART  = $('#radarChart-'+(parseInt(i)+1));
 

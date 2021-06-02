@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Camp;
 use App\User;
 use App\Answer;
-use App\Helper\Helper;
 use App\Survey;
+use App\Helper\Helper;
 use App\SurveyQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PHPUnit\TextUI\Help;
 
 class SurveysController extends Controller
 {
@@ -117,6 +116,7 @@ class SurveysController extends Controller
             $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
         }
         $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user'])->where('user_id', $user->id)->get()->sortBy('user.username')->values();
+        // return $surveys;
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         if($aktUser->isTeilnehmer() && $user->id != $aktUser['id']){
             return redirect()->back();
@@ -125,6 +125,13 @@ class SurveysController extends Controller
             $users = Helper::getUsers($aktUser);
             return view('home.compare', compact('aktUser','surveys','camp', 'users'));
         }
+    }
+
+    public function downloadPDF(Survey $survey)
+    {
+        $camp = Auth::user()->camp;
+        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'chapters.questions.question'])->where('id', $survey->id)->get()->sortBy('user.username')->values();
+        return view('home.compare_pdf', compact('survey','surveys', 'camp'));
     }
 
     public function finish($id)

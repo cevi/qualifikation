@@ -26,6 +26,7 @@ Route::get('/survey/{survey}', ['as'=>'survey.survey', 'uses'=>'SurveysControlle
 Route::patch('/survey/{survey}', ['as'=>'survey.update', 'uses'=>'SurveysController@update']);
 Route::get('/compare/{user}', ['as'=>'survey.compare', 'uses'=>'SurveysController@compare']);
 Route::patch('/compare/{id}', ['as'=>'survey.finish', 'uses'=>'SurveysController@finish']);
+Route::get('/compare/{survey}/downloadPDF', ['as'=>'survey.downloadPDF','uses'=>'SurveysController@downloadPDF']);
 
 Route::resource('/post', 'PostController');
 

@@ -8,6 +8,14 @@
         <p class="lead">
             von {{$survey->user['username']}}
         </p>
+        @if(!$aktUser->isTeilnehmer())
+            <p>
+                <a type="button" class="btn btn-info btn-sm" href="{{route('survey.downloadPDF', $survey)}}">Druckansicht</a>
+            </p>
+            <p>
+                Die Bewertungen und die Kommentare der Leiter sind für die Teilnehmer nicht ersichtlich.
+            </p>
+        @endif
         <p>
             Die <span class = 'core_competence'>blau hinterlegten Kompetenzen</span>  sind die Kernkompetenzen für deine Ausbildungsstufe.
         </p>
