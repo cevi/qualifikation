@@ -10,32 +10,6 @@
                 </button>
             </div>
         @endif
-        <div class="row">
-
-            <!-- Blog Post Content Column -->
-            <div class="col-lg-10">
-
-             @yield('survey_content')   
-
-            </div>
-
-            <!-- Blog Sidebar Widgets Column -->
-            <div class="col-md-2">
-                <!-- Blog Categories Well -->
-                <div class="well">
-                    @if ($users)
-                        <h4>Teilnehmer</h4>
-                        <ul class="list-unstyled">
-                            @foreach ($users as $user_profile)
-                                <li>
-                                    <a href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a> 
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                    <!-- /.row -->
-                </div>
-            </div>
-        </div>
+        @yield('survey_content')   
     </div>
 @endsection

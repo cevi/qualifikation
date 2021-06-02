@@ -17,7 +17,28 @@
                 @guest
                 @else
                     @if (Auth::user()->isCampleader())
-                        <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a>            
+                        <li>
+                            <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a> 
+                        </li>           
+                    @endif
+                    @if (!Auth::user()->isTeilnehmer())
+                        <li class="nav-item dropdown">
+                            <a id="UserDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                Teilnehmer <span class="caret"></span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="UserDropdown">
+                                @if ($users)
+                                    <ul class="list-unstyled">
+                                        @foreach ($users as $user_profile)
+                                            <li>
+                                                <a class="nav-link" href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a> 
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        </li>          
                     @endif
                 @endguest
 
