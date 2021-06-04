@@ -111,7 +111,7 @@
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
-                    <canvas id="radarChart-1"></canvas>
+                    <canvas id="radarChart-1"  width="100%" height="100%"></canvas>
                     </div>
                 </div>
                 <div class="card-footer d-flex align-items-center">

@@ -3931,6 +3931,7 @@ STYLE SWITCHER FOR DEMO
   line-height: 1;
   border: 1px solid transparent;
   border-radius: 0;
+  margin-left: 1rem;
 }
 
 .navbar-light .navbar-brand {

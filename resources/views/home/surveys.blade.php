@@ -4,7 +4,7 @@
         <h1>Hallo {{$aktUser->username}}</h1> 
 
         @if ($surveys)
-            <div class="card">           
+            <div class="card table-responsive">           
             <table class="table">
                 <thead>
                     <tr>
@@ -70,7 +70,7 @@
                                 <div role="tabpanel" class="collapse show">
                                     <div class="card-body">
                                     <div class="chart-container">
-                                        <canvas id="radarChart-{{$loop->iteration}}"></canvas>
+                                        <canvas id="radarChart-{{$loop->iteration}}"  width="100%" height="100%"></canvas>
                                     </div>
                                     </div>
                                 </div>  

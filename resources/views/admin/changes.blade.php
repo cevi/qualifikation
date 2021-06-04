@@ -29,12 +29,13 @@
                     <ul>
                         <li>+Eigene Kommentare löschen auf Teilnehmerprofilen.</li>
                         <li>+Verbesserte Fehlermeldung bei Importproblemen aus der Cevi-DB.</li>
-                        <li>Mobile-Tauglichkeit verbessern. Vor allem schnelles Erfassen von Beobachtungen während dem Tag unterwegs.</li>
+                        <li>+Mobile-Tauglichkeit verbessern. Vor allem für eine schnelle Erfassung von Beobachtungen.</li>
                         <li>+Ans Cevi-CI anpassen, damit es offizieller wirkt / Schriften gemäß RV</li>
                         <li>+Von der Qualifikation eine optimierte Druckansicht erstellen, während dem Gespräch ist Papier wohl oft angenehmer als ein Bildschirm (Diagramm auf ganzes A4 skalieren)</li>
                         <li>+Meldung einbauen, damit für die Leitenden ersichtlich ist, dass TNs die Bewertung und Kommentare nicht sehen können.</li>
                         <li>+Upload von Dateien auf dem Teilnehmerprofil (Rückmeldungen zu Programm- und Sportblöcken)</li>
                         <li>+Passwort selber über hinterlegte Mailadresse zurücksetzen können</li>
+                        <li>Kernkompetenzen als Anhangstabellen an Fragen, für mehrere Kernkompetenzen</li>
                         <li>Im Quali-Bogen keine Tooltips. Auf Mobilgeräten erscheinen diese z.T. nicht (Erklärung - 0 + ++ und Schlüsselkompetenzen)</li>
                     </ul>
                     <h3>V5</h3>

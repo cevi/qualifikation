@@ -300,3 +300,7 @@ img {
 .display-none {
   display: none !important;
 }
+
+.dropdown-toggle{
+  margin-left: 1rem;
+}
