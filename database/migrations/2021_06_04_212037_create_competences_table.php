@@ -16,6 +16,11 @@ class CreateCompetencesTable extends Migration
         Schema::create('competences', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->text('name');
+            $table->bigInteger('camp_type_id')->index()->unsigned();
+            $table->foreign('camp_type_id')->references('id')->on('camp_types')->onDelete('cascade');
+            $table->bigInteger('question_id')->index()->unsigned();
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
         });
     }
 

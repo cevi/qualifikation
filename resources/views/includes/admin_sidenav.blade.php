@@ -55,6 +55,9 @@
                                 <li>
                                     <a href="{{route('chapters.index')}}">Kapitel</a>
                                 </li>
+                                <li>
+                                    <a href="{{route('competences.index')}}">Kernkompetenzen</a>
+                                </li>
                             @endif
                         </ul>
                         <!-- /.nav-second-level -->

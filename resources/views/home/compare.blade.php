@@ -56,24 +56,24 @@
                         </thead>
                         <tbody>
                             @foreach ($chapter->questions as $question)  
-                                <tr class="{{$question->isCoreCompetence($camp) ? 'core_competence':''}}">
+                                <tr class="{{$question->competence_text() ? 'core_competence':''}}">
                                     <td width="50px">{{$question->question['number']}}</td>
                                     <td width="150px">{{$question->question['competence']}}</td>
                                     <td width="300px"
-                                    @if($question->isCoreCompetence($camp))
-                                        {{Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(10)->pop($question->question['description'] ?:'')}}
+                                    @if($question->competence_text())
+                                        {{Popper::pop($question->competence_text())}}
                                     @endif>{{$question->question['name']}}
                                     
-                                        @if($question->isCoreCompetence($camp))
+                                        @if($question->competence_text())
                                             <i class="fas fa-info-circle"></i>
                                         @endif
                                     </td>
-                                    <td width="50px" {{ Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(0)->pop($question->answer_first['description'])}}>{{$question->answer_first['name']}}</td>
+                                    <td width="50px" {{ Popper::pop($question->answer_first['description'])}}>{{$question->answer_first['name']}}</td>
                                     <td width="200px">{{$question['comment_first']}}</td>
-                                    <td width="50px" {{ Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(0)->pop($question->answer_second['description'])}}>{{$question->answer_second['name']}}</td>
+                                    <td width="50px" {{ Popper::pop($question->answer_second['description'])}}>{{$question->answer_second['name']}}</td>
                                     <td width="200px">{{$question['comment_second']}}</td>
                                     @if(!$aktUser->isTeilnehmer())
-                                        <td width="50px" {{ Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(0)->pop($question->answer_leader['description'])}}>{{$question->answer_leader['name']}}</td>
+                                        <td width="50px" {{ Popper::pop($question->answer_leader['description'])}}>{{$question->answer_leader['name']}}</td>
                                         <td width="200px">{{$question['comment_leader']}}</td> 
                                     @endif
                                 </tr> 

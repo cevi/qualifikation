@@ -60,6 +60,7 @@ Route::group(['middleware' => 'campleader'], function(){
     Route::get('surveys/createDataTables', ['as'=>'surveys.CreateDataTables','uses'=>'AdminSurveysController@createDataTables']);
 
     Route::resource('admin/chapters', 'AdminChaptersController');
+    Route::resource('admin/competences', 'AdminCompetencesController');
     Route::resource('admin/classifications', 'AdminClassificationController');
 
 

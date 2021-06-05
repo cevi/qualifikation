@@ -30,15 +30,15 @@
                         @foreach ($chapter->questions as $question)  
                             <table class="table" >
                                 <tbody>
-                                <tr class="{{$question->isCoreCompetence($camp) ? 'core_competence':''}}">
+                                <tr class="{{$question->competence_text() ? 'core_competence':''}}">
                                     <td width="50px">{{$question->question['number']}}</td>
                                     <td width="150px">{{$question->question['competence']}}</td>
                                     <td width="300px"
-                                    @if($question->isCoreCompetence($camp))
-                                        {{Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(10)->pop($question->question['description'] ?:'')}}
-                                    @endif>{{$question->question['name']}}
+                                    @if($question->competence_text())
+                                        {{Popper::pop($question->competence_text())}}
+                                         @endif>{{$question->question['name']}}
                                     
-                                        @if($question->isCoreCompetence($camp))
+                                        @if($question->competence_text())
                                             <i class="fas fa-info-circle"></i>
                                         @endif
                                     </td>
@@ -54,18 +54,18 @@
                                                 @foreach ($answers as $answer)  
                                                 @if ($aktUser->isLeader())
                                                 
-                                                    <td width="50px" {{ Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(0)->pop($answer['description'])}}>     
+                                                    <td width="50px" {{ Popper::pop($answer['description'])}}>     
                                                         {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']])}}
                                                         {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                     </td>
                                                 @else
                                                     @isFirstSurvey($survey->survey_status_id)
-                                                        <td width="50px" {{ Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(0)->pop($answer['description'])}}>
+                                                        <td width="50px" {{ Popper::pop($answer['description'])}}>
                                                             {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
                                                             {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                         </td>
                                                     @else
-                                                        <td width="50px" {{ Popper::delay(500,0)->theme('lightborder')->placement('top', 'start')->arrow()->distance(0)->pop($answer['description'])}}>
+                                                        <td width="50px" {{ Popper::pop($answer['description'])}}>
                                                             {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
                                                             {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                         </td>

@@ -23,7 +23,8 @@ class CreateCampTypesTable extends Migration
         DB::table('camp_types')->insert(
            array(
                ['id' => config('status.camptype_JS1'), 'name' => 'J+S Leiter 1'],
-               ['id' => config('status.camptype_JS2'), 'name' => 'J+S Leiter 2']
+               ['id' => config('status.camptype_JS2'), 'name' => 'J+S Leiter 2'],
+               ['id' => config('status.camptype_Exp'), 'name' => 'Expertenkurs']
            )
        );
     }

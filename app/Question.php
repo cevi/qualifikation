@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
@@ -19,5 +20,4 @@ class Question extends Model
     public function chapter(){
         return $this->belongsTo('App\Chapter');
     }
-
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class SurveyQuestion extends Model
@@ -29,6 +30,17 @@ class SurveyQuestion extends Model
     public function isCoreCompetence($camp){
         return ($this->question['competence_js1'] && $camp['camp_type_id']===config('status.camptype_JS1')) ||
                                     ($this->question['competence_js2'] && $camp['camp_type_id']===config('status.camptype_JS2'));
+    }
+
+    public function competence_text(){
+        $camp = Auth::user()->camp;
+        $competence = Competence::where('camp_type_id', $camp['camp_type_id'])->where('question_id', $this->question['id'])->first();
+        if($competence){
+            return $competence['name'];
+        }
+        else{
+            return '';
+        }
     }
 
 }

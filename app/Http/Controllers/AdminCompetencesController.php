@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\CampType;
+use App\Question;
 use App\Competence;
 use Illuminate\Http\Request;
 
-class CompetenceController extends Controller
+class AdminCompetencesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,6 +17,10 @@ class CompetenceController extends Controller
     public function index()
     {
         //
+        $competences = Competence::all();
+        $questions = Question::pluck('competence','id')->all();
+        $camp_types = CampType::pluck('name','id')->all();
+        return view('admin.competences.index', compact('competences', 'questions', 'camp_types'));
     }
 
     /**
@@ -36,6 +42,9 @@ class CompetenceController extends Controller
     public function store(Request $request)
     {
         //
+        Competence::create($request->all());
+
+        return redirect('admin/competences');
     }
 
     /**
@@ -58,6 +67,9 @@ class CompetenceController extends Controller
     public function edit(Competence $competence)
     {
         //
+        $questions = Question::pluck('competence','id')->all();
+        $camp_types = CampType::pluck('name','id')->all();
+        return view('admin.competences.edit', compact('competence', 'questions', 'camp_types'));
     }
 
     /**
@@ -70,6 +82,9 @@ class CompetenceController extends Controller
     public function update(Request $request, Competence $competence)
     {
         //
+        $competence->update($request->all());
+
+        return redirect('/admin/competences');
     }
 
     /**
@@ -81,5 +96,7 @@ class CompetenceController extends Controller
     public function destroy(Competence $competence)
     {
         //
+        $competence->delete();
+        return redirect('/admin/competences');
     }
 }
