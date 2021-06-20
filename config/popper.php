@@ -78,8 +78,8 @@ return [
          *
          */
         'trigger' => [
-            'mouseenter' => true,
-            'focus' => true,
+            'mouseenter' => false,
+            'focus' => false,
             'click' => true,
         ],
 

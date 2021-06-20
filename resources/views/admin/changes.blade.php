@@ -37,7 +37,7 @@
                         <li>Passwort selber über hinterlegte Mailadresse zurücksetzen können</li>
                         <li>Kernkompetenzen als Anhangstabellen an Fragen, für mehrere Kernkompetenzen bei verschiedenen Kurstypen</li>
                         <li>Expertenkurs als Kurstyp registriert.</li>
-                        <li>-Im Quali-Bogen keine Tooltips. Auf Mobilgeräten erscheinen diese z.T. nicht (Erklärung - 0 + ++ und Schlüsselkompetenzen)</li>
+                        <li>Im Quali-Bogen keine Tooltips. Auf Mobilgeräten erscheinen diese z.T. nicht (Erklärung - 0 + ++ und Schlüsselkompetenzen)</li>
                     </ul>
                     <h3>V5</h3>
                     <ul>
