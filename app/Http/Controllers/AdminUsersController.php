@@ -316,7 +316,7 @@ class AdminUsersController extends Controller
                 if($input['cropped_photo_id']){
                     $save_path = 'images/'.$camp['name'];
                     if (!file_exists($save_path)) {
-                        mkdir($save_path, 666, true);
+                        mkdir($save_path, 0755, true);
                     }
                     $name = time() . str_replace(' ', '', $file->getClientOriginalName());
                     Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);  

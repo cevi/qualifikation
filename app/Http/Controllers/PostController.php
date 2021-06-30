@@ -49,7 +49,7 @@ class PostController extends Controller
         if($file = $request->file('file')){
             $save_path = 'images/'.$camp['name'].'/files';
             if (!file_exists($save_path)) {
-                mkdir($save_path, 666, true);
+                mkdir($save_path, 0755, true);
             }
             $name = time() . '_' . str_replace(' ', '', $file->getClientOriginalName());
             
