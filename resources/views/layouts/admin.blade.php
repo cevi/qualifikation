@@ -30,7 +30,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6 text-right">
-                            <p>Made by Amirli, {{env('VERSION')}}</p>
+                            <p>Made by Amirli, {{config('app.version')}}</p>
                       </div>
                     </div>
                 </div>
@@ -40,6 +40,8 @@
 
         <!-- jQuery -->
         <script src="{{asset('js/libs.js')}}"></script>
+         <!-- Typeahead.js Bundle -->
+        
         @yield('scripts')
         
     </body>

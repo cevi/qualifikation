@@ -6,12 +6,11 @@ use App\Post;
 use App\Role;
 use App\User;
 use App\Survey;
+use App\CampUser;
 use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
@@ -27,7 +26,7 @@ class UsersController extends Controller
         if(!$aktUser){
             return redirect('/home');
         }
-        $users = Helper::getUsers($aktUser);
+        $users = $aktUser->camp->participants;
         $users_id = [];
         if($users){
             $users_id = $users->pluck('id')->all();
@@ -47,18 +46,18 @@ class UsersController extends Controller
         //
         $aktUser = Auth::user();
         if(!$aktUser->isTeilnehmer()){
-            $users = Helper::getUsers($aktUser);
+            $users = $aktUser->camp->participants;
             $users_id = [];
             if($users){
                 $users_id = $users->pluck('id')->all();
             }
+            $camp_user = CampUser::where('user_id', $user['id'])->where('camp_id', $aktUser->camp['id'])->first();
 
-            // $user = User::findOrFail($id);
             $posts = Post::where('user_id',$user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name','id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
-            $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'chapters.questions.question'])
-                ->where('user_id', $user->id)->get()->values();
+            $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
+                ->where('camp_user_id', $camp_user->id)->get()->values();
             return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users'));
         }
         else {

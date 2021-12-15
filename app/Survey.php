@@ -4,21 +4,29 @@ namespace App;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Survey extends Model
 {
     //
+    use HasFactory;
+    
     protected $fillable = [
-        'user_id', 'survey_status_id', 'slug'
+        'survey_status_id', 'slug', 'camp_user_id'
     ];
 
-    public function user(){
-        return $this->belongsTo('App\User', 'user_id');
+    protected $casts = [
+        'demo' => 'boolean',
+    ];
+
+    public function campUser(){
+        return $this->belongsTo('App\CampUser');
     }
 
     public function MySurvey(){
         $aktUser = Auth::user();
-        return ($this->user_id === $aktUser['id'] || $this->user->leader_id === $aktUser['id']);
+        $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $aktUser->camp['id'])->first();
+        return ($this->camp_user_id === $camp_user['id'] || $this->camp_user->leader_id === $aktUser['id']);
     }
 
     public function SurveyName(){

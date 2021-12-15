@@ -6,11 +6,11 @@
         <h1>Übersicht</h1>
 
         <p class="lead">
-            von {{$survey->user['username']}}
+            von {{$survey->campuser->user['username']}}
         </p>
         @if(!$aktUser->isTeilnehmer())
             <p>
-                <a type="button" class="btn btn-info btn-sm" href="{{route('survey.downloadPDF', $survey)}}">Druckansicht</a>
+                <a type="button" class="btn btn-primary btn-sm" href="{{route('survey.downloadPDF', $survey)}}">Druckansicht</a>
             </p>
             <p>
                 Die Bewertungen und die Kommentare der Leiter sind für die Teilnehmer nicht ersichtlich.
@@ -18,6 +18,29 @@
         @endif
         <p>
             Die <span class = 'core_competence'>blau hinterlegten Kompetenzen</span>  sind die Kernkompetenzen für deine Ausbildungsstufe.
+        </p>
+        <p>
+            <h4>Bewertungsschlüssel</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        @foreach ($answers as $answer)  
+                        <th>     
+                            {{$answer['name']}}
+                        </th> 
+                        @endforeach 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach ($answers as $answer) 
+                        <td>     
+                            {{$answer['description']}}
+                        </td>
+                        @endforeach 
+                    </tr>
+                </tbody>
+            </table>
         </p>
         @foreach ($survey->chapters as $chapter)
             <div id="recent-activities-wrapper-{{$chapter->chapter['number']}}" class="card updates activities">

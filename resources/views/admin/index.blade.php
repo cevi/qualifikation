@@ -19,7 +19,7 @@
             <div class="col-xl-3 col-md-3 col-6">
               <div class="wrapper count-title d-flex">
                 <div class="icon"><i class="icon-padnote"></i></div>
-                <div class="name"><strong class="text-uppercase">1. Selbsteinschätzung ausgefüllt</strong>
+                <div class="name"><strong class="text-uppercase">1. Einschätzung ausgefüllt</strong>
                     <div class="count-number">{{$surveys_1offen ?? ''}}</div>
                 </div>
               </div>
@@ -28,7 +28,7 @@
             <div class="col-xl-3 col-md-3 col-6">
               <div class="wrapper count-title d-flex">
                 <div class="icon"><i class="icon-padnote"></i></div>
-                <div class="name"><strong class="text-uppercase">2. Selbsteinschätzung ausgefüllt</strong>
+                <div class="name"><strong class="text-uppercase">2. Einschätzung ausgefüllt</strong>
                     <div class="count-number">{{$surveys_2offen ?? ''}}</div>
                 </div>
               </div>
@@ -37,7 +37,7 @@
             <div class="col-xl-3 col-md-3 col-6">
               <div class="wrapper count-title d-flex">
                 <div class="icon"><i class="icon-padnote"></i></div>
-                <div class="name"><strong class="text-uppercase">Qualifikationsprozesse abgeschlossen</strong>
+                <div class="name"><strong class="text-uppercase">Quali-Prozesse abgeschlossen</strong>
                     <div class="count-number">{{$surveys_fertig ?? ''}}</div>
                 </div>
               </div>
@@ -52,9 +52,9 @@
                         <div class="col-lg-6 col-md-12" id="Chart-{{$loop->iteration}}">
                             <!-- Recent Activities Widget      -->
                             <div class="card updates activities">
-                                <a href="{{route('survey.compare',$survey->user_id)}}" target="blank">
+                                <a href="{{route('survey.compare',$survey['slug'])}}" target="blank">
                                     <div  class="card-header d-flex justify-content-between align-items-center">
-                                        <h2 class="h5 display">{{$survey->user['username']}}</h2>
+                                        <h2 class="h5 display">{{$survey->campuser->user['username']}}</h2>
                                         <h2 class="h5 display">{{$survey->survey_status['name']}}</h2>
                                     </div>
                                 </a>
@@ -76,7 +76,7 @@
                 <div class="row d-flex align-items-md-stretch"> 
                     <ul class="list-unstyled">
                         @foreach ($surveys as $survey)
-                            <li><a href="#Chart-{{$loop->iteration}}">{{$survey->user['username']}}</a></li>
+                            <li><a href="#Chart-{{$loop->iteration}}">{{$survey->campuser->user['username']}}</a></li>
                         @endforeach
                     </ul>
                 </div>

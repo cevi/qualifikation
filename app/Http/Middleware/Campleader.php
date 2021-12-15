@@ -22,6 +22,6 @@ class Campleader
 
             }
         }
-        return redirect(404);
+        return redirect('/home');
     }
 }

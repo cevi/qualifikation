@@ -21,15 +21,6 @@ class CreateRolesTable extends Migration
             $table->integer('is_leader')->default(0);
             $table->timestamps();
         });
-        // Insert some stuff
-        DB::table('roles')->insert(
-           array(
-               ['id' => config('status.role_Administrator'), 'name' => 'Administrator', 'is_admin' => true, 'is_campleader' => false, 'is_leader' => false],
-               ['id' => config('status.role_Kursleiter'), 'name' => 'Kursleiter', 'is_admin' => false, 'is_campleader' => true, 'is_leader' => false],
-               ['id' => config('status.role_Gruppenleiter'), 'name' => 'Gruppenleiter', 'is_admin' => false, 'is_campleader' => false, 'is_leader' => true],
-               ['id' => config('status.role_Teilnehmer'), 'name' => 'Teilnehmer', 'is_admin' => false, 'is_campleader' => false, 'is_leader' => false],
-           )
-       );
     }
   /**
      * Reverse the migrations.

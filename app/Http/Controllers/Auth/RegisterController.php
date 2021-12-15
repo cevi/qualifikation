@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Camp;
 use App\User;
-use App\Http\Controllers\Controller;
+use App\Group;
+use App\CampUser;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -57,6 +61,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -68,16 +73,23 @@ class RegisterController extends Controller
      * @return \App\User
      */
     protected function create(array $data)
-    {
-        return User::create([
+    {   
+        $camp = Camp::where('global_camp', true)->first();
+        $user = User::create([
             'username' => $data['username'],
-            //'email' => $data['email'],
+            'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'slug' => Str::slug($data['username']),
+            'is_active' => true,
+            'camp_id' => $camp['id'],
+            'role_id' => config('status.role_Teilnehmer'),
         ]);
-    }
-    protected function registered(Request $request, $user)
-    {
-        $this->guard()->logout();
-        return redirect('/login')->with('status', 'Bitte warte, bis du freigeschalten wurdest.');
+        $campUser = CampUser::create([
+            'camp_id' => $camp['id'],
+            'user_id' => $user['id'],
+            'role_id' => config('status.role_Teilnehmer'),
+        ]);
+
+        return $user;
     }
 }

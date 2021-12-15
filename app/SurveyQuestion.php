@@ -4,10 +4,13 @@ namespace App;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SurveyQuestion extends Model
 {
     //
+    use HasFactory;
+    
     protected $fillable = [
     'survey_chapter_id', 'question_id', 'comment_second', 'comment_first', 'answer_first_id','answer_second_id', 'comment_leader', 'answer_leader_id'
     ];
@@ -25,6 +28,10 @@ class SurveyQuestion extends Model
 
     public function question(){
         return $this->belongsTo('App\Question');
+    } 
+
+    public function survey_chapter(){
+        return $this->belongsTo('App\SurveyChapter');
     } 
 
     public function isCoreCompetence($camp){

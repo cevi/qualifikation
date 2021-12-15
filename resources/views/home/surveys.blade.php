@@ -21,7 +21,7 @@
                 <tbody>
                     @if ($surveys)
                         @foreach ($surveys as $survey)
-                            @if($survey->MySurvey() || $aktUser->isCampleader())
+                            {{-- @if($survey->MySurvey() || $aktUser->isCampleader()) --}}
                                 <tr>
                                     @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen'))|| 
                                         $aktUser->isLeader())
@@ -34,21 +34,21 @@
                                         </td>
                                     @endif
                                     @if ($aktUser->isTeilnehmer() && $survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen'))
-                                        <td><a href="{{route('survey.compare', $survey->user->slug)}}">{{$survey->SurveyName()}}</a></td>
+                                        <td><a href="{{route('survey.compare', $survey->slug)}}">{{$survey->SurveyName()}}</a></td>
                                     @endif
                                     @if (!$aktUser->isTeilnehmer())
-                                        <td><a href="{{route('survey.compare', $survey->user->slug)}}">Vergleich</a></td>
+                                        <td><a href="{{route('survey.compare', $survey->slug)}}">Vergleich</a></td>
                                     @endif
                                     <td>
                                         @if (!$aktUser->isTeilnehmer())
-                                        <a href="{{route('home.profile', $survey->user->slug)}}">{{$survey->user['username']}}</a>
+                                        <a href="{{route('home.profile', $survey->campuser->user->slug)}}">{{$survey->campuser->user['username']}}</a>
                                         @else
-                                            {{$survey->user['username']}}
+                                            {{$survey->campuser->user['username']}}
                                         @endif
                                     </td>
                                     <td>{{$survey->survey_status['name']}}</td>
                                 </tr>    
-                            @endif
+                            {{-- @endif --}}
                         @endforeach
 
                     @endif
@@ -63,7 +63,7 @@
                             <div class="card">
                                 <a href="{{route('survey.compare',$survey->slug)}}">
                                     <div  class="card-header d-flex justify-content-between align-items-center">
-                                        <h2 class="h5 display">{{$survey->user['username']}}</h2>
+                                        <h2 class="h5 display">{{$survey->campuser->user['username']}}</h2>
                                         <h2 class="h5 display">{{$survey->survey_status['name']}}</h2>
                                     </div>
                                 </a>

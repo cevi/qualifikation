@@ -17,16 +17,9 @@ class CreateAnswersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('count');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
-        DB::table('answers')->insert(
-            array(
-                ['name' => '-', 'count' => -1],
-                ['name' => '0', 'count' => 0],
-                ['name' => '+', 'count' => 1],
-                ['name' => '++', 'count' => 2]
-            )
-        );
     }
 
     /**

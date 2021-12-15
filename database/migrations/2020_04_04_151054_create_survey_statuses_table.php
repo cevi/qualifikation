@@ -19,20 +19,6 @@ class CreateSurveyStatusesTable extends Migration
             $table->string('name');
             $table->timestamps();
         });
-        DB::table('survey_statuses')->insert( 
-            array(
-                ['id' => config('status.survey_neu'),
-                'name' => 'Neu'],
-                ['id' => config('status.survey_1offen'),
-                'name' => '1. Selbsteinschätzung Offen'],
-                ['id' => config('status.survey_2offen'),
-                'name' => '2 Selbsteinschätzung Offen'],
-                ['id' => config('status.survey_tnAbgeschlossen'),
-                'name' => 'TN Selbsteinschätzung Abgeschlossen'],
-                ['id' => config('status.survey_fertig'),
-                'name' => 'Qualifikationsprozess Abgeschlossen'],
-            )
-        );
     }
 
     /**

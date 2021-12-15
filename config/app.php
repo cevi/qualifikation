@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Cevi Qualifizierungen'),
 
+    'version' => env('VERSION', 'V1.0'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -82,7 +84,7 @@ return [
     |
     */
 
-    'locale' => 'de-CH',
+    'locale' => 'de_CH',
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +97,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'de-CH',
+    'fallback_locale' => 'de_CH',
 
     /*
     |--------------------------------------------------------------------------
@@ -108,7 +110,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => 'de_CH',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,6 +167,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         \SocialiteProviders\Manager\ServiceProvider::class, 
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -229,6 +232,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Bugsnag' => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
 
     ],
 

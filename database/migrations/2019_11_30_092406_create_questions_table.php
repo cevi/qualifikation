@@ -18,6 +18,8 @@ class CreateQuestionsTable extends Migration
             $table->timestamps();
             $table->string('name');
             $table->bigInteger('chapter_id')->index()->unsigned()->nullable();
+            $table->string('competence',50);
+            $table->string('number',5);
         });
     }
 

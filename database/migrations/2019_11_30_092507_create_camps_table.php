@@ -16,8 +16,12 @@ class CreateCampsTable extends Migration
         Schema::create('camps', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            $table->string('name');
-            $table->integer('year');
+            $table->string('name')->unique();
+            $table->boolean('global_camp');
+            $table->boolean('demo');
+            $table->bigInteger('user_id')->index()->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set Null');
+            $table->boolean('secondsurveyopen')->default(false);
         });
     }
 

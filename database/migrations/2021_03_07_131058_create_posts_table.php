@@ -21,6 +21,7 @@ class CreatePostsTable extends Migration
             $table->bigInteger('leader_id')->index()->unsigned()->nullable();
             $table->foreign('leader_id')->references('id')->on('users')->onDelete('set Null');
             $table->text('comment');
+            $table->string('file')->nullable();
         });
     }
 

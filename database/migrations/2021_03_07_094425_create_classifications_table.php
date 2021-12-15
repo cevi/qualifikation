@@ -19,16 +19,6 @@ class CreateClassificationsTable extends Migration
             $table->timestamps();
             $table->string('name');
         });
-        DB::table('classifications')->insert( 
-            array(
-                ['id' => config('status.classification_red'),
-                'name' => 'Rot'],
-                ['id' => config('status.classification_yellow'),
-                'name' => 'Gelb'],
-                ['id' => config('status.classification_green'),
-                'name' => 'Grün'],
-            )
-        );
     }
 
     /**

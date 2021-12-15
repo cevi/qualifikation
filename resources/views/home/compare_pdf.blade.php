@@ -28,8 +28,8 @@
             <div class="container-fluid" style="page-break-inside:avoid; page-break-after:always;">
                 <!-- Page Header-->
                 <header> 
-                    <h2>Teilnehmer: {{$survey->user['username']}}</h2>
-                    <h3>Leiter: {{$survey->user->leader['username']}} </h3>       
+                    <h2>Teilnehmer: {{$survey->campuser->user['username']}}</h2>
+                    <h3>Leiter: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>       
                 </header>
                 @foreach ($survey->chapters as $chapter)
 

@@ -23,15 +23,6 @@ class AdminCompetencesController extends Controller
         return view('admin.competences.index', compact('competences', 'questions', 'camp_types'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -45,17 +36,6 @@ class AdminCompetencesController extends Controller
         Competence::create($request->all());
 
         return redirect('admin/competences');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Competence  $competence
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Competence $competence)
-    {
-        //
     }
 
     /**

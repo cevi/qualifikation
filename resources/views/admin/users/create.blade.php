@@ -22,47 +22,67 @@
             </header>
             <div class="row">
                 <div class="col-sm-6">
+                    <p>Person Suchen:</p>
+                    {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add',  'files' => true]) !!}
+                    <div class="form-group">
+                            {!! Form::label('username', 'Name:') !!}
+                            {!! Form::text('username', null, ['class' => 'form-control autocomplete_txt', 'placeholder' => 'name@abt', 'required', 'onchange' => "Hide_Form()"]) !!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('role_id', 'Role:') !!}
+                        {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
+                    </div>
+                    {!! Form::hidden('user_id', null, ['class' => 'form-control autocomplete_txt']) !!}
+                    <div class="form-group">
+                        {!! Form::submit('Person Hinzufügen', ['class' => 'btn btn-primary'])!!}
+                    </div>
+                    {!! Form::close()!!}
+                </div>
+                <div class="col-sm-6">
+                    <p>Person Erstellen:</p>
                     @include('includes.form_error')
                     {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@store',  'files' => true]) !!}
                     <div class="form-group">
                             {!! Form::label('username', 'Name:') !!}
                             {!! Form::text('username', null, ['class' => 'form-control', 'placeholder' => 'name@abt', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                            {!! Form::label('email', 'E-Mail:') !!}
-                            {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'name@abt.ch', 'required']) !!}
-                    </div>
-                    <div class="form-group">
-                        {!! Form::label('avatar', 'Photo:') !!}
-                        {!! Form::file('avatar', ['class' => 'photo']) !!}
-                    </div>
-                    <div class="form-group">
-                        {!! Form::hidden('cropped_photo_id', null, ['class' => 'form-control', 'id' => 'cropped_photo_id']) !!}
-                    </div>
+                    <div id="user_information_form">
+                        <div class="form-group">
+                                {!! Form::label('email', 'E-Mail:') !!}
+                                {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'name@abt.ch', 'required']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::label('avatar', 'Photo:') !!}
+                            {!! Form::file('avatar', ['class' => 'photo']) !!}
+                        </div>
+                        <div class="form-group">
+                            {!! Form::hidden('cropped_photo_id', null, ['class' => 'form-control', 'id' => 'cropped_photo_id']) !!}
+                        </div>
 
-                    <div class="form-group">
-                        {!! Form::label('role_id', 'Role:') !!}
-                        {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
-                    </div>
+                        <div class="form-group">
+                            {!! Form::label('role_id', 'Role:') !!}
+                            {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
+                        </div>
 
-                    <div class="form-group">
-                        {!! Form::label('leader_id', 'Gruppenleiter:') !!}
-                        {!! Form::select('leader_id', [''=>'Wähle Gruppenleiter'] + $leaders, null,  ['class' => 'form-control']) !!}
-                    </div>
+                        <div class="form-group">
+                            {!! Form::label('leader_id', 'Gruppenleiter:') !!}
+                            {!! Form::select('leader_id', [''=>'Wähle Gruppenleiter'] + $leaders, null,  ['class' => 'form-control']) !!}
+                        </div>
 
-                    <div class="form-group">
-                        {!! Form::label('classification_id', 'Klassifizierung:') !!}
-                        {!! Form::select('classification_id', [''=>'Wähle Klassifizierung'] + $classifications, null, ['class' => 'form-control']) !!}
-                    </div>
+                        <div class="form-group">
+                            {!! Form::label('classification_id', 'Klassifizierung:') !!}
+                            {!! Form::select('classification_id', [''=>'Wähle Klassifizierung'] + $classifications, null, ['class' => 'form-control']) !!}
+                        </div>
 
-                    <div class="form-group">
-                        {!! Form::label('is_active', 'Status:') !!}
-                        {!! Form::select('is_active', array(1 => "Aktiv", 0 => 'Nicht Aktiv'), null,  ['class' => 'form-control']) !!}
-                    </div>
+                        <div class="form-group">
+                            {!! Form::label('is_active', 'Status:') !!}
+                            {!! Form::select('is_active', array(1 => "Aktiv", 0 => 'Nicht Aktiv'), null,  ['class' => 'form-control']) !!}
+                        </div>
 
-                    <div class="form-group">
-                        {!! Form::label('password', 'Password:') !!}
-                        {!! Form::password('password', ['class' => 'form-control', 'required']) !!}
+                        <div class="form-group">
+                            {!! Form::label('password', 'Password:') !!}
+                            {!! Form::password('password', ['class' => 'form-control', 'required']) !!}
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -102,8 +122,46 @@
             </div>
         </div>
     </section>
-</div>
 @endsection
 @section('scripts')
     @include('admin/users/photo_cropped_js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+    <script type="text/javascript">
+        //autocomplete script
+        $(document).on('focus','.autocomplete_txt',function(){
+            type = $(this).attr('name');
+        
+            if(type =='username')autoType='username';  
+        
+            $(this).autocomplete({
+                minLength: 3,
+                highlight: true,
+                source: function( request, response ) {
+                        $.ajax({
+                            url: "{{ route('searchajaxuser') }}",
+                            dataType: "json",
+                            data: {
+                                term : request.term,
+                                type : type,
+                            },
+                            success: function(data) {
+                                var array = $.map(data, function (item) {
+                                return {
+                                    label: item['username'],
+                                    value: item[autoType],
+                                    data : item
+                                }
+                            });
+                                response(array)
+                            }
+                        });
+                },
+                select: function( event, ui ) {
+                    var data = ui.item.data;   
+                    $("[name='username']").val(data.username);
+                    $("[name='user_id']").val(data.id);
+                }
+            });
+        });
+    </script>
 @endsection

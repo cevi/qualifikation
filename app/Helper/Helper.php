@@ -2,24 +2,13 @@
 
 namespace App\Helper;
 
+use App\Camp;
 use App\User;
 use App\Answer;
+use App\CampUser;
 
 class Helper
 {
-    static function getUsers($aktUser)
-    {
-        $users = [];
-        if($aktUser){
-            if(!$aktUser->isTeilnehmer()){
-                $users = User::where('camp_id',$aktUser['camp_id'])->where('role_id', config('status.role_Teilnehmer'))->get();
-            }
-        }else{
-            $users = null;
-        }
-        return $users;
-    }
-
     static function clearSurvey($survey, $which)
     {
         $questions = $survey->questions;
@@ -30,5 +19,35 @@ class Helper
             }
             $question->update(['answer_second_id' => $answer['id'], 'comment_second' => '']); 
         }
+    }
+
+    static function updateCamp(User $user, Camp $camp, $create = false)
+    {
+        if($create){
+            $camp_global = Camp::where('global_camp', true)->first();
+            CampUser::firstOrCreate([
+                'camp_id' => $camp_global['id'],
+                'user_id' => $user['id'],
+                'role_id' => config('status.role_Teilnehmer'),
+            ]);
+
+        }
+        $camp_user = CampUser::firstOrCreate(['camp_id' => $camp->id, 'user_id' =>$user->id]);
+        if($create){
+            $camp_user->update([
+                'role_id' => $user['role_id'],
+                'leader_id' => $user['leader_id'], 
+            ]);
+        }
+        if( $camp_user->leader){
+            $leader_id = $camp_user->leader->id;
+        }
+        else{
+            $leader_id = null;
+        }
+        $user->update([
+            'camp_id' => $camp->id, 
+            'leader_id' => $leader_id, 
+            'role_id' => $camp_user->role->id]);
     }
 }

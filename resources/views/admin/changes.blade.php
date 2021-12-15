@@ -42,6 +42,9 @@
                     <h3>V5</h3>
                     <ul>
                         <li>Login durch Cevi-DB Benutzerdaten.</li>
+                        <li>Eigene Kurs-Erstellung ermöglichen.</li>
+                        <li>Landing Page mit Screenshots, Anleitung, etc.</li>
+                        <li>Mobile-Tauglichkeit weiter verbessern.</li>
                     </ul>
                 </div>
             </div>

@@ -20,10 +20,6 @@
                 <div class="col-sm-6">
                     {!! Form::model($camp, ['method' => 'Patch', 'action'=>['AdminCampsController@update',$camp->id]]) !!}
                         <div class="form-group">
-                            {!! Form::label('year', 'Jahr:') !!}
-                            {!! Form::text('year', null, ['class' => 'form-control', 'required']) !!}
-                        </div>
-                        <div class="form-group">
                             {!! Form::label('name', 'Name:') !!}
                             {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
@@ -49,11 +45,13 @@
                             {!! Form::submit('Update Kurs', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
-                    {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
-                    <div class="form-group">
-                        {!! Form::submit('Kurs löschen', ['class' => 'btn btn-danger confirm'])!!}
-                    </div>
-                    {!! Form::close()!!}
+                    @if (!Auth::user()->demo) 
+                        {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
+                        <div class="form-group">
+                            {!! Form::submit('Kurs löschen', ['class' => 'btn btn-danger confirm'])!!}
+                        </div>
+                        {!! Form::close()!!}
+                    @endif
                  </div>
             </div>
         </div>    

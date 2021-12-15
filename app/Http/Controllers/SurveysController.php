@@ -6,7 +6,7 @@ use App\Camp;
 use App\User;
 use App\Answer;
 use App\Survey;
-use App\Helper\Helper;
+use App\CampUser;
 use App\SurveyQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +23,8 @@ class SurveysController extends Controller
     {
         $aktUser = Auth::user();
         $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
-        // $survey = Survey::FindOrFail($id);
-        $user_survey = $survey->user;
+        
+        $user_survey = $survey->campUser->user;
         $surveys = [];
         if(($aktUser->isTeilnehmer() && $survey['survey_status_id'] > config('status.survey_2offen'))){
             return redirect()->back();
@@ -38,11 +38,11 @@ class SurveysController extends Controller
                     return redirect()->back();
                 }
                 else{
-                    $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader'])->where('user_id', $user_survey['id'])->get()->sortBy('user.username')->values();
+                    $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader'])->where('id', $survey['id'])->get()->sortBy('user.username')->values();
                 }
             }
         }
-        $users = Helper::getUsers($aktUser);
+        $users = $aktUser->camp->participants;
         $answers = Answer::all();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         return view('home.survey', compact('aktUser','surveys', 'answers' ,'camp', 'users'));
@@ -95,7 +95,7 @@ class SurveysController extends Controller
                 else {
                     $survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]); 
                 }
-                return redirect('/');
+                return redirect('/home');
             }
             else if ($survey['survey_status_id'] === config('status.survey_neu')){
                 $survey->update(['survey_status_id' => config('status.survey_1offen')]); 
@@ -105,32 +105,27 @@ class SurveysController extends Controller
         
     }
 
-    public function compare(User $user)
+    public function compare(Survey $survey)
     {
         $aktUser = Auth::user();
-        if($aktUser->isCampleader()){
-            $users = User::where('camp_id',$aktUser['camp_id'])->pluck('id')->all();
-        }
-        else
-        {
-            $users = User::where('leader_id',$aktUser['id'])->pluck('id')->all();
-        }
-        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user'])->where('user_id', $user->id)->get()->sortBy('user.username')->values();
-        // return $surveys;
-        $camp = Camp::FindOrFail($aktUser['camp_id']);
-        if($aktUser->isTeilnehmer() && $user->id != $aktUser['id']){
+        $camp = $aktUser->camp;
+        $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $camp['id'])->first();
+        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
+ 
+        if($aktUser->isTeilnehmer() && $camp_user->user->id != $aktUser['id']){
             return redirect()->back();
         }
         else{
-            $users = Helper::getUsers($aktUser);
-            return view('home.compare', compact('aktUser','surveys','camp', 'users'));
+            $users = $camp->participants;
+            $answers = Answer::all();
+            return view('home.compare', compact('aktUser','surveys','camp', 'users', 'answers'));
         }
     }
 
     public function downloadPDF(Survey $survey)
     {
         $camp = Auth::user()->camp;
-        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'user', 'chapters.questions.question'])->where('id', $survey->id)->get()->sortBy('user.username')->values();
+        $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->where('id', $survey->id)->get()->sortBy('user.username')->values();
         return view('home.compare_pdf', compact('survey','surveys', 'camp'));
     }
 

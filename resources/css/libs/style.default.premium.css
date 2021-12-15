@@ -223,12 +223,6 @@ nav.navbar .navbar-holder {
   width: 100%;
 }
 
-nav.navbar a {
-  /* font-size: .8rem; */
-  color: #fff;
-  position: relative;
-}
-
 nav.navbar .badge {
   position: absolute;
   top: 0;
@@ -342,7 +336,7 @@ nav.navbar a.menu-btn i[class*='icon-'] {
 }
 
 nav.navbar a.menu-btn:hover {
-  background: #33b35a;
+  background: var(--blue);
 }
 
 /*  NAVBAR MEDIAQUERIES ---------------------------------- */
@@ -433,7 +427,7 @@ nav.navbar a.menu-btn:hover {
 }
 
 .side-navbar li a:focus, .side-navbar li a:hover, .side-navbar li a[aria-expanded="true"] {
-  background: #33b35a;
+  background: var(--blue);
   color: #fff;
   text-decoration: none;
 }
@@ -667,23 +661,6 @@ nav.navbar a.menu-btn:hover {
   }
 }
 
-/* Malihu Custom Scroll */
-.mCSB_scrollTools {
-  width: 4px;
-}
-
-.mCSB_inside > .mCSB_container {
-  margin-right: 0 !important;
-}
-
-.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
-  background-color: #33b35a;
-}
-
-.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar:hover {
-  background-color: #33b35a;
-}
-
 /*
 * ==========================================================
 *      DASHBOARD COUNTS
@@ -701,7 +678,7 @@ nav.navbar a.menu-btn:hover {
 
 .dashboard-counts .count-title i {
   font-size: 1.5em;
-  color: #33b35a;
+  color: #467fbf;
 }
 
 .dashboard-counts .icon {
@@ -4045,15 +4022,15 @@ STYLE SWITCHER FOR DEMO
 }
 
 .btn-primary {
-  color: color-yiq(#33b35a);
-  background-color: #33b35a;
-  border-color: #33b35a;
+  color: white;
+  background-color: var(--blue);
+  border-color: var(--blue);
 }
 
 .btn-primary:hover {
-  color: color-yiq(#2b954b);
-  background-color: #2b954b;
-  border-color: #288b46;
+  color: white;
+  background-color: var(--blue);
+  border-color: var(--blue);
 }
 
 .btn-primary:focus, .btn-primary.focus {
@@ -4523,8 +4500,9 @@ STYLE SWITCHER FOR DEMO
 }
 
 .btn-outline-light:hover {
-  color: #fff;
-  background-color: #f8f9fa;
+  color: #f8f9fa;
+  background-color: transparent;
+  background-image: none;
   border-color: #f8f9fa;
 }
 
@@ -4606,12 +4584,12 @@ body {
 }
 
 a {
-  color: #33b35a;
+  color: var(--blue);
   text-decoration: none;
 }
 
 a:focus, a:hover {
-  color: #22773c;
+  color: var(--blue);
   text-decoration: underline;
 }
 
@@ -4747,8 +4725,8 @@ a.text-primary:focus, a.text-primary:hover {
 
 .page-item.active .page-link {
   color: #fff;
-  background-color: #33b35a;
-  border-color: #33b35a;
+  background-color: var(--blue);
+  border-color: var(--blue);
 }
 
 .page-item.disabled .page-link {
@@ -4760,13 +4738,13 @@ a.text-primary:focus, a.text-primary:hover {
 .page-link {
   padding: 0.5rem 0.75rem;
   line-height: 1.25;
-  color: #33b35a;
+  color: var(--blue);
   background-color: #fff;
   border: 1px solid #ddd;
 }
 
 .page-link:focus, .page-link:hover {
-  color: #22773c;
+  color: var(--blue);
   text-decoration: none;
   background-color: #e9ecef;
   border-color: #ddd;
@@ -4832,7 +4810,7 @@ a.text-primary:focus, a.text-primary:hover {
 
 .dropdown-item.active, .dropdown-item:active {
   color: #fff;
-  background-color: #33b35a;
+  background-color: var(--blue);
 }
 
 .dropdown-item.disabled, .dropdown-item:disabled {
@@ -4849,7 +4827,7 @@ a.text-primary:focus, a.text-primary:hover {
 * 6. UTILITIES
 */
 .bg-primary {
-  background-color: #33b35a !important;
+  background-color:  var(--blue) !important;
 }
 
 a.bg-primary:focus, a.bg-primary:hover {

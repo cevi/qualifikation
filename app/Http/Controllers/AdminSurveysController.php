@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Answer;
+use App\Camp;
 use App\Survey;
 use App\Chapter;
 use App\Question;
@@ -36,24 +37,21 @@ class AdminSurveysController extends Controller
 
         if(!Auth::user()->isAdmin()){
             $camp = Auth::user()->camp;
-            $surveys = Survey::whereHas('user', function($query) use($camp){
-                $query->where('camp_id', $camp['id'])->where('role_id', config('status.role_Teilnehmer'))->where('is_active', true);
-            })->get();
+            $surveys = $camp->surveys;
         }
         else{
-            $surveys = Survey::whereHas('user', function($query){
-                    $query->where('role_id', config('status.role_Teilnehmer'))->where('is_active', true);})->get();
+            $surveys = Survey::all();
         }
         
         return DataTables::of($surveys)
             ->addColumn('user', function($survey) {
-                $username = $survey->user ? $survey->user['username'] : '';
-                return '<a href='.\URL::route('home.profile', $survey->user['slug']).' title="Zum Profil">'.$username.'</a>';
+                $username = $survey->campuser ? $survey->campuser->user['username'] : '';
+                return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil">'.$username.'</a>';
             })
             ->addColumn('responsible', function (Survey $survey) {
-                return $survey->user->leader ? $survey->user->leader['username'] : '';})
+                return $survey->campuser->leader ? $survey->campuser->leader['username'] : '';})
             ->addColumn('camp', function (Survey $survey) {
-                return $survey->user ? $survey->user->camp['name'] : '';})
+                return $survey->campuser->camp['name'];})
             ->addIndexColumn()
             ->addColumn('status', function($survey) {
                 $survey_statuses_id = [config('status.survey_neu'), 
@@ -71,7 +69,7 @@ class AdminSurveysController extends Controller
                 return $result;
             })
             ->addColumn('Actions', function($survey) {
-                return '<a href='. \URL::route('survey.compare', $survey->user['slug']).'>Zur Qualifikationen</a><br><br>
+                return '<a href='. \URL::route('survey.compare', $survey['slug']).'>Zur Qualifikationen</a><br><br>
                 <a href='. \URL::route('surveys.edit', $survey->slug).'>Bearbeiten</a>';
             })
             ->rawColumns(['user', 'Actions', 'status'])
@@ -88,14 +86,15 @@ class AdminSurveysController extends Controller
     {
         //
         $camp = Auth::user()->camp;
-        $users = User::where('camp_id', $camp['id'])->where('role_id', config('status.role_Teilnehmer'))->where('is_active', true)->doesntHave('own_surveys')->get();
+        $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
         $chapters = Chapter::all();
         $answer = Answer::where('name','0')->first();
 
-        foreach($users as $user){
+        foreach($camp_users as $camp_user){
             $input['name'] = 'Qualifikationsprozess';
-            $input['user_id'] = $user->id;
-            $input['slug'] = Str::slug($user['username']);
+            $input['camp_user_id'] = $camp_user->id;
+            $user = User::find($camp_user['user_id']);
+            $input['slug'] = Str::slug($user['username'].'@'.$camp['name']);
             $input['survey_status_id'] = config('status.survey_neu');
             $survey = Survey::create($input);
             foreach($chapters as $chapter){
@@ -117,28 +116,6 @@ class AdminSurveysController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -148,7 +125,7 @@ class AdminSurveysController extends Controller
     {
         //
         // $survey = Survey::findOrFail($id);
-        $users = User::where('role_id', config('status.role_Teilnehmer'))->pluck('username','id')->all();
+        $users = Auth::user()->camp->participants->pluck('username','id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         $survey_statuses_id = SurveyStatus::pluck('name','id')->all();
         return view('admin.surveys.edit', compact('survey','users', 'leaders', 'survey_statuses_id'));
@@ -165,19 +142,22 @@ class AdminSurveysController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $input = $request->all();
-        $survey = Survey::findOrFail($id);
-        if(isset($input['update'])){
-            if($input['survey_status_id'] == config('status.survey_neu')){
-                Helper::clearsurvey($survey, 'first');
+        if(!Auth::user()->demo){
+            $input = $request->all();
+            $survey = Survey::findOrFail($id);
+            $camp = Auth::user()->camp;
+            if(isset($input['update'])){
+                if($input['survey_status_id'] == config('status.survey_neu')){
+                    Helper::clearsurvey($survey, 'first');
+                }
+                if($input['survey_status_id'] <= config('status.survey_1offen')){
+                    Helper::clearsurvey($survey, 'second');
+                }
             }
-            if($input['survey_status_id'] <= config('status.survey_1offen')){
-                Helper::clearsurvey($survey, 'second');
-            }
+            $user = User::findorFail($input['user_id']);
+            $input['slug'] = Str::slug($user['username'].'@'.$camp['name']);
+            $survey->update($input);
         }
-        $user = User::findorFail($input['user_id']);
-        $input['slug'] = Str::slug($user['username']);
-        $survey->update($input);
   
         return redirect('/admin/surveys');
     }

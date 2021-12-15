@@ -20,13 +20,15 @@
                 {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
             </header>
             <div class="row">
-                <div class="col-lg-4">
-                    <a href="{{route('users.create')}}" class="btn btn-info" role="button">Person erstellen</a>
-                </div>
-                @if (config('app.import_db'))
+                @if (!Auth::user()->demo)
                     <div class="col-lg-4">
-                        <button id="showImport" class="btn btn-info btn-sm">Personen aus Cevi-DB importieren</button>
+                        <a href="{{route('users.create')}}" class="btn btn-primary" role="button">Person erstellen</a>
                     </div>
+                    @if (config('app.import_db'))
+                        <div class="col-lg-4">
+                            <button id="showImport" class="btn btn-primary btn-sm">Personen aus Cevi-DB importieren</button>
+                        </div>
+                    @endif
                 @endif
             </div>
             <br>
@@ -44,22 +46,24 @@
                     </tr>
                 </thead>
             </table>
-            <div class="row">
-                <div class="col-lg-4">
-                    <a href="{{route('users.create')}}" class="btn btn-info" role="button">Person erstellen</a>
+            @if (!Auth::user()->demo)
+                <div class="row">
+                    <div class="col-lg-4">
+                        <a href="{{route('users.create')}}" class="btn btn-primary" role="button">Person erstellen</a>
+                    </div>
                 </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-4">
-                    {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
-                        <div class="form-group">
-                            {{ Form::file('csv_file',['class' => 'dropify'])}}
-                        </div>
-                        {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}  
-                    {!! Form::close() !!}
+                <br>
+                <div class="row">
+                    <div class="col-lg-4">
+                        {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
+                            <div class="form-group">
+                                {{ Form::file('csv_file',['class' => 'dropify'])}}
+                            </div>
+                            {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}  
+                        {!! Form::close() !!}
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>  
     </section>
     <div class="modal fade" id="importModal" aria-hidden="true">
@@ -87,7 +91,7 @@
                             {!! Form::password('password', ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            <button data-remote='{{route('users.import')}}' id="importUsers" class="btn btn-info btn-sm"><i class="fa fa-spinner fa-spin display-none" id="loading-spinner"></i> Personen importieren</button>
+                            <button data-remote='{{route('users.import')}}' id="importUsers" class="btn btn-primary btn-sm"><i class="fa fa-spinner fa-spin display-none" id="loading-spinner"></i> Personen importieren</button>
                         </div>
                     </form>
                 </div>
@@ -109,7 +113,7 @@
                     "url": "/lang/Datatables.json"
                 },
                 ajax: "{!! route('users.CreateDataTables') !!}",
-                order: [[ 2, "asc" ], [ 0, "asc" ]],
+                order: [[ 3, "asc" ], [4, "asc" ],[ 0, "asc" ]],
                 columns: [
                     { data: 'user', name: 'user' },
                     { data: 'picture', name: 'picture', orderable:false,serachable:false},

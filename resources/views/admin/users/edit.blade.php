@@ -61,20 +61,18 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('password', 'Password:') !!}
-                        {!! Form::password('password', ['class' => 'form-control']) !!}
-                    </div>
-
-                    <div class="form-group">
                         {!! Form::submit('Person Updaten', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
 
-                    {!! Form::model($user, ['method' => 'DELETE', 'action'=>['AdminUsersController@destroy',$user->id], 'id'=> "DeleteForm"]) !!}
-                    <div class="form-group">
-                        {!! Form::submit('Person löschen', ['class' => 'btn btn-danger confirm'])!!}
-                    </div>
-                    {!! Form::close()!!}
+                    @if (!Auth::user()->demo)
+                        {!! Form::model($user, ['method' => 'DELETE', 'action'=>['AdminUsersController@destroy',$user->id], 'id'=> "DeleteForm"]) !!}
+                        <div class="form-group">
+                            {!! Form::submit('Person löschen', ['class' => 'btn btn-danger confirm'])!!}
+                        </div>
+                        {!! Form::close()!!}
+                        
+                    @endif
 
                 </div>
             </div>

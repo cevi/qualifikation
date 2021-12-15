@@ -3,12 +3,16 @@
 namespace App;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
-class User extends Authenticatable
+class User extends Authenticatable  implements MustVerifyEmail
 {
     use Notifiable;
+    use SearchableTrait;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 
-        'avatar', 'classification_id', 'slug', 'group_id', 'foreign_id', 'email'
+        'avatar', 'classification_id', 'slug', 'group_id', 'foreign_id', 'email', 'email_verified_at'
     ];
 
     /**
@@ -35,6 +39,14 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_active' => 'boolean',
+        'demo' => 'boolean',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'username' => 1,
+        ]
     ];
 
     public function role(){
@@ -44,9 +56,17 @@ class User extends Authenticatable
     public function camp(){
         return $this->belongsTo('App\Camp');
     } 
+
+    public function camps(){
+        return $this->belongsToMany('App\Camp', 'camp_users');
+    } 
     
     public function leader(){
         return $this->belongsTo('App\User');
+    }
+
+    public function leaders(){
+        return $this->belongsToMany('App\User', 'camp_users');
     }
 
     public function isAdmin(){
@@ -72,10 +92,6 @@ class User extends Authenticatable
 
     public function isTeilnehmer(){
         return (!$this->isLeader() && !$this->isCampleader());
-    }
-
-    public function own_surveys(){
-        return $this->hasMany('App\Survey', 'user_id', 'id');
     }
 
     public function classification(){

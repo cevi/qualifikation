@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ app()->getLocale()}}">
 <head>
 
     <!-- CSRF Token -->
@@ -30,21 +30,22 @@
         <main class="py-4">
             @yield('content')
         </main>
-        @guest
-        @else
+        @auth
             <footer class="main-footer">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-6 text-right">
-                            <p>Made by Amirli, {{env('VERSION')}}</p>
+                            <p>Made by Amirli, {{config('app.version')}}</p>
                     </div>
                     </div>
                 </div>
             </footer>
-        @endif
+        @endauth
     </div>
-    <!-- jQuery -->
+   <!-- jQuery -->
     <script src="{{ asset('js/libs.js') }}"></script>
+
+    
     @yield('scripts')
 </body>
 </html>

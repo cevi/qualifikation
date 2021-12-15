@@ -8,10 +8,33 @@
         <h1>{{$survey->surveyName()}}</h1>
 
         <p class="lead">
-            von {{$survey->user['username']}}
+            von {{$survey->campuser->user['username']}}
         </p>
         <p>
             Die <span class = 'core_competence'>blau hinterlegten Kompetenzen</span>  sind die Kernkompetenzen für deine Ausbildungsstufe.
+        </p>
+        <p>
+            <h4>Bewertungsschlüssel</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        @foreach ($answers as $answer)  
+                        <th>     
+                            {{$answer['name']}}
+                        </th> 
+                        @endforeach 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        @foreach ($answers as $answer) 
+                        <td>     
+                            {{$answer['description']}}
+                        </td>
+                        @endforeach 
+                    </tr>
+                </tbody>
+            </table>
         </p>
         {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->slug]]) !!}
             @foreach ($survey->chapters as $chapter)

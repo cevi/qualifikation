@@ -9,7 +9,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <div class="text-center mbl">
+                                <div class="text-center-profile mbl">
                                     <img src="{{$user->avatar ? $user->avatar : '/img/default_avatar.svg'}}" alt="img" class="img-circle img-bor">
                                 </div>
                             </div>
@@ -18,7 +18,7 @@
                                 <p>{{$user->leader ? $user->leader->username : ''}}</p>
                             </div>
                             <br> 
-                            <div class="text-center mbl">
+                            <div class="text-center-profile mbl">
                                 <div class="ampel" id="ampel">
                                     <a href="javascript:;" class="ampel-btn" data-color="{{config('status.classification_red')}}" data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_red')])}}' >
                                         <div class="circle {{$user->classification_id == config('status.classification_red') ? 'red' : ''}}" color="yellow"></div>
@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-container">
-                                        <canvas id="radarChart-1" width="100%" height="100%"></canvas>
+                                        <canvas id="radarChart-1"></canvas>
                                     </div>
                                 </div>
                             @endforeach

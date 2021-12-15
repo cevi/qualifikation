@@ -7,6 +7,7 @@ use App\User;
 use App\CampStatus;
 use App\CampType;
 use App\Group;
+use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -111,7 +112,9 @@ class AdminCampsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Camp::findOrFail($id)->update($request->all());
+        if(!Auth::user()->demo){
+            Camp::findOrFail($id)->update($request->all());
+        }
 
         return redirect('/admin/camps');
     }
@@ -122,20 +125,17 @@ class AdminCampsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Camp $camp)
     {
         //
-        
-        $user = Auth::user();
-        $camp = Camp::where('user_id',$user['id'])->first();
-        $users = User::where('camp_id',$camp['id'])->where(function($query){
-                $query->where('role_id', config('status.role_Teilnehmer'))->orWhere('role_id', config('status.role_Gruppenleiter'));
-            });
-        if(count($users->get())>0){
-            $users->delete();
+        $users = Auth::user()->camp->allUsers;
+        $camp_global = Camp::where('global_camp', true)->first();
+        foreach($users as $user)
+        {
+            Helper::updateCamp($user, $camp_global);
         }
-        Camp::findOrFail($id)->delete();
-        return redirect('/admin/camps');
+        $camp->delete();
+        return redirect('/home');
     }
 
     public function opensurvey()
