@@ -7,7 +7,7 @@
             <div class="card border-primary">
                 <div class="card-body cardbody-navtabs">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <div class="text-center-profile mbl">
                                     <img src="{{$user->avatar ? $user->avatar : '/img/default_avatar.svg'}}" alt="img" class="img-circle img-bor">
@@ -30,19 +30,20 @@
                                         <div class="circle {{$user->classification_id == config('status.classification_green') ? 'green' : ''}}" color="red"></div>
                                     </a>
                                 </div>   
-                            </div>   
-                        </div>
-                        <div class="col-md-8">
+                            </div>
                             @foreach($surveys as $survey) 
                                 <div class="card-header d-flex align-items-center">
                                     <h4>Kompetenzendarstellung</h4>
                                 </div>
                                 <div class="card-body">
                                     <div class="chart-container">
-                                        <canvas id="radarChart-1"></canvas>
+                                        <canvas id="radarChart-1"  width="100%" height="100%"></canvas>
                                     </div>
                                 </div>
-                            @endforeach
+                            @endforeach   
+                        </div>
+                        <div class="col-md-6">
+                            
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <strong>Rückmeldungen</strong>

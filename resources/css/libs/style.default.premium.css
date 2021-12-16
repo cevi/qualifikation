@@ -277,6 +277,8 @@ nav.navbar .dropdown-menu {
   padding-bottom: 0;
   font-size: 1rem;
   padding: 1rem;
+  max-height: 750px;
+  overflow: auto;
 }
 
 nav.navbar .dropdown-menu .dropdown-item {
@@ -470,7 +472,7 @@ nav.navbar a.menu-btn:hover {
 }
 
 .side-navbar li ul.collapse a {
-  border-left: 2px solid #33b35a;
+  border-left: 2px solid var(--blue);
 }
 
 .side-navbar li ul.collapse a:hover {
@@ -4034,8 +4036,8 @@ STYLE SWITCHER FOR DEMO
 }
 
 .btn-primary:focus, .btn-primary.focus {
-  -webkit-box-shadow: 0 0 0 0.2rem rgba(51, 179, 90, 0.5);
-  box-shadow: 0 0 0 0.2rem rgba(51, 179, 90, 0.5);
+  -webkit-box-shadow: 0 0 0 0.2rem var(--blue);
+  box-shadow: 0 0 0 0.2rem var(--blue);
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
@@ -4045,11 +4047,11 @@ STYLE SWITCHER FOR DEMO
 
 .btn-primary:not([disabled]):not(.disabled):active, .btn-primary:not([disabled]):not(.disabled).active,
 .show > .btn-primary.dropdown-toggle {
-  color: color-yiq(#288b46);
-  background-color: #288b46;
-  border-color: #258141;
-  -webkit-box-shadow: 0 0 0 0.2rem rgba(51, 179, 90, 0.5);
-  box-shadow: 0 0 0 0.2rem rgba(51, 179, 90, 0.5);
+  color: white;
+  background-color: var(--blue);
+  border-color: var(--blue);
+  -webkit-box-shadow: 0 0 0 0.2rem var(--blue);
+  box-shadow: 0 0 0 0.2rem var(--blue);
 }
 
 .btn-secondary {

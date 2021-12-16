@@ -33,6 +33,7 @@ class PermissionRoleSeeder extends Seeder
             'slug' => 'administrator',
             'password' => Hash::make(env('ADMIN_PASSWORD')),
             'role_id' => config('status.role_Administrator'),
+            'email_verified_at' => now(),
             'is_active' => true]);
         $camp = Camp::create(['name' => 'Global-Camp', 'global_camp' => true]);
         $user->update(['camp_id' => $camp['id']]);

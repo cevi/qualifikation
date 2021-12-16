@@ -23,7 +23,7 @@ class DemoCampSeeder extends Seeder
     {
         //
 
-        $user = User::create([
+        $user = User::factory()->create([
             'username' => 'kursleiter@demo', 
             'slug' => 'kursleiter@demo',
             'password' => Hash::make('kursleiter@demo'),

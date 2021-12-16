@@ -50,6 +50,19 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
+Route::get('admin/run-migrations', function () {
+    return Artisan::call('migrate', ["--force" => true ]);
+});
+
+Route::get('admin/run-deployment', function () {
+    Artisan::call('optimize:clear');
+    return true;
+});
+
+Route::get('admin/run-migrations-seed', function () {
+    return Artisan::call('migrate:refresh ', ["--seed" => true ]);
+});
+
 Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => 'verified'], function(){
@@ -108,15 +121,3 @@ Route::group(['middleware' => 'verified'], function(){
 
 });
 
-Route::get('admin/run-migrations', function () {
-    return Artisan::call('migrate', ["--force" => true ]);
-});
-
-Route::get('admin/run-deployment', function () {
-    Artisan::call('optimize:clear');
-    return true;
-});
-
-Route::get('admin/run-migrations-seed', function () {
-    return Artisan::call('migrate:refresh ', ["--seed" => true ]);
-});

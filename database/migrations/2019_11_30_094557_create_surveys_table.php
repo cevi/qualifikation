@@ -18,6 +18,7 @@ class CreateSurveysTable extends Migration
             $table->timestamps();
             $table->boolean('demo');
             $table->bigInteger('camp_user_id')->index()->unsigned()->nullable();
+            $table->foreign('camp_user_id')->references('id')->on('camp_users')->onDelete('cascade');
             $table->string('slug');
         });
     }

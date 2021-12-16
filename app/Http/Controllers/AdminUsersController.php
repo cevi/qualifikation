@@ -180,6 +180,13 @@ class AdminUsersController extends Controller
                             if(!$user){
                                 $user = User::create($insertData);
                             }
+                            else{
+                                $user->update([
+                                    "role_id" => $role_id,
+                                    'classification_id' => config('status.classification_green')
+                                ]);
+                            }
+
                         }
                         else{
                             $user = Auth::user();

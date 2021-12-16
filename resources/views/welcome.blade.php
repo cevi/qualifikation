@@ -41,19 +41,19 @@
             <div class="col-lg-4 col-md-6 block-icon-hover text-center">
               <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i class="fas fa-lock"></i></div>
               <h4 class="text-uppercase mb-3">Sicher</h4>
-              <p class="text-gray-600 text-sm">Jeder Teilnehmer sieht nur die eigenen Eingaben der Qualifikation. Und auch die Leiter sehen nur die Qualifikationen seiner Teilnehmer</p>
+              <p class="text-gray-600 text-sm">Jeder Teilnehmende sieht nur die eigenen Eingaben der Qualifikation. Und auch die Leitenden sehen nur die Qualifikationen der zugewiesenen Teilnehmenden.</p>
             </div>
             <!-- Service-->
             <div class="col-lg-4 col-md-6 block-icon-hover text-center">
               <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i class="fas fa-file-import"></i></div>
               <h4 class="text-uppercase mb-3">Import aus der Cevi-DB</h4>
-              <p class="text-gray-600 text-sm">Importiere alle Leiter und Teilnehmer direkt aus der Cevi-DB inklusive Profilbild, Benutzernahmen und E-Mail.</p>
+              <p class="text-gray-600 text-sm">Importiere alle Leitende und Teilnehmende direkt aus der Cevi-DB inklusive Profilbild, Benutzernahmen und E-Mail.</p>
             </div>
             <!-- Service-->
             <div class="col-lg-4 col-md-6 block-icon-hover text-center">
               <div class="icon icon-outlined icon-outlined-primary icon-thin mx-auto mb-3"><i class="fas fa-id-card"></i></div>
-              <h4 class="text-uppercase mb-3">Teilnehmerprofil</h4>
-              <p class="text-gray-600 text-sm">Hinterlasse einen Kommentar zu einem Teilnehmer oder lege ein Dokument ab. Teile die Teilnehmer in drei Kategorien ein (grün, gelb, rot).</p>
+              <h4 class="text-uppercase mb-3">Teilnehmendenprofil</h4>
+              <p class="text-gray-600 text-sm">Hinterlasse einen Kommentar zu den Teilnehmenden oder lege ein Dokument ab. Teile die Teilnehmenden in drei Kategorien ein (grün, gelb, rot).</p>
             </div>
             <!-- Service-->
             <div class="col-lg-4 col-md-6 block-icon-hover text-center">
@@ -77,7 +77,7 @@
             <div class="col-md-6 text-center">
               <h2 class="text-uppercase">Kursleiter Dashboard</h2>
               <p class="lead mb-3">Erhalte den Überblick über deinen Kurs</p>
-              <p class="mb-3">Behalte den Überblick über deine Teilnehmer, die Qualifikationen und alle wichtigen Daten deines Kurses im Dasboard.</p>
+              <p class="mb-3">Behalte den Überblick über deine Teilnehmenden, die Qualifikationen und alle wichtigen Daten deines Kurses im Dashboard.</p>
             </div>
             <div class="col-md-6"><img class="img-fluid d-block mx-auto" src="img/template-easy-customize.png" alt="..."></div>
           </div>
@@ -102,7 +102,7 @@
             <div class="col-md-6"><img class="img-fluid d-block mx-auto" src="img/template-easy-code.png" alt="..."></div>
             <div class="col-md-6 text-center">
               <h2 class="text-uppercase">Qualifikation online ausfüllen</h2>
-              <p class="mb-3">Fülle die Qualifikation direkt Online aus und vergleiche als Leiter deine Einschätzung mit der Selbsteinschätzung der Teilnehmer. </p>
+              <p class="mb-3">Fülle die Qualifikation direkt Online aus und vergleiche als Leitende deine Einschätzung mit der Selbsteinschätzung der Teilnehmenden.</p>
             </div>
           </div>
         </div>
@@ -112,8 +112,8 @@
         <div class="container">
           <div class="row gy-4 align-items-center">
             <div class="col-md-6">
-              <h2 class="text-uppercase">Sammle Rückmeldungen zu deinen Teilnehmer</h2>
-              <p class="mb-3">Hinterlege direkt einen Kommentar, wenn ein Teilnehmer auffällig wurde. Sammle die Rückmeldungen und verschaff dir als Kursleiter einen Überblick über deine Teilnehmer.<p>
+              <h2 class="text-uppercase">Sammle Rückmeldungen zu deinen Teilnehmenden</h2>
+              <p class="mb-3">Hinterlege direkt einen Kommentar, wenn Teilnehmende auffällig wurden. Sammle die Rückmeldungen und verschaff dir als Kursleitung einen Überblick über deine Teilnehmende.<p>
             </div>
             <div class="col-md-6"><img class="img-fluid d-block mx-auto" src="img/template-mac.png" alt="..."></div>
           </div>
@@ -129,9 +129,9 @@
             <div class="col-lg-6 p-3">
               <h3 class="text-uppercase mb-0">Versuche es gleich selbst mit einem Test-Login aus.</h3>
             </div>
-            <div class="col-lg-2 p-3">   <a class="btn btn-outline-light" href="/loginTN">Teilnehmer</a></div>
-            <div class="col-lg-2 p-3">   <a class="btn btn-outline-light" href="/loginLeiter">Leiter</a></div>
-            <div class="col-lg-2 p-3">   <a class="btn btn-outline-light" href="/loginKursleiter">Kursleiter</a></div>
+            <div class="col-lg-2 p-3">   <a class="btn btn-outline-light" href="/loginTN">Teilnehmende</a></div>
+            <div class="col-lg-2 p-3">   <a class="btn btn-outline-light" href="/loginLeiter">Leitende</a></div>
+            <div class="col-lg-2 p-3">   <a class="btn btn-outline-light" href="/loginKursleiter">Kursleitende</a></div>
           </div>
         </div>
       </div>

@@ -128,6 +128,11 @@ class AdminCampsController extends Controller
     public function destroy(Camp $camp)
     {
         //
+        // $surveys = $camp->surveys();
+        // foreach($surveys as $survey)
+        // {
+        //     $survey->delete();
+        // }
         $users = Auth::user()->camp->allUsers;
         $camp_global = Camp::where('global_camp', true)->first();
         foreach($users as $user)
