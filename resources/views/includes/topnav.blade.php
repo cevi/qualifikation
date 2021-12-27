@@ -65,7 +65,7 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarCampDropdown">
                             @if(!Auth::user()->demo )
                                 <a class="dropdown-item" href="{{ route('home.camps.create') }}">
-                                    Lager erstellen
+                                    Kurs erstellen
                                 </a>
                             @endif
                             @foreach (Auth::user()->camps as $camp)

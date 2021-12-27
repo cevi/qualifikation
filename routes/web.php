@@ -60,7 +60,7 @@ Route::get('admin/run-deployment', function () {
 });
 
 Route::get('admin/run-migrations-seed', function () {
-    return Artisan::call('migrate:refresh ', ["--seed" => true ]);
+    return Artisan::call('migrate:refresh', ["--seed" => true ]);
 });
 
 Auth::routes(['verify' => true]);
