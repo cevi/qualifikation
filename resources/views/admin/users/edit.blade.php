@@ -25,7 +25,7 @@
                     @include('includes.form_error')
                     {!! Form::model($user, ['method' => 'PATCH', 'action'=>['AdminUsersController@update', $user->id],  'files' => true]) !!}
                     <div class="form-group">
-                        {!! Form::label('avatar', 'Photo:') !!}
+                        {!! Form::label('avatar', 'Bild:') !!}
                         {!! Form::file('avatar', ['class' => 'photo']) !!}
                     </div>
                     <div class="form-group">
@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('role_id', 'Role:') !!}
+                        {!! Form::label('role_id', 'Rolle:') !!}
                         {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control']) !!}
                     </div>
 
@@ -106,7 +106,6 @@
             </div>
         </div>
     </section>
-</div>
 @endsection
 
 @section('scripts')

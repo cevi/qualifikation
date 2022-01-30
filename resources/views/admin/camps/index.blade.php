@@ -51,16 +51,16 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Kursleiter</th>
                                     <th scope="col">Kurstyp</th>
-                                    <th scope="col">Created Date</th>
-                                    <th scope="col">Updated Date</th>
+                                    <th scope="col">Erstellt am</th>
+                                    <th scope="col">Geändert am</th>
                                 </tr>
                             </thead>
                         @foreach ($camps as $camp)
                             <tbody>
                                 <tr>
                                     <td><a href="{{route('admin.camps.edit',$camp->id)}}">{{$camp->name}}</a></td>
-                                    <td>{{$camp->user['username']}}</a></td> 
-                                    <td>{{$camp->camp_type['name']}}</a></td> 
+                                    <td>{{$camp->user ? $camp->user['username'] : ''}}</a></td> 
+                                    <td>{{$camp->camp_type ? $camp->camp_type['name'] : ''}}</a></td> 
                                     <td>{{$camp->created_at ? $camp->created_at->diffForHumans() : 'no date'}}</td>
                                     <td>{{$camp->updated_at ? $camp->updated_at->diffForHumans() : 'no date'}}</td>
                                 </tr>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid px-3">
+  <div class="container-fluid px-3">
     <div class="row" style="min-height: 85vh !important;">
       <div class="col-md-5 col-lg-6 col-xl-4 px-lg-5 d-flex align-items-center">
         <div class="w-100 py-5">
@@ -61,4 +61,4 @@
       </div>
     </div>
   </div>
-  @endsection
+@endsection

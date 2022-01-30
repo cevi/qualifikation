@@ -28,7 +28,7 @@
                         <li>Expertenkurs als Kurstyp registriert.</li>
                         <li>Im Quali-Bogen keine Tooltips. Auf Mobilgeräten erscheinen diese z.T. nicht (Erklärung - 0 + ++ und Schlüsselkompetenzen)</li>
                     </ul>
-                    h3>V5</h3>
+                    <h3>V5</h3>
                     <ul>
                         <li>Eigene Kurs-Erstellung ermöglichen.</li>
                         <li>Landing Page mit Screenshots, Anleitung, etc.</li>

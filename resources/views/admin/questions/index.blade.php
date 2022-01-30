@@ -15,12 +15,6 @@
             <header> 
                 <h1 class="h3 display">Kompetenzen</h1>
             </header>
-            @if (Auth::user()->isAdmin())
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@uploadFile', 'enctype' => 'multipart/form-data']) !!}
-                <input type='file' name='file' >
-                <input type='submit' name='submit' value='Import'>
-                {!! Form::close()!!}
-            @endif
             <div class="row">
                 @if ($questions)
                     <table class="table">
@@ -31,8 +25,8 @@
                                 <th scope="col">Nummer</th>
                                 <th scope="col">Kompetenz</th>
                                 <th scope="col">Beschreibung</th>
-                                <th scope="col">Created Date</th>
-                                <th scope="col">Updated Date</th>
+                                <th scope="col">Erstellt am</th>
+                                <th scope="col">Geändert am</th>
                             </tr>
                         </thead>
                     @foreach ($questions as $question)

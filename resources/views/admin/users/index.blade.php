@@ -87,7 +87,7 @@
                             {!! Form::text('email', Auth::user()->email, ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::label('password', 'Password:') !!}
+                            {!! Form::label('password', 'Passwort:') !!}
                             {!! Form::password('password', ['class' => 'form-control']) !!}
                         </div>
                         <div class="form-group">

@@ -29,7 +29,7 @@
                             {!! Form::text('username', null, ['class' => 'form-control autocomplete_txt', 'placeholder' => 'name@abt', 'required', 'onchange' => "Hide_Form()"]) !!}
                     </div>
                     <div class="form-group">
-                        {!! Form::label('role_id', 'Role:') !!}
+                        {!! Form::label('role_id', 'Rolle:') !!}
                         {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
                     </div>
                     {!! Form::hidden('user_id', null, ['class' => 'form-control autocomplete_txt']) !!}
@@ -52,7 +52,7 @@
                                 {!! Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'name@abt.ch', 'required']) !!}
                         </div>
                         <div class="form-group">
-                            {!! Form::label('avatar', 'Photo:') !!}
+                            {!! Form::label('avatar', 'Bild:') !!}
                             {!! Form::file('avatar', ['class' => 'photo']) !!}
                         </div>
                         <div class="form-group">
@@ -60,7 +60,7 @@
                         </div>
 
                         <div class="form-group">
-                            {!! Form::label('role_id', 'Role:') !!}
+                            {!! Form::label('role_id', 'Rolle:') !!}
                             {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'form-control', 'required']) !!}
                         </div>
 
@@ -80,7 +80,7 @@
                         </div>
 
                         <div class="form-group">
-                            {!! Form::label('password', 'Password:') !!}
+                            {!! Form::label('password', 'Passwort:') !!}
                             {!! Form::password('password', ['class' => 'form-control', 'required']) !!}
                         </div>
                     </div>

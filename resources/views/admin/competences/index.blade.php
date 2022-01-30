@@ -44,8 +44,8 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Kompetenz</th>
                                     <th scope="col">Kurs-Typ</th>
-                                    <th scope="col">Created Date</th>
-                                    <th scope="col">Updated Date</th>
+                                    <th scope="col">Erstellt am</th>
+                                    <th scope="col">Geändert am</th>
                                 </tr>
                             </thead>
                             @foreach ($competences as $competence)
