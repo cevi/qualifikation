@@ -242,11 +242,11 @@ img {
 }
 
 .navbar-dashboard .navbar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--blue);
 }
 
 .navbar-dashboard .navbar-nav .nav-link:focus, .navbar-dashboard .navbar-nav .nav-link:hover {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--blue);
 }
 
 .navbar-dashboard .navbar-nav .nav-link.disabled {

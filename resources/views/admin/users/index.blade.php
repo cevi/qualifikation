@@ -17,7 +17,6 @@
             <!-- Page Header-->
             <header> 
                 <h1 class="h3 display">Personen</h1>
-                {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
             </header>
             <div class="row">
                 @if (!Auth::user()->demo)
@@ -29,6 +28,15 @@
                             <button id="showImport" class="btn btn-primary btn-sm">Personen aus Cevi-DB importieren</button>
                         </div>
                     @endif
+                    <div class="col-lg-4">
+                        {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
+                        {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
+                            <div class="form-group">
+                                {{ Form::file('csv_file',['class' => 'dropify'])}}
+                            </div>
+                            {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}  
+                        {!! Form::close() !!}
+                    </div>
                 @endif
             </div>
             <br>
@@ -50,17 +58,6 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <a href="{{route('users.create')}}" class="btn btn-primary" role="button">Person erstellen</a>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-lg-4">
-                        {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
-                            <div class="form-group">
-                                {{ Form::file('csv_file',['class' => 'dropify'])}}
-                            </div>
-                            {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}  
-                        {!! Form::close() !!}
                     </div>
                 </div>
             @endif

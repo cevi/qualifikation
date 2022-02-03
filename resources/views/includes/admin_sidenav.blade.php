@@ -2,15 +2,14 @@
 <nav class="side-navbar">
     <div class="side-navbar-wrapper">
       <!-- Sidebar Header    -->
-        <div class="sidenav-header d-flex align-items-center justify-content-center">
-            <!-- User Info-->
-            <div class="sidenav-header-inner text-center">
-                <h2 class="h5">{{Auth::user()->username}}</h2>
+        {{-- <div class="sidenav-header d-flex align-items-center justify-content-center">
+            <div class="navbar-nav navbar-header">
+                <a id="toggle-btn" href="#" class="menu-btn">
+                    <i class="fas fa-bars"></i> 
+                </a>
             </div>
-            <!-- Small Brand information, appears on minimized sidebar-->
-            <div class="sidenav-header-logo"><a href="/admin" class="brand-small text-center"> <strong>Q</strong><strong class="text-primary">B</strong></a></div>
         </div>
-      
+       --}}
 
         <!-- Sidebar Navigation Menus-->
         <div class="main-menu">

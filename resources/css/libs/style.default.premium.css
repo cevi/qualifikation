@@ -82,15 +82,6 @@ table {
   border-radius: 2px !important;
 }
 
-.badge {
-  font-weight: 400;
-  border-radius: 0;
-}
-
-.badge.badge-primary {
-  background: #33b35a;
-}
-
 .page {
   position: absolute;
   top: 0;
@@ -203,7 +194,7 @@ section header {
 * ==========================================================
 */
 nav.navbar {
-  background: #393836;
+  background: #f7f7f7;
   padding: .8rem 0;
   /* Navbar Brand --------- */
   /*  Dropdowns ------------ */
@@ -259,75 +250,13 @@ nav.navbar .nav-menu {
   margin-bottom: 0;
 }
 
-nav.navbar .dropdown-toggle::after {
-  border: none !important;
-  content: '\f107';
-  vertical-align: baseline;
-  font-family: 'FontAwesome';
-  margin-left: .3rem;
-}
-
-nav.navbar .dropdown-menu {
-  right: 0;
-  left: auto;
-  float: left;
-  margin-top: 16px;
-  margin-bottom: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  font-size: 1rem;
-  padding: 1rem;
-  max-height: 750px;
-  overflow: auto;
-}
-
-nav.navbar .dropdown-menu .dropdown-item {
-  color: #666;
-  padding: 10px;
-}
-
-nav.navbar .dropdown-menu .dropdown-item:active {
-  color: #fff;
-}
-
-nav.navbar .dropdown-menu .dropdown-item:active span,
-nav.navbar .dropdown-menu .dropdown-item:active small {
-  color: #fff;
-}
-
-nav.navbar .dropdown-menu .dropdown-item span {
-  color: #777;
-}
-
-nav.navbar .dropdown-menu .dropdown-item i {
-  margin-right: 5px;
-}
-
-nav.navbar .msg-body span,
-nav.navbar .msg-body strong {
-  display: block;
-}
-
-nav.navbar .msg-body span {
-  font-size: 0.85em;
-}
-
-nav.navbar .msg-profile {
-  margin-right: 10px;
-  width: 50px;
-}
-
-nav.navbar .notification-content {
-  font-size: .8rem;
-  margin-right: .5rem;
-}
 
 nav.navbar a.menu-btn {
   width: 40px;
   height: 40px;
   line-height: 40px;
-  background: #292929;
-  color: #fff;
+  background: var(--blue);
+  color: white;
   text-align: center;
   padding: 0 !important;
 }
@@ -338,35 +267,7 @@ nav.navbar a.menu-btn i[class*='icon-'] {
 }
 
 nav.navbar a.menu-btn:hover {
-  background: var(--blue);
-}
-
-/*  NAVBAR MEDIAQUERIES ---------------------------------- */
-@media (max-width: 575px) {
-  nav.navbar .dropdown {
-    position: static;
-  }
-  nav.navbar .dropdown-menu {
-    width: 90vw;
-    right: 2.5vw;
-    left: 2.5vw;
-    margin: 0 auto;
-  }
-  nav.navbar .notification {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-  }
-}
-
-@media (min-width: 992px) {
-  nav.navbar .dropdown-menu strong {
-    font-weight: 400;
-  }
-  nav.navbar .dropdown-menu a {
-    font-size: 0.9em;
-  }
+  background:var(--blue);
 }
 
 /*
@@ -382,12 +283,15 @@ nav.navbar a.menu-btn:hover {
   height: 100%;
   width: 200px;
   text-align: left;
-  background: #393836;
-  color: #fff;
+  background: #f7f7f7;
   z-index: 999;
   overflow-y: auto;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
+  
+  border-top-width: 82px;
+  border-top-style: solid;
+  border-top-color: white;
   /*  Side navbar small ------------------------ */
 }
 
@@ -422,7 +326,7 @@ nav.navbar a.menu-btn:hover {
   position: relative;
   font-size: .9rem;
   font-weight: 300;
-  color: #fff;
+  color: var(--blue);
   text-decoration: none;
   width: 100%;
   padding: 12px;
@@ -450,16 +354,8 @@ nav.navbar a.menu-btn:hover {
   color: #fff;
 }
 
-.side-navbar li.active > a {
-  background: #33b35a;
-}
-
-.side-navbar li li.active > a {
-  background: #2d9f50 !important;
-}
-
 .side-navbar li ul {
-  background: #292929;
+  background: #F4F7FA;
   position: relative;
   min-width: 100%;
   left: 0;
@@ -476,13 +372,14 @@ nav.navbar a.menu-btn:hover {
 }
 
 .side-navbar li ul.collapse a:hover {
-  background: #121212;
+  background: var(--blue);
 }
 
 .side-navbar .sidenav-header {
-  background: #292929;
+  background: var(--blue);
   padding: 14px;
   margin-bottom: 10px;
+  color:white;
 }
 
 .side-navbar .sidenav-header img {
@@ -543,6 +440,7 @@ nav.navbar a.menu-btn:hover {
 
 .side-navbar.shrink .brand-small {
   display: block;
+  color:white;
 }
 
 .side-navbar.shrink .sidenav-header-inner {
@@ -809,14 +707,18 @@ footer.main-footer {
   position: absolute;
   width: 100%;
   bottom: 0;
-  background: #222;
+  background: var(--darkblue);
   padding: 10px 0;
 }
 
 footer.main-footer p {
   font-size: 0.7em;
-  color: #777;
+  color:  white;
   margin: 0;
+}
+
+footer.main-footer a {
+  color:  white;
 }
 
 /* MAIN FOOTER MEDIAQUERIES ------------------------- */
@@ -4705,11 +4607,11 @@ mark,
 }
 
 .text-primary {
-  color: #33b35a !important;
+  color: white !important;
 }
 
 a.text-primary:focus, a.text-primary:hover {
-  color: #288b46 !important;
+  color: white !important;
 }
 
 /*
@@ -4924,13 +4826,6 @@ a.bg-dark:focus, a.bg-dark:hover {
   border-color: #343a40 !important;
 }
 
-.text-primary {
-  color: #33b35a !important;
-}
-
-a.text-primary:focus, a.text-primary:hover {
-  color: #288b46 !important;
-}
 
 .text-secondary {
   color: #868e96 !important;

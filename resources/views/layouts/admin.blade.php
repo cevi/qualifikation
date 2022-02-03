@@ -18,9 +18,9 @@
     </head>
 
     <body>
-        @include('includes/admin_sidenav')
         <div class="page">
             @include('includes/admin_topnav')
+            @include('includes/admin_sidenav')
 
             @yield('content')
             <footer class="main-footer">

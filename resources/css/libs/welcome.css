@@ -471,47 +471,7 @@
   .border-gray-900 {
     border-color: #2a2a2a !important;
   }
-  
-  .badge-primary-light {
-    color: #4f92c7;
-    background-color: theme-color-level("primary", -11);
-  }
-  
-  .badge-secondary-light {
-    color: #949494;
-    background-color: theme-color-level("secondary", -11);
-  }
-  
-  .badge-success-light {
-    color: #28a745;
-    background-color: theme-color-level("success", -11);
-  }
-  
-  .badge-info-light {
-    color: #17a2b8;
-    background-color: theme-color-level("info", -11);
-  }
-  
-  .badge-warning-light {
-    color: #ffc107;
-    background-color: theme-color-level("warning", -11);
-  }
-  
-  .badge-danger-light {
-    color: #dc3545;
-    background-color: theme-color-level("danger", -11);
-  }
-  
-  .badge-light-light {
-    color: #f8f9fa;
-    background-color: theme-color-level("light", -11);
-  }
-  
-  .badge-dark-light {
-    color: #414141;
-    background-color: theme-color-level("dark", -11);
-  }
-  
+    
   /*
        TRANSPARENT OVERLAYS
       ------------------------
