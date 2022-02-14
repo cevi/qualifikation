@@ -17,5 +17,5 @@ return [
     'sent'      => 'Passworterinnerung wurde gesendet!',
     'throttled' => 'Please wait before retrying.',
     'token'     => 'Der Passwort-Wiederherstellungs-Schlüssel ist ungültig oder abgelaufen.',
-    'user'      => 'Es konnte leider kein Nutzer mit diesem Benutzernamen gefunden werden.',
+    'user'      => 'Es konnte leider kein Nutzer mit diesem Benutzernamen gefunden werden. Meldest du dich vielleicht normalerweise üder die Cevi-DB an?',
 ];

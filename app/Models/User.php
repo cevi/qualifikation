@@ -1,12 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use App\Models\HitobitoUser;
+use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Authenticatable  implements MustVerifyEmail
 {
@@ -50,23 +51,23 @@ class User extends Authenticatable  implements MustVerifyEmail
     ];
 
     public function role(){
-        return $this->belongsTo('App\Role');
+        return $this->belongsTo('App\Models\Role');
     }
 
     public function camp(){
-        return $this->belongsTo('App\Camp');
+        return $this->belongsTo('App\Models\Camp');
     } 
 
     public function camps(){
-        return $this->belongsToMany('App\Camp', 'camp_users');
+        return $this->belongsToMany('App\Models\Camp', 'camp_users');
     } 
     
     public function leader(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function leaders(){
-        return $this->belongsToMany('App\User', 'camp_users');
+        return $this->belongsToMany('App\Models\User', 'camp_users');
     }
 
     public function isAdmin(){
@@ -95,11 +96,28 @@ class User extends Authenticatable  implements MustVerifyEmail
     }
 
     public function classification(){
-        return $this->belongsTo('App\Classification');
+        return $this->belongsTo('App\Models\Classification');
     }
 
     public function getRouteKeyName()
     {
         return 'slug';
     }
+
+    /**
+     * Name of the database column holding the login provider name
+     *
+     * @var string
+     */
+    protected $childColumn = 'login_provider';
+
+    /**
+     * Mapping from database value to provider specific User class
+     *
+     * @var array
+     */
+    protected $childTypes = [
+        'hitobito' => HitobitoUser::class,
+        'qualix' => User::class,
+    ];
 }

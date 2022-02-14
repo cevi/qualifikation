@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Camp;
-use App\Role;
+use App\Models\Camp;
+use App\Models\Role;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 

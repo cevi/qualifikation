@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Camp;
-use App\Role;
-use App\User;
-use App\Group;
-use App\CampUser;
-use App\Classification;
-use App\Helper\Helper;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Group;
+use App\Models\CampUser;
+use App\Models\Classification;
+use App\Models\Helper\Helper;
 use Illuminate\Support\Str;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
 use Ixudra\Curl\Facades\Curl;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;

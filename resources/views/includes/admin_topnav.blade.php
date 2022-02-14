@@ -11,17 +11,6 @@
                         <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
                     </a>
                 </div>
-                {{-- <ul class="navbar-nav d-flex flex-md-row align-items-md-center">
-                    <!-- Log out-->
-                    <li>
-                        <a href="{{ route('logout') }}" class="nav-link nav-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> 
-                            Logout <i class="fas fa-sign-out-alt"></i>
-                        </a> 
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                    </li>
-                </ul> --}}
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ml-auto">
                     <!-- Authentication Links -->

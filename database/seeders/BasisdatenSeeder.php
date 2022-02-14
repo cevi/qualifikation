@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Answer;
-use App\CampType;
-use App\Chapter;
-use App\Classification;
-use App\Competence;
-use App\Group;
-use App\Question;
-use App\SurveyStatus;
+use App\Models\Answer;
+use App\Models\CampType;
+use App\Models\Chapter;
+use App\Models\Classification;
+use App\Models\Competence;
+use App\Models\Group;
+use App\Models\Question;
+use App\Models\SurveyStatus;
 use Illuminate\Database\Seeder;
 
 class BasisdatenSeeder extends Seeder

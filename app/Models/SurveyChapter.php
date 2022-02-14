@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,10 +12,10 @@ class SurveyChapter extends Model
     ];
 
     public function chapter(){
-        return $this->belongsTo('App\Chapter');
+        return $this->belongsTo('App\Models\Chapter');
     } 
 
     public function questions(){
-        return $this->hasMany('App\SurveyQuestion');
+        return $this->hasMany('App\Models\SurveyQuestion');
     } 
 }

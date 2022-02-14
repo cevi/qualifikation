@@ -31,9 +31,10 @@ return [
     ],
 
     'hitobito' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        'base_url' => env('HITOBITO_BASE_URL', 'http://demo.hitobito.com'),
+        'client_id' => env('HITOBITO_CLIENT_UID'),
+        'client_secret' => env('HITOBITO_CLIENT_SECRET'),
+        'redirect' => env('HITOBITO_CALLBACK_URI', 'https://quali.cevi.tools/login/hitobito/callback'),
     ],
 
 ];

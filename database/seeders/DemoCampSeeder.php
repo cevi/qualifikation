@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Camp;
-use App\User;
-use App\Survey;
-use App\CampUser;
-use App\SurveyChapter;
-use App\SurveyQuestion;
+use App\Models\Camp;
+use App\Models\User;
+use App\Models\Survey;
+use App\Models\CampUser;
+use App\Models\SurveyChapter;
+use App\Models\SurveyQuestion;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory;

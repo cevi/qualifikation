@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Camp;
-use App\User;
-use App\Group;
+use App\Models\Camp;
 use App\CampUser;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -75,7 +71,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {   
         $camp = Camp::where('global_camp', true)->first();
-        $user = User::create([
+        $user = NativeUser::create([
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),

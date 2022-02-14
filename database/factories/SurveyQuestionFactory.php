@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\SurveyQuestion;
+use App\Models\SurveyQuestion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SurveyQuestionFactory extends Factory

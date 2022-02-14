@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +14,10 @@ class Competence extends Model
     ];
 
     public function question(){
-        return $this->belongsTo('App\Question');
+        return $this->belongsTo('App\Models\Question');
     } 
 
     public function camp_type(){
-        return $this->belongsTo('App\CampType');
+        return $this->belongsTo('App\Models\CampType');
     } 
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Camp;
-use App\User;
-use App\Group;
-use App\CampType;
-use App\CampUser;
+use App\Models\Camp;
+use App\Models\User;
+use App\Models\Group;
+use App\Models\CampType;
+use App\Models\CampUser;
 use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

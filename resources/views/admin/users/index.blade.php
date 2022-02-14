@@ -21,7 +21,7 @@
             <div class="row">
                 @if (!Auth::user()->demo)
                     <div class="col-lg-4">
-                        <a href="{{route('users.create')}}" class="btn btn-primary" role="button">Person erstellen</a>
+                        <a href="{{route('users.create')}}" class="btn btn-primary" role="button">Person manuell erstellen oder zuordnen</a>
                     </div>
                     @if (config('app.import_db'))
                         <div class="col-lg-4">

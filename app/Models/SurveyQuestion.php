@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -16,22 +16,22 @@ class SurveyQuestion extends Model
     ];
 
     public function answer_first(){
-        return $this->belongsTo('App\Answer', 'answer_first_id', 'id');
+        return $this->belongsTo('App\Models\Answer', 'answer_first_id', 'id');
     } 
 
     public function answer_second(){
-        return $this->belongsTo('App\Answer', 'answer_second_id', 'id');
+        return $this->belongsTo('App\Models\Answer', 'answer_second_id', 'id');
     } 
     public function answer_leader(){
-        return $this->belongsTo('App\Answer', 'answer_leader_id', 'id');
+        return $this->belongsTo('App\Models\Answer', 'answer_leader_id', 'id');
     } 
 
     public function question(){
-        return $this->belongsTo('App\Question');
+        return $this->belongsTo('App\Models\Question');
     } 
 
     public function survey_chapter(){
-        return $this->belongsTo('App\SurveyChapter');
+        return $this->belongsTo('App\Models\SurveyChapter');
     } 
 
     public function isCoreCompetence($camp){

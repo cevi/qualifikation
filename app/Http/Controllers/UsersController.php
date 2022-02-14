@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Post;
-use App\Role;
-use App\User;
-use App\Survey;
-use App\CampUser;
-use App\Helper\Helper;
+use App\Models\Post;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Survey;
+use App\Models\CampUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;

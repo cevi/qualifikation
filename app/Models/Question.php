@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +18,6 @@ class Question extends Model
     ];
 
     public function chapter(){
-        return $this->belongsTo('App\Chapter');
+        return $this->belongsTo('App\Models\Chapter');
     }
 }

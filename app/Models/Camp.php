@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,15 +33,15 @@ class Camp extends Model
     ];
 
     public function users(){
-        return $this->hasMany('App\User');
+        return $this->hasMany('App\Models\User');
     }
 
     public function user(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     } 
 
     public function allUsers(){
-        return $this->belongsToMany('App\User', 'camp_users')->where('camp_users.role_id', '<>', config('status.role_Administrator'));
+        return $this->belongsToMany('App\Models\User', 'camp_users')->where('camp_users.role_id', '<>', config('status.role_Administrator'));
     } 
 
     public function participants(){
@@ -53,11 +53,11 @@ class Camp extends Model
     } 
 
     public function camp_type(){
-        return $this->belongsTo('App\CampType');
+        return $this->belongsTo('App\Models\CampType');
     } 
 
     public function group(){
-        return $this->belongsTo('App\Group');
+        return $this->belongsTo('App\Models\Group');
     } 
 
     public function surveys()

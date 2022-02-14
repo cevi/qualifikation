@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,19 +15,19 @@ class CampUser extends Model
 
     
     public function user(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function camp(){
-        return $this->belongsTo('App\Camp');
+        return $this->belongsTo('App\Models\Camp');
     } 
     
     public function role(){
-        return $this->belongsTo('App\Role');
+        return $this->belongsTo('App\Models\Role');
     }
 
     public function leader(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
     
     public function surveys(){

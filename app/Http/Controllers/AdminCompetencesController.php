@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\CampType;
-use App\Question;
-use App\Competence;
+use App\Models\CampType;
+use App\Models\Question;
+use App\Models\Competence;
 use Illuminate\Http\Request;
 
 class AdminCompetencesController extends Controller

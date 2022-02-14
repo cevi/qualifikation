@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Answer;
-use App\Camp;
-use App\Survey;
-use App\Chapter;
-use App\Question;
-use App\SurveyStatus;
-use App\Helper\Helper;
-use App\SurveyChapter;
-use App\SurveyQuestion;
+use App\Models\User;
+use App\Models\Answer;
+use App\Models\Survey;
+use App\Models\Chapter;
+use App\Models\Question;
+use App\Models\SurveyStatus;
+use App\Models\Helper\Helper;
+use App\Models\SurveyChapter;
+use App\Models\SurveyQuestion;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
