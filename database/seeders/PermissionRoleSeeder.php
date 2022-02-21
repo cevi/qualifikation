@@ -30,6 +30,7 @@ class PermissionRoleSeeder extends Seeder
         $user = User::create( [
             'id' => 1,
             'username' => 'Administrator', 
+            'email' => 'Administrator', 
             'slug' => 'administrator',
             'password' => Hash::make(env('ADMIN_PASSWORD')),
             'role_id' => config('status.role_Administrator'),

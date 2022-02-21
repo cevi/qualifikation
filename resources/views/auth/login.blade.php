@@ -26,9 +26,9 @@
           <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="form-group">
-              <label for="username">Benutzer</label>
-              <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" placeholder = "name@abt" value="{{ old('username') }}" required autocomplete="email" autofocus>
-              @error('username')
+              <label for="email">E-Mail</label>
+              <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" placeholder = "name@abt.ch" value="{{ old('email') }}" required autocomplete="email" autofocus>
+              @error('email')
                   <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
                   </span>

@@ -25,6 +25,7 @@ class DemoCampSeeder extends Seeder
 
         $user = User::factory()->create([
             'username' => 'kursleiter@demo', 
+            'email' => 'kursleiter@demo', 
             'slug' => 'kursleiter@demo',
             'password' => Hash::make('kursleiter@demo'),
             'role_id' => config('status.role_Kursleiter'),
@@ -53,6 +54,7 @@ class DemoCampSeeder extends Seeder
             $leader = User::factory()
             ->create([
                 'username' => $name,
+                'email' => $name,
                 'slug' => $name,
                 'password' => Hash::make($name),
                 'role_id' => config('status.role_Gruppenleiter'),
@@ -74,6 +76,7 @@ class DemoCampSeeder extends Seeder
                 ->for($leader, 'leader')
                 ->create([
                     'username' => $name,
+                    'email' => $name,
                     'slug' => $name,
                     'password' => Hash::make($name),
                     'camp_id' => $camp['id'],

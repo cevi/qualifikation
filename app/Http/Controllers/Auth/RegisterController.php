@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\Camp;
-use App\CampUser;
+use App\Models\User;
+use App\Models\CampUser;
+use App\Events\UserCreated;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -56,7 +58,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -71,15 +73,15 @@ class RegisterController extends Controller
     protected function create(array $data)
     {   
         $camp = Camp::where('global_camp', true)->first();
-        $user = NativeUser::create([
+        $user = User::create([
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'slug' => Str::slug($data['username']),
             'is_active' => true,
             'camp_id' => $camp['id'],
             'role_id' => config('status.role_Teilnehmer'),
         ]);
+        UserCreated::dispatch($user);
         $campUser = CampUser::create([
             'camp_id' => $camp['id'],
             'user_id' => $user['id'],

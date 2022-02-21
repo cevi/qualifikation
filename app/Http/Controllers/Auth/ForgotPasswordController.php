@@ -24,10 +24,10 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-            $this->validate($request, ['username' => 'required'], ['username.required' => 'Please enter your username.']);
+            $this->validate($request, ['email' => 'required'], ['email.required' => 'Please enter your Email.']);
 
             $response = $this->broker()->sendResetLink(
-                $request->only('username')
+                $request->only('email')
             );
 
             if ($response === Password::RESET_LINK_SENT) {
@@ -35,7 +35,7 @@ class ForgotPasswordController extends Controller
             }
 
             return back()->withErrors(
-                ['username' => trans($response)]
+                ['email' => trans($response)]
             );
     }
 }

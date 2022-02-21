@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\HitobitoUser;
 use Illuminate\Notifications\Notifiable;
 use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -22,7 +21,7 @@ class User extends Authenticatable  implements MustVerifyEmail
      */
     protected $fillable = [
         'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 
-        'avatar', 'classification_id', 'slug', 'group_id', 'foreign_id', 'email', 'email_verified_at'
+        'avatar', 'classification_id', 'slug', 'group_id', 'foreign_id', 'email', 'email_verified_at', 'api_token', 'login_provider'
     ];
 
     /**
@@ -47,6 +46,7 @@ class User extends Authenticatable  implements MustVerifyEmail
     protected $searchable = [
         'columns' => [
             'username' => 1,
+            'email' => 1,
         ]
     ];
 
@@ -103,21 +103,4 @@ class User extends Authenticatable  implements MustVerifyEmail
     {
         return 'slug';
     }
-
-    /**
-     * Name of the database column holding the login provider name
-     *
-     * @var string
-     */
-    protected $childColumn = 'login_provider';
-
-    /**
-     * Mapping from database value to provider specific User class
-     *
-     * @var array
-     */
-    protected $childTypes = [
-        'hitobito' => HitobitoUser::class,
-        'qualix' => User::class,
-    ];
 }

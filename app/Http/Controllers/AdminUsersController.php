@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserCreated;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Group;
@@ -167,7 +168,7 @@ class AdminUsersController extends Controller
                             $insertData = array(
                                 
                                 "username" =>  $username,
-                                "slug" => Str::slug(mb_strtolower($username)),
+                                // "slug" => Str::slug(mb_strtolower($username)),
                                 "password" => bcrypt(mb_strtolower($username)),
                                 "role_id" => $role_id,
                                 "email_verified_at" => now(),
@@ -177,6 +178,7 @@ class AdminUsersController extends Controller
                             $user = User::whereraw('LOWER(`username`) LIKE "' . mb_strtolower($username). '"')->Orwhere('foreign_id', $participant->links->person)->first();
                             if(!$user){
                                 $user = User::create($insertData);
+                                UserCreated::dispatch($user);
                             }
                             else{
                                 $user->update([
@@ -319,8 +321,8 @@ class AdminUsersController extends Controller
     {
         //
         $this->validate($request, [
-            'username' => 'required|unique:users|max:255',
-            'email' => 'required|email',
+            'username' => 'required|max:255',
+            'email' => 'required|unique:users|email',
             'role_id' => 'required',
             'password' => 'required',
         ], [
@@ -350,11 +352,12 @@ class AdminUsersController extends Controller
                 }
             }
         }
-        $input['slug'] = Str::slug($input['username']);
+        // $input['slug'] = Str::slug($input['username']);
         $input['email_verified_at'] = now();
 
 
         $user = User::create($input);
+        UserCreated::dispatch($user);
         Helper::updateCamp($user, $camp, true);  
 
         return redirect('/admin/users/create');
@@ -440,9 +443,10 @@ class AdminUsersController extends Controller
                     $input['avatar'] = '/'.$save_path.'/'.$name;
                 }
             }
-            $input['slug'] = Str::slug($input['username']);
+            // $input['slug'] = Str::slug($input['username']);
 
             $user->update($input);
+            UserCreated::dispatch($user);
             $camp_user = CampUser::firstOrCreate(['camp_id' => $user->camp->id, 'user_id' =>$user->id]);
             $camp_user->update([
                 'role_id' => $user['role_id'],
