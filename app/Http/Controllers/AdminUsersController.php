@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Group;
 use App\Models\CampUser;
 use App\Models\Classification;
-use App\Models\Helper\Helper;
+use App\Helper\Helper;
 use Illuminate\Support\Str;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
@@ -32,7 +32,9 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
-        return view('admin.users.index');
+        $camp = Auth::user()->camp;
+        $group = $camp->group;
+        return view('admin.users.index', compact('group'));
     }
 
     public function createDataTables()
@@ -102,26 +104,21 @@ class AdminUsersController extends Controller
         return view('admin.users.create', compact('roles', 'leaders', 'classifications'));
     }
 
-    public function import(Request $request){
+    public function import(){
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
-        if($camp->foreign_id && $camp->group){
-            $input = $request->all();
-            $response = Curl::to('https://db.cevi.ch/users/sign_in.json')
-                ->withData( 
-                    array( 
-                        'person[email]' => $input['name'],
-                        'person[password]' => $input['password'] ))
-                ->post();
-            $response = json_decode($response);
-            if(!isset($response->error)){
-                $aktUser_id = $response->people[0]->id;
-                $token = $response->people[0]->authentication_token;
+        if($camp->foreign_id && $camp->group['api_token']){
+            // $input = $request->all();
+            // $response = Curl::to('https://db.cevi.ch/users/sign_in.json')
+            //     ->withData( 
+            //         array( 
+            //             'person[email]' => $aktUser['email'],
+            //             'person[password]' => $aktUser['token'] ))
+            //     ->post();
+            // $response = json_decode($response);
+            // if(!isset($response->error)){
                 $response = Curl::to('https://db.cevi.ch/groups/' .$camp->group['foreign_id']. '/events/' .$camp['foreign_id']. '/participations.json')
-                    ->withData( 
-                        array( 
-                            'user_email' => $input['name'],
-                            'user_token' => $token))
+                    ->withData(array('token' => $camp->group['api_token']))
                     ->get();
                 $response = json_decode($response);
                 $participants = $response->event_participations;
@@ -129,30 +126,9 @@ class AdminUsersController extends Controller
                     if ($participant->roles[0]->type === "Event::Course::Role::Participant" ||
                             $participant->roles[0]->type === "Event::Role::AssistantLeader" ||
                             $participant->roles[0]->type === "Event::Role::Leader"){
-                        $response = Curl::to('https://db.cevi.ch/groups/' . $participant->ortsgruppe_id . '.json')
-                            ->withData( 
-                                array( 
-                                    'user_email' => $input['name'],
-                                    'user_token' => $token))
-                            ->get();
-                        $response = json_decode($response);
-                        if(isset($response)){
-                            $group_response = $response->groups;
-                            $insertData = array(
-                                
-                                "shortname" => $group_response[0]->short_name,
-                                "name" => $group_response[0]->name,
-                                "foreign_id" => $group_response[0]->id,
-                                "campgroup" => false);
-
-                            $group = Group::firstOrCreate(['foreign_id' => $group_response[0]->id], $insertData);
-                        }
-                        else{
-                            $group = Group::where('foreign_id', 1)->first();    
-                        }
-
-                        if ($participant->links->person != $aktUser_id){
-                            $username = $participant->nickname . '@' . $group['shortname'];
+        
+                        if ($participant->links->person != $aktUser['id']){
+                            $username = $participant->nickname;
                             switch($participant->roles[0]->type){
                                 case  'Event::Course::Role::Participant':
                                     $role_id = config('status.role_Teilnehmer');
@@ -169,7 +145,7 @@ class AdminUsersController extends Controller
                                 
                                 "username" =>  $username,
                                 // "slug" => Str::slug(mb_strtolower($username)),
-                                "password" => bcrypt(mb_strtolower($username)),
+                                //"password" => bcrypt(mb_strtolower($username)),
                                 "role_id" => $role_id,
                                 "email_verified_at" => now(),
                                 "is_active" => true,
@@ -197,10 +173,6 @@ class AdminUsersController extends Controller
                         if(!$user->email){
                             $user->update(['email' => $participant->email]);     
                         }
-                        if(!$user->group_id)  {
-                            $user->update(['group_id' => $group->id]);   
-
-                        }  
                         if(!$user->foreign_id)  {
                             $user->update(['foreign_id' => $participant->links->person]);   
                         } 
@@ -208,10 +180,10 @@ class AdminUsersController extends Controller
                     }            
                 }
                 return true;
-            }
-            else{
-                abort(400, $response->error);
-            }
+            // }
+            // else{
+            //     abort(400, $response->error);
+            // }
                         
         }
         else{

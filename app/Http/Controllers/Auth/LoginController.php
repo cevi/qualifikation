@@ -103,7 +103,7 @@ class LoginController extends Controller
 
     private function findOrCreateSocialiteUser(SocialiteUser $socialiteUser)
     {
-        if ($userFromDB = User::where('foreing_id',  $socialiteUser->getId())->first()) {
+        if ($userFromDB = User::where('foreign_id',  $socialiteUser->getId())->first()) {
             // User is logging in
             return $this->updateEmailIfAppropriate($userFromDB, $socialiteUser);
         } else {

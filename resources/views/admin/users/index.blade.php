@@ -25,7 +25,7 @@
                     </div>
                     @if (config('app.import_db'))
                         <div class="col-lg-4">
-                            <button id="showImport" class="btn btn-primary btn-sm">Personen aus Cevi-DB importieren</button>
+                            <button id="showImport" class="btn btn-primary btn-sm" title="{{$group->api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.'}}" {{$group->api_token ? '' : 'disabled'}}>Personen aus Cevi-DB importieren</button>
                         </div>
                     @endif
                     <div class="col-lg-4">
@@ -74,19 +74,9 @@
                     <ul>
                         <li>Zugewiesene Gruppe für den Kurs.</li>
                         <li>Zugewiesene Kurs ID für den Kurs.</li>
-                        <li>Namen als Ceviname@Ortsgruppen-Kürzel.</li>
                     </ul>
-                    <p>Das Passwort wird nicht gespeichert.</p>
-                    <p>Erstellte Personen haben Passwort als Benutzernamen (unter Profil (oben rechts) änderbar).</p>
+                    <p>Erstellte Personen können sich über die Cevi-DB anmelden.</p>
                     <form id="modal-form" method="POST" action="javascript:void(0)">
-                        <div class="form-group">
-                            {!! Form::label('email', 'Benutzername / Email:') !!}
-                            {!! Form::text('email', Auth::user()->email, ['class' => 'form-control']) !!}
-                        </div>
-                        <div class="form-group">
-                            {!! Form::label('password', 'Passwort:') !!}
-                            {!! Form::password('password', ['class' => 'form-control']) !!}
-                        </div>
                         <div class="form-group">
                             <button data-remote='{{route('users.import')}}' id="importUsers" class="btn btn-primary btn-sm"><i class="fa fa-spinner fa-spin display-none" id="loading-spinner"></i> Personen importieren</button>
                         </div>
@@ -140,14 +130,10 @@
             $.ajax({
                 url: url,
                 method: 'POST',
-                data:{
-                name: $('#modal-form input[name="email"]').val(),
-                password: $('#modal-form input[name="password"]').val()},
                 beforeSend: function() { $('#loading-spinner').removeClass('display-none')},
                 complete: function() {  $('#loading-spinner').addClass('display-none') },
                 success:function(res)
                 {   
-                    console.log("success");
                     $('#modal-form').trigger('reset');
                     $('#importModal').modal('hide');
                     location.reload();

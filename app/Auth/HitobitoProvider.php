@@ -95,7 +95,6 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
                 Arr::first(explode('@', Arr::get($user, 'email'))),
             'email' => Arr::get($user, 'email'),
             'avatar' => Arr::get($user, 'picture'),
-            'group_id' =>$user['ortsgruppe_id'],
         ]);
     }
 }
