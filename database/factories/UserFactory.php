@@ -21,7 +21,6 @@ class UserFactory extends Factory
             'username' => $this->faker->name,
             'email' => $this->faker->email,
             'role_id' => config('status.role_Teilnehmer'),
-            'is_active' => true,
             'email_verified_at' => now(),
             'camp_id' => 1,
             'demo' => true            

@@ -24,7 +24,6 @@ class CreateUsersTable extends Migration
             $table->bigInteger('leader_id')->index()->unsigned()->nullable();
             $table->bigInteger('camp_id')->index()->unsigned()->nullable();
             $table->dateTime('password_change_at')->nullable();
-            $table->boolean('is_active')->default(true);
             $table->boolean('demo')->default(false);
             $table->string('slug')->nullable();
             $table->rememberToken();

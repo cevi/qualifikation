@@ -72,21 +72,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {   
-        $camp = Camp::where('global_camp', true)->first();
         $user = User::create([
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'is_active' => true,
-            'camp_id' => $camp['id'],
-            'role_id' => config('status.role_Teilnehmer'),
         ]);
         UserCreated::dispatch($user);
-        $campUser = CampUser::create([
-            'camp_id' => $camp['id'],
-            'user_id' => $user['id'],
-            'role_id' => config('status.role_Teilnehmer'),
-        ]);
 
         return $user;
     }

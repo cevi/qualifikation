@@ -2,6 +2,7 @@
 
 namespace App\Auth;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Laravel\Socialite\Two\AbstractProvider;
@@ -95,6 +96,7 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
                 Arr::first(explode('@', Arr::get($user, 'email'))),
             'email' => Arr::get($user, 'email'),
             'avatar' => Arr::get($user, 'picture'),
+            'email_verified_at' => Carbon::now(),
         ]);
     }
 }

@@ -20,8 +20,8 @@ class User extends Authenticatable  implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 
-        'avatar', 'classification_id', 'slug', 'group_id', 'foreign_id', 'email', 'email_verified_at', 'api_token', 'login_provider'
+        'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at', 
+        'avatar', 'classification_id', 'slug', 'group_id', 'foreign_id', 'email', 'email_verified_at'
     ];
 
     /**
@@ -39,7 +39,6 @@ class User extends Authenticatable  implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'is_active' => 'boolean',
         'demo' => 'boolean',
     ];
 
@@ -71,21 +70,21 @@ class User extends Authenticatable  implements MustVerifyEmail
     }
 
     public function isAdmin(){
-        if($this->role['is_admin'] == 1 && $this->is_active == 1){
+        if($this->role['is_admin'] == 1){
             return true;
         }
         return false;
     }
 
     public function isCampleader(){
-        if(($this->role['is_campleader'] == 1 || $this->role['is_admin'] == 1) && $this->is_active == 1){
+        if(($this->role['is_campleader'] == 1 || $this->role['is_admin'] == 1)){
             return true;
         }
         return false;
     }
 
     public function isLeader(){
-        if(($this->role['is_leader']=== 1) && ($this->is_active == 1)){
+        if($this->role['is_leader']=== 1){
             return true;
         }
         return false;

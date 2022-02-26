@@ -29,7 +29,6 @@ class DemoCampSeeder extends Seeder
             'slug' => 'kursleiter@demo',
             'password' => Hash::make('kursleiter@demo'),
             'role_id' => config('status.role_Kursleiter'),
-            'is_active' => true,
             'camp_id' => 1,
             'demo' => true]);
         $camp = Camp::create([
