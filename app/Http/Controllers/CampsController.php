@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use App\Models\Camp;
 use App\Models\User;
 use App\Models\Group;
@@ -31,6 +32,7 @@ class CampsController extends Controller
     public function create()
     {
         //
+
         $users =[];
         $camptypes = CampType::pluck('name','id')->all();
         $groups = Group::where('campgroup',true)->pluck('name','id')->all();
@@ -46,6 +48,16 @@ class CampsController extends Controller
     public function store(Request $request)
     {
         //
+        $validator = Validator::make($request->all(), [
+            'name' => 'unique:camps',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->to(url()->previous())
+                        ->withErrors($validator, 'camps')
+                        ->withInput();
+        }
+
         $input = $request->all();
         $user = User::findOrFail(Auth::user()->id);
         $input['user_id'] = $user->id;

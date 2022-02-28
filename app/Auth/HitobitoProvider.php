@@ -87,7 +87,10 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
      * {@inheritdoc}
      */
     protected function mapUserToObject(array $user)
-    {
+    {   
+        $avatar = Arr::get($user, 'picture') === null ? 
+        'https://db.cevi.ch/packs/media/images/profil-d4d04543c5d265981cecf6ce059f2c5d.png' :
+        'https://db.cevi.ch/uploads/person/picture/'. $user['id'] . '/' . Arr::get($user, 'picture');
         return (new User)->setRaw($user)->map([
             'id' => $user['id'],
             'nickname' => Arr::get($user, 'nickname') ??
@@ -95,8 +98,7 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
                 Arr::get($user, 'last_name') ??
                 Arr::first(explode('@', Arr::get($user, 'email'))),
             'email' => Arr::get($user, 'email'),
-            'avatar' => Arr::get($user, 'picture'),
-            'email_verified_at' => Carbon::now(),
+            'avatar' =>  $avatar,
         ]);
     }
 }

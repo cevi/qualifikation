@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use Exception;
+use Carbon\Carbon;
 use App\Models\User;
-use App\Events\UserCreated;
 
+use App\Events\UserCreated;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -75,8 +76,7 @@ class LoginController extends Controller
             return $this->redirectWithError('Zugriff in Cevi-DB verweigert.');
         }
         try {
-            $socialiteUser = Socialite::driver('hitobito')->setRequest($request)->setScopes(['name'])->user();
-        
+            $socialiteUser = Socialite::driver('hitobito')->setRequest($request)->setScopes(['name', 'with_roles'])->user();
             $user = $this->findOrCreateSocialiteUser($socialiteUser);
         } catch (InvalidStateException $exception) {
             // User has reused an old link or modified the redirect?
@@ -123,7 +123,12 @@ class LoginController extends Controller
             // Don't register a new user if another account already uses the same email address
             throw new InvalidLoginProviderException;
         }
-        $user = User::create(['foreign_id' => $socialiteUser->getId(), 'email' => $socialiteUser->getEmail(), 'username' => $socialiteUser->getNickname()]);
+        $user = User::create([
+            'foreign_id' => $socialiteUser->getId(), 
+            'email' => $socialiteUser->getEmail(), 
+            'username' => $socialiteUser->getNickname(), 
+            'avatar' => $socialiteUser->getAvatar(), 
+            'email_verified_at' => Carbon::now()]);
         UserCreated::dispatch($user);
         return $user;
     }

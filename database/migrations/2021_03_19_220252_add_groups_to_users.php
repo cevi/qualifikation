@@ -15,8 +15,6 @@ class AddGroupsToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->bigInteger('group_id')->index()->unsigned()->nullable();
-            $table->foreign('group_id')->references('id')->on('groups');
             $table->integer('foreign_id')->nullable();
         });
     }
@@ -30,8 +28,6 @@ class AddGroupsToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->dropForeign(['group_id']);
-            $table->dropColumn('group_id');
             $table->dropColumn('foreign_id');
         });
     }

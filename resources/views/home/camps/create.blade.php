@@ -6,6 +6,15 @@
             <header> 
                 <h1 class="h3 display">Kurs</h1>
             </header>
+            @if ($errors->camps->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->camps->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="row">
                 <div class="col-sm-3">
                     {!! Form::open(['action'=>'CampsController@store']) !!}

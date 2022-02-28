@@ -115,7 +115,7 @@ class AdminUsersController extends Controller
             $participants = $response->event_participations;
             $isLeader = false;
             foreach($participants as $participant){
-                if ($participant->links->person === $aktUser['id'] && $participant->roles[0]->type === "Event::Role::Leader"){
+                if ((intval($participant->links->person) === $aktUser['foreign_id']) && ($participant->roles[0]->type === "Event::Role::Leader")){
                     $isLeader = true;
                 }
             }
@@ -125,7 +125,7 @@ class AdminUsersController extends Controller
                             $participant->roles[0]->type === "Event::Role::AssistantLeader" ||
                             $participant->roles[0]->type === "Event::Role::Leader"){
         
-                        if ($participant->links->person != $aktUser['id']){
+                        if ($participant->links->person != $aktUser['foreign_id']){
                             $username = $participant->nickname;
                             switch($participant->roles[0]->type){
                                 case  'Event::Course::Role::Participant':
@@ -140,23 +140,19 @@ class AdminUsersController extends Controller
 
                             }
                             $insertData = array(
-                                
                                 "username" =>  $username,
-                                "role_id" => $role_id,
                                 "email_verified_at" => now(),
-                                "camp_id" => $camp['id'],
                                 'classification_id' => config('status.classification_green'));
                             $user = User::whereraw('LOWER(`username`) LIKE "' . mb_strtolower($username). '"')->Orwhere('foreign_id', $participant->links->person)->first();
                             if(!$user){
                                 $user = User::create($insertData);
                                 UserCreated::dispatch($user);
                             }
-                            else{
-                                $user->update([
-                                    "role_id" => $role_id,
-                                    'classification_id' => config('status.classification_green')
-                                ]);
-                            }
+                            $user->update([
+                                "role_id" => $role_id,
+                                "camp_id" => $camp['id'],
+                                'classification_id' => config('status.classification_green')
+                            ]);
 
                         }
                         else{
