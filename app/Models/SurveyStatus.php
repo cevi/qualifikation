@@ -1,13 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Answer extends Model
+class SurveyStatus extends Model
 {
     //
     protected $fillable = [
-        'name', 'count', 'description'
-    ];
+        'id', 'name'
+        ];
 }

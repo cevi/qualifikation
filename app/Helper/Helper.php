@@ -2,10 +2,10 @@
 
 namespace App\Helper;
 
-use App\Camp;
-use App\User;
-use App\Answer;
-use App\CampUser;
+use App\Models\Camp;
+use App\Models\User;
+use App\Models\Answer;
+use App\Models\CampUser;
 
 class Helper
 {

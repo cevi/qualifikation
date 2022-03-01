@@ -2,13 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Answer;
-use App\CampUser;
-use App\Survey;
-use App\Helper\Helper;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\CampUser;
+use App\Models\Survey;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller

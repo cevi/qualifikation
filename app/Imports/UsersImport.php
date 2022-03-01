@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;

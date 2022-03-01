@@ -1,12 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Authenticatable  implements MustVerifyEmail
 {
@@ -20,8 +20,8 @@ class User extends Authenticatable  implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'role_id', 'is_active', 'camp_id', 'leader_id', 'password_change_at', 
-        'avatar', 'classification_id', 'slug', 'group_id', 'foreign_id', 'email', 'email_verified_at'
+        'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at', 
+        'avatar', 'classification_id', 'slug', 'foreign_id', 'email', 'email_verified_at'
     ];
 
     /**
@@ -39,52 +39,52 @@ class User extends Authenticatable  implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'is_active' => 'boolean',
         'demo' => 'boolean',
     ];
 
     protected $searchable = [
         'columns' => [
             'username' => 1,
+            'email' => 1,
         ]
     ];
 
     public function role(){
-        return $this->belongsTo('App\Role');
+        return $this->belongsTo('App\Models\Role');
     }
 
     public function camp(){
-        return $this->belongsTo('App\Camp');
+        return $this->belongsTo('App\Models\Camp');
     } 
 
     public function camps(){
-        return $this->belongsToMany('App\Camp', 'camp_users');
+        return $this->belongsToMany('App\Models\Camp', 'camp_users');
     } 
     
     public function leader(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function leaders(){
-        return $this->belongsToMany('App\User', 'camp_users');
+        return $this->belongsToMany('App\Models\User', 'camp_users');
     }
 
     public function isAdmin(){
-        if($this->role['is_admin'] == 1 && $this->is_active == 1){
+        if($this->role['is_admin'] == 1){
             return true;
         }
         return false;
     }
 
     public function isCampleader(){
-        if(($this->role['is_campleader'] == 1 || $this->role['is_admin'] == 1) && $this->is_active == 1){
+        if(($this->role['is_campleader'] == 1 || $this->role['is_admin'] == 1)){
             return true;
         }
         return false;
     }
 
     public function isLeader(){
-        if(($this->role['is_leader']=== 1) && ($this->is_active == 1)){
+        if($this->role['is_leader']=== 1){
             return true;
         }
         return false;
@@ -95,7 +95,7 @@ class User extends Authenticatable  implements MustVerifyEmail
     }
 
     public function classification(){
-        return $this->belongsTo('App\Classification');
+        return $this->belongsTo('App\Models\Classification');
     }
 
     public function getRouteKeyName()

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Chapter;
-use App\Question;
+use App\Models\Chapter;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 

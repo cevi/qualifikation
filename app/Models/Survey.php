@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +20,7 @@ class Survey extends Model
     ];
 
     public function campUser(){
-        return $this->belongsTo('App\CampUser');
+        return $this->belongsTo('App\Models\CampUser');
     }
 
     public function MySurvey(){
@@ -39,15 +39,15 @@ class Survey extends Model
     }
 
     public function chapters(){
-        return $this->HasMany('App\SurveyChapter');
+        return $this->HasMany('App\Models\SurveyChapter');
     }
 
     public function questions(){
-        return $this->hasManyThrough('App\SurveyQuestion', 'App\SurveyChapter');
+        return $this->hasManyThrough('App\Models\SurveyQuestion', 'App\Models\SurveyChapter');
     }
     
     public function survey_status(){
-        return $this->belongsTo('App\SurveyStatus');
+        return $this->belongsTo('App\Models\SurveyStatus');
     } 
 
     public function TNisAllowed(){

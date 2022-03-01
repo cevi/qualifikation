@@ -252,3 +252,11 @@ img {
 .navbar-dashboard .navbar-nav .nav-link.disabled {
   color: rgba(255, 255, 255, 0.5);
 }
+
+.hr-label {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  margin: 1rem 0;
+
+}

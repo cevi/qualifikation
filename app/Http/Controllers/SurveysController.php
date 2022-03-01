@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Camp;
-use App\User;
-use App\Answer;
-use App\Survey;
-use App\CampUser;
-use App\SurveyQuestion;
+use App\Models\Camp;
+use App\Models\User;
+use App\Models\Answer;
+use App\Models\Survey;
+use App\Models\CampUser;
+use App\Models\SurveyQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +12,6 @@ class Chapter extends Model
     ];
 
     public function question(){
-        return $this->hasMany('App\Question');
+        return $this->hasMany('App\Models\Question');
     }
 }

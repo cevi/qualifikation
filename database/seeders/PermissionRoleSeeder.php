@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Camp;
-use App\Role;
+use App\Models\Camp;
+use App\Models\Role;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,11 +30,12 @@ class PermissionRoleSeeder extends Seeder
         $user = User::create( [
             'id' => 1,
             'username' => 'Administrator', 
+            'email' => 'Administrator', 
             'slug' => 'administrator',
             'password' => Hash::make(env('ADMIN_PASSWORD')),
             'role_id' => config('status.role_Administrator'),
             'email_verified_at' => now(),
-            'is_active' => true]);
+            ]);
         $camp = Camp::create(['name' => 'Global-Camp', 'global_camp' => true]);
         $user->update(['camp_id' => $camp['id']]);
     }

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Camp;
-use App\User;
-use App\Survey;
-use App\CampUser;
-use App\SurveyChapter;
-use App\SurveyQuestion;
+use App\Models\Camp;
+use App\Models\User;
+use App\Models\Survey;
+use App\Models\CampUser;
+use App\Models\SurveyChapter;
+use App\Models\SurveyQuestion;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory;
@@ -25,10 +25,10 @@ class DemoCampSeeder extends Seeder
 
         $user = User::factory()->create([
             'username' => 'kursleiter@demo', 
+            'email' => 'kursleiter@demo', 
             'slug' => 'kursleiter@demo',
             'password' => Hash::make('kursleiter@demo'),
             'role_id' => config('status.role_Kursleiter'),
-            'is_active' => true,
             'camp_id' => 1,
             'demo' => true]);
         $camp = Camp::create([
@@ -53,6 +53,7 @@ class DemoCampSeeder extends Seeder
             $leader = User::factory()
             ->create([
                 'username' => $name,
+                'email' => $name,
                 'slug' => $name,
                 'password' => Hash::make($name),
                 'role_id' => config('status.role_Gruppenleiter'),
@@ -74,6 +75,7 @@ class DemoCampSeeder extends Seeder
                 ->for($leader, 'leader')
                 ->create([
                     'username' => $name,
+                    'email' => $name,
                     'slug' => $name,
                     'password' => Hash::make($name),
                     'camp_id' => $camp['id'],

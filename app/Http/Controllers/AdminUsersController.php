@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Camp;
-use App\Role;
-use App\User;
-use App\Group;
-use App\CampUser;
-use App\Classification;
+use App\Events\UserCreated;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Group;
+use App\Models\CampUser;
+use App\Models\Classification;
 use App\Helper\Helper;
 use Illuminate\Support\Str;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
 use Ixudra\Curl\Facades\Curl;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
@@ -33,7 +32,9 @@ class AdminUsersController extends Controller
      */
     public function index()
     {
-        return view('admin.users.index');
+        $camp = Auth::user()->camp;
+        $group = $camp->group;
+        return view('admin.users.index', compact('group'));
     }
 
     public function createDataTables()
@@ -44,7 +45,7 @@ class AdminUsersController extends Controller
             $users = $camp->allusers;
         }
         else{
-            $users = User::where('is_active', true)->get();
+            $users = User::get();
         }
 
         return DataTables::of($users)
@@ -93,67 +94,39 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         if( $aktUser->isAdmin()){
             $roles = Role::pluck('name','id')->all();
-            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('is_active', true)->pluck('username','id')->all();
+            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         }
         else{
             $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all(); 
-            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('is_active', true)->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
+            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         }
         $classifications = Classification::pluck('name','id')->all();
         return view('admin.users.create', compact('roles', 'leaders', 'classifications'));
     }
 
-    public function import(Request $request){
+    public function import(){
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
-        if($camp->foreign_id && $camp->group){
-            $input = $request->all();
-            $response = Curl::to('https://db.cevi.ch/users/sign_in.json')
-                ->withData( 
-                    array( 
-                        'person[email]' => $input['name'],
-                        'person[password]' => $input['password'] ))
-                ->post();
+        if($aktUser->foreign_id && $camp->foreign_id && $camp->group && $camp->group['api_token']){
+            $response = Curl::to('https://db.cevi.ch/groups/' .$camp->group['foreign_id']. '/events/' .$camp['foreign_id']. '/participations.json')
+                ->withData(array('token' => $camp->group['api_token']))
+                ->get();
             $response = json_decode($response);
-            if(!isset($response->error)){
-                $aktUser_id = $response->people[0]->id;
-                $token = $response->people[0]->authentication_token;
-                $response = Curl::to('https://db.cevi.ch/groups/' .$camp->group['foreign_id']. '/events/' .$camp['foreign_id']. '/participations.json')
-                    ->withData( 
-                        array( 
-                            'user_email' => $input['name'],
-                            'user_token' => $token))
-                    ->get();
-                $response = json_decode($response);
-                $participants = $response->event_participations;
+            $participants = $response->event_participations;
+            $isLeader = false;
+            foreach($participants as $participant){
+                if ((intval($participant->links->person) === $aktUser['foreign_id']) && ($participant->roles[0]->type === "Event::Role::Leader")){
+                    $isLeader = true;
+                }
+            }
+            if($isLeader){
                 foreach($participants as $participant){
                     if ($participant->roles[0]->type === "Event::Course::Role::Participant" ||
                             $participant->roles[0]->type === "Event::Role::AssistantLeader" ||
                             $participant->roles[0]->type === "Event::Role::Leader"){
-                        $response = Curl::to('https://db.cevi.ch/groups/' . $participant->ortsgruppe_id . '.json')
-                            ->withData( 
-                                array( 
-                                    'user_email' => $input['name'],
-                                    'user_token' => $token))
-                            ->get();
-                        $response = json_decode($response);
-                        if(isset($response)){
-                            $group_response = $response->groups;
-                            $insertData = array(
-                                
-                                "shortname" => $group_response[0]->short_name,
-                                "name" => $group_response[0]->name,
-                                "foreign_id" => $group_response[0]->id,
-                                "campgroup" => false);
-
-                            $group = Group::firstOrCreate(['foreign_id' => $group_response[0]->id], $insertData);
-                        }
-                        else{
-                            $group = Group::where('foreign_id', 1)->first();    
-                        }
-
-                        if ($participant->links->person != $aktUser_id){
-                            $username = $participant->nickname . '@' . $group['shortname'];
+        
+                        if ($participant->links->person != $aktUser['foreign_id']){
+                            $username = $participant->nickname;
                             switch($participant->roles[0]->type){
                                 case  'Event::Course::Role::Participant':
                                     $role_id = config('status.role_Teilnehmer');
@@ -167,25 +140,19 @@ class AdminUsersController extends Controller
 
                             }
                             $insertData = array(
-                                
                                 "username" =>  $username,
-                                "slug" => Str::slug(mb_strtolower($username)),
-                                "password" => bcrypt(mb_strtolower($username)),
-                                "role_id" => $role_id,
                                 "email_verified_at" => now(),
-                                "is_active" => true,
-                                "camp_id" => $camp['id'],
                                 'classification_id' => config('status.classification_green'));
                             $user = User::whereraw('LOWER(`username`) LIKE "' . mb_strtolower($username). '"')->Orwhere('foreign_id', $participant->links->person)->first();
                             if(!$user){
                                 $user = User::create($insertData);
+                                UserCreated::dispatch($user);
                             }
-                            else{
-                                $user->update([
-                                    "role_id" => $role_id,
-                                    'classification_id' => config('status.classification_green')
-                                ]);
-                            }
+                            $user->update([
+                                "role_id" => $role_id,
+                                "camp_id" => $camp['id'],
+                                'classification_id' => config('status.classification_green')
+                            ]);
 
                         }
                         else{
@@ -197,30 +164,33 @@ class AdminUsersController extends Controller
                         if(!$user->email){
                             $user->update(['email' => $participant->email]);     
                         }
-                        if(!$user->group_id)  {
-                            $user->update(['group_id' => $group->id]);   
-
-                        }  
                         if(!$user->foreign_id)  {
                             $user->update(['foreign_id' => $participant->links->person]);   
                         } 
                         Helper::updateCamp($user, $camp, true);  
                     }            
                 }
-                return true;
+                return true;  
             }
             else{
-                abort(400, $response->error);
+                $errorText = 'Der DB-Import steht nur den Kursleitern zur Verfügung';
+                abort(412, $errorText);
             }
-                        
+        
         }
         else{
             $errorText = '';
             if(!$camp->foreign_id){
                 $errorText = 'Keine Cevi-DB-ID auf dem Kurs hinterlegt.';
             }
+            if(!$aktUser->foreign_id){
+                $errorText = 'Dein Cevi-DB ist noch nicht mit deinem Benutzer verknüpft.';
+            }
             elseif(!$camp->group){
                 $errorText = $errorText + ' Keine Gruppe auf dem Kurs hinterlegt.';
+            }
+            elseif(!$camp->group['api_token']){
+                $errorText = $errorText + ' Deine Region hat den DB-Import nicht freigeschalten.';
             }
             abort(412, $errorText);
         }
@@ -247,7 +217,6 @@ class AdminUsersController extends Controller
                         "username"=> $username,
                         "password"=>bcrypt($importData['password']),
                         "role_id"=>config('status.role_Kursleiter'),
-                        "is_active"=>true,
                         "camp_id"=>$user['camp_id'],
                         "email_verified_at" => now(),
                         'classification_id' => config('status.classification_green'));
@@ -264,7 +233,6 @@ class AdminUsersController extends Controller
                         "username"=> $username,
                         "password"=>bcrypt($importData['password']),
                         "role_id"=>config('status.role_Gruppenleiter'),
-                        "is_active"=>true,
                         "camp_id"=>$user['camp_id'],
                         "email_verified_at" => now(),
                         'classification_id' => config('status.classification_green'));
@@ -289,7 +257,6 @@ class AdminUsersController extends Controller
                         "username"=> $username,
                         "password"=>bcrypt($importData['password']),
                         "role_id"=>config('status.role_Teilnehmer'),
-                        "is_active"=>true,
                         "camp_id"=>$user['camp_id'],
                         "email_verified_at" => now(),
                         "leader_id"=>$leader['id'],
@@ -321,8 +288,8 @@ class AdminUsersController extends Controller
     {
         //
         $this->validate($request, [
-            'username' => 'required|unique:users|max:255',
-            'email' => 'required|email',
+            'username' => 'required|max:255',
+            'email' => 'required|unique:users|email',
             'role_id' => 'required',
             'password' => 'required',
         ], [
@@ -352,11 +319,12 @@ class AdminUsersController extends Controller
                 }
             }
         }
-        $input['slug'] = Str::slug($input['username']);
+        // $input['slug'] = Str::slug($input['username']);
         $input['email_verified_at'] = now();
 
 
         $user = User::create($input);
+        UserCreated::dispatch($user);
         Helper::updateCamp($user, $camp, true);  
 
         return redirect('/admin/users/create');
@@ -442,9 +410,10 @@ class AdminUsersController extends Controller
                     $input['avatar'] = '/'.$save_path.'/'.$name;
                 }
             }
-            $input['slug'] = Str::slug($input['username']);
+            // $input['slug'] = Str::slug($input['username']);
 
             $user->update($input);
+            UserCreated::dispatch($user);
             $camp_user = CampUser::firstOrCreate(['camp_id' => $user->camp->id, 'user_id' =>$user->id]);
             $camp_user->update([
                 'role_id' => $user['role_id'],
