@@ -34,6 +34,10 @@
                         <li>Landing Page mit Screenshots, Anleitung, etc.</li>
                         <li>Mobile-Tauglichkeit weiter verbessern.</li>
                     </ul>
+                    <h3>V6</h3>
+                    <ul>
+                        <li>Login durch Cevi-DB Benutzerdaten.</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -45,10 +49,6 @@
                     <h2 class="h5 display"><a data-toggle="collapse" data-parent="#roadmap-wrapper" href="#roadmap-box" aria-expanded="true" aria-controls="roadmap-box">Geplante Änderungen</a></h2><a data-toggle="collapse" data-parent="#roadmap-wrapper" href="#roadmap-box" aria-expanded="true" aria-controls="roadmap-box"><i class="fa fa-angle-down"></i></a>
                 </div>
                 <div id="roadmap-box" role="tabpanel" class="card-body collapse show">
-                    <h3>V6</h3>
-                    <ul>
-                        <li>Login durch Cevi-DB Benutzerdaten.</li>
-                    </ul>
                 </div>
             </div>
         </div>

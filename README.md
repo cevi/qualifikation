@@ -22,9 +22,16 @@ Um das Tool lokal bei dir benutzen zu können musst du den Quellcode herunterlad
 ```
 git clone https://github.com/cevi/qualifikation
 cd qualifikation
-composer update
-npm update && install
+
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/var/www/html \
+    -w /var/www/html \
+    laravelsail/php81-composer:latest \
+    composer install --ignore-platform-reqs
+    
 cp .env.example .env
+
 ./vendor/bin/sail up
 
 ```

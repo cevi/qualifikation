@@ -97,7 +97,7 @@ class AdminUsersController extends Controller
             $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         }
         else{
-            $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all(); 
+            $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all();
             $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         }
         $classifications = Classification::pluck('name','id')->all();
@@ -124,7 +124,7 @@ class AdminUsersController extends Controller
                     if ($participant->roles[0]->type === "Event::Course::Role::Participant" ||
                             $participant->roles[0]->type === "Event::Role::AssistantLeader" ||
                             $participant->roles[0]->type === "Event::Role::Leader"){
-        
+
                         if ($participant->links->person != $aktUser['foreign_id']){
                             $username = $participant->nickname;
                             switch($participant->roles[0]->type){
@@ -159,24 +159,24 @@ class AdminUsersController extends Controller
                             $user = Auth::user();
                         }
                         if(!$user->avatar){
-                            $user->update(['avatar' => 'https://db.cevi.ch'. $participant->picture->url]);     
+                            $user->update(['avatar' => 'https://db.cevi.ch'. $participant->picture->url]);
                         }
                         if(!$user->email){
-                            $user->update(['email' => $participant->email]);     
+                            $user->update(['email' => $participant->email]);
                         }
                         if(!$user->foreign_id)  {
-                            $user->update(['foreign_id' => $participant->links->person]);   
-                        } 
-                        Helper::updateCamp($user, $camp, true);  
-                    }            
+                            $user->update(['foreign_id' => $participant->links->person]);
+                        }
+                        Helper::updateCamp($user, $camp, true);
+                    }
                 }
-                return true;  
+                return true;
             }
             else{
                 $errorText = 'Der DB-Import steht nur den Kursleitern zur Verfügung';
                 abort(412, $errorText);
             }
-        
+
         }
         else{
             $errorText = '';
@@ -198,11 +198,11 @@ class AdminUsersController extends Controller
 
     public function uploadFile(Request $request){
         if($request->hasFile('csv_file')){
-          
+
             $array = (new UsersImport)->toArray(request()->file('csv_file'));
             $importData_arr = $array[0];
-            
-      
+
+
             // Insert to MySQL database
             $user = Auth::user();
             $camp = $user->camp;
@@ -211,9 +211,9 @@ class AdminUsersController extends Controller
                 $username = mb_strtolower($importData['username']);
 
                 if($importData['rollen']==='K'){
-                    
+
                     $insertData = array(
-                    
+
                         "username"=> $username,
                         "password"=>bcrypt($importData['password']),
                         "role_id"=>config('status.role_Kursleiter'),
@@ -222,14 +222,14 @@ class AdminUsersController extends Controller
                         'classification_id' => config('status.classification_green'));
 
                     $user = User::firstOrCreate(['username' => $username], $insertData);
-                    Helper::updateCamp($user, $camp, true);  
+                    Helper::updateCamp($user, $camp, true);
 
                 }
                 elseif($importData['rollen']==='G'){
-                    
+
 
                     $insertData = array(
-                    
+
                         "username"=> $username,
                         "password"=>bcrypt($importData['password']),
                         "role_id"=>config('status.role_Gruppenleiter'),
@@ -238,22 +238,22 @@ class AdminUsersController extends Controller
                         'classification_id' => config('status.classification_green'));
 
                     $user = User::firstOrCreate(['username' => $username], $insertData);
-                    Helper::updateCamp($user, $camp, true);  
+                    Helper::updateCamp($user, $camp, true);
                 }
 
-    
+
             }
             foreach($importData_arr as $importData){
 
                 $username = mb_strtolower($importData['username']);
 
                 if($importData['rollen']==='T'){
-                    
+
                     $user = Auth::user();
                     $leader = User::where('username', $importData['leiter'])->first();
 
                     $insertData = array(
-                    
+
                         "username"=> $username,
                         "password"=>bcrypt($importData['password']),
                         "role_id"=>config('status.role_Teilnehmer'),
@@ -263,15 +263,15 @@ class AdminUsersController extends Controller
                         'classification_id' => config('status.classification_green'));
 
                     $user = User::firstOrCreate(['username' => $username], $insertData);
-                    Helper::updateCamp($user, $camp, true);  
+                    Helper::updateCamp($user, $camp, true);
                 }
-    
+
             }
         }
-        
+
         return redirect()->action('AdminUsersController@index');
 
-        
+
     }
 
     public function download(){
@@ -284,6 +284,7 @@ class AdminUsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         //
@@ -294,7 +295,7 @@ class AdminUsersController extends Controller
             'password' => 'required',
         ], [
             'role_id.required' => 'Die Rolle muss ausgefüllt sein.']);
-            
+
         $aktUser = Auth::user();
         if(trim($request->password) == ''){
             $input = $request->except('password');
@@ -314,7 +315,7 @@ class AdminUsersController extends Controller
                         mkdir($save_path, 0755, true);
                     }
                     $name = time() . str_replace(' ', '', $file->getClientOriginalName());
-                    Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);  
+                    Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);
                     $input['avatar'] = '/'.$save_path.'/'.$name;
                 }
             }
@@ -325,7 +326,7 @@ class AdminUsersController extends Controller
 
         $user = User::create($input);
         UserCreated::dispatch($user);
-        Helper::updateCamp($user, $camp, true);  
+        Helper::updateCamp($user, $camp, true);
 
         return redirect('/admin/users/create');
     }
@@ -342,7 +343,7 @@ class AdminUsersController extends Controller
                 'camp_id' => $camp->id,
                 'role_id' => $input['role_id']]
             );
-            
+
         }
        return redirect('/admin/users/create');
     }
@@ -406,20 +407,21 @@ class AdminUsersController extends Controller
                         mkdir($save_path);
                     }
                     $name = time() . str_replace(' ', '', $file->getClientOriginalName());
-                    Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);  
+                    Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);
                     $input['avatar'] = '/'.$save_path.'/'.$name;
                 }
             }
             // $input['slug'] = Str::slug($input['username']);
 
             $user->update($input);
-            UserCreated::dispatch($user);
-            $camp_user = CampUser::firstOrCreate(['camp_id' => $user->camp->id, 'user_id' =>$user->id]);
+           // UserCreated::dispatch($user);
+            $camp_user = CampUser::firstOrCreate(['camp_id' => $aktuser->camp->id, 'user_id' =>$user->id]);
             $camp_user->update([
                 'role_id' => $user['role_id'],
-                'leader_id' => $user['leader_id'], 
+                'leader_id' => $user['leader_id'],
             ]);
-            Helper::updateCamp($user, $user->camp);
+
+            Helper::updateCamp($user, $aktuser->camp);
         }
 
         return redirect('/admin/users');
