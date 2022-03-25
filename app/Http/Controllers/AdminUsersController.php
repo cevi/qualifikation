@@ -34,7 +34,13 @@ class AdminUsersController extends Controller
     {
         $camp = Auth::user()->camp;
         $group = $camp->group;
-        return view('admin.users.index', compact('group'));
+        if($group){
+            $api_token = $group->api_token;
+        }
+        else{
+            $api_token = null;
+        }
+        return view('admin.users.index', compact('api_token'));
     }
 
     public function createDataTables()

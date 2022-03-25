@@ -10,12 +10,12 @@
         </div>
     </div>
     @if (Session::has('deleted_user'))
-        <p class="bg-danger">{{session('deleted_user')}}</p> 
+        <p class="bg-danger">{{session('deleted_user')}}</p>
     @endif
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Personen</h1>
             </header>
             <div class="row">
@@ -25,7 +25,7 @@
                     </div>
                     @if (config('app.import_db'))
                         <div class="col-lg-4">
-                            <button id="showImport" class="btn btn-primary btn-sm" title="{{$group->api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.'}}" {{$group->api_token ? '' : 'disabled'}}>Personen aus Cevi-DB importieren</button>
+                            <button id="showImport" class="btn btn-primary btn-sm" title="{{$api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.' }}" {{$api_token ? '' : 'disabled'}}>Personen aus Cevi-DB importieren</button>
                         </div>
                     @endif
                     <div class="col-lg-4">
@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 {{ Form::file('csv_file',['class' => 'dropify'])}}
                             </div>
-                            {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}  
+                            {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}
                         {!! Form::close() !!}
                     </div>
                 @endif
@@ -61,7 +61,7 @@
                     </div>
                 </div>
             @endif
-        </div>  
+        </div>
     </section>
     <div class="modal fade" id="importModal" aria-hidden="true">
         <div class="modal-dialog">
@@ -85,7 +85,7 @@
             </div>
         </div>
     </div>
-    
+
 @endsection
 @section('scripts')
     <script>
@@ -110,15 +110,15 @@
                     { data: 'classification', name: 'classification' },
                     { data: 'camp', name: 'camp' },
                     { data: 'password_changed', name: 'password_changed' },
-                    
+
                     ]
             });
         });
-        $('#showImport').on('click', function () { 
+        $('#showImport').on('click', function () {
             $('#importModal').modal('show');
         });
 
-        $('#importUsers').on('click', function () { 
+        $('#importUsers').on('click', function () {
 
             $.ajaxSetup({
                 headers: {
@@ -133,7 +133,7 @@
                 beforeSend: function() { $('#loading-spinner').removeClass('display-none')},
                 complete: function() {  $('#loading-spinner').addClass('display-none') },
                 success:function(res)
-                {   
+                {
                     $('#modal-form').trigger('reset');
                     $('#importModal').modal('hide');
                     location.reload();

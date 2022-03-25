@@ -12,7 +12,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Kurs</h1>
             </header>
             <div class="row">
@@ -41,7 +41,7 @@
                             {!! Form::submit('Kurs erstellen', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
-                </div>    
+                </div>
                 @endif
                 <div class="col-sm-9">
                     @if ($camps)
@@ -51,6 +51,7 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Kursleiter</th>
                                     <th scope="col">Kurstyp</th>
+                                    <th scope="col">Gruppe</th>
                                     <th scope="col">Erstellt am</th>
                                     <th scope="col">Geändert am</th>
                                 </tr>
@@ -59,15 +60,16 @@
                             <tbody>
                                 <tr>
                                     <td><a href="{{route('admin.camps.edit',$camp->id)}}">{{$camp->name}}</a></td>
-                                    <td>{{$camp->user ? $camp->user['username'] : ''}}</a></td> 
-                                    <td>{{$camp->camp_type ? $camp->camp_type['name'] : ''}}</a></td> 
+                                    <td>{{$camp->user ? $camp->user['username'] : ''}}</a></td>
+                                    <td>{{$camp->camp_type ? $camp->camp_type['name'] : ''}}</a></td>
+                                    <td>{{$camp->group ? $camp->group['name'] : ''}}</a></td>
                                     <td>{{$camp->created_at ? $camp->created_at->diffForHumans() : 'no date'}}</td>
                                     <td>{{$camp->updated_at ? $camp->updated_at->diffForHumans() : 'no date'}}</td>
                                 </tr>
                             </tbody>
                         @endforeach
                         </table>
-                    
+
                     @endif
 
                 </div>
