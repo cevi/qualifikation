@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Models\CampUser;
 use App\Models\Classification;
 use App\Helper\Helper;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
@@ -35,12 +36,12 @@ class AdminUsersController extends Controller
         $camp = Auth::user()->camp;
         $group = $camp->group;
         if($group){
-            $api_token = $group->api_token;
+            $has_api_token = (bool)$group->api_token;
         }
         else{
-            $api_token = null;
+            $has_api_token = false;
         }
-        return view('admin.users.index', compact('api_token'));
+        return view('admin.users.index', compact('has_api_token'));
     }
 
     public function createDataTables()
@@ -115,7 +116,7 @@ class AdminUsersController extends Controller
         $camp = $aktUser->camp;
         if($aktUser->foreign_id && $camp->foreign_id && $camp->group && $camp->group['api_token']){
             $response = Curl::to('https://db.cevi.ch/groups/' .$camp->group['foreign_id']. '/events/' .$camp['foreign_id']. '/participations.json')
-                ->withData(array('token' => $camp->group['api_token']))
+                ->withData(array('token' => Crypt::decyrptString($camp->group['api_token'])))
                 ->get();
             $response = json_decode($response);
             $participants = $response->event_participations;
@@ -190,7 +191,7 @@ class AdminUsersController extends Controller
                 $errorText = 'Keine Cevi-DB-ID auf dem Kurs hinterlegt.';
             }
             if(!$aktUser->foreign_id){
-                $errorText = 'Dein Cevi-DB ist noch nicht mit deinem Benutzer verknüpft.';
+                $errorText = 'Dein Cevi-DB-Benutzer ist noch nicht mit deinem Benutzer verknüpft.';
             }
             elseif(!$camp->group){
                 $errorText = $errorText + ' Keine Gruppe auf dem Kurs hinterlegt.';

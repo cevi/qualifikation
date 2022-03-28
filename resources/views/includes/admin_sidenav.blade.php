@@ -5,7 +5,7 @@
         {{-- <div class="sidenav-header d-flex align-items-center justify-content-center">
             <div class="navbar-nav navbar-header">
                 <a id="toggle-btn" href="#" class="menu-btn">
-                    <i class="fas fa-bars"></i> 
+                    <i class="fas fa-bars"></i>
                 </a>
             </div>
         </div>
@@ -14,8 +14,8 @@
         <!-- Sidebar Navigation Menus-->
         <div class="main-menu">
             <h5 class="sidenav-heading">Qualifikation</h5>
-            <ul id="side-main-menu" class="side-menu list-unstyled">           
-                <li><a href="/home"> <i class="fas fa-home"></i> Home</a></li>       
+            <ul id="side-main-menu" class="side-menu list-unstyled">
+                <li><a href="/home"> <i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/admin"> <i class="fas fa-home"></i> Dashboard</a></li>
                 @if ((isset(Auth::user()->camp) OR (Auth::user()->isAdmin())))
                     <li><a href="#UsersDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-users"></i> Personen</a>
@@ -36,13 +36,14 @@
         </div>
         <div class="admin-menu">
             <h5 class="sidenav-heading">Administration</h5>
-            <ul id="side-main-menu" class="side-menu list-unstyled">  
+            <ul id="side-main-menu" class="side-menu list-unstyled">
                 <li><a href="{{route('admin.camps.index')}}"> <i class="fas fa-campground"></i> Kurs</a></li>
                 @if (Auth::user()->isCampleader())
                     <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Qualifikationen</a>
                 @endif
-                
+
                 @if (Auth::user()->isAdmin())
+                    <li><a href="/admin/groups"><i class="fas fa-campground"></i> Gruppen</a></li>
                     <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Kompetenzen</a>
                         <ul id="QuestionsDropdown" class="collapse list-unstyled ">
                             <li>

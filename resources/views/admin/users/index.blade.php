@@ -25,7 +25,7 @@
                     </div>
                     @if (config('app.import_db'))
                         <div class="col-lg-4">
-                            <button id="showImport" class="btn btn-primary btn-sm" title="{{$api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.' }}" {{$api_token ? '' : 'disabled'}}>Personen aus Cevi-DB importieren</button>
+                            <button id="showImport" class="btn btn-primary btn-sm" title="{{$has_api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.' }}" {{$has_api_token ? '' : 'disabled'}}>Personen aus Cevi-DB importieren</button>
                         </div>
                     @endif
                     <div class="col-lg-4">

@@ -120,6 +120,7 @@ Route::group(['middleware' => 'verified'], function(){
         Route::resource('admin/chapters', 'AdminChaptersController');
         Route::resource('admin/competences', 'AdminCompetencesController');
         Route::resource('admin/classifications', 'AdminClassificationController');
+        Route::resource('admin/groups', 'AdminGroupsController');
 
 
     });
