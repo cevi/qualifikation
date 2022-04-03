@@ -12,16 +12,12 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
-                <h1 class="h3 display">Qualifikation</h1>
+            <header>
+                <h1 class="h3 display">Qualifikation von {{$survey->campuser->user['username']}}</h1>
             </header>
             <div class="row">
                 <div class="col-sm-6">
                     {!! Form::model($survey, ['method' => 'PATCH', 'action'=>['AdminSurveysController@update', $survey->id]]) !!}
-                       <div class="form-group">
-                        {!! Form::label('user_id', 'Teilnehmer:') !!}
-                        {!! Form::select('user_id', [''=>'Wähle Teilnehmer'] + $users, null, ['class' => 'form-control']) !!}
-                    </div>
 
                     <div class="form-group">
                         {!! Form::label('survey_status_id', 'Status:') !!}

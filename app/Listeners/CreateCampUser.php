@@ -34,9 +34,15 @@ class CreateCampUser
         $camp_user->update([
             'role_id' => config('status.role_Teilnehmer')
         ]);
-        $event->user->update([
-            'camp_id' => $camp['id'],
-            'role_id' => config('status.role_Teilnehmer'),
-        ]);
+        if (!$event->user->camp) {
+            $event->user->update([
+                'camp_id' => $camp['id'],
+            ]);
+        }
+        if (!$event->user->role){
+            $event->user->update([
+                'role_id' => config('status.role_Teilnehmer'),
+            ]);
+        }
     }
 }

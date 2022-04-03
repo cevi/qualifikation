@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Events\UserCreated;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Group;
 use App\Models\CampUser;
 use App\Models\Classification;
 use App\Helper\Helper;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Str;
 use App\Imports\UsersImport;
 use Illuminate\Http\Request;
 use Ixudra\Curl\Facades\Curl;
@@ -18,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use function PHPUnit\Framework\returnArgument;
 
 class AdminUsersController extends Controller
 {
@@ -29,7 +28,6 @@ class AdminUsersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -86,14 +84,12 @@ class AdminUsersController extends Controller
     {
         $camp = Auth::user()->camp;
         $allusers = $camp->allusers;
-        $users = User::where('role_id','<>',config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
-        return $users;
+        return User::where('role_id','<>',config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -174,7 +170,7 @@ class AdminUsersController extends Controller
                         if(!$user->foreign_id)  {
                             $user->update(['foreign_id' => $participant->links->person]);
                         }
-                        Helper::updateCamp($user, $camp, true);
+                        Helper::updateCamp($user, $camp);
                     }
                 }
                 return true;
@@ -229,7 +225,8 @@ class AdminUsersController extends Controller
                         'classification_id' => config('status.classification_green'));
 
                     $user = User::firstOrCreate(['username' => $username], $insertData);
-                    Helper::updateCamp($user, $camp, true);
+                    UserCreated::dispatch($user);
+                    Helper::updateCamp($user, $camp);
 
                 }
                 elseif($importData['rollen']==='G'){
@@ -245,7 +242,8 @@ class AdminUsersController extends Controller
                         'classification_id' => config('status.classification_green'));
 
                     $user = User::firstOrCreate(['username' => $username], $insertData);
-                    Helper::updateCamp($user, $camp, true);
+                    UserCreated::dispatch($user);
+                    Helper::updateCamp($user, $camp);
                 }
 
 
@@ -270,7 +268,8 @@ class AdminUsersController extends Controller
                         'classification_id' => config('status.classification_green'));
 
                     $user = User::firstOrCreate(['username' => $username], $insertData);
-                    Helper::updateCamp($user, $camp, true);
+                    UserCreated::dispatch($user);
+                    Helper::updateCamp($user, $camp);
                 }
 
             }
@@ -284,13 +283,6 @@ class AdminUsersController extends Controller
     public function download(){
         return Storage::download('file.jpg', 'Teilnehmerliste.xlsx');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
 
     public function store(Request $request)
     {
@@ -333,7 +325,7 @@ class AdminUsersController extends Controller
 
         $user = User::create($input);
         UserCreated::dispatch($user);
-        Helper::updateCamp($user, $camp, true);
+        Helper::updateCamp($user, $camp);
 
         return redirect('/admin/users/create');
     }
@@ -358,8 +350,6 @@ class AdminUsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
@@ -369,8 +359,6 @@ class AdminUsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
     {
@@ -386,9 +374,6 @@ class AdminUsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
@@ -437,8 +422,6 @@ class AdminUsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {

@@ -20,7 +20,7 @@ class CreateGroupsTable extends Migration
             $table->string('shortname', 10)->nullable();
             $table->integer('foreign_id');
             $table->boolean('campgroup')->default(false);
-            $table->string('api_token')->nullable();
+            $table->longText('api_token')->nullable();
         });
     }
 

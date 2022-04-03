@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\User;
 use App\Models\Answer;
 use App\Models\Survey;
 use App\Models\Chapter;
 use App\Models\Question;
 use App\Models\SurveyStatus;
-use App\Models\Helper\Helper;
 use App\Models\SurveyChapter;
 use App\Models\SurveyQuestion;
 use Illuminate\Support\Str;
@@ -41,7 +41,7 @@ class AdminSurveysController extends Controller
         else{
             $surveys = Survey::all();
         }
-        
+
         return DataTables::of($surveys)
             ->addColumn('user', function($survey) {
                 $username = $survey->campuser ? $survey->campuser->user['username'] : '';
@@ -53,7 +53,7 @@ class AdminSurveysController extends Controller
                 return $survey->campuser->camp['name'];})
             ->addIndexColumn()
             ->addColumn('status', function($survey) {
-                $survey_statuses_id = [config('status.survey_neu'), 
+                $survey_statuses_id = [config('status.survey_neu'),
                 config('status.survey_1offen'),
                 config('status.survey_2offen'),
                 config('status.survey_tnAbgeschlossen'),
@@ -74,7 +74,7 @@ class AdminSurveysController extends Controller
             ->rawColumns(['user', 'Actions', 'status'])
             ->make(true);
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -127,7 +127,8 @@ class AdminSurveysController extends Controller
         $users = Auth::user()->camp->participants->pluck('username','id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
         $survey_statuses_id = SurveyStatus::pluck('name','id')->all();
-        return view('admin.surveys.edit', compact('survey','users', 'leaders', 'survey_statuses_id'));
+        $user_id = $survey->campUser->user();
+        return view('admin.surveys.edit', compact('survey','users', 'leaders', 'survey_statuses_id', 'user_id'));
 
     }
 
@@ -153,11 +154,9 @@ class AdminSurveysController extends Controller
                     Helper::clearsurvey($survey, 'second');
                 }
             }
-            $user = User::findorFail($input['user_id']);
-            $input['slug'] = Str::slug($user['username'].'@'.$camp['name']);
             $survey->update($input);
         }
-  
+
         return redirect('/admin/surveys');
     }
 
