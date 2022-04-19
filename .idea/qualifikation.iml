@@ -155,6 +155,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/nikic/php-parser" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psy/psysh" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/app" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

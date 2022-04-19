@@ -112,7 +112,7 @@ class AdminUsersController extends Controller
         $camp = $aktUser->camp;
         if($aktUser->foreign_id && $camp->foreign_id && $camp->group && $camp->group['api_token']){
             $response = Curl::to('https://db.cevi.ch/groups/' .$camp->group['foreign_id']. '/events/' .$camp['foreign_id']. '/participations.json')
-                ->withData(array('token' => Crypt::decyrptString($camp->group['api_token'])))
+                ->withData(array('token' => Crypt::decryptString($camp->group['api_token'])))
                 ->get();
             $response = json_decode($response);
             $participants = $response->event_participations;
@@ -129,7 +129,7 @@ class AdminUsersController extends Controller
                             $participant->roles[0]->type === "Event::Role::Leader"){
 
                         if ($participant->links->person != $aktUser['foreign_id']){
-                            $username = $participant->nickname;
+                            $username = $participant->nickname ? $participant->nickname : $participant->first_name;
                             switch($participant->roles[0]->type){
                                 case  'Event::Course::Role::Participant':
                                     $role_id = config('status.role_Teilnehmer');
