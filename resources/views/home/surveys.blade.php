@@ -1,10 +1,10 @@
 @extends('layouts.layout')
 
 @section('survey_content')
-        <h1>Hallo {{$aktUser->username}}</h1> 
+        <h1>Hallo {{$aktUser->username}}</h1>
 
         @if ($surveys)
-            <div class="card table-responsive">           
+            <div class="card table-responsive">
             <table class="table">
                 <thead>
                     <tr>
@@ -23,13 +23,13 @@
                         @foreach ($surveys as $survey)
                             {{-- @if($survey->MySurvey() || $aktUser->isCampleader()) --}}
                                 <tr>
-                                    @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen'))|| 
+                                    @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen'))||
                                         $aktUser->isLeader())
                                         <td>
                                             @if ($survey->TNisAllowed())
                                                 <a href="{{route('survey.survey', $survey->slug)}}">{{$survey->SurveyName()}}</a>
                                             @else
-                                                {{$survey->SurveyName()}}</td>
+                                                {{$survey->SurveyName()}}
                                             @endif
                                         </td>
                                     @endif
@@ -47,7 +47,7 @@
                                         @endif
                                     </td>
                                     <td>{{$survey->survey_status['name']}}</td>
-                                </tr>    
+                                </tr>
                             {{-- @endif --}}
                         @endforeach
 
@@ -56,9 +56,9 @@
                 </tbody>
             </table>
             </div>
-            @if ($aktUser->isLeader())       
-                <div class="row d-flex align-items-md-stretch"> 
-                    @foreach($surveys as $survey) 
+            @if ($aktUser->isLeader())
+                <div class="row d-flex align-items-md-stretch">
+                    @foreach($surveys as $survey)
                         <div class="col-lg-6 col-md-12" id="Chart-{{$loop->iteration}}">
                             <div class="card">
                                 <a href="{{route('survey.compare',$survey->slug)}}">
@@ -73,19 +73,19 @@
                                         <canvas id="radarChart-{{$loop->iteration}}"  width="100%" height="100%"></canvas>
                                     </div>
                                     </div>
-                                </div>  
+                                </div>
                             </div>
-                        </div>     
+                        </div>
                     @endforeach
                 </div>
             @endif
         @endif
 
-        
+
 @endsection
 
 @section('scripts')
-    @if ($aktUser->isLeader()) 
+    @if ($aktUser->isLeader())
         @include('home.radar')
     @endif
 @endsection

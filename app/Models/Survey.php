@@ -10,7 +10,7 @@ class Survey extends Model
 {
     //
     use HasFactory;
-    
+
     protected $fillable = [
         'survey_status_id', 'slug', 'camp_user_id'
     ];
@@ -45,23 +45,28 @@ class Survey extends Model
     public function questions(){
         return $this->hasManyThrough('App\Models\SurveyQuestion', 'App\Models\SurveyChapter');
     }
-    
+
     public function survey_status(){
         return $this->belongsTo('App\Models\SurveyStatus');
-    } 
+    }
 
     public function TNisAllowed(){
         $aktUser = Auth::user();
         $result = $this['survey_status_id'] < config('status.survey_fertig');
-        if($result && $aktUser->isTeilnehmer()){
-            $result = $this['survey_status_id'] <= config('status.survey_1offen');
-            if(!$result){
-                $camp = $aktUser->camp;
-                $result = $camp['secondsurveyopen'];
+        if($result) {
+            if($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id']) {
+                $result = $this['survey_status_id'] <= config('status.survey_1offen');
+                if (!$result) {
+                    $camp = $aktUser->camp;
+                    $result = $camp['secondsurveyopen'];
+                }
+            }
+            else{
+                $result = $aktUser->isLeader() && $this->campUser->user['leader_id'] == $aktUser['id'];
             }
         }
         return $result;
-    } 
+    }
 
 
     public function getRouteKeyName()
