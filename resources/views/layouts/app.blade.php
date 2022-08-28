@@ -42,7 +42,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-4 text-left">
-                        <p>Finde weitere Lösungen auf <a href="http://www.cevi.tools">cevi.tools</a></p>
+                        <p>Finde weitere Lösungen auf <a href="https://www.cevi.tools">cevi.tools</a></p>
                     </div>
                     <div class="col-sm-4 text-center">
                         <p>Made by Amirli, {{config('app.version')}}</p>

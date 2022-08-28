@@ -20,7 +20,9 @@ use App\Http\Controllers\Auth\LoginController;
 // Route::get('/', 'HomeController@index');
 
 Route::get('/', function () {
-    return view('welcome');
+    $camp_counter = \App\Models\Camp::where('finish','=',true)->get()->count();
+    $survey_counter = \App\Models\Camp::where('finish','=',true)->sum('counter');
+    return view('welcome', compact('camp_counter', 'survey_counter'));
 });
 
 Route::get('/loginTN',function(){

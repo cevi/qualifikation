@@ -71,18 +71,19 @@
         </div>
       </section>
 	  <!-- BLOCK SECTION-->
-      <section class="py-5 bg-gray-200">
-        <div class="container">
-          <div class="row gy-4 align-items-center">
-            <div class="col-md-6 text-center">
-              <h2 class="text-uppercase">Kursleiter Dashboard</h2>
-              <p class="lead mb-3">Erhalte den Überblick über deinen Kurs</p>
-              <p class="mb-3">Behalte den Überblick über deine Teilnehmenden, die Qualifikationen und alle wichtigen Daten deines Kurses im Dashboard.</p>
+        <section class="py-5 bg-gray-200">
+            <div class="container">
+                <div class="row gy-4 align-items-center">
+                    <div class="col-md-6 text-center">
+                      <h2 class="text-uppercase">Kursleiter Dashboard</h2>
+                      <p class="lead mb-3">Erhalte den Überblick über deinen Kurs</p>
+                      <p class="mb-3">Behalte den Überblick über deine Teilnehmenden, die Qualifikationen und alle wichtigen Daten deines Kurses im Dashboard.</p>
+                    </div>
+                    <div class="col-md-6"><img class="img-fluid d-block mx-auto" src="img/template-easy-customize.png" alt="..."></div>
+                </div>
             </div>
-            <div class="col-md-6"><img class="img-fluid d-block mx-auto" src="img/template-easy-customize.png" alt="..."></div>
-          </div>
-        </div>
-      </section>
+        </section>
+
 	        <!-- BANNER SECTION-->
       <section class="py-5 bg-fixed bg-cover bg-center dark-overlay" style="background: url(img/fixed-background-2.jpg)">
         <div class="overlay-content">
@@ -95,6 +96,28 @@
           </div>
         </div>
       </section>
+    <!-- SHOWCASE SECTION-->
+    <section class="py-5 bg-pentagon">
+        <div class="container py-4">
+            <!-- Counters-->
+            <div class="row gy-4 text-center" id="counterUp">
+                <div class="col-lg-6 col-sm-6">
+                    <div class="text-center text-gray-700">
+                        <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i class="fa-solid fa-campground"></i></div>
+                        <h1 class="counter mb-3" data-counter="{{$camp_counter}}">0</h1>
+                        <h2 class="text-uppercase fw-bold mb-0">Kurse</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-6">
+                    <div class="text-center text-gray-700">
+                        <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i class="fas fa-poll-h"></i></div>
+                        <h1 class="counter mb-3" data-counter="{{$survey_counter}}">0</h1>
+                        <h2 class="text-uppercase fw-bold mb-0">Qualifikationen</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
       <!-- BLOCK SECTION-->
       <section class="py-5 bg-primary text-white">
         <div class="container">
@@ -119,9 +142,6 @@
           </div>
         </div>
       </section>
-      
-
-      
       <!-- GET IT-->
       <div class="bg-primary py-5 text-white">
         <div class="container text-center">

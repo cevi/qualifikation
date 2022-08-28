@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CampCreated;
 use App\Models\Camp;
+use App\Models\CampUser;
 use App\Models\User;
 use App\Models\CampStatus;
 use App\Models\CampType;
@@ -69,6 +71,7 @@ class AdminCampsController extends Controller
         }
 
         $camp = Camp::create($input);
+        CampCreated::dispatch($camp);
         if(!$user->isAdmin()){
             $user->update(['camp_id' => $camp->id]);
         }
@@ -127,19 +130,19 @@ class AdminCampsController extends Controller
      */
     public function destroy(Camp $camp)
     {
-        //
-        // $surveys = $camp->surveys();
-        // foreach($surveys as $survey)
-        // {
-        //     $survey->delete();
-        // }
         $users = Auth::user()->camp->allUsers;
         $camp_global = Camp::where('global_camp', true)->first();
+
         foreach($users as $user)
         {
             Helper::updateCamp($user, $camp_global);
         }
-        $camp->delete();
+        $counter = $camp->surveys()->count();
+        $camp_users = CampUser::where('camp_id','=',$camp['id'])->get();
+        foreach($camp_users as $camp_user) {
+            $camp_user->delete();
+        }
+        $camp->update(['finish' => true, 'counter' => $counter]);
         return redirect('/home');
     }
 

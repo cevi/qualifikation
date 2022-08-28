@@ -23,13 +23,14 @@ class Camp extends Model
     }
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp'
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter'
     ];
 
     protected $casts = [
         'secondsurveyopen' => 'boolean',
         'global_camp' => 'boolean',
         'demo' => 'boolean',
+        'finish' => 'boolean',
     ];
 
     public function users(){
@@ -38,27 +39,27 @@ class Camp extends Model
 
     public function user(){
         return $this->belongsTo('App\Models\User');
-    } 
+    }
 
     public function allUsers(){
         return $this->belongsToMany('App\Models\User', 'camp_users')->where('camp_users.role_id', '<>', config('status.role_Administrator'));
-    } 
+    }
 
     public function participants(){
         return $this->allUsers()->where('camp_users.role_id', config('status.role_Teilnehmer'));
-    } 
+    }
 
     public function camp_users(){
         return $this->hasMany(CampUser::class)->where('camp_users.role_id', config('status.role_Teilnehmer'));
-    } 
+    }
 
     public function camp_type(){
         return $this->belongsTo('App\Models\CampType');
-    } 
+    }
 
     public function group(){
         return $this->belongsTo('App\Models\Group');
-    } 
+    }
 
     public function surveys()
     {

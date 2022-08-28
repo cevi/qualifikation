@@ -35,5 +35,6 @@ mix.scripts([
    'resources/js/libs/jqBootstrapValidation.js',
    'resources/js/libs/sweetalert.min.js',
    'resources/js/libs/swiper-bundle.min.js',
+    'resources/js/libs/jquery.waypoints.min.js',
    'resources/js/libs/custom.js',
-], 'public/js/libs.js');  
+], 'public/js/libs.js');

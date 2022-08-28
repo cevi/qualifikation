@@ -127,7 +127,6 @@ class AdminUsersController extends Controller
                     if ($participant->roles[0]->type === "Event::Course::Role::Participant" ||
                             $participant->roles[0]->type === "Event::Role::AssistantLeader" ||
                             $participant->roles[0]->type === "Event::Role::Leader"){
-
                         if ($participant->links->person != $aktUser['foreign_id']){
                             $username = $participant->nickname ? $participant->nickname : $participant->first_name;
                             switch($participant->roles[0]->type){
@@ -144,6 +143,7 @@ class AdminUsersController extends Controller
                             }
                             $insertData = array(
                                 "username" =>  $username,
+                                'email' => $participant->email,
                                 "email_verified_at" => now(),
                                 'classification_id' => config('status.classification_green'));
                             $user = User::whereraw('LOWER(`username`) LIKE "' . mb_strtolower($username). '"')->Orwhere('foreign_id', $participant->links->person)->first();
@@ -161,9 +161,9 @@ class AdminUsersController extends Controller
                         else{
                             $user = Auth::user();
                         }
-                        if(!$user->avatar){
-                            $user->update(['avatar' => 'https://db.cevi.ch'. $participant->picture->url]);
-                        }
+//                        if(!$user->avatar){
+//                            $user->update(['avatar' => 'https://db.cevi.ch'. $participant->picture->url]);
+//                        }
                         if(!$user->email){
                             $user->update(['email' => $participant->email]);
                         }

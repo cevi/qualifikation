@@ -9,10 +9,19 @@
                     <h2 class="h5 display"><a data-toggle="collapse" data-parent="#features-wrapper" href="#features-box" aria-expanded="true" aria-controls="features-box">Änderungen und Anpassungen</a></h2><a data-toggle="collapse" data-parent="#features-wrapper" href="#features-box" aria-expanded="true" aria-controls="features-box"><i class="fa fa-angle-down"></i></a>
                 </div>
                 <div id="features-box" role="tabpanel" class="card-body collapse show">
-                    <h3>V3.1</h3>
+                    <h3>V6.1</h3>
                     <ul>
-                        <li>Die 2. Selbsteinschätzung wird für alle Teilnehmer unter dem Menüpunkt Qualifikationen freigeschalten.</li>
-                        <li>Beim Bearbeiten des Qualifikations-Status können mittels Flag die bisherigen Antworten wieder zurückgesetzt werden.</li>
+                        <li>Löschen der Kurse aktualisiert Zähler auf der Homepage.</li>
+                    </ul>
+                    <h3>V6</h3>
+                    <ul>
+                        <li>Login durch Cevi-DB Benutzerdaten.</li>
+                    </ul>
+                    <h3>V5</h3>
+                    <ul>
+                        <li>Eigene Kurs-Erstellung ermöglichen.</li>
+                        <li>Landing Page mit Screenshots, Anleitung, etc.</li>
+                        <li>Mobile-Tauglichkeit weiter verbessern.</li>
                     </ul>
                     <h3>V4</h3>
                     <ul>
@@ -28,15 +37,10 @@
                         <li>Expertenkurs als Kurstyp registriert.</li>
                         <li>Im Quali-Bogen keine Tooltips. Auf Mobilgeräten erscheinen diese z.T. nicht (Erklärung - 0 + ++ und Schlüsselkompetenzen)</li>
                     </ul>
-                    <h3>V5</h3>
+                    <h3>V3.1</h3>
                     <ul>
-                        <li>Eigene Kurs-Erstellung ermöglichen.</li>
-                        <li>Landing Page mit Screenshots, Anleitung, etc.</li>
-                        <li>Mobile-Tauglichkeit weiter verbessern.</li>
-                    </ul>
-                    <h3>V6</h3>
-                    <ul>
-                        <li>Login durch Cevi-DB Benutzerdaten.</li>
+                        <li>Die 2. Selbsteinschätzung wird für alle Teilnehmer unter dem Menüpunkt Qualifikationen freigeschalten.</li>
+                        <li>Beim Bearbeiten des Qualifikations-Status können mittels Flag die bisherigen Antworten wieder zurückgesetzt werden.</li>
                     </ul>
                 </div>
             </div>

@@ -6,6 +6,9 @@
         <div class="col-md-12">
             <div class="card border-primary">
                 <div class="card-body cardbody-navtabs">
+                    <p>
+                        Diese Seite ist für Teilnehmer nicht sichtbar.
+                    </p>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -17,7 +20,7 @@
                                 <h3 class="user_name_max">{{$user->username}}</h3>
                                 <p>{{$user->leader ? $user->leader->username : ''}}</p>
                             </div>
-                            <br> 
+                            <br>
                             <div class="text-center-profile mbl">
                                 <div class="ampel" id="ampel">
                                     <a href="javascript:;" class="ampel-btn" data-color="{{config('status.classification_red')}}" data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_red')])}}' >
@@ -26,12 +29,12 @@
                                     <a href="javascript:;" class="ampel-btn" data-color="{{config('status.classification_yellow')}}" data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_yellow')])}}'>
                                         <div class="circle {{$user->classification_id == config('status.classification_yellow') ? 'yellow' : ''}}" color="yellow"></div>
                                     </a>
-                                    <a href="javascript:;" class="ampel-btn" data-color="{{config('status.classification_green')}}" data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_green')])}}'> 
+                                    <a href="javascript:;" class="ampel-btn" data-color="{{config('status.classification_green')}}" data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_green')])}}'>
                                         <div class="circle {{$user->classification_id == config('status.classification_green') ? 'green' : ''}}" color="red"></div>
                                     </a>
-                                </div>   
+                                </div>
                             </div>
-                            @foreach($surveys as $survey) 
+                            @foreach($surveys as $survey)
                                 <div class="card-header d-flex align-items-center">
                                     <h4>Kompetenzendarstellung</h4>
                                 </div>
@@ -40,10 +43,10 @@
                                         <canvas id="radarChart-1"  width="100%" height="100%"></canvas>
                                     </div>
                                 </div>
-                            @endforeach   
+                            @endforeach
                         </div>
                         <div class="col-md-6">
-                            
+
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <strong>Rückmeldungen</strong>
@@ -58,7 +61,7 @@
                                                         {{$post->leader['username']}}<br>
                                                         {{$post->created_at ? $post->created_at->isoFormat('LL') : 'no date'}}<br>
                                                         @if ($post->file)
-                                                            <a href="/{{$post->file}}" target="_blank">{{substr(basename($post->file, '.'.pathinfo($post->file, PATHINFO_EXTENSION)), 11)}}</a>    
+                                                            <a href="/{{$post->file}}" target="_blank">{{substr(basename($post->file, '.'.pathinfo($post->file, PATHINFO_EXTENSION)), 11)}}</a>
                                                         @endif
                                                     </td>
                                                     <td style="width:5%; text-align: right;">
@@ -68,13 +71,13 @@
                                                                {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-sm'])!!}
                                                             </div>
                                                             {!! Form::close()!!}
-                                                            
+
                                                         @endif
                                                     </td>
-                                                </tr>  
+                                                </tr>
                                             @endforeach
                                         </tbody>
-                                    </table>  
+                                    </table>
                                     <hr>
                                     {!! Form::open(['method' => 'POST', 'action'=>'PostController@store',  'files' => true]) !!}
                                         <div class="form-group">
@@ -90,7 +93,7 @@
                                         </div>
                                         <div class="form-group">
                                             {!! Form::submit('Rückmeldung Erstellen', ['class' => 'btn btn-primary'])!!}
-                                        </div> 
+                                        </div>
                                     {!! Form::close()!!}
                                 </div>
                             </div>
@@ -106,7 +109,7 @@
 @section('scripts')
     @include('home.radar')
     <script>
-        $('.ampel-btn').on('click', function () { 
+        $('.ampel-btn').on('click', function () {
             $.ajaxSetup({
             headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'

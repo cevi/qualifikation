@@ -1,17 +1,6 @@
 <!-- Side Navbar -->
 <nav class="side-navbar">
     <div class="side-navbar-wrapper">
-      <!-- Sidebar Header    -->
-        {{-- <div class="sidenav-header d-flex align-items-center justify-content-center">
-            <div class="navbar-nav navbar-header">
-                <a id="toggle-btn" href="#" class="menu-btn">
-                    <i class="fas fa-bars"></i>
-                </a>
-            </div>
-        </div>
-       --}}
-
-        <!-- Sidebar Navigation Menus-->
         <div class="main-menu">
             <h5 class="sidenav-heading">Qualifikation</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">

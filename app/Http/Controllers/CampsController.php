@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CampCreated;
 use Validator;
 use App\Models\Camp;
 use App\Models\User;
@@ -63,6 +64,7 @@ class CampsController extends Controller
         $input['user_id'] = $user->id;
         $input['global_camp'] = false;
         $camp = Camp::create($input);
+        CampCreated::dispatch($camp);
         $user->update(['camp_id' => $camp->id, 'role_id' => config('status.role_Kursleiter')]);
         CampUser::create([
             'user_id' => $user->id,
