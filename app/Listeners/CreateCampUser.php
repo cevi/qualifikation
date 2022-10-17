@@ -30,7 +30,7 @@ class CreateCampUser
     {
         //
         $camp = Camp::where('global_camp', true)->first();
-        $camp_user = CampUser::firstOrCreate(['camp_id' => $camp['id'], 'user_id' => $event->user['id']]);
+        $camp_user = CampUser::firstOrCreate(['camp_id' => $camp['id'], 'user_id' => $event->user['id'], 'classification_id' => config('status.classification_yellow')]);
         $camp_user->update([
             'role_id' => config('status.role_Teilnehmer')
         ]);

@@ -9,6 +9,11 @@
                     <h2 class="h5 display"><a data-toggle="collapse" data-parent="#features-wrapper" href="#features-box" aria-expanded="true" aria-controls="features-box">Änderungen und Anpassungen</a></h2><a data-toggle="collapse" data-parent="#features-wrapper" href="#features-box" aria-expanded="true" aria-controls="features-box"><i class="fa fa-angle-down"></i></a>
                 </div>
                 <div id="features-box" role="tabpanel" class="card-body collapse show">
+                    <h3>V6.2</h3>
+                    <ul>
+                        <li>Eigene Posts können bearbeitet werden.</li>
+                        <li>Mail wird versendet bei neuem Kurs.</li>
+                    </ul>
                     <h3>V6.1</h3>
                     <ul>
                         <li>Löschen der Kurse aktualisiert Zähler auf der Homepage.</li>

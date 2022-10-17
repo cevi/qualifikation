@@ -20,8 +20,8 @@ use App\Http\Controllers\Auth\LoginController;
 // Route::get('/', 'HomeController@index');
 
 Route::get('/', function () {
-    $camp_counter = \App\Models\Camp::where('finish','=',true)->get()->count();
-    $survey_counter = \App\Models\Camp::where('finish','=',true)->sum('counter');
+    $camp_counter = \App\Models\Camp::where('finish','=',true)->where('counter','>',0)->get()->count();
+    $survey_counter = \App\Models\Camp::where('finish','=',true)->where('counter','>',0)->sum('counter');
     return view('welcome', compact('camp_counter', 'survey_counter'));
 });
 

@@ -20,8 +20,8 @@ class User extends Authenticatable  implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at', 
-        'avatar', 'classification_id', 'slug', 'foreign_id', 'email', 'email_verified_at'
+        'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at',
+        'avatar','slug', 'foreign_id', 'email', 'email_verified_at'
     ];
 
     /**
@@ -55,12 +55,12 @@ class User extends Authenticatable  implements MustVerifyEmail
 
     public function camp(){
         return $this->belongsTo('App\Models\Camp');
-    } 
+    }
 
     public function camps(){
-        return $this->belongsToMany('App\Models\Camp', 'camp_users');
-    } 
-    
+        return $this->belongsToMany('App\Models\Camp', 'camp_users')->where('finish', '=',false);
+    }
+
     public function leader(){
         return $this->belongsTo('App\Models\User');
     }
@@ -92,10 +92,6 @@ class User extends Authenticatable  implements MustVerifyEmail
 
     public function isTeilnehmer(){
         return (!$this->isLeader() && !$this->isCampleader());
-    }
-
-    public function classification(){
-        return $this->belongsTo('App\Models\Classification');
     }
 
     public function getRouteKeyName()

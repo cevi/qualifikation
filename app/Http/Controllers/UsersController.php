@@ -20,7 +20,7 @@ class UsersController extends Controller
     }
 
     public function index(User $user)
-    {   
+    {
         $aktUser = Auth::user();
         if(!$aktUser){
             return redirect('/home');
@@ -57,7 +57,8 @@ class UsersController extends Controller
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username','id')->all();
             $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
                 ->where('camp_user_id', $camp_user->id)->get()->values();
-            return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users'));
+
+            return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user'));
         }
         else {
             return redirect()->back();
@@ -79,7 +80,7 @@ class UsersController extends Controller
             $input['password'] = bcrypt($request->password);
             $input['password_change_at'] = now();
             $user->update($input);
-            Session::flash('message', 'Passwort erfolgreich verändert!'); 
+            Session::flash('message', 'Passwort erfolgreich verändert!');
         }
 
 
@@ -91,9 +92,11 @@ class UsersController extends Controller
     public function changeClassifications($id, $color)
     {
         $aktUser = Auth::user();
+        $camp = $aktUser->camp;
+        $camp_user = CampUser::where('user_id', '=', $id)->where('camp_id', '=', $camp['id'])->first();
         $user = User::findOrFail($id);
-        if($aktUser->isCampleader() || $aktUser['id'] == $user['leader_id']){
-            $user->update(['classification_id' => $color]);    
+        if($aktUser->isCampleader() || $aktUser['id'] == $camp_user['leader_id']){
+            $camp_user->update(['classification_id' => $color]);
         }
         return true;
     }

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
     <div class="container">
-        
+
         @auth
             <a class="navbar-brand" href="{{ url('/home') }}">
                 <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
@@ -20,8 +20,8 @@
                 @auth
                     @if (Auth::user()->isCampleader())
                         <li>
-                            <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a> 
-                        </li>           
+                            <a class="nav-link nav-item" href="/admin">Dashboard<span class="caret"></span></a>
+                        </li>
                     @endif
                     @isset($users)
                         @if (!Auth::user()->isTeilnehmer() && count($users)>0)
@@ -35,13 +35,13 @@
                                         <ul class="list-unstyled">
                                             @foreach ($users as $user_profile)
                                                 <li>
-                                                    <a class="nav-link" href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a> 
+                                                    <a class="nav-link" href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
                                     @endif
                                 </div>
-                            </li>          
+                            </li>
                         @endif
 
                     @endisset

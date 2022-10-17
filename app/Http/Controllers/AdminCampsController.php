@@ -12,6 +12,7 @@ use App\Models\Group;
 use App\Helper\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AdminCampsController extends Controller
 {
@@ -138,9 +139,12 @@ class AdminCampsController extends Controller
             Helper::updateCamp($user, $camp_global);
         }
         $counter = $camp->surveys()->count();
-        $camp_users = CampUser::where('camp_id','=',$camp['id'])->get();
-        foreach($camp_users as $camp_user) {
+        foreach($camp->camp_users()->get() as $camp_user) {
             $camp_user->delete();
+        }
+        foreach($camp->posts()->get() as $post) {
+            unlink($post['file']);
+            $post->delete();
         }
         $camp->update(['finish' => true, 'counter' => $counter]);
         return redirect('/home');

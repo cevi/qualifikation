@@ -24,20 +24,20 @@
             <table class="table">
                 <thead>
                     <tr>
-                        @foreach ($answers as $answer)  
-                        <th>     
+                        @foreach ($answers as $answer)
+                        <th>
                             {{$answer['name']}}
-                        </th> 
-                        @endforeach 
+                        </th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        @foreach ($answers as $answer) 
-                        <td>     
+                        @foreach ($answers as $answer)
+                        <td>
                             {{$answer['description']}}
                         </td>
-                        @endforeach 
+                        @endforeach
                     </tr>
                 </tbody>
             </table>
@@ -50,12 +50,12 @@
                             {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
                         </h2>
                         <i class="fa fa-angle-down"></i>
-                    </div> 
+                    </div>
                 </a>
                 <div id="activities-box-{{$chapter->chapter['number']}}" role="tabpanel" class="collapse table-responsive">
 
                     <table class="table col-sm-12">
-                        <head>
+                        <thead>
                             <tr>
                                 <th rowspan="2" width="50px">Nr.</th>
                                 <th rowspan="2" width="150px">Kompetenz</th>
@@ -65,7 +65,7 @@
                                 @if(!$aktUser->isTeilnehmer())
                                     <th colspan="2" width="250">Leiter</th>
                                 @endif
-                            </tr> 
+                            </tr>
                             <tr>
                                 <th width="50px"></th>
                                 <th width="200px">Kommentar</th>
@@ -73,12 +73,12 @@
                                 <th width="200px">Kommentar</th>
                                 @if(!$aktUser->isTeilnehmer())
                                     <th width="50px"></th>
-                                    <th width="200px">Kommentar</th> 
+                                    <th width="200px">Kommentar</th>
                                 @endif
-                            </tr> 
+                            </tr>
                         </thead>
                         <tbody>
-                            @foreach ($chapter->questions as $question)  
+                            @foreach ($chapter->questions as $question)
                                 <tr class="{{$question->competence_text() ? 'core_competence':''}}">
                                     <td width="50px">{{$question->question['number']}}</td>
                                     <td width="150px">{{$question->question['competence']}}</td>
@@ -86,7 +86,7 @@
                                     @if($question->competence_text())
                                         {{Popper::pop($question->competence_text())}}
                                     @endif>{{$question->question['name']}}
-                                    
+
                                         @if($question->competence_text())
                                             <i class="fas fa-info-circle"></i>
                                         @endif
@@ -97,14 +97,14 @@
                                     <td width="200px">{{$question['comment_second']}}</td>
                                     @if(!$aktUser->isTeilnehmer())
                                         <td width="50px" {{ Popper::pop($question->answer_leader['description'])}}>{{$question->answer_leader['name']}}</td>
-                                        <td width="200px">{{$question['comment_leader']}}</td> 
+                                        <td width="200px">{{$question['comment_leader']}}</td>
                                     @endif
-                                </tr> 
-                            @endforeach  
+                                </tr>
+                            @endforeach
                         </tbody>
-                    </table>       
+                    </table>
                 </div>
-            </div>  
+            </div>
         @endforeach
         <div class="card radar-chart-example">
             <div class="card-header d-flex align-items-center">
@@ -120,12 +120,12 @@
             <div class="form-group row">
                 {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@finish',$survey->id]]) !!}
                     {!! Form::submit('Qualifikationsprozess abschliessen', ['class' => 'btn btn-primary'])!!}
-                {!! Form::close()!!} 
+                {!! Form::close()!!}
             </div>
         @endif
     @endforeach
 
-   
+
 @endsection
 
 @section('scripts')

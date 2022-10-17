@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'comment', 'user_id', 'leader_id', 'file'
+        'comment', 'user_id', 'leader_id', 'file', 'camp_id'
     ];
 
     public function user(){
@@ -18,5 +18,9 @@ class Post extends Model
 
     public function leader(){
         return $this->belongsTo('App\Models\User', 'leader_id', 'id');
-    } 
+    }
+
+    public function camp(){
+        return $this->belongsTo('App\Models\Camp');
+    }
 }

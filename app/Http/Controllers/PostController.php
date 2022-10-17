@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Str;
 
 class PostController extends Controller
 {
@@ -45,17 +46,25 @@ class PostController extends Controller
         $camp = $aktUser->camp;
         $input = $request->all();
         $input['leader_id'] = $aktUser->id;
-        if($file = $request->file('file')){
-            $save_path = 'images/'.$camp['name'].'/files';
+        $input['camp_id'] = $camp->id;
+        if ($file = $request->file('file')) {
+            $save_path = 'images/' . Str::slug($camp['name']) . '/files';
             if (!file_exists($save_path)) {
                 mkdir($save_path, 0755, true);
             }
             $name = time() . '_' . str_replace(' ', '', $file->getClientOriginalName());
-            
-            $file->move($save_path, $name);            
+
+            $file->move($save_path, $name);
             $input['file'] = $save_path . '/' . $name;
         }
-        Post::create($input);
+
+        if(!$input['post_id']) {
+            Post::create($input);
+        }
+        else{
+            $post = Post::findOrFail($input['post_id']);
+            $post->update($input);
+        }
         return redirect()->back();
     }
 

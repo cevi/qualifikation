@@ -33,10 +33,6 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Verified' => [
             'App\Listeners\LogVerifiedUser',
         ],
-        // \SocialiteProviders\Manager\SocialiteWasCalled::class => [
-        //     // add your listeners (aka providers) here
-        //     'SocialiteProviders\\Zoho\\ZohoExtendSocialite@handle',
-        // ],
     ];
 
     /**

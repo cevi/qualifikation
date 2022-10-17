@@ -76,6 +76,7 @@ table {
   color: #666;
 }
 
+
 .btn-xs {
   font-size: 0.7em !important;
   padding: 2px 5px !important;
@@ -288,7 +289,7 @@ nav.navbar a.menu-btn:hover {
   overflow-y: auto;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
-  
+
   border-top-width: 82px;
   border-top-style: solid;
   border-top-color: white;
@@ -1108,6 +1109,20 @@ button {
   color: #868e96;
   font-size: 0.9rem;
 }
+
+.profile-table {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.profile-table hr {
+    margin: 0px;
+}
+
+.profile-table .form-group {
+    margin: 0px;
+}
+
 
 /*
 * ==========================================================
@@ -2667,7 +2682,7 @@ ul.messenger-theme-flat .messenger-spinner {
 
 /*
 * ==========================================================
-*     GOOGLE MAPS 
+*     GOOGLE MAPS
 * ==========================================================
 */
 .map {
@@ -3788,8 +3803,8 @@ STYLE SWITCHER FOR DEMO
   color: #495057;
 }
 
-/* ========================================= 
-   THEMING OF BOOTSTRAP COMPONENTS           
+/* =========================================
+   THEMING OF BOOTSTRAP COMPONENTS
    ========================================= */
 /*
  * 1. NAVBAR
@@ -4476,7 +4491,7 @@ STYLE SWITCHER FOR DEMO
 }
 
 /*
- * 3. TYPE  
+ * 3. TYPE
  */
 body {
   font-family: "Roboto", sans-serif;

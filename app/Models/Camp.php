@@ -65,4 +65,9 @@ class Camp extends Model
     {
         return $this->hasManyThrough(Survey::class, CampUser::class);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

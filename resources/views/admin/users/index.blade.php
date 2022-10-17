@@ -28,15 +28,15 @@
                             <button id="showImport" class="btn btn-primary btn-sm" title="{{$has_api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.' }}" {{$has_api_token ? '' : 'disabled'}}>Personen aus Cevi-DB importieren</button>
                         </div>
                     @endif
-                    <div class="col-lg-4">
-                        {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}
-                        {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
-                            <div class="form-group">
-                                {{ Form::file('csv_file',['class' => 'dropify'])}}
-                            </div>
-                            {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}
-                        {!! Form::close() !!}
-                    </div>
+{{--                    <div class="col-lg-4">--}}
+{{--                        {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen') !!}--}}
+{{--                        {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}--}}
+{{--                            <div class="form-group">--}}
+{{--                                {{ Form::file('csv_file',['class' => 'dropify'])}}--}}
+{{--                            </div>--}}
+{{--                            {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}--}}
+{{--                        {!! Form::close() !!}--}}
+{{--                    </div>--}}
                 @endif
             </div>
             <br>

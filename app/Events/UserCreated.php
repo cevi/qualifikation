@@ -16,7 +16,7 @@ class UserCreated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * The order instance.
+     * The user instance.
      *
      * @var \App\Models\Users
      */

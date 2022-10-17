@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\CampCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class SendCampMail
@@ -28,11 +29,6 @@ class SendCampMail
     public function handle(CampCreated $event)
     {
         //
-        Mail::raw('Hallo, es wurde ein neues Lager erstellt: ' . $event->camp['name'], function ($message) {
-            $message
-                ->to(config('mail.camp.address'), config('mail.camp.name'))
-                ->subject('Neues Lager erstellt');
-});
-
+        Mail::send(new \App\Mail\CampCreated(Auth::user(),$event->camp));
     }
 }

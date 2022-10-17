@@ -6,7 +6,6 @@ use App\Events\UserCreated;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\CampUser;
-use App\Models\Classification;
 use App\Helper\Helper;
 use Illuminate\Support\Facades\Crypt;
 use App\Imports\UsersImport;
@@ -56,7 +55,7 @@ class AdminUsersController extends Controller
         return DataTables::of($users)
             ->addColumn('picture', function($user) {
                 $path = $user->avatar ? $user->avatar : '/img/default_avatar.svg';
-                return '<a href='.\URL::route('home.profile', $user['slug']).' title="Zum Profil"><img height="50" src="'.$path .'" alt=""></a>';
+                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img height="50" src="'.$path .'" alt=""></a>';
             })
             ->addColumn('user', function($user) {
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('users.edit', $user['slug']).'>'.$user['username'].'</a>';
@@ -66,7 +65,10 @@ class AdminUsersController extends Controller
             ->addColumn('leader', function (User $user) {
                 return $user->leader ? $user->leader['username'] : '';})
             ->addColumn('classification', function (User $user) {
-                return $user->classification ? $user->classification['name'] : '';})
+                $camp = Auth::user()->camp;
+                $camp_user = CampUser::where('user_id', '=', $user['id'])->where('camp_id', '=', $camp['id'])->first();
+                return $camp_user->classification ? $camp_user->classification['name'] : '';
+            })
             ->addColumn('camp', function (User $user) {
                 return $user->camp ? $user->camp['name'] : '';})
             ->addColumn('password_changed', function (User $user) {
@@ -103,8 +105,7 @@ class AdminUsersController extends Controller
             $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all();
             $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         }
-        $classifications = Classification::pluck('name','id')->all();
-        return view('admin.users.create', compact('roles', 'leaders', 'classifications'));
+        return view('admin.users.create', compact('roles', 'leaders'));
     }
 
     public function import(){
@@ -146,7 +147,7 @@ class AdminUsersController extends Controller
                                 'email' => $participant->email,
                                 "email_verified_at" => now(),
                                 'classification_id' => config('status.classification_green'));
-                            $user = User::whereraw('LOWER(`username`) LIKE "' . mb_strtolower($username). '"')->Orwhere('foreign_id', $participant->links->person)->first();
+                            $user = User::whereraw('LOWER(`email`) LIKE "' . mb_strtolower( $participant->email). '"')->Orwhere('foreign_id', $participant->links->person)->first();
                             if(!$user){
                                 $user = User::create($insertData);
                                 UserCreated::dispatch($user);
@@ -304,8 +305,8 @@ class AdminUsersController extends Controller
             $input['password'] = bcrypt($request->password);
         }
 
+        $camp = $aktUser->camp;
         if(!$aktUser->isAdmin()){
-            $camp = $aktUser->camp;
             $input['camp_id'] = $camp['id'];
             if($file = $request->file('avatar')){
                 if($input['cropped_photo_id']){
@@ -367,8 +368,7 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         $roles = Role::pluck('name','id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
-        $classifications = Classification::pluck('name','id')->all();
-        return view('admin.users.edit', compact('user','roles', 'leaders', 'classifications'));
+        return view('admin.users.edit', compact('user','roles', 'leaders'));
     }
 
     /**
@@ -379,7 +379,8 @@ class AdminUsersController extends Controller
     {
         //
         $this->validate($request, [
-            'username' => 'required|max:255|unique:users,username,' . $id,
+            'username' => 'required|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
         ]);
         $user = User::findOrFail($id);
         $aktuser = Auth::user();

@@ -17,7 +17,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Person</h1>
             </header>
             <div class="row">
@@ -51,11 +51,6 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('classification_id', 'Klassifizierung:') !!}
-                        {!! Form::select('classification_id', [''=>'Wähle Klassifizierung'] + $classifications, null, ['class' => 'form-control']) !!}
-                    </div>
-
-                    <div class="form-group">
                         {!! Form::submit('Person Updaten', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
@@ -66,7 +61,7 @@
                             {!! Form::submit('Person löschen', ['class' => 'btn btn-danger confirm'])!!}
                         </div>
                         {!! Form::close()!!}
-                        
+
                     @endif
 
                 </div>

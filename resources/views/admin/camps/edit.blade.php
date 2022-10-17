@@ -13,7 +13,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Kurs</h1>
             </header>
             <div class="row">
@@ -45,7 +45,7 @@
                             {!! Form::submit('Update Kurs', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
-                    @if (!Auth::user()->demo) 
+                    @if (!Auth::user()->demo)
                         {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
                         <div class="form-group">
                             {!! Form::submit('Kurs löschen', ['class' => 'btn btn-danger confirm'])!!}
@@ -54,8 +54,8 @@
                     @endif
                  </div>
             </div>
-        </div>    
-    </section>         
+        </div>
+    </section>
 @endsection
 
 @section('scripts')
@@ -66,7 +66,7 @@
 
                 swal({
                     title: 'Kurs löschen?',
-                    text: 'Beim Kurs löschen werden alle Leiter, Teilnehmer und Qualifikationen gelöscht.',
+                    text: 'Beim Kurs löschen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.',
                     icon: 'warning',
                     buttons: ["Abbrechen", "Ja!"],
                 }).then((willDelete) => {
