@@ -19,10 +19,6 @@ class UsersImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
     */
     public function model(array $row)
     {
-        return new User([
-            //
-           'username'     => $row[3],
-           'password' => Hash::make($row[4]),
-        ]);
+
     }
 }

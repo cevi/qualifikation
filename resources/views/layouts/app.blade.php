@@ -48,7 +48,7 @@
                         <p>Made by Amirli, {{config('app.version')}}</p>
                     </div>
                     <div class="col-sm-4 text-right">
-                        <p>Finde uns auch auf <a href="https://github.com/cevi/qualifikation">Github</a></p>
+                        <p>Anleitungen und Erklärungen sind auf unserem <a href="https://github.com/cevi/qualifikation/wiki">Wiki</a></p>
                     </div>
                 </div>
             </div>

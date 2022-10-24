@@ -206,26 +206,26 @@ class AdminUsersController extends Controller
             $array = (new UsersImport)->toArray(request()->file('csv_file'));
             $importData_arr = $array[0];
 
-
             // Insert to MySQL database
             $user = Auth::user();
             $camp = $user->camp;
             foreach($importData_arr as $importData){
 
-                $username = mb_strtolower($importData['username']);
+                $username = mb_strtolower($importData['ceviname']);
 
                 if($importData['rollen']==='K'){
 
                     $insertData = array(
 
                         "username"=> $username,
-                        "password"=>bcrypt($importData['password']),
+                        "email"=> $importData['e_mail'],
+                        "password"=>bcrypt($importData['passwort']),
                         "role_id"=>config('status.role_Kursleiter'),
                         "camp_id"=>$user['camp_id'],
                         "email_verified_at" => now(),
                         'classification_id' => config('status.classification_green'));
 
-                    $user = User::firstOrCreate(['username' => $username], $insertData);
+                    $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                     UserCreated::dispatch($user);
                     Helper::updateCamp($user, $camp);
 
@@ -236,13 +236,14 @@ class AdminUsersController extends Controller
                     $insertData = array(
 
                         "username"=> $username,
-                        "password"=>bcrypt($importData['password']),
+                        "email"=> $importData['e_mail'],
+                        "password"=>bcrypt($importData['passwort']),
                         "role_id"=>config('status.role_Gruppenleiter'),
                         "camp_id"=>$user['camp_id'],
                         "email_verified_at" => now(),
                         'classification_id' => config('status.classification_green'));
 
-                    $user = User::firstOrCreate(['username' => $username], $insertData);
+                    $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                     UserCreated::dispatch($user);
                     Helper::updateCamp($user, $camp);
                 }
@@ -251,24 +252,25 @@ class AdminUsersController extends Controller
             }
             foreach($importData_arr as $importData){
 
-                $username = mb_strtolower($importData['username']);
+                $username = mb_strtolower($importData['ceviname']);
 
                 if($importData['rollen']==='T'){
 
                     $user = Auth::user();
-                    $leader = User::where('username', $importData['leiter'])->first();
+                    $leader = User::where('email', $importData['leiter'])->first();
 
                     $insertData = array(
 
                         "username"=> $username,
-                        "password"=>bcrypt($importData['password']),
+                        "email"=> $importData['e_mail'],
+                        "password"=>bcrypt($importData['passwort']),
                         "role_id"=>config('status.role_Teilnehmer'),
                         "camp_id"=>$user['camp_id'],
                         "email_verified_at" => now(),
                         "leader_id"=>$leader['id'],
                         'classification_id' => config('status.classification_green'));
 
-                    $user = User::firstOrCreate(['username' => $username], $insertData);
+                    $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                     UserCreated::dispatch($user);
                     Helper::updateCamp($user, $camp);
                 }
@@ -279,10 +281,6 @@ class AdminUsersController extends Controller
         return redirect()->action('AdminUsersController@index');
 
 
-    }
-
-    public function download(){
-        return Storage::download('file.jpg', 'Teilnehmerliste.xlsx');
     }
 
     public function store(Request $request)
