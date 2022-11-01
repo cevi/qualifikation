@@ -106,6 +106,9 @@
                 </div>
             </div>
         @endforeach
+        @if($aktUser->isLeader())
+            <x-post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'" :editable="false"/>
+        @endif
         <div class="card radar-chart-example">
             <div class="card-header d-flex align-items-center">
                 <h4>Kompetenzendarstellung</h4>

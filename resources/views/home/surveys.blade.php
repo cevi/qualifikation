@@ -23,7 +23,7 @@
                         @foreach ($surveys as $survey)
                             {{-- @if($survey->MySurvey() || $aktUser->isCampleader()) --}}
                                 <tr>
-                                    @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen'))||
+                                    @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen')) ||
                                         $aktUser->isLeader())
                                         <td>
                                             @if ($survey->TNisAllowed())

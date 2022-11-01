@@ -46,11 +46,15 @@ class Camp extends Model
     }
 
     public function participants(){
-        return $this->allUsers()->where('camp_users.role_id', config('status.role_Teilnehmer'));
+        return $this->allUsers()->where('camp_users.role_id', config('status.role_Teilnehmer'))->OrderBy('username');
     }
 
     public function camp_users(){
         return $this->hasMany(CampUser::class)->where('camp_users.role_id', config('status.role_Teilnehmer'));
+    }
+
+    public function camp_users_all(){
+        return $this->hasMany(CampUser::class)->where('camp_users.role_id', '<>', config('status.role_Administrator'));
     }
 
     public function camp_type(){

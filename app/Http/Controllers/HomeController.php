@@ -39,13 +39,14 @@ class HomeController extends Controller
             $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $aktUser->camp['id'])->first();
             $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader','chapters.questions.question'])
                 ->where('camp_user_id', $camp_user['id'])
-                ->orWhereIn('camp_user_id', $camp_users_id)->get()->sortBy('user.username')->values();
+                ->orWhereIn('camp_user_id', $camp_users_id)->get()->sortBy('campuser.user.username')->values();
 
         }
         $users_id = [];
         if($users){
             $users_id = $users->pluck('id')->all();
         }
-        return view('home.surveys', compact('aktUser', 'users', 'surveys'));
+        $title = 'Übersicht';
+        return view('home.surveys', compact('aktUser', 'users', 'surveys', 'title'));
     }
 }

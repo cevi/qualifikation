@@ -69,6 +69,10 @@ class User extends Authenticatable  implements MustVerifyEmail
         return $this->belongsToMany('App\Models\User', 'camp_users');
     }
 
+    public function posts(){
+        return $this->hasMany(Post::class, 'leader_id');
+    }
+
     public function isAdmin(){
         if($this->role['is_admin'] == 1){
             return true;

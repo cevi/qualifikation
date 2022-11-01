@@ -52,8 +52,11 @@
                                     <th scope="col">Kursleiter</th>
                                     <th scope="col">Kurstyp</th>
                                     <th scope="col">Gruppe</th>
-                                    <th scope="col">Erstellt am</th>
-                                    <th scope="col">Geändert am</th>
+                                    <th scope="col">Abgeschlossen</th>
+                                    @if(Auth::user()->isAdmin())
+                                        <th scope="col"># Qualifikationen</th>
+                                    @endif
+                                    <th>Abschliessen?</th>
                                 </tr>
                             </thead>
                         @foreach ($camps as $camp)
@@ -63,8 +66,19 @@
                                     <td>{{$camp->user ? $camp->user['username'] : ''}}</a></td>
                                     <td>{{$camp->camp_type ? $camp->camp_type['name'] : ''}}</a></td>
                                     <td>{{$camp->group ? $camp->group['name'] : ''}}</a></td>
-                                    <td>{{$camp->created_at ? $camp->created_at->diffForHumans() : 'no date'}}</td>
-                                    <td>{{$camp->updated_at ? $camp->updated_at->diffForHumans() : 'no date'}}</td>
+                                    <td>{{$camp->finish ? 'Ja' : 'Nein'}}</td>
+                                    @if(Auth::user()->isAdmin())
+                                        <td>{{$camp->counter ?: 0}}</td>
+                                    @endif
+                                    <td>
+                                        @if (!Auth::user()->demo && !$camp->finish)
+                                            {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
+                                            <div class="form-group">
+                                                {!! Form::submit('Kurs abschliessen?', ['class' => 'btn btn-danger confirm'])!!}
+                                            </div>
+                                            {!! Form::close()!!}
+                                        @endif
+                                    </td>
                                 </tr>
                             </tbody>
                         @endforeach
@@ -77,3 +91,26 @@
         </div>
     </section>
 @endsection
+
+
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            $('.confirm').on('click', function(e){
+                e.preventDefault(); //cancel default action
+
+                swal({
+                    title: 'Kurs löschen?',
+                    text: 'Beim Kurs löschen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.',
+                    icon: 'warning',
+                    buttons: ["Abbrechen", "Ja!"],
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        document.getElementById("DeleteForm").submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endsection
+

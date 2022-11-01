@@ -29,7 +29,7 @@ mix.scripts([
    'resources/js/libs/dropify.min.js',
    'resources/js/libs/bootstrap.js',
    'resources/js/libs/datatables.js',
-   'resources/js/libs/chart.bundle.min.js',
+   // 'resources/js/libs/chart.bundle.min.js',
    'resources/js/libs/jquery.mCustomScrollbar.js',
    'resources/js/libs/front.js',
    'resources/js/libs/jqBootstrapValidation.js',

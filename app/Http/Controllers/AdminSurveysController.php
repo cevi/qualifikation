@@ -27,7 +27,8 @@ class AdminSurveysController extends Controller
     {
         //
         $camp = Auth::user()->camp;
-        return view('admin.surveys.index',compact('camp'));
+        $title = 'Qualifikationen';
+        return view('admin.surveys.index',compact('camp', 'title'));
     }
 
     public function createDataTables()

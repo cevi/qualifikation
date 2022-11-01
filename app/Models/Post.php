@@ -9,7 +9,11 @@ class Post extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'comment', 'user_id', 'leader_id', 'file', 'camp_id'
+        'comment', 'user_id', 'leader_id', 'file', 'camp_id', 'show_on_survey'
+    ];
+
+    protected $casts = [
+        'show_on_survey' => 'boolean',
     ];
 
     public function user(){

@@ -100,6 +100,7 @@ Route::group(['middleware' => 'verified'], function(){
         Route::get('/admin','AdminController@index');
 
         Route::get('/admin/changes','AdminController@changes');
+        Route::resource('/admin/feedback','FeedbackController');
 
         Route::resource('admin/users', 'AdminUsersController');
         Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'AdminUsersController@createDataTables']);

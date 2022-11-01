@@ -3,8 +3,8 @@
 @section('survey_content')
 <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     @foreach ($surveys as $survey)
-        
-  
+
+
         <h1>{{$survey->surveyName()}}</h1>
 
         <p class="lead">
@@ -18,20 +18,20 @@
             <table class="table">
                 <thead>
                     <tr>
-                        @foreach ($answers as $answer)  
-                        <th>     
+                        @foreach ($answers as $answer)
+                        <th>
                             {{$answer['name']}}
-                        </th> 
-                        @endforeach 
+                        </th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        @foreach ($answers as $answer) 
-                        <td>     
+                        @foreach ($answers as $answer)
+                        <td>
                             {{$answer['description']}}
                         </td>
-                        @endforeach 
+                        @endforeach
                     </tr>
                 </tbody>
             </table>
@@ -45,12 +45,12 @@
                                 {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
                             </h2>
                             <i class="fa fa-angle-down"></i>
-                        </div> 
+                        </div>
                     </a>
 
                     <div id="activities-box-{{$chapter->chapter['number']}}" role="tabpanel" class="collapse">
 
-                        @foreach ($chapter->questions as $question)  
+                        @foreach ($chapter->questions as $question)
                             <table class="table" >
                                 <tbody>
                                 <tr class="{{$question->competence_text() ? 'core_competence':''}}">
@@ -60,24 +60,24 @@
                                     @if($question->competence_text())
                                         {{Popper::pop($question->competence_text())}}
                                          @endif>{{$question->question['name']}}
-                                    
+
                                         @if($question->competence_text())
                                             <i class="fas fa-info-circle"></i>
                                         @endif
                                     </td>
                                 </tr>
                                 </tbody>
-            
+
                             </table>
-                            <div class="form-group row" style="padding-left:10px; padding-right:10px"> 
+                            <div class="form-group row" style="padding-left:10px; padding-right:10px">
                                 <div class="col-sm-12">
                                     <table class="table">
                                         <tbody>
                                             <tr>
-                                                @foreach ($answers as $answer)  
+                                                @foreach ($answers as $answer)
                                                 @if ($aktUser->isLeader())
-                                                
-                                                    <td width="50px" {{ Popper::pop($answer['description'])}}>     
+
+                                                    <td width="50px" {{ Popper::pop($answer['description'])}}>
                                                         {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']])}}
                                                         {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                     </td>
@@ -94,13 +94,13 @@
                                                         </td>
                                                     @endif
                                                 @endif
-                                                @endforeach  
+                                                @endforeach
                                             </tr>
                                         </tbody>
-                    
+
                                     </table>
                                 </div>
-                                <div class="col-sm-2"> 
+                                <div class="col-sm-2">
                                     @if($aktUser->isLeader())
                                         {!! Form::label('comment_leader', 'Kommentar:') !!}
                                     @else
@@ -118,16 +118,19 @@
                                         @isFirstSurvey($survey->survey_status_id)
                                             {!! Form::textarea('comments['.$question['id'].']', $question['comment_first'], ['class' => 'form-control', 'rows'=> 2]) !!}
                                         @else
-                                            {!! Form::textarea('comments['.$question['id'].']', $question['comment_second'], ['class' => 'form-control', 'rows'=> 2]) !!} 
+                                            {!! Form::textarea('comments['.$question['id'].']', $question['comment_second'], ['class' => 'form-control', 'rows'=> 2]) !!}
                                         @endif
                                     @endif
                                 </div>
                             </div>
-                        @endforeach  
-                            
+                        @endforeach
+
                     </div>
-                </div>      
+                </div>
             @endforeach
+            @if($aktUser->isLeader())
+                <x-post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'"/>
+            @endif
             <div class="card radar-chart-example">
                 <div class="card-header d-flex align-items-center">
                     <h4>Kompetenzendarstellung</h4>
@@ -148,13 +151,13 @@
                 @if ($aktUser->isTeilnehmer())
                     <div class="col-sm-4">
                         <button type="submit" name="action" value="close" class = "btn btn-secondary">{{$survey->surveyName()}} speichern und abschliessen</button>
-                    </div>  
+                    </div>
                 @endif
             </div>
-        {!! Form::close()!!} 
+        {!! Form::close()!!}
     @endforeach
 
-   
+
 @endsection
 
 @section('scripts')

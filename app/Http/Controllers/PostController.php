@@ -21,6 +21,16 @@ class PostController extends Controller
     public function index()
     {
         //
+        $aktUser = Auth::user();
+        $posts_no_user = $aktUser->posts->whereNull('user_id');
+        $posts_user = $aktUser->posts->whereNotNull('user_id');
+        $users = $aktUser->camp->participants;
+        $users_select = [];
+        if($users){
+            $users_select = $users->pluck('username','id')->all();
+        }
+        $title = 'Rückmeldungen';
+        return view('home.posts.index', compact('aktUser', 'users', 'posts_user', 'posts_no_user', 'users_select', 'title'));
     }
 
     /**
@@ -47,6 +57,7 @@ class PostController extends Controller
         $input = $request->all();
         $input['leader_id'] = $aktUser->id;
         $input['camp_id'] = $camp->id;
+        $input['show_on_survey'] = $request->has('show_on_survey');
         if ($file = $request->file('file')) {
             $save_path = 'images/' . Str::slug($camp['name']) . '/files';
             if (!file_exists($save_path)) {

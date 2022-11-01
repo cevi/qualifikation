@@ -29,7 +29,7 @@ body {
     padding: 15px; /* Some padding */
     border-radius: 10px; /* Rounded corners */
   }
-  
+
   #myBtn:hover {
     background-color: #555; /* Add a dark-grey background on hover */
   }
@@ -153,11 +153,11 @@ body {
 
 img {
   display: block;
-  max-width: 100%; 
-} 
+  max-width: 100%;
+}
 .preview {
   overflow: hidden;
-  width: 160px; 
+  width: 160px;
   height: 160px;
   margin: 10px;
   border: 1px solid red;
@@ -259,4 +259,8 @@ img {
   overflow: hidden;
   margin: 1rem 0;
 
+}
+
+.content{
+    margin-bottom: 10px;
 }

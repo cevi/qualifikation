@@ -42,7 +42,7 @@
                             </div>
                         @endif
                         <div class="form-group">
-                            {!! Form::submit('Update Kurs', ['class' => 'btn btn-primary'])!!}
+                            {!! Form::submit('Änderungen speichern', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
                     @if (!Auth::user()->demo)

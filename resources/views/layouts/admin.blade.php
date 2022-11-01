@@ -8,7 +8,7 @@
         <meta name="author" content="Jérôme Sigg">
         <meta name="robots" content="all,follow">
 
-        <title>Qualifikations Zentrale</title>
+        <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="{{asset('css/libs.css')}}" rel="stylesheet">
@@ -34,6 +34,7 @@
             </footer>
         </div>
         <script src="{{asset('js/libs.js')}}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
         @yield('scripts')
     </body>
 </html>

@@ -27,9 +27,9 @@
         <section>
             <div class="container-fluid" style="page-break-inside:avoid; page-break-after:always;">
                 <!-- Page Header-->
-                <header> 
+                <header>
                     <h2>Teilnehmer: {{$survey->campuser->user['username']}}</h2>
-                    <h3>Leiter: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>       
+                    <h3>Leiter: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>
                 </header>
                 @foreach ($survey->chapters as $chapter)
 
@@ -46,19 +46,19 @@
                                 <th colspan="2" width="250">1. Selbsteinschätzung</th>
                                 <th colspan="2" width="250">2. Selbsteinschätzung</th>
                                 <th colspan="2" width="250">Leiter</th>
-                            </tr> 
+                            </tr>
                             <tr>
                                 <th width="50px"></th>
                                 <th width="200px">Kommentar</th>
                                 <th width="50px"></th>
                                 <th width="200px">Kommentar</th>
                                 <th width="50px"></th>
-                                <th width="200px">Kommentar</th> 
-                            </tr> 
+                                <th width="200px">Kommentar</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            @foreach ($chapter->questions as $question)  
-                                <tr class="{{$question->isCoreCompetence($camp) ? 'core_competence':''}}">
+                            @foreach ($chapter->questions as $question)
+                                <tr class="{{$question->isCoreCompetence() ? 'core_competence':''}}">
                                     <td width="50px">{{$question->question['number']}}</td>
                                     <td width="150px">{{$question->question['competence']}}</td>
                                     <td width="300px">{{$question->question['name']}}</td>
@@ -67,11 +67,11 @@
                                     <td width="50px">{{$question->answer_second['name']}}</td>
                                     <td width="200px">{{$question['comment_second']}}</td>
                                     <td width="50px">{{$question->answer_leader['name']}}</td>
-                                    <td width="200px">{{$question['comment_leader']}}</td> 
-                                </tr> 
-                            @endforeach  
+                                    <td width="200px">{{$question['comment_leader']}}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
-                    </table> 
+                    </table>
                     <br><br>
                 @endforeach
                 <div class="card radar-chart-example">
@@ -87,12 +87,12 @@
             </div>
         </section>
 
-        
+
 
         <!-- jQuery -->
-        <script src="{{asset('js/libs.js')}}"></script>  
-        @include('home.radar')  
-        
+        <script src="{{asset('js/libs.js')}}"></script>
+        @include('home.radar')
+
 </body>
 
 </html>

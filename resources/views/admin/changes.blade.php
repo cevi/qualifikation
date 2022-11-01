@@ -4,6 +4,37 @@
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     <section class="dashboard-header section-padding section-features shadow">
         <div class="container-fluid">
+            <div id="feedback-wrapper" class="card feedback">
+                <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 display"><a data-toggle="collapse" data-parent="#feedback-wrapper" href="#feedback-box" aria-expanded="true" aria-controls="feedback-box">Rückmeldungen</a></h2><a data-toggle="collapse" data-parent="#feedback-wrapper" href="#feedback-box" aria-expanded="true" aria-controls="feedback-box"><i class="fa fa-angle-down"></i></a>
+                </div>
+                <div id="feedback-box" role="tabpanel" class="card-body collapse show">
+                    @if (session()->has('success'))
+                        <div class="alert alert-dismissable alert-success">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>
+                                {!! session()->get('success') !!}
+                            </strong>
+                        </div>
+                    @endif
+                    {!! Form::open(['method' => 'POST', 'action'=>'FeedbackController@store']) !!}
+                    <div class="form-group">
+                        {!! Form::label('feedback', 'Rückmeldung:') !!}
+                        {!! Form::textarea('feedback', null, ['class' => 'form-control', 'required', 'rows' => 3]) !!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::submit('Rückmeldung absenden', ['class' => 'btn btn-primary'])!!}
+                    </div>
+                    {!! Form::close()!!}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="dashboard-header section-padding section-features shadow">
+        <div class="container-fluid">
             <div id="features-wrapper" class="card features">
                 <div id="activites-header" class="card-header d-flex justify-content-between align-items-center">
                     <h2 class="h5 display"><a data-toggle="collapse" data-parent="#features-wrapper" href="#features-box" aria-expanded="true" aria-controls="features-box">Änderungen und Anpassungen</a></h2><a data-toggle="collapse" data-parent="#features-wrapper" href="#features-box" aria-expanded="true" aria-controls="features-box"><i class="fa fa-angle-down"></i></a>

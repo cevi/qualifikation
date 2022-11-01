@@ -59,56 +59,7 @@
 
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <strong>Rückmeldungen</strong>
-                                        <div class="profile-table">
-                                            @foreach ($posts as $post)
-                                                <div class="row">
-                                                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                                                        {{$post->comment}}
-                                                    </div>
-                                                    <div class="col-lg-3 col-md-10 col-sm-10 col-xs-10 text-right">
-                                                        <div class="row">
-                                                            <div
-                                                                class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">
-                                                                {{$post->leader['username']}}
-                                                            </div>
-                                                            <div
-                                                                class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">
-                                                                {{$post->created_at ? $post->created_at->isoFormat('L') : 'no date'}}
-                                                            </div>
-                                                            @if ($post->file)
-                                                                <div
-                                                                    class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">
-                                                                    <a href="/{{$post->file}}"
-                                                                       target="_blank">{{substr(basename($post->file, '.'.pathinfo($post->file, PATHINFO_EXTENSION)), 11)}}</a>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2 text-right">
-                                                        @if ($post->leader['id'] === Auth::user()->id)
-                                                            <div class="row">
-                                                                <div
-                                                                    class="col-lg-12 col-md-6 col-sm-6 col-xs-6 text-right">
-                                                                    {!! Form::model($post, ['method' => 'DELETE', 'action'=>['PostController@destroy',$post]]) !!}
-                                                                    <div class="form-group">
-                                                                        {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-sm'])!!}
-                                                                    </div>
-                                                                    {!! Form::close()!!}
-                                                                </div>
-                                                                <div
-                                                                    class="col-lg-12 col-md-6 col-sm-6 col-xs-6 text-right">
-                                                                    <button class="btn btn-sm"
-                                                                            onclick="editPost({{$post}})"><i
-                                                                            class="fas fa-edit"></i></button>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                            @endforeach
-                                        </div>
+                                        <x-post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'"/>
                                         {!! Form::open(['method' => 'POST', 'action'=>'PostController@store',  'files' => true]) !!}
                                         <div class="form-group">
                                             {!! Form::hidden('post_id', null, ['id' => 'post_id']) !!}
@@ -120,9 +71,15 @@
                                             {!! Form::label('comment', 'Rückmeldung:') !!}
                                             {!! Form::textarea('comment', null, ['class' => 'form-control', 'rows' => 3]) !!}
                                         </div>
-                                        <div class="form-group">
-                                            {!! Form::label('file', 'Datei:') !!}
-                                            {!! Form::file('file') !!}
+                                        <div class="form-row">
+                                            <div class="col-md-6 form-group">
+                                                {!! Form::label('file', 'Datei:') !!}
+                                                {!! Form::file('file') !!}
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                {!! Form::label('show_on_survey', 'Sichtbar für Qualifikation:') !!}
+                                                {!! Form::checkbox('show_on_survey', '1', false) !!}
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             {!! Form::submit('Rückmeldung Erstellen', ['class' => 'btn btn-primary'])!!}
@@ -161,9 +118,9 @@
         });
 
         function editPost(post) {
-            console.log(post);
             $('#post_id').val(post['id']);
             $('#comment').val(post['comment']);
+            $('#show_on_survey').prop("checked", post['show_on_survey']);
         }
     </script>
 @endsection

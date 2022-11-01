@@ -42,7 +42,8 @@ class AdminCampsController extends Controller
         }
         $camptypes = CampType::pluck('name','id')->all();
         $groups = Group::where('campgroup',true)->pluck('name','id')->all();
-        return view('admin.camps.index', compact('camps', 'camptypes', 'groups'));
+        $title = 'Kursübersicht';
+        return view('admin.camps.index', compact('camps', 'camptypes', 'groups', 'title'));
     }
 
     /**
@@ -139,7 +140,7 @@ class AdminCampsController extends Controller
             Helper::updateCamp($user, $camp_global);
         }
         $counter = $camp->surveys()->count();
-        foreach($camp->camp_users()->get() as $camp_user) {
+        foreach($camp->camp_users_all()->get() as $camp_user) {
             $camp_user->delete();
         }
         foreach($camp->posts()->get() as $post) {

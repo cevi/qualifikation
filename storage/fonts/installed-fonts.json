@@ -1,0 +1,9 @@
+{
+    "open sans": {
+        "300": "\/var\/www\/html\/storage\/fonts\/open_sans_300_3991bff746d3377656ad3cf53b24fe9e",
+        "normal": "\/var\/www\/html\/storage\/fonts\/open_sans_normal_0c50822862df0e4bc3da7bec4af72b54",
+        "600": "\/var\/www\/html\/storage\/fonts\/open_sans_600_75341019d0aad9d730980a0320d86ab8",
+        "bold": "\/var\/www\/html\/storage\/fonts\/open_sans_bold_16020d134f3ca847d8cdba64e3e9ca33",
+        "800": "open_sans_800_54e4dbec225310932e45306345a8c89d"
+    }
+}

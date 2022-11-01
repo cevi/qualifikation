@@ -38,7 +38,9 @@ class AdminUsersController extends Controller
         else{
             $has_api_token = false;
         }
-        return view('admin.users.index', compact('has_api_token'));
+
+        $title = 'Personen';
+        return view('admin.users.index', compact('has_api_token', 'title'));
     }
 
     public function createDataTables()
@@ -67,7 +69,7 @@ class AdminUsersController extends Controller
             ->addColumn('classification', function (User $user) {
                 $camp = Auth::user()->camp;
                 $camp_user = CampUser::where('user_id', '=', $user['id'])->where('camp_id', '=', $camp['id'])->first();
-                return $camp_user->classification ? $camp_user->classification['name'] : '';
+                return $camp_user && $camp_user->classification ? $camp_user->classification['name'] : '';
             })
             ->addColumn('camp', function (User $user) {
                 return $user->camp ? $user->camp['name'] : '';})
@@ -97,14 +99,19 @@ class AdminUsersController extends Controller
     {
         //
         $aktUser = Auth::user();
-        if( $aktUser->isAdmin()){
-            $roles = Role::pluck('name','id')->all();
-            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->pluck('username','id')->all();
+        if( $aktUser->isAdmin()) {
+            $roles = Role::pluck('name', 'id')->all();
         }
         else{
             $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all();
-            $leaders = User::where('role_id',config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
         }
+        $leader_campUsers_Id = CampUser::where('camp_id',$aktUser->camp->id)
+            ->where(function ($query) {
+                $query->where('role_id', config('status.role_Gruppenleiter'))
+                    ->Orwhere('role_id',config('status.role_Kursleiter'));
+            })
+            ->pluck('user_id')->all();
+        $leaders = User::whereIn('id',$leader_campUsers_Id)->pluck('username','id')->all();
         return view('admin.users.create', compact('roles', 'leaders'));
     }
 
@@ -364,8 +371,14 @@ class AdminUsersController extends Controller
         //
         // $user = User::findOrFail($id);
         $aktUser = Auth::user();
-        $roles = Role::pluck('name','id')->all();
-        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->where('camp_id',$aktUser->camp->id)->pluck('username','id')->all();
+        $roles = Role::where('id','>',config('status.role_Administrator'))->pluck('name','id')->all();
+        $leader_campUsers_Id = CampUser::where('camp_id',$aktUser->camp->id)
+            ->where(function ($query) {
+                $query->where('role_id', config('status.role_Gruppenleiter'))
+                    ->Orwhere('role_id',config('status.role_Kursleiter'));
+            })
+            ->pluck('user_id')->all();
+        $leaders = User::whereIn('id',$leader_campUsers_Id)->pluck('username','id')->all();
         return view('admin.users.edit', compact('user','roles', 'leaders'));
     }
 

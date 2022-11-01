@@ -20,7 +20,7 @@
     <meta name="msapplication-TileColor" content="#00aba9">
     <meta name="theme-color" content="#ffffff">
 
-    <title>{{ config('app.name', 'Cevi Qualifikationen') }}</title>
+    <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -56,7 +56,7 @@
     </div>
    <!-- jQuery -->
     <script src="{{ asset('js/libs.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
     @yield('scripts')
 </body>

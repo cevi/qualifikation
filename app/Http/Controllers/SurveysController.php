@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Camp;
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Answer;
 use App\Models\Survey;
@@ -30,8 +31,10 @@ class SurveysController extends Controller
         }
         $users = $aktUser->camp->participants;
         $answers = Answer::all();
+        $posts = Post::where('user_id',$survey->campUser->user['id'])->where('show_on_survey',true)->get();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
-        return view('home.survey', compact('aktUser','surveys', 'answers' ,'camp', 'users'));
+        $title = 'Qualifikation ' . $survey->campUser->user['username'];
+        return view('home.survey', compact('aktUser','surveys', 'answers' ,'camp', 'users', 'posts', 'title'));
     }
 
     public function update(Request $request, Survey $survey)
@@ -104,7 +107,9 @@ class SurveysController extends Controller
         else{
             $users = $camp->participants;
             $answers = Answer::all();
-            return view('home.compare', compact('aktUser','surveys','camp', 'users', 'answers'));
+            $posts = Post::where('user_id',$survey->campUser->user['id'])->where('show_on_survey',true)->get();
+            $title = 'Vergleich ' . $survey->campUser->user['username'];
+            return view('home.compare', compact('aktUser','surveys','camp', 'users', 'answers', 'posts' ,'title'));
         }
     }
 

@@ -29,6 +29,8 @@ class AddCampFinishAndCounterToCamp extends Migration
     {
         Schema::table('camps', function (Blueprint $table) {
             //
+            $table->dropColumn('counter');
+            $table->dropColumn('finish');
         });
     }
 }

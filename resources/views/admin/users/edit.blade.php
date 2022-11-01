@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::submit('Person Updaten', ['class' => 'btn btn-primary'])!!}
+                        {!! Form::submit('Änderungen speichern', ['class' => 'btn btn-primary'])!!}
                     </div>
                     {!! Form::close()!!}
 

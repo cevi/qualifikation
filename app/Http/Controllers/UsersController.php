@@ -58,7 +58,8 @@ class UsersController extends Controller
             $surveys = Survey::with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
                 ->where('camp_user_id', $camp_user->id)->get()->values();
 
-            return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user'));
+            $title = $user['username'];
+            return view('home.profile', compact('user','roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title'));
         }
         else {
             return redirect()->back();

@@ -69,7 +69,7 @@
                         <!-- /.nav-second-level -->
                     </li>
                 @endif
-                <li><a href="/admin/changes"><i class="fas fa-clipboard-list"></i> Änderungen</a></li>
+                <li><a href="/admin/changes"><i class="fas fa-clipboard-list"></i> Rückmeldungen / Änderungen</a></li>
             </ul>
         </div>
     </div>
