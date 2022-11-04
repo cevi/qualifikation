@@ -13,7 +13,7 @@
         <div class="container-fluid">
             <!-- Page Header-->
             <header>
-                <h1 class="h3 display">Gruppe</h1>
+                <h1 class="h3 display">Gruppen</h1>
             </header>
             <div class="row">
                 <div class="col-sm-3">

@@ -38,17 +38,15 @@
                             <li>
                                 <a href="{{route('questions.index')}}">Alle Kompetenzen</a>
                             </li>
-                            @if (Auth::user()->isAdmin())
-                                <li>
-                                    <a href="{{route('questions.create')}}">Kompetenz erstellen</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('chapters.index')}}">Kapitel</a>
-                                </li>
-                                <li>
-                                    <a href="{{route('competences.index')}}">Kernkompetenzen</a>
-                                </li>
-                            @endif
+                            <li>
+                                <a href="{{route('questions.create')}}">Kompetenz erstellen</a>
+                            </li>
+                            <li>
+                                <a href="{{route('chapters.index')}}">Kapitel</a>
+                            </li>
+                            <li>
+                                <a href="{{route('competences.index')}}">Kernkompetenzen</a>
+                            </li>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
@@ -68,6 +66,7 @@
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
+                    <li><a href="/admin/feedback"><i class="fas fa-clipboard-list"></i> Feedbacks</a></li>
                 @endif
                 <li><a href="/admin/changes"><i class="fas fa-clipboard-list"></i> Rückmeldungen / Änderungen</a></li>
             </ul>

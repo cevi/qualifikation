@@ -7,6 +7,7 @@ use App\Models\Feedback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Ixudra\Curl\Facades\Curl;
 
 class FeedbackController extends Controller
 {
@@ -48,6 +49,28 @@ class FeedbackController extends Controller
             Mail::to(config('mail.camp.address'))->send(new FeedbackCreated($feedback));
         }
         return redirect('admin/changes')->with('success', 'Vielen Dank für die Rückmeldung.');
+    }
+
+    public function send(Request $request)
+    {
+        //
+        $input = $request->all();
+        $input['bug'] = $request->has('bug');
+        $body = array(
+            'title' => $input['title'],
+            'body' => $input['description'],
+            'assignees' => [config('auth.github.user')],
+            'labels' => $input['bug'] ? ['enhancement','bug'] : ['enhancement'],
+        );
+        $issue = Curl::to(config('auth.github.api_url'). '/issues')
+            ->withHeader('Accept: application/vnd.github+json')
+            ->withHeader('User-Agent: '.config('auth.github.user'))
+            ->withBearer(config('auth.github.token'))
+            ->withData($body)
+            ->asJson(true)
+            ->post();
+        //
+        return redirect('admin/feedback')->with('success', 'Issue wurde erstellt.');
     }
 
     /**

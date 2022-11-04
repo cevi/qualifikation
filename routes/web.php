@@ -101,6 +101,7 @@ Route::group(['middleware' => 'verified'], function(){
 
         Route::get('/admin/changes','AdminController@changes');
         Route::resource('/admin/feedback','FeedbackController');
+        Route::post('users/feedback/send', 'FeedbackController@send');
 
         Route::resource('admin/users', 'AdminUsersController');
         Route::get('users/createDataTables', ['as'=>'users.CreateDataTables','uses'=>'AdminUsersController@createDataTables']);

@@ -18,9 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->bigInteger('user_id')->index()->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->boolean('bug')->default(false);
             $table->string('feedback');
-            $table->string('issue')->nullable();
         });
     }
 

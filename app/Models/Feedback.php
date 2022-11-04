@@ -10,11 +10,7 @@ class Feedback extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'bug', 'feedback', 'issue'
-    ];
-
-    protected $casts = [
-        'bug' => 'boolean',
+        'user_id', 'feedback'
     ];
 
     public function user(){

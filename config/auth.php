@@ -114,4 +114,11 @@ return [
 
     'password_timeout' => 10800,
 
+    'github' => [
+        'token' => env('GITHUB_TOKEN', ''),
+        'api_url' => env('GITHUB_API_URL', ''),
+        'user' => env('GITHUB_USER', ''),
+    ],
+
+
 ];
