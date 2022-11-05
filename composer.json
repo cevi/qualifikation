@@ -14,6 +14,7 @@
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.2",
         "fzaninotto/faker": "^1.9",
+        "genealabs/laravel-caffeine": "^9.0",
         "intervention/image": "^2.5",
         "ixudra/curl": "^6.21",
         "laravel-lang/lang": "~7.0",
