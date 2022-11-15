@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class CampUser extends Model
 {
@@ -13,29 +13,33 @@ class CampUser extends Model
         'camp_id', 'user_id', 'role_id', 'leader_id', 'classification_id',
     ];
 
-
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function camp(){
+    public function camp()
+    {
         return $this->belongsTo('App\Models\Camp');
     }
 
-    public function role(){
+    public function role()
+    {
         return $this->belongsTo('App\Models\Role');
     }
 
-    public function leader(){
+    public function leader()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function classification(){
+    public function classification()
+    {
         return $this->belongsTo('App\Models\Classification');
     }
 
-
-    public function surveys(){
+    public function surveys()
+    {
         return $this->hasMany(Survey::class);
     }
 }

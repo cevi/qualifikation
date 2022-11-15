@@ -10,11 +10,11 @@ class Feedback extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'feedback'
+        'user_id', 'feedback',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
-
 }

@@ -10,7 +10,7 @@ class Group extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'shortname', 'campgroup', 'foreign_id', 'api_token'
+        'name', 'shortname', 'campgroup', 'foreign_id', 'api_token',
     ];
 
     protected $casts = [

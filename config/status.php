@@ -15,9 +15,8 @@ return [
     'camptype_JS1' => 10,
     'camptype_JS2' => 20,
     'camptype_Exp' => 30,
-    
+
     'classification_red' => 10,
     'classification_yellow' => 20,
     'classification_green' => 30,
-]
-?>
+];

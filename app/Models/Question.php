@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
     //
     protected $fillable = [
-    'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description'
+        'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description',
     ];
 
     protected $casts = [
@@ -17,7 +16,8 @@ class Question extends Model
         'competence_js2' => 'boolean',
     ];
 
-    public function chapter(){
+    public function chapter()
+    {
         return $this->belongsTo('App\Models\Chapter');
     }
 }

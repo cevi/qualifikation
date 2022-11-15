@@ -12,9 +12,10 @@ class AdminController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(){
+    public function index()
+    {
         $user = Auth::user();
-        $surveys = $user->camp->surveys()->with(['chapters.questions.answer_first','chapters.questions.answer_second','chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
+        $surveys = $user->camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
            ->get()->sortBy('campuser.user.username')->values();
         $surveys_all = $user->camp->surveys()->count();
         $surveys_1offen = $user->camp->surveys()->where('survey_status_id', '>', config('status.survey_1offen'))->count();
@@ -22,12 +23,15 @@ class AdminController extends Controller
         $surveys_fertig = $user->camp->surveys()->where('survey_status_id', config('status.survey_fertig'))->count();
 
         $title = 'Dashboard';
-        return view('admin/index', compact('user','surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title'));
+
+        return view('admin/index', compact('user', 'surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title'));
     }
 
-    public function changes(){
+    public function changes()
+    {
         $user = Auth::user();
         $title = 'Rückmeldungen / Änderungen';
+
         return view('admin/changes', compact('user', 'title'));
     }
 }

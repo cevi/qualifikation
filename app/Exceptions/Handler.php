@@ -2,8 +2,8 @@
 
 namespace App\Exceptions;
 
-use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -34,12 +34,11 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-          if ($this->shouldReport($exception) && app()->bound('sentry')) {
+        if ($this->shouldReport($exception) && app()->bound('sentry')) {
             app('sentry')->captureException($exception);
         }
 
         parent::report($exception);
-
     }
 
     /**

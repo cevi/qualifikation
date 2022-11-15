@@ -17,6 +17,7 @@ class AdminGroupsController extends Controller
     {
         //
         $groups = Group::all();
+
         return view('admin.groups.index', compact('groups'));
     }
 
@@ -43,6 +44,7 @@ class AdminGroupsController extends Controller
         $input['api_token'] = Crypt::encryptString($request->api_token);
         $input['campgroup'] = true;
         Group::create($input);
+
         return redirect('admin/groups');
     }
 
@@ -67,6 +69,7 @@ class AdminGroupsController extends Controller
     {
         //
         $group = Group::findOrFail($id);
+
         return view('admin.groups.edit', compact('group'));
     }
 
@@ -83,6 +86,7 @@ class AdminGroupsController extends Controller
         $input = $request->all();
         $input['api_token'] = Crypt::encryptString($request->api_token);
         $group->update($input);
+
         return redirect('/admin/groups');
     }
 
@@ -101,6 +105,7 @@ class AdminGroupsController extends Controller
         //     $survey->delete();
         // }
         $group->delete();
+
         return redirect('/admin/groups');
     }
 }

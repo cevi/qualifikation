@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Events\CampCreated;
-use Validator;
+use App\Helper\Helper;
 use App\Models\Camp;
-use App\Models\User;
-use App\Models\Group;
 use App\Models\CampType;
 use App\Models\CampUser;
-use App\Helper\Helper;
+use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class CampsController extends Controller
 {
@@ -34,9 +34,10 @@ class CampsController extends Controller
     {
         //
 
-        $users =[];
-        $camptypes = CampType::pluck('name','id')->all();
-        $groups = Group::where('campgroup',true)->pluck('name','id')->all();
+        $users = [];
+        $camptypes = CampType::pluck('name', 'id')->all();
+        $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
+
         return view('home.camps.create', compact('users', 'camptypes', 'groups'));
     }
 
@@ -69,7 +70,7 @@ class CampsController extends Controller
         CampUser::create([
             'user_id' => $user->id,
             'camp_id' => $camp->id,
-            'role_id' => config('status.role_Kursleiter')]);
+            'role_id' => config('status.role_Kursleiter'), ]);
 
         return redirect('home');
     }
@@ -106,8 +107,9 @@ class CampsController extends Controller
     public function update(Request $request, Camp $camp)
     {
         //
-       Helper::updateCamp(Auth::user(), $camp);
-       return redirect('/home');
+        Helper::updateCamp(Auth::user(), $camp);
+
+        return redirect('/home');
     }
 
     /**

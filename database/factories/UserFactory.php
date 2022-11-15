@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -14,6 +13,7 @@ class UserFactory extends Factory
      * @return array
      */
     protected $model = User::class;
+
     public function definition()
     {
         return [
@@ -23,7 +23,7 @@ class UserFactory extends Factory
             'role_id' => config('status.role_Teilnehmer'),
             'email_verified_at' => now(),
             'camp_id' => 1,
-            'demo' => true            
+            'demo' => true,
         ];
     }
 }

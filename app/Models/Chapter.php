@@ -8,10 +8,11 @@ class Chapter extends Model
 {
     //
     protected $fillable = [
-    'name', 'number'
+        'name', 'number',
     ];
 
-    public function question(){
+    public function question()
+    {
         return $this->hasMany('App\Models\Question');
     }
 }

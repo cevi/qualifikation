@@ -47,7 +47,7 @@ return [
          * Active true to have an arrow at the tooltip, false to not
          *
          * Type can be 'sharp' or 'round'
-         */                           
+         */
         'arrow' => [
             'active' => true,
             'type' => 'sharp',

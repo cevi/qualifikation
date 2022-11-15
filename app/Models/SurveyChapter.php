@@ -8,14 +8,16 @@ class SurveyChapter extends Model
 {
     //
     protected $fillable = [
-    'chapter_id', 'survey_id'
+        'chapter_id', 'survey_id',
     ];
 
-    public function chapter(){
+    public function chapter()
+    {
         return $this->belongsTo('App\Models\Chapter');
-    } 
+    }
 
-    public function questions(){
+    public function questions()
+    {
         return $this->hasMany('App\Models\SurveyQuestion');
-    } 
+    }
 }

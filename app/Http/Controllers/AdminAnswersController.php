@@ -16,6 +16,7 @@ class AdminAnswersController extends Controller
     {
         //
         $answers = Answer::all();
+
         return view('admin.answers.index', compact('answers'));
     }
 
@@ -64,6 +65,7 @@ class AdminAnswersController extends Controller
     {
         //
         $answer = Answer::findOrFail($id);
+
         return view('admin.answers.edit', compact('answer'));
     }
 
@@ -92,6 +94,7 @@ class AdminAnswersController extends Controller
     {
         //
         Answer::findOrFail($id)->delete();
+
         return redirect('/admin/answers');
     }
 }

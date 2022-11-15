@@ -19,6 +19,5 @@ class DatabaseSeeder extends Seeder
             PermissionRoleSeeder::class,
             DemoCampSeeder::class,
         ]);
-         
     }
 }

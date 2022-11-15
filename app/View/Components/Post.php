@@ -7,9 +7,13 @@ use Illuminate\View\Component;
 class Post extends Component
 {
     public $posts;
+
     public $showLeader;
+
     public $title;
+
     public $editable;
+
     /**
      * Create a new component instance.
      *

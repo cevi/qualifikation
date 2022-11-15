@@ -13,6 +13,7 @@ class PostController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,10 +27,11 @@ class PostController extends Controller
         $posts_user = $aktUser->posts->whereNotNull('user_id');
         $users = $aktUser->camp->participants;
         $users_select = [];
-        if($users){
-            $users_select = $users->pluck('username','id')->all();
+        if ($users) {
+            $users_select = $users->pluck('username', 'id')->all();
         }
         $title = 'Rückmeldungen';
+
         return view('home.posts.index', compact('aktUser', 'users', 'posts_user', 'posts_no_user', 'users_select', 'title'));
     }
 
@@ -59,23 +61,23 @@ class PostController extends Controller
         $input['camp_id'] = $camp->id;
         $input['show_on_survey'] = $request->has('show_on_survey');
         if ($file = $request->file('file')) {
-            $save_path = 'images/' . Str::slug($camp['name']) . '/files';
-            if (!file_exists($save_path)) {
+            $save_path = 'images/'.Str::slug($camp['name']).'/files';
+            if (! file_exists($save_path)) {
                 mkdir($save_path, 0755, true);
             }
-            $name = time() . '_' . str_replace(' ', '', $file->getClientOriginalName());
+            $name = time().'_'.str_replace(' ', '', $file->getClientOriginalName());
 
             $file->move($save_path, $name);
-            $input['file'] = $save_path . '/' . $name;
+            $input['file'] = $save_path.'/'.$name;
         }
 
-        if(!$input['post_id']) {
+        if (! $input['post_id']) {
             Post::create($input);
-        }
-        else{
+        } else {
             $post = Post::findOrFail($input['post_id']);
             $post->update($input);
         }
+
         return redirect()->back();
     }
 
@@ -123,6 +125,7 @@ class PostController extends Controller
     {
         //
         $post->delete();
+
         return redirect()->back();
     }
 }

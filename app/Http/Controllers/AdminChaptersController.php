@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
 use Validator;
-use App\Http\Controllers\Controller;
 
 class AdminChaptersController extends Controller
 {
@@ -18,9 +17,9 @@ class AdminChaptersController extends Controller
     {
         //
         $chapters = Chapter::all();
+
         return view('admin.chapters.index', compact('chapters'));
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -62,6 +61,7 @@ class AdminChaptersController extends Controller
     {
         //
         $chapter = Chapter::findOrFail($id);
+
         return view('admin.chapters.edit', compact('chapter'));
     }
 
@@ -90,8 +90,7 @@ class AdminChaptersController extends Controller
     {
         //
         Chapter::findOrFail($id)->delete();
+
         return redirect('/admin/chapters');
     }
-
-
 }

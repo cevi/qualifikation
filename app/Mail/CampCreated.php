@@ -5,7 +5,6 @@ namespace App\Mail;
 use App\Models\Camp;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -14,6 +13,7 @@ class CampCreated extends Mailable
     use Queueable, SerializesModels;
 
     protected $camp;
+
     protected $user;
 
     /**
@@ -26,7 +26,6 @@ class CampCreated extends Mailable
         //
         $this->camp = $camp;
         $this->user = $user;
-
     }
 
     /**
@@ -37,6 +36,7 @@ class CampCreated extends Mailable
     public function build()
     {
         $camp = $this->camp;
+
         return $this->markdown('emails.camps.created', ['camp' => $this->camp])
             ->to($this->user['email'], $this->user['username'])
             ->bcc(config('mail.camp.address'), config('mail.camp.name'))

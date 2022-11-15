@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CampType;
-use App\Models\Question;
 use App\Models\Competence;
+use App\Models\Question;
 use Illuminate\Http\Request;
 
 class AdminCompetencesController extends Controller
@@ -18,11 +18,11 @@ class AdminCompetencesController extends Controller
     {
         //
         $competences = Competence::all();
-        $questions = Question::pluck('competence','id')->all();
-        $camp_types = CampType::pluck('name','id')->all();
+        $questions = Question::pluck('competence', 'id')->all();
+        $camp_types = CampType::pluck('name', 'id')->all();
+
         return view('admin.competences.index', compact('competences', 'questions', 'camp_types'));
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -47,8 +47,9 @@ class AdminCompetencesController extends Controller
     public function edit(Competence $competence)
     {
         //
-        $questions = Question::pluck('competence','id')->all();
-        $camp_types = CampType::pluck('name','id')->all();
+        $questions = Question::pluck('competence', 'id')->all();
+        $camp_types = CampType::pluck('name', 'id')->all();
+
         return view('admin.competences.edit', compact('competence', 'questions', 'camp_types'));
     }
 
@@ -77,6 +78,7 @@ class AdminCompetencesController extends Controller
     {
         //
         $competence->delete();
+
         return redirect('/admin/competences');
     }
 }

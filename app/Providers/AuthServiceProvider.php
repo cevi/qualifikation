@@ -2,11 +2,10 @@
 
 namespace App\Providers;
 
+use App\Auth\HitobitoProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\Auth\HitobitoProvider;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -30,7 +29,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->bootHitobitoSocialite();
 
         //
-
     }
 
     private function bootHitobitoSocialite()
@@ -40,6 +38,7 @@ class AuthServiceProvider extends ServiceProvider
             'hitobito',
             function ($app) {
                 $config = config('services.hitobito');
+
                 return new HitobitoProvider(
                     $this->app['request'], $config['base_url'], $config['client_id'],
                     $config['client_secret'], $this->formatRedirectUrl($config),

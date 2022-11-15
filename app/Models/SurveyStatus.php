@@ -8,6 +8,6 @@ class SurveyStatus extends Model
 {
     //
     protected $fillable = [
-        'id', 'name'
-        ];
+        'id', 'name',
+    ];
 }

@@ -13,12 +13,13 @@ class SurveyFactory extends Factory
      * @return array
      */
     protected $model = Survey::class;
+
     public function definition()
     {
         return [
             //
             'demo' => true,
-            'survey_status_id' => $this->faker->randomElement([5, 10, 15, 20, 50]),           
+            'survey_status_id' => $this->faker->randomElement([5, 10, 15, 20, 50]),
         ];
     }
 }

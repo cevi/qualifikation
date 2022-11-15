@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
-class User extends Authenticatable  implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
     use SearchableTrait;
@@ -21,7 +21,7 @@ class User extends Authenticatable  implements MustVerifyEmail
      */
     protected $fillable = [
         'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at',
-        'avatar','slug', 'foreign_id', 'email', 'email_verified_at'
+        'avatar', 'slug', 'foreign_id', 'email', 'email_verified_at',
     ];
 
     /**
@@ -30,7 +30,7 @@ class User extends Authenticatable  implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'remember_token', 'password_change_at'];
+        'remember_token', 'password_change_at', ];
 
     /**
      * The attributes that should be cast to native types.
@@ -46,56 +46,69 @@ class User extends Authenticatable  implements MustVerifyEmail
         'columns' => [
             'username' => 1,
             'email' => 1,
-        ]
+        ],
     ];
 
-    public function role(){
+    public function role()
+    {
         return $this->belongsTo('App\Models\Role');
     }
 
-    public function camp(){
+    public function camp()
+    {
         return $this->belongsTo('App\Models\Camp');
     }
 
-    public function camps(){
-        return $this->belongsToMany('App\Models\Camp', 'camp_users')->where('finish', '=',false);
+    public function camps()
+    {
+        return $this->belongsToMany('App\Models\Camp', 'camp_users')->where('finish', '=', false);
     }
 
-    public function leader(){
+    public function leader()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public function leaders(){
+    public function leaders()
+    {
         return $this->belongsToMany('App\Models\User', 'camp_users');
     }
 
-    public function posts(){
+    public function posts()
+    {
         return $this->hasMany(Post::class, 'leader_id');
     }
 
-    public function isAdmin(){
-        if($this->role['is_admin'] == 1){
+    public function isAdmin()
+    {
+        if ($this->role['is_admin'] == 1) {
             return true;
         }
+
         return false;
     }
 
-    public function isCampleader(){
-        if(($this->role['is_campleader'] == 1 || $this->role['is_admin'] == 1)){
+    public function isCampleader()
+    {
+        if (($this->role['is_campleader'] == 1 || $this->role['is_admin'] == 1)) {
             return true;
         }
+
         return false;
     }
 
-    public function isLeader(){
-        if($this->role['is_leader']=== 1){
+    public function isLeader()
+    {
+        if ($this->role['is_leader'] === 1) {
             return true;
         }
+
         return false;
     }
 
-    public function isTeilnehmer(){
-        return (!$this->isLeader() && !$this->isCampleader());
+    public function isTeilnehmer()
+    {
+        return ! $this->isLeader() && ! $this->isCampleader();
     }
 
     public function getRouteKeyName()

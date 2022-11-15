@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Events\CampCreated;
 use App\Events\UserCreated;
-use App\Listeners\MakeUserSlug;
 use App\Listeners\CreateCampUser;
+use App\Listeners\MakeUserSlug;
 use App\Listeners\SendCampMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;

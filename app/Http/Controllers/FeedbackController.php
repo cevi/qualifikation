@@ -20,6 +20,7 @@ class FeedbackController extends Controller
     {
         //
         $feedbacks = Feedback::all();
+
         return view('admin.feedback.index', compact('feedbacks'));
     }
 
@@ -36,18 +37,19 @@ class FeedbackController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         //
-        if(!Auth::user()->demo) {
+        if (! Auth::user()->demo) {
             $input = $request->all();
             $input['user_id'] = Auth::user()->id;
             $feedback = Feedback::create($input);
             Mail::to(config('mail.camp.address'))->send(new FeedbackCreated($feedback));
         }
+
         return redirect('admin/changes')->with('success', 'Vielen Dank für die Rückmeldung.');
     }
 
@@ -56,13 +58,13 @@ class FeedbackController extends Controller
         //
         $input = $request->all();
         $input['bug'] = $request->has('bug');
-        $body = array(
+        $body = [
             'title' => $input['title'],
             'body' => $input['description'],
             'assignees' => [config('auth.github.user')],
-            'labels' => $input['bug'] ? ['enhancement','bug'] : ['enhancement'],
-        );
-        $issue = Curl::to(config('auth.github.api_url'). '/issues')
+            'labels' => $input['bug'] ? ['enhancement', 'bug'] : ['enhancement'],
+        ];
+        $issue = Curl::to(config('auth.github.api_url').'/issues')
             ->withHeader('Accept: application/vnd.github+json')
             ->withHeader('User-Agent: '.config('auth.github.user'))
             ->withBearer(config('auth.github.token'))
@@ -76,7 +78,7 @@ class FeedbackController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -87,7 +89,7 @@ class FeedbackController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit(Feedback $feedback)
@@ -99,8 +101,8 @@ class FeedbackController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Feedback $feedback)
@@ -114,13 +116,14 @@ class FeedbackController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Feedback $feedback)
     {
         //
         $feedback->delete();
+
         return redirect('/admin/feedback');
     }
 }

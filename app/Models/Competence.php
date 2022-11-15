@@ -10,14 +10,16 @@ class Competence extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'question_id', 'camp_type_id'
+        'name', 'question_id', 'camp_type_id',
     ];
 
-    public function question(){
+    public function question()
+    {
         return $this->belongsTo('App\Models\Question');
-    } 
+    }
 
-    public function camp_type(){
+    public function camp_type()
+    {
         return $this->belongsTo('App\Models\CampType');
-    } 
+    }
 }

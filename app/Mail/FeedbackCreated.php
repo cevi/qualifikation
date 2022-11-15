@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -14,6 +13,7 @@ class FeedbackCreated extends Mailable
     use Queueable, SerializesModels;
 
     protected $feedback;
+
     /**
      * Create a new message instance.
      *
@@ -47,7 +47,7 @@ class FeedbackCreated extends Mailable
         return new Content(
             markdown: 'emails.feedback',
             with: ['feedback' => $this->feedback,
-                ],
+            ],
         );
     }
 

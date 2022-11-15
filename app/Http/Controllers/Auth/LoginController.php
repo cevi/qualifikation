@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Exception;
-use Carbon\Carbon;
-use App\Models\User;
-
 use App\Events\UserCreated;
-use Illuminate\Http\Request;
+use App\Exceptions\InvalidLoginProviderException;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Laravel\Socialite\AbstractUser as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
-use App\Exceptions\InvalidLoginProviderException;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Laravel\Socialite\AbstractUser as SocialiteUser;
 
 class LoginController extends Controller
 {
@@ -40,7 +38,6 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         return '/home';
-
     }
 
     public function authenticated(Request $request, $user)
@@ -60,7 +57,8 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function username(){
+    public function username()
+    {
         return 'email';
     }
 
@@ -88,10 +86,12 @@ class LoginController extends Controller
         }
 
         $this->guard()->login($user);
+
         return $this->sendLoginResponse($request);
     }
 
-    private function redirectWithError($error) {
+    private function redirectWithError($error)
+    {
         return Redirect::route('login')->withErrors([
             'hitobito' => [$error],
         ]);
@@ -99,7 +99,7 @@ class LoginController extends Controller
 
     private function findOrCreateSocialiteUser(SocialiteUser $socialiteUser)
     {
-        if ($userFromDB = User::where('foreign_id',  $socialiteUser->getId())->first()) {
+        if ($userFromDB = User::where('foreign_id', $socialiteUser->getId())->first()) {
             // User is logging in
             return $this->updateEmailIfAppropriate($userFromDB, $socialiteUser);
         } else {
@@ -108,17 +108,20 @@ class LoginController extends Controller
         }
     }
 
-	private function updateEmailIfAppropriate(User $user, SocialiteUser $socialiteUser) {
+    private function updateEmailIfAppropriate(User $user, SocialiteUser $socialiteUser)
+    {
         $hitobitoEmail = $socialiteUser->getEmail();
         if ($user->email != $hitobitoEmail && User::where('email', $hitobitoEmail)->doesntExist()) {
             //Update email only if it is not occupied by someone else
             $user->email = $hitobitoEmail;
             $user->save();
         }
+
         return $user;
     }
 
-    private function createNewHitobitoUser(SocialiteUser $socialiteUser) {
+    private function createNewHitobitoUser(SocialiteUser $socialiteUser)
+    {
         if (User::where('email', $socialiteUser->getEmail())->exists()) {
             // Don't register a new user if another account already uses the same email address
             throw new InvalidLoginProviderException;
@@ -128,9 +131,9 @@ class LoginController extends Controller
             'email' => $socialiteUser->getEmail(),
             'username' => $socialiteUser->getNickname(),
             'avatar' => $socialiteUser->getAvatar(),
-            'email_verified_at' => Carbon::now()]);
+            'email_verified_at' => Carbon::now(), ]);
         UserCreated::dispatch($user);
+
         return $user;
     }
-
 }

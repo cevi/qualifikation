@@ -16,6 +16,7 @@ class AdminClassificationController extends Controller
     {
         //
         $classifications = Classification::all();
+
         return view('admin.classifications.index', compact('classifications'));
     }
 
@@ -61,6 +62,7 @@ class AdminClassificationController extends Controller
     {
         //
         $classification = Classification::findOrFail($id);
+
         return view('admin.classifications.edit', compact('classification'));
     }
 

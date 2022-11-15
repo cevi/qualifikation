@@ -16,12 +16,12 @@ class Campleader
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check()){
-            if(Auth::user()->isCampleader()){
+        if (Auth::check()) {
+            if (Auth::user()->isCampleader()) {
                 return $next($request);
-
             }
         }
+
         return redirect('/home');
     }
 }

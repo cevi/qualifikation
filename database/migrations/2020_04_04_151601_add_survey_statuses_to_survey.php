@@ -18,8 +18,6 @@ class AddSurveyStatusesToSurvey extends Migration
             $table->bigInteger('survey_status_id')->index()->unsigned()->nullable();
             $table->foreign('survey_status_id')->references('id')->on('survey_statuses');
         });
-
-        
     }
 
     /**

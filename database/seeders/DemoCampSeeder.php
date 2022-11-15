@@ -3,14 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\Camp;
-use App\Models\User;
-use App\Models\Survey;
 use App\Models\CampUser;
+use App\Models\Survey;
 use App\Models\SurveyChapter;
 use App\Models\SurveyQuestion;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Faker\Factory;
 
 class DemoCampSeeder extends Seeder
 {
@@ -24,19 +23,19 @@ class DemoCampSeeder extends Seeder
         //
 
         $user = User::factory()->create([
-            'username' => 'kursleiter@demo', 
-            'email' => 'kursleiter@demo', 
+            'username' => 'kursleiter@demo',
+            'email' => 'kursleiter@demo',
             'slug' => 'kursleiter@demo',
             'password' => Hash::make('kursleiter@demo'),
             'role_id' => config('status.role_Kursleiter'),
             'camp_id' => 1,
-            'demo' => true]);
+            'demo' => true, ]);
         $camp = Camp::create([
-            'name' => 'Demo-Kurs', 
+            'name' => 'Demo-Kurs',
             'demo' => true,
             'secondsurveyopen' => true,
             'camp_type_id' => config('status.camptype_JS2'),
-            'user_id' => $user['id']]);
+            'user_id' => $user['id'], ]);
         $user->update(['camp_id' => $camp['id']]);
         CampUser::create([
             'camp_id' => $camp['id'],
@@ -48,8 +47,8 @@ class DemoCampSeeder extends Seeder
             'user_id' => $user['id'],
             'role_id' => config('status.role_Teilnehmer'),
         ]);
-        for ($i=0; $i < 4; $i++) { 
-            $name = 'leiter'.($i+1).'@demo';
+        for ($i = 0; $i < 4; $i++) {
+            $name = 'leiter'.($i + 1).'@demo';
             $leader = User::factory()
             ->create([
                 'username' => $name,
@@ -69,8 +68,8 @@ class DemoCampSeeder extends Seeder
                 'user_id' => $leader['id'],
                 'role_id' => config('status.role_Teilnehmer'),
             ]);
-            for ($j=0; $j < 4; $j++) { 
-                $name = 'tn'.($i+1).($j+1).'@demo';
+            for ($j = 0; $j < 4; $j++) {
+                $name = 'tn'.($i + 1).($j + 1).'@demo';
                 $user = User::factory()
                 ->for($leader, 'leader')
                 ->create([
@@ -96,18 +95,17 @@ class DemoCampSeeder extends Seeder
                 ->create([
                     'slug' => $name.'@'.$camp['name'],
                 ]);
-                for ($k=0; $k < 4; $k++) { 
+                for ($k = 0; $k < 4; $k++) {
                     $survey_chapter = SurveyChapter::create([
                         'survey_id' => $survey['id'],
-                        'chapter_id' => $k+1
+                        'chapter_id' => $k + 1,
                     ]);
-                    for ($l=0; $l < 3; $l++) {
-                         SurveyQuestion::factory()
+                    for ($l = 0; $l < 3; $l++) {
+                        SurveyQuestion::factory()
                         ->for($survey_chapter, 'survey_chapter')
                         ->create([
-                            'question_id' => ($k*3)+($l+1),
-                        ]); 
-                        
+                            'question_id' => ($k * 3) + ($l + 1),
+                        ]);
                     }
                 }
             }

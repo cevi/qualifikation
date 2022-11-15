@@ -2,7 +2,6 @@
 
 namespace App\Auth;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Laravel\Socialite\Two\AbstractProvider;
@@ -39,7 +38,7 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
     public function __construct(Request $request, $baseUrl, $clientId, $clientSecret, $redirectUrl, $guzzle = [])
     {
         parent::__construct($request, $clientId, $clientSecret, $redirectUrl, $guzzle);
-        $this->baseUrl = $baseUrl . '/oauth';
+        $this->baseUrl = $baseUrl.'/oauth';
     }
 
     /**
@@ -47,7 +46,7 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
      */
     protected function getAuthUrl($state)
     {
-        return $this->buildAuthUrlFromBase($this->baseUrl . '/authorize', $state);
+        return $this->buildAuthUrlFromBase($this->baseUrl.'/authorize', $state);
     }
 
     /**
@@ -55,7 +54,7 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
      */
     protected function getTokenUrl()
     {
-        return $this->baseUrl . '/token';
+        return $this->baseUrl.'/token';
     }
 
     /**
@@ -74,12 +73,13 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
      */
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->get($this->baseUrl . '/profile', [
+        $response = $this->getHttpClient()->get($this->baseUrl.'/profile', [
             'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'X-Scope' => $this->formatScopes($this->getScopes(), $this->scopeSeparator)
+                'Authorization' => 'Bearer '.$token,
+                'X-Scope' => $this->formatScopes($this->getScopes(), $this->scopeSeparator),
             ],
         ]);
+
         return json_decode($response->getBody(), true);
     }
 
@@ -87,10 +87,11 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
      * {@inheritdoc}
      */
     protected function mapUserToObject(array $user)
-    {   
-        $avatar = Arr::get($user, 'picture') === null ? 
+    {
+        $avatar = Arr::get($user, 'picture') === null ?
         'https://db.cevi.ch/packs/media/images/profil-d4d04543c5d265981cecf6ce059f2c5d.png' :
-        'https://db.cevi.ch/uploads/person/picture/'. $user['id'] . '/' . Arr::get($user, 'picture');
+        'https://db.cevi.ch/uploads/person/picture/'.$user['id'].'/'.Arr::get($user, 'picture');
+
         return (new User)->setRaw($user)->map([
             'id' => $user['id'],
             'nickname' => Arr::get($user, 'nickname') ??
@@ -98,7 +99,7 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
                 Arr::get($user, 'last_name') ??
                 Arr::first(explode('@', Arr::get($user, 'email'))),
             'email' => Arr::get($user, 'email'),
-            'avatar' =>  $avatar,
+            'avatar' => $avatar,
         ]);
     }
 }
