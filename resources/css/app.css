@@ -1,3 +1,62 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*@tailwind base;*/
+/*@tailwind components;*/
+/*@tailwind utilities;*/
+
+:root {
+    --color-bg-primary: #F4F7FA;
+    --color-text-primary: #666;
+    --blue: #4f92c7;
+    --background-card: #fafafa;
+    --background-dropdown: #fafafa;
+    --background-form: #fafafa;
+    --background-form__focus: #fafafa;
+    --background-form__disabled: #e9ecef;
+    --background-header: #fafafa;
+    --color-border-default: #444c56;
+    --color-primer-shadow-inset: 0 0 transparent;
+    --color-fg-default: #adbac7;
+    --color-accent-fg: #539bf5;
+    --color-border: #dee2e6;
+}
+
+.dark {
+    --color-bg-primary: #1c2128;
+    --color-text-primary: rgb(200, 200, 200);
+    --blue: #699fc9;
+    --background-card: #22272e;
+    --background-dropdown: #3a3939;
+    --background-form: #22272e;
+    --background-form__focus: #22272e;
+    --background-form__disabled: #0f1013;
+    --background-header: #2c333c;
+    --color-border-default: #444c56;
+    --color-primer-shadow-inset: 0 0 transparent;
+    --color-fg-default: #adbac7;
+    --color-accent-fg: #539bf5;
+    --color-border: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+    img {
+        filter: brightness(.8) contrast(1.2);
+    }
+}
+
+.text-dark__white {
+    color: var(--color-bg-primary) !important;
+}
+
+.text-dark__black {
+    color: var(--color-text-primary) !important;
+}
+
+.card-header {
+    background-color: var(--background-card) !important;
+}
+
+.table {
+    color: var(--color-text-primary) !important;
+}
+
+
+

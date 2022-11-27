@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-    <div class="container">
-
+<nav
+    class="navbar navbar-expand-md shadow-sm border-gray-200">
+    <div class="container justify-between items-center mx-auto max-w-screen-xl px-4 md:px-6 py-2.5">
         @auth
             <a class="navbar-brand" href="{{ url('/home') }}">
                 <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
@@ -10,13 +10,19 @@
                 <img src="/img/logo.svg" alt="..." style="width: 20rem" class="img-fluid">
             </a>
         @endauth
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-            <span class="navbar-toggler-icon"></span>
+        <button data-collapse-toggle="mega-menu-full" type="button"
+                class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                aria-controls="mega-menu-full" aria-expanded="false">
+            <span class="sr-only">Hauptmenü</span>
+            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                      clip-rule="evenodd"></path>
+            </svg>
         </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav mr-auto">
+        <div id="mega-menu-full" class="hidden justify-between items-center w-full md:flex md:w-auto md:order-1">
+            <ul class="navbar-nav ml-auto">
                 @auth
                     @if (Auth::user()->isCampleader())
                         <li>
@@ -24,10 +30,11 @@
                         </li>
                     @endif
                     @if (!Auth::user()->isTeilnehmer())
-                       @isset($users)
+                        @isset($users)
                             @if(count($users)>0)
                                 <li class="nav-item dropdown">
-                                    <a id="UserDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <a id="UserDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         Teilnehmer <span class="caret"></span>
                                     </a>
 
@@ -36,7 +43,8 @@
                                             <ul class="list-unstyled">
                                                 @foreach ($users as $user_profile)
                                                     <li>
-                                                        <a class="nav-link" href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
+                                                        <a class="nav-link"
+                                                           href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
                                                     </li>
                                                 @endforeach
                                             </ul>
@@ -51,74 +59,10 @@
                     @endif
                 @endauth
 
-            </ul>
-
-            <!-- Right Side Of Navbar -->
-            <ul class="navbar-nav ml-auto">
-                <!-- Authentication Links -->
-                @auth
-                    <li class="nav-item dropdown">
-                        <a id="navbarCampDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            @if(Auth::user()->camp && !Auth::user()->camp['global_camp'] )
-                                {{Auth::user()->camp['name']}}
-                            @else
-                                Meine Kurse
-                            @endif <span class="caret"></span>
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarCampDropdown">
-                            @if(!Auth::user()->demo )
-                                <a class="dropdown-item" href="{{ route('home.camps.create') }}">
-                                    Kurs erstellen
-                                </a>
-                            @endif
-                            @foreach (Auth::user()->camps as $camp)
-                                @if(!$camp['global_camp'])
-                                    <a class="dropdown-item" href="{{route('home.camps.update',$camp['id'])  }}"
-                                        onclick="event.preventDefault();
-                                                    document.getElementById('camps-update-form-{{$camp['id']}}').submit();">
-                                        {{$camp['name']}}
-                                    </a>
-
-                                    <form id="camps-update-form-{{$camp['id']}}" action="{{route('home.camps.update',$camp['id'])  }}" method="POST" style="display: none;">
-                                        {{ method_field('PUT') }}
-                                        @csrf
-                                    </form>
-                                @endif
-                            @endforeach
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->username }} <span class="caret"></span>
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('home.user',Auth::user()->slug) }}">
-                                Profil
-                            </a>
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
-                                            document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                @else
-                    <li>
-                        <a href="{{ route('login') }}" class="nav-link nav-item">Login</a>
-                    </li>
-                    @if (Route::has('register'))
-                        <li>
-                            <a href="{{ route('register') }}" class="nav-link nav-item">Registrieren</a>
-                        </li>
-                    @endif
-                @endauth
+                <x-camp-dropdown/>
+                <x-user-dropdown/>
             </ul>
         </div>
     </div>
+    <x-toggle-switch/>
 </nav>

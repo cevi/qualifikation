@@ -55,7 +55,7 @@ class AdminUsersController extends Controller
             ->addColumn('picture', function ($user) {
                 $path = $user->avatar ? $user->avatar : '/img/default_avatar.svg';
 
-                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img height="50" src="'.$path.'" alt=""></a>';
+                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user" src="'.$path.'" alt=""></a>';
             })
             ->addColumn('user', function ($user) {
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('users.edit', $user['slug']).'>'.$user['username'].'</a>';

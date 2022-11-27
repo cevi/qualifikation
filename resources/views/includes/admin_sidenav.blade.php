@@ -4,21 +4,43 @@
         <div class="main-menu">
             <h5 class="sidenav-heading">Qualifikation</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">
-                <li><a href="/home"> <i class="fas fa-home"></i> Home</a></li>
-                <li><a href="/admin"> <i class="fas fa-home"></i> Dashboard</a></li>
+                <li>
+                    <a href="/home"
+                       class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-home"></i>
+                        <span class="ml-3">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin"
+                       class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-home"></i>
+                        <span class="ml-3">Dashboard</span>
+                    </a>
+                </li>
                 @if ((isset(Auth::user()->camp) OR (Auth::user()->isAdmin())))
-                    <li><a href="#UsersDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-users"></i> Personen</a>
-                        <ul id="UsersDropdown" class="collapse list-unstyled ">
+                    <li>
+                        <button type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-controls="dropdown-persons" data-collapse-toggle="dropdown-persons">
+                            <i class="fas fa-users"></i>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Personen</span>
+                            <i class="fa-solid fa-angle-down"></i>
+                        </button>
+                        <ul id="dropdown-persons" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="{{route('users.index')}}">Alle Personen</a>
+                                <a href="{{route('users.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Alle
+                                    Personen</a>
                             </li>
                             @if (!Auth::user()->demo)
                                 <li>
-                                <a href="{{route('users.create')}}">Person erstellen</a>
+                                    <a href="{{route('users.create')}}"
+                                       class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Person
+                                        erstellen</a>
                                 </li>
                             @endif
                         </ul>
-                            <!-- /.nav-second-level -->
                     </li>
                 @endif
             </ul>
@@ -26,49 +48,92 @@
         <div class="admin-menu">
             <h5 class="sidenav-heading">Administration</h5>
             <ul id="side-main-menu" class="side-menu list-unstyled">
-                <li><a href="{{route('admin.camps.index')}}"> <i class="fas fa-campground"></i> Kurs</a></li>
+                <li>
+                    <a href="{{route('admin.camps.index')}}"
+                       class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-campground"></i>
+                        <span class="ml-3">Kurs</span>
+                    </a>
+                </li>
                 @if (Auth::user()->isCampleader())
-                    <li><a href="{{route('surveys.index')}}">  <i class="fas fa-poll-h"></i> Qualifikationen</a>
+                    <li>
+                        <a href="{{route('surveys.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-poll-h"></i>
+                            <span class="ml-3">Qualifikationen</span>
+                        </a>
+                    </li>
                 @endif
 
                 @if (Auth::user()->isAdmin())
-                    <li><a href="/admin/groups"><i class="fas fa-campground"></i> Gruppen</a></li>
-                    <li><a href="#QuestionsDropdown" aria-expanded="false" data-toggle="collapse"> <i class="fas fa-question"></i> Kompetenzen</a>
-                        <ul id="QuestionsDropdown" class="collapse list-unstyled ">
+                    <li>
+                        <a href="/admin/groups"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-campground"></i>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap">Gruppen</span>
+                        </a>
+                    </li>
+                    <li>
+                        <button type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-controls="dropdown-questions" data-collapse-toggle="dropdown-questions">
+                            <i class="fas fa-question"></i>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Kompetenzen</span>
+                            <i class="fa-solid fa-angle-down"></i>
+                        </button>
+                        <ul id="dropdown-questions" class="hidden py-2 space-y-2">
                             <li>
-                                <a href="{{route('questions.index')}}">Alle Kompetenzen</a>
+                                <a href="{{route('questions.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Alle
+                                    Kompetenzen</a>
                             </li>
                             <li>
-                                <a href="{{route('questions.create')}}">Kompetenz erstellen</a>
+                                <a href="{{route('questions.create')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    Kompetenz erstellen</a>
                             </li>
                             <li>
-                                <a href="{{route('chapters.index')}}">Kapitel</a>
+                                <a href="{{route('chapters.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    Kapitel</a>
                             </li>
                             <li>
-                                <a href="{{route('competences.index')}}">Kernkompetenzen</a>
+                                <a href="{{route('competences.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    Kernkompetenzen</a>
                             </li>
                         </ul>
-                        <!-- /.nav-second-level -->
                     </li>
-                    <li><a href="#AnswersDropdown" aria-expanded="false" data-toggle="collapse"><i class="fas fa-edit"></i> Antworten</a>
-                        <ul id="AnswersDropdown" class="collapse list-unstyled ">
-                            <li>
-                                <a href="{{route('answers.index')}}">Alle Antworten</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
+                    <!-- /.nav-second-level -->
+                    <li>
+                        <a href="{{route('answers.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-edit"></i>
+                            <span class="ml-3">Antworten</span>
+                        </a>
                     </li>
-                    <li><a href="#ClassificationsDropdown" aria-expanded="false" data-toggle="collapse"><i class="fas fa-edit"></i> Klassifizierungen</a>
-                        <ul id="ClassificationsDropdown" class="collapse list-unstyled ">
-                            <li>
-                                <a href="{{route('classifications.index')}}">Alle Klassifizierungen</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
+                    <li>
+                        <a href="{{route('classifications.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-edit"></i>
+                            <span class="ml-3">Klassifizierungen</span>
+                        </a>
                     </li>
-                    <li><a href="/admin/feedback"><i class="fas fa-clipboard-list"></i> Feedbacks</a></li>
+                    <li>
+                        <a href="/admin/feedback"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span class="ml-3">Feedbacks</span>
+                        </a>
+                    </li>
                 @endif
-                <li><a href="/admin/changes"><i class="fas fa-clipboard-list"></i> Rückmeldungen / Änderungen</a></li>
+                <li>
+                    <a href="/admin/changes"
+                       class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span class="ml-3">Rückmeldungen / Änderungen</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

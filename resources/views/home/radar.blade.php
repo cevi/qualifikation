@@ -10,8 +10,8 @@
         var surveys = @json($surveys);
         var user = @json(Auth::user());
 
-        for (var [i, survey] of Object.entries(surveys)){
-            var RADARCHART  = $('#radarChart-'+(parseInt(i)+1));
+        for (var [i, survey] of Object.entries(surveys)) {
+            var RADARCHART = $('#radarChart-' + (parseInt(i) + 1));
 
             var labelstring = [];
             var datasets = [];
@@ -41,7 +41,7 @@
                 pointHoverBorderColor: branduser_first,
                 data: datapoints_first
             });
-            if(survey.survey_status_id >= @json(config('status.survey_2offen'))){
+            if (survey.survey_status_id >= @json(config('status.survey_2offen'))) {
                 datasets.push({
                     label: '2. Selbsteinschätzung',
                     backgroundColor: branduser_second,
@@ -54,44 +54,55 @@
                     data: datapoints_second
                 });
             }
-            if(user.role_id != @json(config('status.role_Teilnehmer'))){
+            if (user.role_id != @json(config('status.role_Teilnehmer'))) {
                 datasets.push({
-                            label: 'Leiter Qualifikation',
-                            backgroundColor: brandleader,
-                            borderWidth: 2,
-                            borderColor: brandleader,
-                            pointBackgroundColor: brandleader,
-                            pointBorderColor: "#fff",
-                            pointHoverBackgroundColor: "#fff",
-                            pointHoverBorderColor: brandleader,
-                            data: datapoints_leader
-                        });
+                    label: 'Leiter Qualifikation',
+                    backgroundColor: brandleader,
+                    borderWidth: 2,
+                    borderColor: brandleader,
+                    pointBackgroundColor: brandleader,
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: brandleader,
+                    data: datapoints_leader
+                });
             }
-
-            var radarChart = new Chart(RADARCHART, {
+            Chart.defaults.color = 'grey';
+            new Chart(RADARCHART, {
                 type: 'radar',
                 data: {
-                    labels:  labelstring,
+                    labels: labelstring,
                     datasets: datasets
                 },
                 options: {
                     scales: {
                         r: {
+                            min: -2,
+                            max: 2,
                             ticks: {
-                                min: -2,
-                                max: 2,
                                 maxTicksLimit: 5,
+                                color: 'darkgrey',
+                                backdropColor: 'transparent',
+                                z: 5,
                             },
                             pointLabels: {
                                 // callback: function (pointLabel, index, labels) {
-                                    // return window.innerWidth > 1600 ? pointLabel : ' ';
+                                // return window.innerWidth > 1600 ? pointLabel : ' ';
                                 // },
-                                font: {
+                                font: labelstring.map(l => ({
                                     size: window.innerWidth > 1600 ? 16 : 12,
+                                    weight: l == 'Cevitechnik' ? 'bold' : 'normal',
                                     // weight: 800,
-                                },
+                                })),
                             },
-                        }
+                            angleLines: {
+                                color: 'grey' // lines radiating from the center
+                            },
+                            grid: {
+                                color: 'grey'
+                            }
+
+                        },
                     },
                     tooltips: {
                         enabled: true,
@@ -105,8 +116,8 @@
                 plugins: [{
                     beforeInit: function (chart) {
                         chart.data.labels.forEach(function (e, i, a) {
-                            if(e[0] === 'V'){
-                               // e = '<strong>' + e + '</strong>';
+                            if (e[0] === 'V') {
+                                // e = '<strong>' + e + '</strong>';
                             }
                             if (/\n/.test(e)) {
                                 a[i] = e.split(/\n/)
