@@ -48,14 +48,17 @@ class Helper
             'role_id' => $camp_user->role->id, ]);
     }
 
-    public static function GetSurveyLabels(Survey $survey){
+    public static function GetSurveyLabels($surveys){
 
         $labels = [];
-        $questions = $survey->questions;
-        foreach ($questions as $survey_question){
-            $question = $survey_question->question;
-            $text = $survey_question->competence_text() ? '*' : '';
-            $labels[] = $text . $question['number'] . ' ' . $question['competence'];
+        if($surveys->count()>0) {
+            $survey = $surveys[0];
+            $questions = $survey->questions;
+            foreach ($questions as $survey_question) {
+                $question = $survey_question->question;
+                $text = $survey_question->competence_text() ? '*' : '';
+                $labels[] = $text . $question['number'] . ' ' . $question['competence'];
+            }
         }
 
         return $labels;

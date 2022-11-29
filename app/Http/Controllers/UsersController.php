@@ -58,12 +58,7 @@ class UsersController extends Controller
 
             $title = $user['username'];
 
-            if($surveys->count()>0) {
-                $labels = Helper::GetSurveyLabels($surveys[0]);
-            }
-            else{
-                $labels = [];
-            }
+            $labels = Helper::GetSurveyLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
             return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title', 'labels', 'datasets'));

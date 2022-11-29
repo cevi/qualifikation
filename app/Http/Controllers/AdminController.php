@@ -25,7 +25,7 @@ class AdminController extends Controller
 
         $title = 'Dashboard';
 
-        $labels = Helper::GetSurveyLabels($surveys[0]);
+        $labels = Helper::GetSurveyLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
         return view('admin/index', compact('user', 'surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title', 'labels', 'datasets', 'surveys'));

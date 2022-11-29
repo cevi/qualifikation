@@ -35,7 +35,7 @@ class SurveysController extends Controller
         $title = 'Qualifikation '.$survey->campUser->user['username'];
 
 
-        $labels = Helper::GetSurveyLabels($surveys[0]);
+        $labels = Helper::GetSurveyLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
         return view('home.survey', compact('aktUser', 'surveys','labels', 'datasets', 'answers', 'camp', 'users', 'posts', 'title'));
@@ -107,7 +107,7 @@ class SurveysController extends Controller
             $title = 'Vergleich '.$survey->campUser->user['username'];
 
 
-            $labels = Helper::GetSurveyLabels($surveys[0]);
+            $labels = Helper::GetSurveyLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
             return view('home.compare', compact('aktUser', 'surveys','labels', 'datasets', 'camp', 'users', 'answers', 'posts', 'title'));
@@ -120,7 +120,7 @@ class SurveysController extends Controller
         $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->where('id', $survey->id)->get()->sortBy('user.username')->values();
 
 
-        $labels = Helper::GetSurveyLabels($surveys[0]);
+        $labels = Helper::GetSurveyLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
         return view('home.compare_pdf', compact('survey', 'surveys', 'camp', 'labels' , 'datasets'));
