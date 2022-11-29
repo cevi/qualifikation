@@ -34,6 +34,16 @@
             <li class="mb-10 ml-4">
                 <div
                     class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6.3</h3>
+                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
+                    Dark Mode <br>
+                    Kernkompetenzen fett darstellen in Spinne. <br>
+                    Spinne aktualisieren auf Änderung.
+                </p>
+            </li>
+            <li class="mb-10 ml-4">
+                <div
+                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6.2</h3>
                 <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
                     Eigene Posts können bearbeitet werden. <br>
@@ -103,16 +113,7 @@
         class="section-features block p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Geplante Änderungen</h5>
         <ol class="relative border-l border-gray-200 dark:border-gray-700">
-            <li class="mb-10 ml-4">
-                <div
-                    class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6.3</h3>
-                <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-                    Dark Mode <br>
-                    Kernkompetenzen fett darstellen in Spinne. <br>
-                    Spinne aktualisieren auf Änderung.
-                </p>
-            </li>
+
         </ol>
     </section>
 
