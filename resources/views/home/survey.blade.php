@@ -15,12 +15,12 @@
         <x-bewertungs-schluessel :answers="$answers"/>
         {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->slug]]) !!}
         <div data-accordion="collapse" id="accordion-flush">
-            @foreach ($survey->chapters as $chapter)
+            @foreach ($survey->chapters as $ch_key => $chapter)
 
                 <x-chapter-title :chapter="$chapter"/>
                 <div id="accordion-flush-body-{{$chapter->chapter['number']}}" class="hidden"
                      aria-labelledby="accordion-flush-heading-{{$chapter->chapter['number']}}">
-                    @foreach ($chapter->questions as $question)
+                    @foreach ($chapter->questions as $q_key => $question)
                         <table class="table">
                             <tbody>
                             <tr class="{{$question->competence_text() ? 'core_competence':''}}">
@@ -48,18 +48,18 @@
                                             @if ($aktUser->isLeader())
 
                                                 <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']])}}
+                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => (($ch_key*3)+$q_key) . '.3.' . $question->question['number'].$answer['id']])}}
                                                     {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                 </td>
                                             @else
                                                 @isFirstSurvey($survey->survey_status_id)
                                                 <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                    {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
+                                                    {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => (($ch_key*3)+$q_key) . '.1.' .$question->question['number'].$answer['id']]) }}
                                                     {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                 </td>
                                                 @else
                                                     <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['number'].$answer['id']]) }}
+                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => (($ch_key*3)+$q_key) . '.2.' . $question->question['number'].$answer['id']]) }}
                                                         {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                     </td>
                                                 @endif
@@ -115,7 +115,7 @@
         @if($aktUser->isLeader())
             <x-post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'"/>
         @endif
-        <x-radar-chart :save="true"/>
+        <x-radar-chart/>
 
     @endforeach
 

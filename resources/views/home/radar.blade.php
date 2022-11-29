@@ -9,12 +9,24 @@
         var rs = getComputedStyle(r);
         var blue = rs.getPropertyValue('--blue');
 
+        $('input[type=radio]').change(function () {
+            let id = this.id;
+            let question_id = id.substring(0, id.indexOf('.'));
+            let count = id.slice(-1);
+            let right_id = id.substring(id.indexOf('.') + 1);
+            let survey_number = right_id.substring(0, right_id.indexOf('.'));
+            let survey_number_abs = survey_number > datasets_array[0].length ? 1 : survey_number - 1;
+            datasets_array[0][survey_number_abs].data[question_id] = count - 2;
+            chart.update();
+        });
+
+
         for (var [i, dataset] of Object.entries(datasets_array)) {
             var RADARCHART = $('#radarChart-' + (parseInt(i) + 1));
 
             Chart.defaults.color = 'grey';
 
-            new Chart(RADARCHART, {
+            var chart = new Chart(RADARCHART, {
                     type: 'radar',
                     data: {
                         labels: labelstring,

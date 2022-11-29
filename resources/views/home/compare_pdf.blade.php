@@ -74,7 +74,7 @@
             </table>
             <br><br>
         @endforeach
-        <x-radar-chart :save="false"/>
+        <x-radar-chart/>
     </div>
 </section>
 

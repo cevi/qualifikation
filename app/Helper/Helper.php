@@ -55,7 +55,7 @@ class Helper
         foreach ($questions as $survey_question){
             $question = $survey_question->question;
             $text = $survey_question->competence_text() ? '*' : '';
-            $labels[] = $text . $question['competence'];
+            $labels[] = $text . $question['number'] . ' ' . $question['competence'];
         }
 
         return $labels;
@@ -71,7 +71,7 @@ class Helper
             $second_answers = [];
             $leader_answers = [];
             $questions = $survey->questions()->get();
-            foreach ($questions as $question) {
+            foreach ($questions as $i => $question) {
                 $first_answers[] = $question->answer_first['count'];
                 $second_answers[] = $question->answer_second['count'];
                 $leader_answers[] = $question->answer_leader['count'];
