@@ -40,14 +40,6 @@ class SurveyQuestion extends Model
         return $this->belongsTo('App\Models\SurveyChapter');
     }
 
-    public function isCoreCompetence()
-    {
-        $camp = Auth::user()->camp;
-
-        return ($this->question['competence_js1'] && $camp['camp_type_id'] === config('status.camptype_JS1')) ||
-                                    ($this->question['competence_js2'] && $camp['camp_type_id'] === config('status.camptype_JS2'));
-    }
-
     public function competence_text()
     {
         $camp = Auth::user()->camp;

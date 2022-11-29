@@ -74,8 +74,8 @@
                                 @if($aktUser->isLeader())
                                     {!! Form::label('comment_leader', 'Kommentar:') !!}
                                 @else
-                                    @if(isFirstSurvey($survey->survey_status_id))
-                                        {!! Form::label('comment_first', 'Kommentar:') !!}
+                                    @isFirstSurvey($survey->survey_status_id)
+                                    {!! Form::label('comment_first', 'Kommentar:') !!}
                                     @else
                                         {!! Form::label('comment_second', 'Kommentar:') !!}
                                     @endif

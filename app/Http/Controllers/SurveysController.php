@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\Answer;
 use App\Models\Camp;
 use App\Models\CampUser;
@@ -33,7 +34,11 @@ class SurveysController extends Controller
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         $title = 'Qualifikation '.$survey->campUser->user['username'];
 
-        return view('home.survey', compact('aktUser', 'surveys', 'answers', 'camp', 'users', 'posts', 'title'));
+
+        $labels = Helper::GetSurveyLabels($surveys[0]);
+        $datasets = Helper::GetSurveysDataset($surveys);
+
+        return view('home.survey', compact('aktUser', 'surveys','labels', 'datasets', 'answers', 'camp', 'users', 'posts', 'title'));
     }
 
     public function update(Request $request, Survey $survey)
@@ -101,7 +106,11 @@ class SurveysController extends Controller
             $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich '.$survey->campUser->user['username'];
 
-            return view('home.compare', compact('aktUser', 'surveys', 'camp', 'users', 'answers', 'posts', 'title'));
+
+            $labels = Helper::GetSurveyLabels($surveys[0]);
+            $datasets = Helper::GetSurveysDataset($surveys);
+
+            return view('home.compare', compact('aktUser', 'surveys','labels', 'datasets', 'camp', 'users', 'answers', 'posts', 'title'));
         }
     }
 
@@ -110,7 +119,11 @@ class SurveysController extends Controller
         $camp = Auth::user()->camp;
         $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->where('id', $survey->id)->get()->sortBy('user.username')->values();
 
-        return view('home.compare_pdf', compact('survey', 'surveys', 'camp'));
+
+        $labels = Helper::GetSurveyLabels($surveys[0]);
+        $datasets = Helper::GetSurveysDataset($surveys);
+
+        return view('home.compare_pdf', compact('survey', 'surveys', 'camp', 'labels' , 'datasets'));
     }
 
     public function finish($id)

@@ -58,26 +58,25 @@
             </table>
         </div>
         @if ($aktUser->isLeader())
-            <div class="row d-flex align-items-md-stretch">
+            <div
+                class="grid mb-8 border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 md:mb-12 md:grid-cols-2">
+
                 @foreach($surveys as $survey)
-                    <div class="col-lg-6 col-md-12" id="Chart-{{$loop->iteration}}">
-                        <div class="card">
-                            <a href="{{route('survey.compare',$survey->slug)}}">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h2 class="h5 display">{{$survey->campuser->user['username']}}</h2>
-                                    <h2 class="h5 display">{{$survey->survey_status['name']}}</h2>
-                                </div>
+                    <figure
+                        class="flex flex-col items-center justify-center p-8 text-center bg-white border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
+                        id="Chart-{{$loop->iteration}}">
+                        <!-- Recent Activities Widget      -->
+                        <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
+                            <a href="{{route('survey.compare',$survey['slug'])}}" target="blank">
+
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                    {{$survey->campuser->user['username']}} - {{$survey->survey_status['name']}}
+                                </h3>
                             </a>
-                            <div role="tabpanel" class="collapse show">
-                                <div class="card-body">
-                                    <div class="chart-container">
-                                        <canvas id="radarChart-{{$loop->iteration}}" width="100%"
-                                                height="100%"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </blockquote>
+                        <canvas id="radarChart-{{$loop->iteration}}" width="100%"
+                                height="100%"></canvas>
+                    </figure>
                 @endforeach
             </div>
         @endif

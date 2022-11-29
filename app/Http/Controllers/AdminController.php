@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -24,7 +25,10 @@ class AdminController extends Controller
 
         $title = 'Dashboard';
 
-        return view('admin/index', compact('user', 'surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title'));
+        $labels = Helper::GetSurveyLabels($surveys[0]);
+        $datasets = Helper::GetSurveysDataset($surveys);
+
+        return view('admin/index', compact('user', 'surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title', 'labels', 'datasets', 'surveys'));
     }
 
     public function changes()

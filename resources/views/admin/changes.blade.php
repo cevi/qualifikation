@@ -109,7 +109,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">V6.3</h3>
                 <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
                     Dark Mode <br>
-                    Kernkompetenzen fett darstellen in Spinne <br>
+                    Kernkompetenzen fett darstellen in Spinne. <br>
                     Spinne aktualisieren auf Änderung.
                 </p>
             </li>

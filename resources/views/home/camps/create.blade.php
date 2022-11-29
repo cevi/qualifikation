@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group">
                         {!! Form::label('camp_type_id', 'Kurstyp:') !!}
-                        {!! Form::select('camp_type_id', [''=>'Wähle Kurstyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
+                        {!! Form::select('camp_type_id', [''=>'Wähle Kurstyp'] + $camptypes, null,  ['class' => 'form-control ', 'required']) !!}
                     </div>
                     @if (config('app.import_db'))
                         <div class="form-group">

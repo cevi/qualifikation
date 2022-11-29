@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\CampUser;
 use App\Models\Survey;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,10 @@ class HomeController extends Controller
         }
         $title = 'Übersicht';
 
-        return view('home.surveys', compact('aktUser', 'users', 'surveys', 'title'));
+
+        $labels = Helper::GetSurveyLabels($surveys[0]);
+        $datasets = Helper::GetSurveysDataset($surveys);
+
+        return view('home.surveys', compact('aktUser', 'users', 'surveys', 'title', 'labels', 'datasets'));
     }
 }

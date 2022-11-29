@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\CampUser;
 use App\Models\Post;
 use App\Models\Role;
@@ -57,7 +58,15 @@ class UsersController extends Controller
 
             $title = $user['username'];
 
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title'));
+            if($surveys->count()>0) {
+                $labels = Helper::GetSurveyLabels($surveys[0]);
+            }
+            else{
+                $labels = [];
+            }
+            $datasets = Helper::GetSurveysDataset($surveys);
+
+            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title', 'labels', 'datasets'));
         } else {
             return redirect()->back();
         }
