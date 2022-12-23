@@ -34,12 +34,11 @@ docker run --rm \
     
 cp .env.example .env
 
-# initialize the database
-./vendor/bin/sail artisan migrate --seed
-
 # launch the application
 ./vendor/bin/sail up
 
+# initialize the database
+./vendor/bin/sail artisan migrate --seed
 ```
 
 Anschliessend kannst du dein Tool unter [http://localhost](http://localhost) aufrufen.
