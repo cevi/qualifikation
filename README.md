@@ -19,10 +19,12 @@ Das Tool ist ein PHP-Projekt basiernd auf dem Framework [Laravel](https://larave
 
 Um das Tool lokal bei dir benutzen zu können musst du den Quellcode herunterladen und mittels [Laravel Sail](https://laravel.com/docs/9.x/sail) starten:
 
-```
+```bash
+# clone the GitRepo
 git clone https://github.com/cevi/qualifikation
 cd qualifikation
 
+# install the dependencies
 docker run --rm \
     -u "$(id -u):$(id -g)" \
     -v $(pwd):/var/www/html \
@@ -32,8 +34,11 @@ docker run --rm \
     
 cp .env.example .env
 
+# launch the application
 ./vendor/bin/sail up
 
+# initialize the database
+./vendor/bin/sail artisan migrate --seed
 ```
 
 Anschliessend kannst du dein Tool unter [http://localhost](http://localhost) aufrufen.
