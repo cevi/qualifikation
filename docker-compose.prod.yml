@@ -1,0 +1,60 @@
+# For more information: https://laravel.com/docs/sail
+version: '3.8'
+services:
+
+  php:
+    image: registry.cevi.tools/cevi/qualitool_php_fpm:latest
+    build:
+      context: .
+      dockerfile: docker/php.Dockerfile
+    networks:
+      - internal-net
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  nginx:
+    image: registry.cevi.tools/cevi/qualitool_nginx:latest
+    build:
+      context: .
+      dockerfile: docker/nginx.Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - internal-net
+    depends_on:
+      - php
+
+  mysql:
+    image: 'mysql/mysql-server:8.0'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: qualifikationen
+      MYSQL_USER: 'sail'
+      MYSQL_PASSWORD: 'password'
+
+    networks:
+      - internal-net
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$DB_USERNAME --password=$$DB_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
+    env_file:
+      - .env
+
+networks:
+  internal-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local

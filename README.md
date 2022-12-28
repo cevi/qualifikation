@@ -35,8 +35,21 @@ cp .env.example .env
 ./vendor/bin/sail up
 
 ```
-
 Anschliessend kannst du dein Tool unter [http://localhost](http://localhost) aufrufen.
+
+## Run in Production
+
+```bash
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+Anschliessend musst du einmalig den folgenden Command laufen lassen,
+damit die Datenbank migriert und initialisiert wird:
+
+```bash
+ docker exec -it qualifikation_php_1 php artisan migrate --seed
+```
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
