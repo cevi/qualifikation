@@ -9,9 +9,9 @@ services:
       dockerfile: docker/php.Dockerfile
     networks:
       - internal-net
-    # depends_on:
-    #  mysql:
-    #    condition: service_healthy
+    depends_on:
+      mysql:
+        condition: service_healthy
     environment:
       - ENV_FILE_PATH=/run/secrets/.env
     volumes:
@@ -37,7 +37,7 @@ services:
     ports:
       - '3306:3306'
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql-data-production:/var/lib/mysql
       - .env:/run/secrets/.env
     environment:
       - ENV_FILE_PATH=/run/secrets/.env
@@ -55,5 +55,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysql-data:
+  mysql-data-production:
     driver: local
