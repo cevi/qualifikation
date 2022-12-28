@@ -5,7 +5,7 @@ WORKDIR /var/www/html/
 
 # Install Essentials and Packages
 RUN apk add --no-cache \
-    zip unzip curl \
+    zip unzip curl mysql-client mariadb-connector-c\
     icu-dev libzip-dev && \
     rm -rf /var/cache/apk/*
 

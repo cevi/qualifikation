@@ -10,8 +10,7 @@ services:
     networks:
       - internal-net
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
     environment:
       - ENV_FILE_PATH=/run/secrets/.env
     volumes:
@@ -43,12 +42,6 @@ services:
       - ENV_FILE_PATH=/run/secrets/.env
     networks:
       - internal-net
-    healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u $$DB_USERNAME --password=$$DB_PASSWORD
-      start_period: 5s
-      interval: 5s
-      timeout: 5s
-      retries: 55
 
 networks:
   internal-net:
