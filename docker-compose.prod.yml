@@ -9,11 +9,13 @@ services:
       dockerfile: docker/php.Dockerfile
     networks:
       - internal-net
-    depends_on:
-      mysql:
-        condition: service_healthy
-    env_file:
-      - .env
+    # depends_on:
+    #  mysql:
+    #    condition: service_healthy
+    environment:
+      - ENV_FILE_PATH=/run/secrets/.env
+    volumes:
+      - .env:/run/secrets/.env
 
   nginx:
     image: registry.cevi.tools/cevi/qualitool_nginx:latest
@@ -28,18 +30,17 @@ services:
       - php
 
   mysql:
-    image: 'mysql/mysql-server:8.0'
+    image: registry.cevi.tools/cevi/qualitool_mysql_server:latest
+    build:
+      context: .
+      dockerfile: docker/mysql.Dockerfile
     ports:
       - '3306:3306'
     volumes:
       - mysql-data:/var/lib/mysql
+      - .env:/run/secrets/.env
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_DATABASE: qualifikationen
-      MYSQL_USER: 'sail'
-      MYSQL_PASSWORD: 'password'
-
+      - ENV_FILE_PATH=/run/secrets/.env
     networks:
       - internal-net
     healthcheck:
@@ -48,8 +49,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 55
-    env_file:
-      - .env
 
 networks:
   internal-net:

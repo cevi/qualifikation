@@ -42,7 +42,7 @@ RUN php artisan clear-compiled
 RUN php artisan optimize
 
 # Copy entrypoint
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/entrypoint-php.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
