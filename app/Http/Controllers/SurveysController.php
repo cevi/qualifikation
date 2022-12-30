@@ -44,7 +44,7 @@ class SurveysController extends Controller
     public function update(Request $request, Survey $survey)
     {
         $aktUser = Auth::user();
-        // $survey = Survey::findOrFail($id);
+        $camp = $aktUser->camp();
         $answers = $request->answers;
 
         foreach ($answers as $index => $answer) {
@@ -76,7 +76,7 @@ class SurveysController extends Controller
 
         if (! $aktUser->isLeader()) {
             if ($request->action === 'close') {
-                if ($survey['survey_status_id'] < config('status.survey_2offen')) {
+                if (($survey['survey_status_id'] < config('status.survey_2offen') && $camp->secondsurveyopen)) {
                     $survey->update(['survey_status_id' => config('status.survey_2offen')]);
                 } else {
                     $survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
