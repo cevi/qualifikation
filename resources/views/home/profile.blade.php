@@ -62,7 +62,7 @@
                                         </div>
                                         <div class="form-group">
                                             {!! Form::label('comment', 'Rückmeldung:') !!}
-                                            {!! Form::textarea('comment', null, ['class' => 'form-control', 'rows' => 3]) !!}
+                                            {!! Form::textarea('comment', null, ['class' => 'form-control', 'required', 'rows' => 3]) !!}
                                         </div>
                                         <div class="form-row">
                                             <div class="col-md-6 form-group">
