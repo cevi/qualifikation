@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Ixudra\Curl\Facades\Curl;
+use Str;
+use File;
 use Yajra\DataTables\Facades\DataTables;
 
 class AdminUsersController extends Controller
@@ -53,9 +55,7 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('picture', function ($user) {
-                $path = $user->avatar ? $user->avatar : '/img/default_avatar.svg';
-
-                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user" src="'.$path.'" alt=""></a>';
+                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user" alt="" src="' . $user->getAvatar() . '"></a>';
             })
             ->addColumn('user', function ($user) {
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('users.edit', $user['slug']).'>'.$user['username'].'</a>';
@@ -155,7 +155,7 @@ class AdminUsersController extends Controller
                                 'username' => $username,
                                 'email' => $participant->email,
                                 'email_verified_at' => now(),
-                                'classification_id' => config('status.classification_green'), ];
+                                'classification_id' => config('status.classification_yellow'), ];
                             $user = User::whereraw('LOWER(`email`) LIKE "'.mb_strtolower($participant->email).'"')->Orwhere('foreign_id', $participant->links->person)->first();
                             if (! $user) {
                                 $user = User::create($insertData);
@@ -164,7 +164,7 @@ class AdminUsersController extends Controller
                             $user->update([
                                 'role_id' => $role_id,
                                 'camp_id' => $camp['id'],
-                                'classification_id' => config('status.classification_green'),
+                                'classification_id' => config('status.classification_yellow'),
                             ]);
                         } else {
                             $user = Auth::user();
@@ -224,7 +224,7 @@ class AdminUsersController extends Controller
                         'role_id' => config('status.role_Kursleiter'),
                         'camp_id' => $user['camp_id'],
                         'email_verified_at' => now(),
-                        'classification_id' => config('status.classification_green'), ];
+                        'classification_id' => config('status.classification_yellow'), ];
 
                     $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                     UserCreated::dispatch($user);
@@ -238,7 +238,7 @@ class AdminUsersController extends Controller
                         'role_id' => config('status.role_Gruppenleiter'),
                         'camp_id' => $user['camp_id'],
                         'email_verified_at' => now(),
-                        'classification_id' => config('status.classification_green'), ];
+                        'classification_id' => config('status.classification_yellow'), ];
 
                     $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                     UserCreated::dispatch($user);
@@ -261,7 +261,7 @@ class AdminUsersController extends Controller
                         'camp_id' => $user['camp_id'],
                         'email_verified_at' => now(),
                         'leader_id' => $leader['id'],
-                        'classification_id' => config('status.classification_green'), ];
+                        'classification_id' => config('status.classification_yellow'), ];
 
                     $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                     UserCreated::dispatch($user);
@@ -285,6 +285,7 @@ class AdminUsersController extends Controller
             'role_id.required' => 'Die Rolle muss ausgefüllt sein.', ]);
 
         $aktUser = Auth::user();
+        $camp = $aktUser->camp;
         if (trim($request->password) == '') {
             $input = $request->except('password');
         } else {
@@ -292,20 +293,8 @@ class AdminUsersController extends Controller
             $input['password'] = bcrypt($request->password);
         }
 
-        $camp = $aktUser->camp;
         if (! $aktUser->isAdmin()) {
             $input['camp_id'] = $camp['id'];
-            if ($file = $request->file('avatar')) {
-                if ($input['cropped_photo_id']) {
-                    $save_path = 'images/'.$camp['name'];
-                    if (! file_exists($save_path)) {
-                        mkdir($save_path, 0755, true);
-                    }
-                    $name = time().str_replace(' ', '', $file->getClientOriginalName());
-                    Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);
-                    $input['avatar'] = '/'.$save_path.'/'.$name;
-                }
-            }
         }
         // $input['slug'] = Str::slug($input['username']);
         $input['email_verified_at'] = now();
@@ -313,6 +302,7 @@ class AdminUsersController extends Controller
         $user = User::create($input);
         UserCreated::dispatch($user);
         Helper::updateCamp($user, $camp);
+        Helper::updateAvatar($request, $user);
 
         return redirect('/admin/users/create');
     }
@@ -374,6 +364,7 @@ class AdminUsersController extends Controller
         ]);
         $user = User::findOrFail($id);
         $aktuser = Auth::user();
+        $camp = $aktuser->camp;
 
         if (! $aktuser->demo) {
             if (trim($request->password) == '') {
@@ -381,17 +372,6 @@ class AdminUsersController extends Controller
             } else {
                 $input = $request->all();
                 $input['password'] = bcrypt($request->password);
-            }
-            if ($file = $request->file('avatar')) {
-                if ($input['cropped_photo_id']) {
-                    $save_path = 'images/'.$aktuser->camp['name'];
-                    if (! file_exists($save_path)) {
-                        mkdir($save_path);
-                    }
-                    $name = time().str_replace(' ', '', $file->getClientOriginalName());
-                    Image::make($input['cropped_photo_id'])->save($save_path.'/'.$name, 80);
-                    $input['avatar'] = '/'.$save_path.'/'.$name;
-                }
             }
             // $input['slug'] = Str::slug($input['username']);
 
@@ -404,6 +384,7 @@ class AdminUsersController extends Controller
             ]);
 
             Helper::updateCamp($user, $aktuser->camp);
+            Helper::updateAvatar($request, $user);
         }
 
         return redirect('/admin/users');

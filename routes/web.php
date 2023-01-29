@@ -86,6 +86,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::get('/compare/{survey}/downloadPDF', ['as' => 'survey.downloadPDF', 'uses' => 'SurveysController@downloadPDF']);
 
     Route::resource('/post', 'PostController');
+    Route::get('/post/downloadFile/{id}', ['as'=>'downloadFile','uses'=>'PostController@downloadFile']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::get('/profile/{user}', ['as' => 'home.profile', 'uses' => 'UsersController@edit']);

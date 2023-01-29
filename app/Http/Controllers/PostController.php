@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HealthForm;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Str;
 
 class PostController extends Controller
@@ -23,8 +26,9 @@ class PostController extends Controller
     {
         //
         $aktUser = Auth::user();
-        $posts_no_user = $aktUser->posts->whereNull('user_id');
-        $posts_user = $aktUser->posts->whereNotNull('user_id');
+        $camp = $aktUser->camp;
+        $posts_no_user = $aktUser->posts->whereNull('user_id')->where('camp_id', $camp->id);
+        $posts_user = $aktUser->posts->whereNotNull('user_id')->where('camp_id', $camp->id);
         $users = $aktUser->camp->participants;
         $users_select = [];
         if ($users) {
@@ -61,13 +65,14 @@ class PostController extends Controller
         $input['camp_id'] = $camp->id;
         $input['show_on_survey'] = $request->has('show_on_survey');
         if ($file = $request->file('file')) {
-            $save_path = 'images/'.Str::slug($camp['name']).'/files';
-            if (! file_exists($save_path)) {
-                mkdir($save_path, 0755, true);
+            $save_path = 'app/files/'.Str::slug($camp['name']);
+            $directory = storage_path($save_path);
+            if (!File::isDirectory($directory)) {
+                File::makeDirectory($directory, 0775, true);
             }
-            $name = time().'_'.str_replace(' ', '', $file->getClientOriginalName());
-
-            $file->move($save_path, $name);
+            $input['uuid']  = Str::uuid();
+            $name = str_replace(' ', '', $file->getClientOriginalName());
+            $file->move($directory, $name);
             $input['file'] = $save_path.'/'.$name;
         }
 
@@ -79,6 +84,20 @@ class PostController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function downloadFile($id)
+    {
+        //
+        $post = Post::where('uuid', $id)->firstOrFail();
+        $camp_post = $post->camp;
+        $aktUser = Auth::user();
+        $camp_user = $aktUser->camp;
+        if (($camp_post->id == $camp_user->id) && $aktUser->isLeader()){
+            return response()->download(storage_path($post['file']));
+        } else {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -124,6 +143,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+        unlink(storage_path($post['file']));
         $post->delete();
 
         return redirect()->back();

@@ -13,7 +13,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <div class="text-center-profile mbl">
-                                        <img src="{{$user->avatar ?  : '/img/default_avatar.svg'}}" alt="img"
+                                        <img src="{{$user->getAvatar()}}" alt="img"
                                              class="img-circle img-bor">
                                     </div>
                                 </div>

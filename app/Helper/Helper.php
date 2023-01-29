@@ -8,6 +8,9 @@ use App\Models\CampUser;
 use App\Models\Survey;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
+use Str;
 
 class Helper
 {
@@ -45,8 +48,44 @@ class Helper
         $user->update([
             'camp_id' => $camp->id,
             'leader_id' => $leader_id,
-            'role_id' => $camp_user->role->id, ]);
+            'role_id' => $camp_user->role->id,
+        ]);
     }
+
+    public static function updateAvatar($request, $user){
+        if ($file = $request->file('avatar')) {
+            $input = $request->all();
+            $aktUser = Auth::user();
+            $camp = $aktUser->camp;
+            if ($input['cropped_photo_id']) {
+                $save_path = Str::slug($camp['name']).'/profiles';
+                $directory = storage_path('app/public/'.$save_path);
+                if (!File::isDirectory($directory)) {
+                    File::makeDirectory($directory, 0775, true);
+                }
+                $name =  Str::uuid() . '_' . str_replace(' ', '', $file->getClientOriginalName());
+                Image::make($input['cropped_photo_id'])->save($directory.'/'.$name, 80);
+                $input['avatar'] = $save_path.'/'.$name;
+                $camp_user = CampUser::where('user_id', $user->id)->where('camp_id', $camp->id)->first();
+                $camp_user->update(['avatar' => $input['avatar']]);
+            }
+        }
+    }
+
+    public static function getAvatarPath($avatar)
+    {
+        $path = null;
+        if($avatar){
+            if(str_starts_with($avatar, 'https')){
+                $path = $avatar;
+            }
+            else{
+                $path = asset("storage/".$avatar);
+            }
+        }
+        return $path;
+    }
+
 
     public static function GetSurveyLabels($surveys){
 

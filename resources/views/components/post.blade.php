@@ -27,8 +27,8 @@
                         @if ($post->file)
                             <div
                                 class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">
-                                <a href="/{{$post->file}}"
-                                   target="_blank">{{substr(basename($post->file, '.'.pathinfo($post->file, PATHINFO_EXTENSION)), 11)}}</a>
+                                <a href="{{route('downloadFile',$post['uuid'] ?? '0')}}"
+                                   target="_blank">{{basename($post->file)}}</a>
                             </div>
                         @endif
                     </div>

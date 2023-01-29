@@ -10,7 +10,9 @@ use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Str;
 
 class AdminCampsController extends Controller
 {
@@ -140,9 +142,10 @@ class AdminCampsController extends Controller
             $camp_user->delete();
         }
         foreach ($camp->posts()->get() as $post) {
-            unlink($post['file']);
             $post->delete();
         }
+        File::deleteDirectory(storage_path('app/public/'.Str::slug($camp['name'])));
+        File::deleteDirectory(storage_path('app/files/'.Str::slug($camp['name'])));
         $camp->update(['finish' => true, 'counter' => $counter]);
 
         return redirect('/home');
