@@ -122,7 +122,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $camp = Auth::user()->camp;
         $camp_user = CampUser::where('user_id', $this->id)->where('camp_id', $camp->id)->first();
-        $path = Helper::getAvatarPath($camp_user->avatar);
+        $path = null;
+        if ($camp_user) {
+            $path = Helper::getAvatarPath($camp_user->avatar);
+        }
         if($path === null){
             $path = Helper::getAvatarPath($this->avatar);
         }

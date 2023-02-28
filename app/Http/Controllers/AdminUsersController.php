@@ -122,11 +122,23 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
         if ($aktUser->foreign_id && $camp->foreign_id && $camp->group && $camp->group['api_token']) {
-            $response = Curl::to('https://db.cevi.ch/groups/'.$camp->group['foreign_id'].'/events/'.$camp['foreign_id'].'/participations.json')
+            $url = 'https://db.cevi.ch/groups/'.$camp->group['foreign_id'].'/events/'.$camp['foreign_id'].'/participations.json';
+            $response = Curl::to( $url)
                 ->withData(['token' => Crypt::decryptString($camp->group['api_token'])])
                 ->get();
             $response = json_decode($response);
             $participants = $response->event_participations;
+            for ($i = 1; $i < $response->total_pages; $i++) {
+                $url = $response->next_page_link;
+                $response = Curl::to($url)
+                    ->withData([
+                        'page' => $i + 1,
+                        'token' => Crypt::decryptString($camp->group['api_token'])
+                    ])
+                    ->get();
+                $response = json_decode($response);
+                $participants = array_merge($participants, $response->event_participations);
+            }
             $isLeader = false;
             foreach ($participants as $participant) {
                 if ((intval($participant->links->person) === $aktUser['foreign_id']) && ($participant->roles[0]->type === 'Event::Role::Leader')) {
