@@ -55,6 +55,7 @@
                     <th scope="col">Klassifizierung</th>
                     <th scope="col">Kurs</th>
                     <th scope="col">Passwortänderung</th>
+                    <th scope="col">Letztes Login</th>
                 </tr>
                 </thead>
             </table>
@@ -117,6 +118,7 @@
                     {data: 'classification', name: 'classification'},
                     {data: 'camp', name: 'camp'},
                     {data: 'password_changed', name: 'password_changed'},
+                    {data: 'last_login_at', name: 'last_login_at'},
 
                 ]
             });
