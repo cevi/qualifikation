@@ -71,7 +71,7 @@
                                         <td>{{$camp->counter ?: 0}}</td>
                                     @endif
                                     <td>
-                                        @if (!Auth::user()->demo && !$camp->finish)
+                                        @if (!$camp->finish)
                                             {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
                                             <div class="form-group">
                                                 {!! Form::submit('Kurs abschliessen?', ['class' => 'btn btn-danger confirm'])!!}

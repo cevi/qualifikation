@@ -59,18 +59,20 @@ class CampsController extends Controller
                         ->withErrors($validator, 'camps')
                         ->withInput();
         }
+        if (!Auth::user()->demo) {
 
-        $input = $request->all();
-        $user = User::findOrFail(Auth::user()->id);
-        $input['user_id'] = $user->id;
-        $input['global_camp'] = false;
-        $camp = Camp::create($input);
-        CampCreated::dispatch($camp);
-        $user->update(['camp_id' => $camp->id, 'role_id' => config('status.role_Kursleiter')]);
-        CampUser::create([
-            'user_id' => $user->id,
-            'camp_id' => $camp->id,
-            'role_id' => config('status.role_Kursleiter'), ]);
+            $input = $request->all();
+            $user = User::findOrFail(Auth::user()->id);
+            $input['user_id'] = $user->id;
+            $input['global_camp'] = false;
+            $camp = Camp::create($input);
+            CampCreated::dispatch($camp);
+            $user->update(['camp_id' => $camp->id, 'role_id' => config('status.role_Kursleiter')]);
+            CampUser::create([
+                'user_id' => $user->id,
+                'camp_id' => $camp->id,
+                'role_id' => config('status.role_Kursleiter'),]);
+        }
 
         return redirect('home');
     }
@@ -107,7 +109,10 @@ class CampsController extends Controller
     public function update(Request $request, Camp $camp)
     {
         //
-        Helper::updateCamp(Auth::user(), $camp);
+
+        if (!Auth::user()->demo) {
+            Helper::updateCamp(Auth::user(), $camp);
+        }
 
         return redirect('/home');
     }

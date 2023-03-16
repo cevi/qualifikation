@@ -44,47 +44,50 @@ class SurveysController extends Controller
     public function update(Request $request, Survey $survey)
     {
         $aktUser = Auth::user();
-        $camp = $aktUser->camp();
-        $answers = $request->answers;
 
-        foreach ($answers as $index => $answer) {
-            $surveyquestion = SurveyQuestion::findOrFail($index);
-            if ($aktUser->isLeader()) {
-                $surveyquestion->update(['answer_leader_id' => $answer]);
-            } else {
-                if ($survey['survey_status_id'] < config('status.survey_2offen')) {
-                    $surveyquestion->update(['answer_first_id' => $answer]);
+        if (!$aktUser->demo) {
+            $camp = $aktUser->camp();
+            $answers = $request->answers;
+
+            foreach ($answers as $index => $answer) {
+                $surveyquestion = SurveyQuestion::findOrFail($index);
+                if ($aktUser->isLeader()) {
+                    $surveyquestion->update(['answer_leader_id' => $answer]);
                 } else {
-                    $surveyquestion->update(['answer_second_id' => $answer]);
+                    if ($survey['survey_status_id'] < config('status.survey_2offen')) {
+                        $surveyquestion->update(['answer_first_id' => $answer]);
+                    } else {
+                        $surveyquestion->update(['answer_second_id' => $answer]);
+                    }
                 }
             }
-        }
 
-        $comments = $request->comments;
-        foreach ($comments as $index => $comment) {
-            $surveyquestion = SurveyQuestion::findOrFail($index);
-            if ($aktUser->isLeader()) {
-                $surveyquestion->update(['comment_leader' => $comment]);
-            } else {
-                if ($survey['survey_status_id'] < config('status.survey_2offen')) {
-                    $surveyquestion->update(['comment_first' => $comment]);
+            $comments = $request->comments;
+            foreach ($comments as $index => $comment) {
+                $surveyquestion = SurveyQuestion::findOrFail($index);
+                if ($aktUser->isLeader()) {
+                    $surveyquestion->update(['comment_leader' => $comment]);
                 } else {
-                    $surveyquestion->update(['comment_second' => $comment]);
+                    if ($survey['survey_status_id'] < config('status.survey_2offen')) {
+                        $surveyquestion->update(['comment_first' => $comment]);
+                    } else {
+                        $surveyquestion->update(['comment_second' => $comment]);
+                    }
                 }
             }
-        }
 
-        if (! $aktUser->isLeader()) {
-            if ($request->action === 'close') {
-                if (($survey['survey_status_id'] < config('status.survey_2offen') && $camp->secondsurveyopen)) {
-                    $survey->update(['survey_status_id' => config('status.survey_2offen')]);
-                } else {
-                    $survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+            if (!$aktUser->isLeader()) {
+                if ($request->action === 'close') {
+                    if (($survey['survey_status_id'] < config('status.survey_2offen') && $camp->secondsurveyopen)) {
+                        $survey->update(['survey_status_id' => config('status.survey_2offen')]);
+                    } else {
+                        $survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+                    }
+
+                    return redirect('/home');
+                } elseif ($survey['survey_status_id'] === config('status.survey_neu')) {
+                    $survey->update(['survey_status_id' => config('status.survey_1offen')]);
                 }
-
-                return redirect('/home');
-            } elseif ($survey['survey_status_id'] === config('status.survey_neu')) {
-                $survey->update(['survey_status_id' => config('status.survey_1offen')]);
             }
         }
 
@@ -130,8 +133,11 @@ class SurveysController extends Controller
     {
         $survey = Survey::findOrFail($id);
         $user = Auth::user();
-        if ($survey['survey_status_id'] === config('status.survey_tnAbgeschlossen') && $user->isleader()) {
-            $survey->update(['survey_status_id' => config('status.survey_fertig')]);
+
+        if (!$user->demo) {
+            if ($survey['survey_status_id'] === config('status.survey_tnAbgeschlossen') && $user->isleader()) {
+                $survey->update(['survey_status_id' => config('status.survey_fertig')]);
+            }
         }
 
         return redirect()->back();

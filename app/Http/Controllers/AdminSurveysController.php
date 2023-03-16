@@ -88,30 +88,33 @@ class AdminSurveysController extends Controller
     public function create()
     {
         //
-        $camp = Auth::user()->camp;
-        $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
-        $chapters = Chapter::all();
-        $answer = Answer::where('name', '0')->first();
 
-        foreach ($camp_users as $camp_user) {
-            $input['name'] = 'Qualifikationsprozess';
-            $input['camp_user_id'] = $camp_user->id;
-            $user = User::find($camp_user['user_id']);
-            $input['slug'] = Str::slug($user['slug'].'@'.$camp['name']);
-            $input['survey_status_id'] = config('status.survey_neu');
-            $survey = Survey::create($input);
-            foreach ($chapters as $chapter) {
-                $input['chapter_id'] = $chapter->id;
-                $input['survey_id'] = $survey->id;
-                $survey_chapter = SurveyChapter::create($input);
-                $questions = Question::where('chapter_id', $chapter->id)->get();
-                foreach ($questions as $question) {
-                    $input['survey_chapter_id'] = $survey_chapter->id;
-                    $input['question_id'] = $question->id;
-                    $input['answer_first_id'] = $answer->id;
-                    $input['answer_second_id'] = $answer->id;
-                    $input['answer_leader_id'] = $answer->id;
-                    SurveyQuestion::create($input);
+        if (! Auth::user()->demo) {
+            $camp = Auth::user()->camp;
+            $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
+            $chapters = Chapter::all();
+            $answer = Answer::where('name', '0')->first();
+
+            foreach ($camp_users as $camp_user) {
+                $input['name'] = 'Qualifikationsprozess';
+                $input['camp_user_id'] = $camp_user->id;
+                $user = User::find($camp_user['user_id']);
+                $input['slug'] = Str::slug($user['slug'] . '@' . $camp['name']);
+                $input['survey_status_id'] = config('status.survey_neu');
+                $survey = Survey::create($input);
+                foreach ($chapters as $chapter) {
+                    $input['chapter_id'] = $chapter->id;
+                    $input['survey_id'] = $survey->id;
+                    $survey_chapter = SurveyChapter::create($input);
+                    $questions = Question::where('chapter_id', $chapter->id)->get();
+                    foreach ($questions as $question) {
+                        $input['survey_chapter_id'] = $survey_chapter->id;
+                        $input['question_id'] = $question->id;
+                        $input['answer_first_id'] = $answer->id;
+                        $input['answer_second_id'] = $answer->id;
+                        $input['answer_leader_id'] = $answer->id;
+                        SurveyQuestion::create($input);
+                    }
                 }
             }
         }

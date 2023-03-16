@@ -45,13 +45,11 @@
                             {!! Form::submit('Änderungen speichern', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
-                    @if (!Auth::user()->demo)
-                        {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
-                        <div class="form-group">
-                            {!! Form::submit('Kurs löschen', ['class' => 'btn btn-danger confirm'])!!}
-                        </div>
-                        {!! Form::close()!!}
-                    @endif
+                    {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
+                    <div class="form-group">
+                        {!! Form::submit('Kurs löschen', ['class' => 'btn btn-danger confirm'])!!}
+                    </div>
+                    {!! Form::close()!!}
                  </div>
             </div>
         </div>
