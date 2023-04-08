@@ -36,7 +36,9 @@
                             <th rowspan="2" width="150px">Kompetenz</th>
                             <th rowspan="2" width="300px">Thema</th>
                             <th colspan="2" width="250">1. Selbsteinschätzung</th>
-                            <th colspan="2" width="250">2. Selbsteinschätzung</th>
+                            @if($camp['secondsurveyopen'])
+                                <th colspan="2" width="250">2. Selbsteinschätzung</th>
+                            @endif
                             @if(!$aktUser->isTeilnehmer())
                                 <th colspan="2" width="250">Leiter</th>
                             @endif
@@ -44,8 +46,10 @@
                         <tr>
                             <th width="50px"></th>
                             <th width="200px">Kommentar</th>
-                            <th width="50px"></th>
-                            <th width="200px">Kommentar</th>
+                            @if($camp['secondsurveyopen'])
+                                <th width="50px"></th>
+                                <th width="200px">Kommentar</th>
+                            @endif
                             @if(!$aktUser->isTeilnehmer())
                                 <th width="50px"></th>
                                 <th width="200px">Kommentar</th>
@@ -68,8 +72,11 @@
                                 </td>
                                 <td width="50px" {{ Popper::pop($question->answer_first['description'])}}>{{$question->answer_first['name']}}</td>
                                 <td width="200px">{{$question['comment_first']}}</td>
+
+                                @if($camp['secondsurveyopen'])
                                 <td width="50px" {{ Popper::pop($question->answer_second['description'])}}>{{$question->answer_second['name']}}</td>
                                 <td width="200px">{{$question['comment_second']}}</td>
+                                @endif
                                 @if(!$aktUser->isTeilnehmer())
                                     <td width="50px" {{ Popper::pop($question->answer_leader['description'])}}>{{$question->answer_leader['name']}}</td>
                                     <td width="200px">{{$question['comment_leader']}}</td>

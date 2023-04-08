@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CampType;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class AdminChaptersController extends Controller
@@ -16,8 +18,13 @@ class AdminChaptersController extends Controller
     public function index()
     {
         //
-        $chapters = Chapter::all();
-
+        $user = Auth::user();
+        if($user->isAdmin()) {
+            $chapters = Chapter::all();
+        }
+        else{
+            $chapters = $user->camp->camp_type->chapters;
+        }
         return view('admin.chapters.index', compact('chapters'));
     }
 
@@ -46,7 +53,16 @@ class AdminChaptersController extends Controller
                         ->withInput();
         }
 
-        Chapter::create($request->all());
+        $user = Auth::user();
+        if(!$user->demo) {
+
+            $input = $request->all();
+            if (!$user->isAdmin()) {
+                $camp_type = $user->camp->camp_type;
+                $input['camp_type_id'] = $camp_type['id'];
+            }
+            Chapter::create($input);
+        }
 
         return redirect('admin/chapters');
     }

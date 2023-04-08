@@ -81,6 +81,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Post::class, 'leader_id');
     }
 
+
+    public function chapters()
+    {
+        return $this->hasManyThrough(Chapter::class, CampType::class, 'user_id', 'camp_type_id');
+    }
+
     public function isAdmin()
     {
         if ($this->role['is_admin'] == 1) {
@@ -117,6 +123,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return 'slug';
     }
+
 
     public function getAvatar()
     {

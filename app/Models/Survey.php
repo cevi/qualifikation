@@ -61,12 +61,17 @@ class Survey extends Model
     public function TNisAllowed()
     {
         $aktUser = Auth::user();
-        $result = $this['survey_status_id'] < config('status.survey_fertig');
+        $camp = $aktUser->camp;
+        $max_status =  config('status.survey_fertig');
+        if ($camp['status_control']){
+            $max_status = $camp['survey_status_id'];
+        }
+        $result = $this['survey_status_id'] < $max_status;
         if ($result) {
             if ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id']) {
                 $result = $this['survey_status_id'] <= config('status.survey_1offen');
                 if (! $result) {
-                    $camp = $aktUser->camp;
+
                     $result = $camp['secondsurveyopen'];
                 }
             } else {

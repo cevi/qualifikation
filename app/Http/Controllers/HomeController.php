@@ -41,10 +41,6 @@ class HomeController extends Controller
                 ->where('camp_user_id', $camp_user['id'])
                 ->orWhereIn('camp_user_id', $camp_users_id)->get()->sortBy('campuser.user.username')->values();
         }
-        $users_id = [];
-        if ($users) {
-            $users_id = $users->pluck('id')->all();
-        }
         $title = 'Übersicht';
 
 

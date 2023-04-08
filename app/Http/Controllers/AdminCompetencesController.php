@@ -6,6 +6,7 @@ use App\Models\CampType;
 use App\Models\Competence;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminCompetencesController extends Controller
 {
@@ -17,9 +18,18 @@ class AdminCompetencesController extends Controller
     public function index()
     {
         //
-        $competences = Competence::all();
-        $questions = Question::pluck('competence', 'id')->all();
-        $camp_types = CampType::pluck('name', 'id')->all();
+        $user = Auth::user();
+        if($user->isAdmin()) {
+            $competences = Competence::all();
+            $camp_types = CampType::pluck('name', 'id')->all();
+            $questions = Question::pluck('competence', 'id')->all();
+        }
+        else{
+            $camp_type = $user->camp->camp_type;
+            $questions = $camp_type->questions()->pluck('competence', 'id')->toArray();
+            $competences = $camp_type->competences;
+            $camp_types =  $user->camp->camp_type()->pluck('name', 'id')->toArray();
+        }
 
         return view('admin.competences.index', compact('competences', 'questions', 'camp_types'));
     }

@@ -23,8 +23,22 @@
                         {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                     </div>
                     <div class="form-group">
-                        {!! Form::label('camp_type_id', 'Kurstyp:') !!}
+                        <div class="row">
+                            <div class="col">
+                                {!! Form::label('camp_type_id', 'Kurstyp:') !!}
+                            </div>
+                            <div class="col-auto">
+                                <a tabindex="-1" class="form-text small text-muted"
+                                   href="{{ route('camp_types.create') }}">
+                                    Eigenen Kurstyp erstellen?
+                                </a>
+                            </div>
+                        </div>
                         {!! Form::select('camp_type_id', [''=>'Wähle Kurstyp'] + $camptypes, null,  ['class' => 'form-control ', 'required']) !!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('status_control', 'Quali-Ablauf kontrollieren:') !!}
+                        {!! Form::checkbox('status_control', 'yes',  false) !!}
                     </div>
                     @if (config('app.import_db'))
                         <div class="form-group">

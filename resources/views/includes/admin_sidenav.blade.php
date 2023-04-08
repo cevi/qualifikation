@@ -73,37 +73,6 @@
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">Gruppen</span>
                         </a>
                     </li>
-                    <li>
-                        <button type="button"
-                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
-                                aria-controls="dropdown-questions" data-collapse-toggle="dropdown-questions">
-                            <i class="fas fa-question"></i>
-                            <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Kompetenzen</span>
-                            <i class="fa-solid fa-angle-down"></i>
-                        </button>
-                        <ul id="dropdown-questions" class="hidden py-2 space-y-2">
-                            <li>
-                                <a href="{{route('questions.index')}}"
-                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Alle
-                                    Kompetenzen</a>
-                            </li>
-                            <li>
-                                <a href="{{route('questions.create')}}"
-                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    Kompetenz erstellen</a>
-                            </li>
-                            <li>
-                                <a href="{{route('chapters.index')}}"
-                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    Kapitel</a>
-                            </li>
-                            <li>
-                                <a href="{{route('competences.index')}}"
-                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    Kernkompetenzen</a>
-                            </li>
-                        </ul>
-                    </li>
                     <!-- /.nav-second-level -->
                     <li>
                         <a href="{{route('answers.index')}}"
@@ -127,6 +96,43 @@
                         </a>
                     </li>
                 @endif
+
+                @if (Auth::user()->isAdmin() || !Auth::user()->camp->camp_type['default_type'])
+                    <li>
+                        <a href="{{route('camp_types.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fas fa-campground"></i>
+                            <span class="ml-3">Kurs-Typen</span>
+                        </a>
+                    </li>
+                    <li>
+                        <button type="button"
+                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
+                                aria-controls="dropdown-questions" data-collapse-toggle="dropdown-questions">
+                            <i class="fas fa-question"></i>
+                            <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Kompetenzen</span>
+                            <i class="fa-solid fa-angle-down"></i>
+                        </button>
+                        <ul id="dropdown-questions" class="hidden py-2 space-y-2">
+                            <li>
+                                <a href="{{route('questions.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    Kompetenzen</a>
+                            </li>
+                            <li>
+                                <a href="{{route('chapters.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    Kapitel</a>
+                            </li>
+                            <li>
+                                <a href="{{route('competences.index')}}"
+                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    Kernkompetenzen</a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+
                 <li>
                     <a href="/admin/changes"
                        class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
