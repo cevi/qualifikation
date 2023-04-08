@@ -89,9 +89,11 @@ class AdminUsersController extends Controller
     public function searchResponseUser(Request $request)
     {
         $camp = Auth::user()->camp;
-        $allusers = $camp->allusers;
+        $allusers = $camp->allusers->pluck('id')->toArray();
 
-        return User::where('role_id', '<>', config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
+        $users = User::where('role_id', '<>', config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
+//        $users = User::search($request->get('term'))->get();
+        return $users;
     }
 
     /**
@@ -338,11 +340,9 @@ class AdminUsersController extends Controller
                 $aktUser = Auth::user();
                 $camp = $aktUser->camp;
                 $user = User::findOrFail($input['user_id']);
-                CampUser::create([
-                        'user_id' => $user->id,
-                        'camp_id' => $camp->id,
-                        'role_id' => $input['role_id'],]
-                );
+                UserCreated::dispatch($user);
+                $user->update(['leader_id' => NULL]);
+                Helper::updateCamp($user, $camp);
             }
         }
 

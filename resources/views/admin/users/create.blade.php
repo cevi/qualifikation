@@ -137,7 +137,7 @@
                         success: function(data) {
                             var array = $.map(data, function (item) {
                             return {
-                                label: item['username'],
+                                label: item['username'] + ' - ' +  item['email'],
                                 value: item[autoType],
                                 data : item
                             }
