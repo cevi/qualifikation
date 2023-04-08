@@ -57,11 +57,20 @@ class AdminSurveysController extends Controller
             })
             ->addIndexColumn()
             ->addColumn('status', function ($survey) {
-                $survey_statuses_id = [config('status.survey_neu'),
-                    config('status.survey_1offen'),
-                    config('status.survey_2offen'),
-                    config('status.survey_tnAbgeschlossen'),
-                    config('status.survey_fertig'), ];
+                $camp = $survey->campuser->camp;
+                if(!$camp['secondsurveyopen']) {
+                    $survey_statuses_id = [config('status.survey_neu'),
+                        config('status.survey_1offen'),
+                        config('status.survey_tnAbgeschlossen'),
+                        config('status.survey_fertig'),];
+                }
+                else{
+                    $survey_statuses_id = [config('status.survey_neu'),
+                        config('status.survey_1offen'),
+                        config('status.survey_2offen'),
+                        config('status.survey_tnAbgeschlossen'),
+                        config('status.survey_fertig'), ];
+                }
                 $result = '<div class="card card-progress">
                 <ul id="progressbar" class="text-center">';
                 foreach ($survey_statuses_id as $status_id) {
@@ -92,8 +101,14 @@ class AdminSurveysController extends Controller
         if (! Auth::user()->demo) {
             $camp = Auth::user()->camp;
             $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
-            $chapters = Chapter::all();
+            $camp_type = $camp->camp_type;
             $answer = Answer::where('name', '0')->first();
+            if($camp_type['default_type']) {
+                $chapters = Chapter::where('default_chapter',true)->get();
+            }
+            else{
+                $chapters = Chapter::where('camp_type_id',$camp_type['id'])->get();
+            }
 
             foreach ($camp_users as $camp_user) {
                 $input['name'] = 'Qualifikationsprozess';
@@ -118,7 +133,6 @@ class AdminSurveysController extends Controller
                 }
             }
         }
-
         return true;
     }
 

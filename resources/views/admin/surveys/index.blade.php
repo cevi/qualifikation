@@ -19,10 +19,16 @@
                 <div class="col-sm-3" style="margin-bottom: 10px;">
                     <a href="javascript:;" class="btn btn-primary create" role="button">Qualifikationen erstellen</a>
                 </div>
-                @if(!$camp['secondsurveyopen'])
-                <div class="col-sm-4" style="margin-bottom: 10px;">
-                <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Zweite Selbsteinschätzung freigeben</a>
-                </div>
+                @if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen'))
+                    <div class="col-sm-4" style="margin-bottom: 10px;">
+                        <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Erste Selbsteinschätzung freigeben</a>
+                    </div>
+                @else
+                    @if(!$camp['secondsurveyopen'])
+                        <div class="col-sm-4" style="margin-bottom: 10px;">
+                            <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Zweite Selbsteinschätzung freigeben</a>
+                        </div>
+                    @endif
                 @endif
             </div>
             <table class="table table-striped table-bordered" style="width:100%" id="datatable">

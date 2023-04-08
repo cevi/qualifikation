@@ -94,6 +94,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::patch('/user/{id}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
 
     Route::resource('/camps', 'CampsController', ['as' => 'home'])->only(['create', 'store', 'update']);
+    Route::resource('/camp_types', 'CampTypesController');
 
     Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
 

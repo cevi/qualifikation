@@ -109,6 +109,7 @@ class Helper
         $dataset = [];
 
         foreach ($surveys as $survey) {
+            $camp = $survey->campUser->camp;
             $first_answers = [];
             $second_answers = [];
             $leader_answers = [];
@@ -121,30 +122,34 @@ class Helper
             $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers);
             $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers);
             $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers);
-            if(($survey['survey_status_id'] >= config('status.survey_2offen')) &&
-                (Auth::user()->role_id != config('status.role_Teilnehmer') )) {
-                $dataset_add = [
-                    $dataset_first,
-                    $dataset_second,
-                    $dataset_leader,
-                ];
-            }
-            elseif($survey['survey_status_id'] >= config('status.survey_2offen')){
-                $dataset_add = [
-                    $dataset_first,
-                    $dataset_second,
-                ];
-            }
-            elseif (Auth::user()->role_id != config('status.role_Teilnehmer')){
-                $dataset_add = [
-                    $dataset_first,
-                    $dataset_leader,
-                ];
+            if(Auth::user()->role_id != config('status.role_Teilnehmer')) {
+                if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
+                    ($camp['secondsurveyopen'])) {
+                    $dataset_add = [
+                        $dataset_first,
+                        $dataset_second,
+                        $dataset_leader,
+                    ];
+                } else {
+                    $dataset_add = [
+                        $dataset_first,
+                        $dataset_leader,
+                    ];
+                }
             }
             else{
-                $dataset_add = [
-                    $dataset_first,
-                ];
+                if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
+                    ($camp['secondsurveyopen'])) {
+                    $dataset_add = [
+                        $dataset_first,
+                        $dataset_second,
+                    ];
+                }
+                else {
+                    $dataset_add = [
+                        $dataset_first,
+                    ];
+                }
             }
             $dataset[] = $dataset_add;
         }

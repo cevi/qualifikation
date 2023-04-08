@@ -12,40 +12,71 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Kompetenzen</h1>
             </header>
             <div class="row">
-                @if ($questions)
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Kapitel-Nr.</th>
-                                <th scope="col">Kapitel</th>
-                                <th scope="col">Nummer</th>
-                                <th scope="col">Kompetenz</th>
-                                <th scope="col">Beschreibung</th>
-                                <th scope="col">Erstellt am</th>
-                                <th scope="col">Geändert am</th>
-                            </tr>
-                        </thead>
-                    @foreach ($questions as $question)
-                        <tbody>
-                            <tr>
-                                <td>{{$question->chapter['number']}}</td>
-                                <td>{{$question->chapter['name']}}</td>
-                                <td>{{$question->number}}</td>
-                                <td><a href="{{route('questions.edit',$question->id)}}">{{$question->competence}}</a></td>
-                                <td>{{$question->name}}</td>
-                                <td>{{$question->created_at ? $question->created_at->diffForHumans() : 'no date'}}</td>
-                                <td>{{$question->updated_at ? $question->updated_at->diffForHumans() : 'no date'}}</td>
-                            </tr>
-                        </tbody>
-                    @endforeach
-                    </table>
-                
-                @endif
+                <div class="col-sm-6">
+                    {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@store']) !!}
+                    <div class="form-group">
+                        {!! Form::label('chapter_id', 'Kapitel:') !!}
+                        {!! Form::select('chapter_id', [''=>'Wähle Kapitel'] + $chapters, null,  ['class' => 'form-control', 'required']) !!}
+                    </div>
 
+                    <div class="form-group">
+                        {!! Form::label('number', 'Nummer:') !!}
+                        {!! Form::text('number', null, ['class' => 'form-control', 'required']) !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::label('name', 'Name:') !!}
+                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                    </div>
+
+
+                    <div class="form-group">
+                        {!! Form::label('competence', 'Kompetenz:') !!}
+                        {!! Form::text('competence', null, ['class' => 'form-control', 'required']) !!}
+                    </div>
+
+                    <div class="form-group">
+                        {!! Form::submit('Kompetenz Erstellen', ['class' => 'btn btn-primary'])!!}
+                    </div>
+                    {!! Form::close()!!}
+                    @include('includes.form_error')
+                </div>
+                <div class="col-sm-6">
+                    @if ($questions)
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Kapitel-Nr.</th>
+                                    <th scope="col">Kapitel</th>
+                                    <th scope="col">Nummer</th>
+                                    <th scope="col">Kompetenz</th>
+                                    <th scope="col">Beschreibung</th>
+                                    <th scope="col">Erstellt am</th>
+                                    <th scope="col">Geändert am</th>
+                                </tr>
+                            </thead>
+                        @foreach ($questions as $question)
+                            <tbody>
+                                <tr>
+                                    <td>{{$question->chapter['number']}}</td>
+                                    <td>{{$question->chapter['name']}}</td>
+                                    <td>{{$question->number}}</td>
+                                    <td><a href="{{route('questions.edit',$question->id)}}">{{$question->competence}}</a></td>
+                                    <td>{{$question->name}}</td>
+                                    <td>{{$question->created_at ? $question->created_at->diffForHumans() : 'no date'}}</td>
+                                    <td>{{$question->updated_at ? $question->updated_at->diffForHumans() : 'no date'}}</td>
+                                </tr>
+                            </tbody>
+                        @endforeach
+                        </table>
+
+                    @endif
+
+                </div>
             </div>
         </div>
     </section>

@@ -12,7 +12,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Kapitel</h1>
             </header>
             <div class="row">
@@ -31,7 +31,7 @@
                         </div>
                     {!! Form::close()!!}
                     @include('includes.form_error')
-                </div>    
+                </div>
                 <div class="col-sm-9">
                     @if ($chapters)
                         <table class="table">
@@ -39,8 +39,7 @@
                                 <tr>
                                     <th scope="col">Nummer</th>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Created Date</th>
-                                    <th scope="col">Updated Date</th>
+                                    <th scope="col">Kurs-Typ</th>
                                 </tr>
                             </thead>
                             @foreach ($chapters as $chapter)
@@ -48,8 +47,7 @@
                                     <tr>
                                         <td>{{$chapter->number}}</a></td>
                                         <td><a href="{{route('chapters.edit',$chapter->id)}}">{{$chapter->name}}</a></td>
-                                        <td>{{$chapter->created_at ? $chapter->created_at->diffForHumans() : 'no date'}}</td>
-                                        <td>{{$chapter->updated_at ? $chapter->updated_at->diffForHumans() : 'no date'}}</td>
+                                        <td>{{$chapter->camp_type ? $chapter->camp_type['name'] : 'Default'}}</td>
                                     </tr>
                                 </tbody>
                             @endforeach

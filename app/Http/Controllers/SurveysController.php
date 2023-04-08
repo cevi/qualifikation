@@ -46,7 +46,7 @@ class SurveysController extends Controller
         $aktUser = Auth::user();
 
         if (!$aktUser->demo) {
-            $camp = $aktUser->camp();
+            $camp = $aktUser->camp;
             $answers = $request->answers;
 
             foreach ($answers as $index => $answer) {

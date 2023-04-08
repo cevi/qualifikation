@@ -59,7 +59,7 @@ class PostController extends Controller
     {
         //
         $aktUser = Auth::user();
-        if ($aktUser->demo) {
+        if (!$aktUser->demo) {
             $camp = $aktUser->camp;
 
             $input = $request->all();
@@ -147,7 +147,9 @@ class PostController extends Controller
     {
         //
         if (!Auth::user()->demo) {
-            unlink(storage_path($post['file']));
+            if($post['file']){
+                unlink(storage_path($post['file']));
+            }
             $post->delete();
         }
 

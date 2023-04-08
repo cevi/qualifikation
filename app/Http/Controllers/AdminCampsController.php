@@ -71,6 +71,10 @@ class AdminCampsController extends Controller
             if (!$user->isAdmin()) {
                 $input['user_id'] = $user->id;
             }
+            $input['status_control'] = $request->has('status_control');
+            if ($input['status_control']){
+                $input['survey_status_id'] = config('status.survey_neu');
+            }
 
             $camp = Camp::create($input);
             CampCreated::dispatch($camp);
@@ -120,7 +124,13 @@ class AdminCampsController extends Controller
     public function update(Request $request, $id)
     {
         if (!Auth::user()->demo) {
-            Camp::findOrFail($id)->update($request->all());
+            $camp = Camp::findOrFail($id);
+            $input = $request->all();
+            $input['status_control'] = $request->has('status_control');
+            if ($input['status_control'] && $camp['survey_status_id'] == null){
+                $input['survey_status_id'] = config('status.survey_neu');
+            }
+            $camp->update($input);
         }
 
         return redirect('/admin/camps');
@@ -160,7 +170,21 @@ class AdminCampsController extends Controller
     {
         if (! Auth::user()->demo) {
             $camp = Auth::user()->camp;
-            $camp->update(['secondsurveyopen' => true]);
+            if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen')){
+                $camp->update(['survey_status_id' => config('status.survey_2offen')]);
+            }
+            else {
+                $surveys = $camp->surveys;
+                foreach ($surveys as $survey) {
+                    if ($survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen')) {
+                        $survey->update(['survey_status_id' => config('status.survey_2offen')]);
+                    }
+                }
+                $camp->update(['secondsurveyopen' => true]);
+                if($camp['status_control'] && $camp['survey_status_id'] == config('status.survey_2offen')){
+                    $camp->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+                }
+            }
         }
 
         return redirect('/admin/surveys');
