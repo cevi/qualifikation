@@ -92,7 +92,6 @@ class AdminUsersController extends Controller
         $allusers = $camp->allusers->pluck('id')->toArray();
 
         $users = User::where('role_id', '<>', config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
-//        $users = User::search($request->get('term'))->get();
         return $users;
     }
 

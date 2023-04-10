@@ -12,7 +12,6 @@
         "andcarpi/laravel-popper": "^0.9.4",
         "calebporzio/parental": "^1.0",
         "doctrine/dbal": "^3.0",
-        "fakerphp/faker": "^1.21",
         "fideloper/proxy": "^4.2",
         "genealabs/laravel-caffeine": "^9.0",
         "intervention/image": "^2.5",
@@ -33,6 +32,7 @@
         "mockery/mockery": "^1.3.1",
         "nunomaduro/collision": "^6.1",
         "phpunit/phpunit": "^9.0",
+        "fakerphp/faker": "^1.21",
         "spatie/laravel-ignition": "^1.0"
     },
     "config": {

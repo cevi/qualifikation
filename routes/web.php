@@ -122,6 +122,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::resource('admin/surveys', 'AdminSurveysController');
         Route::get('surveys/createDataTables', ['as' => 'surveys.CreateDataTables', 'uses' => 'AdminSurveysController@createDataTables']);
+        Route::get('surveys/downloadPDF', ['as' => 'surveys.downloadPDF', 'uses' => 'AdminSurveysController@downloadPDF']);
 
         Route::resource('admin/chapters', 'AdminChaptersController');
         Route::resource('admin/competences', 'AdminCompetencesController');

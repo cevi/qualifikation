@@ -126,7 +126,7 @@ class SurveysController extends Controller
         $labels = Helper::GetSurveyLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.compare_pdf', compact('survey', 'surveys', 'camp', 'labels' , 'datasets'));
+        return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));
     }
 
     public function finish($id)

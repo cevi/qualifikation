@@ -182,6 +182,17 @@ class AdminSurveysController extends Controller
         return redirect('/admin/surveys');
     }
 
+    public function downloadPDF()
+    {
+        $camp = Auth::user()->camp;
+        $surveys = $camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->get()->sortBy('campuser.user.username')->values();
+
+        $labels = Helper::GetSurveyLabels($surveys);
+        $datasets = Helper::GetSurveysDataset($surveys);
+
+        return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));
+    }
+
     /**
      * Remove the specified resource from storage.
      *

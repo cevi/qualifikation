@@ -16,8 +16,11 @@
                 <h1 class="h3 display">Qualifikationen</h1>
             </header>
             <div class="row">
-                <div class="col-sm-3" style="margin-bottom: 10px;">
+                <div class="col-sm-4" style="margin-bottom: 10px;">
                     <a href="javascript:;" class="btn btn-primary create" role="button">Qualifikationen erstellen</a>
+                </div>
+                <div class="col-sm-4" style="margin-bottom: 10px;">
+                    <a href="{{route('surveys.downloadPDF')}}" target="_blank" class="btn btn-primary" role="button">Druckversion aller Qualifikationen</a>
                 </div>
                 @if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen'))
                     <div class="col-sm-4" style="margin-bottom: 10px;">
