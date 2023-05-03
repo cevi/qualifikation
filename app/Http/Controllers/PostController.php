@@ -96,7 +96,7 @@ class PostController extends Controller
         $camp_post = $post->camp;
         $aktUser = Auth::user();
         $camp_user = $aktUser->camp;
-        if (($camp_post->id == $camp_user->id) && $aktUser->isLeader()){
+        if (($camp_post->id == $camp_user->id) && !$aktUser->isTeilnehmer()){
             return response()->download(storage_path($post['file']));
         } else {
             return redirect()->back();
