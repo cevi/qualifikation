@@ -75,6 +75,11 @@
                 </table>
                 <br><br>
             @endforeach
+            <div>
+                <h2 class="display">Bemerkung:</h2>
+                {!! nl2br($survey['comment']) !!}
+            </div>
+            <br>
             <div class="pagebreak">
                 <x-radar-chart :id="$loop->iteration" :name="$survey->campuser->user['username']"/>
             </div>

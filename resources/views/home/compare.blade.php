@@ -88,11 +88,20 @@
                 </div>
             @endforeach
         </div>
+        @if (!$aktUser->isTeilnehmer())
+            <br>
+            <div>
+                <h3>Bemerkung:</h3>
+                {!! nl2br($survey['comment']) !!}
+            </div>
+            <br>
+        @endif
         @if ($aktUser->isLeader())
             <div class="form-group row">
                 {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@finish',$survey->id]]) !!}
                 {!! Form::submit('Qualifikationsprozess abschliessen', ['class' => 'btn btn-primary'])!!}
             </div>
+            <br>
         @endif
         {!! Form::close()!!}
         @if($aktUser->isLeader())
