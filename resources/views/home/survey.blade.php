@@ -97,6 +97,12 @@
                 </div>
             @endforeach
         </div>
+        @if($aktUser->isLeader())
+            <br>
+            {!! Form::label('comment', 'Bemerkung:') !!}
+            {!! Form::textarea('comment', null, ['class' => 'form-control', 'rows'=> 2]) !!}
+            <br>
+        @endif
         <div class="form-group row">
             <div class="col-sm-4">
                 <button type="submit" name="action" value="save" class="btn btn-primary">{{$survey->surveyName()}}

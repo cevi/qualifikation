@@ -89,6 +89,9 @@ class SurveysController extends Controller
                     $survey->update(['survey_status_id' => config('status.survey_1offen')]);
                 }
             }
+            else{
+                $survey->update(['comment' => $request['comment']]);
+            }
         }
 
         return redirect()->refresh();

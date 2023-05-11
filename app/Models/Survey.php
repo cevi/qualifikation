@@ -12,7 +12,7 @@ class Survey extends Model
     use HasFactory;
 
     protected $fillable = [
-        'survey_status_id', 'slug', 'camp_user_id',
+        'survey_status_id', 'slug', 'camp_user_id', 'comment',
     ];
 
     protected $casts = [
