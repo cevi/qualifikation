@@ -111,7 +111,8 @@ class AdminUsersController extends Controller
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
                 $query->where('role_id', config('status.role_Gruppenleiter'))
-                    ->Orwhere('role_id', config('status.role_Kursleiter'));
+                    ->Orwhere('role_id', config('status.role_Kursleiter'))
+                    ->Orwhere('role_id', config('status.role_Stabsleiter'));
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
@@ -368,7 +369,8 @@ class AdminUsersController extends Controller
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
                 $query->where('role_id', config('status.role_Gruppenleiter'))
-                    ->Orwhere('role_id', config('status.role_Kursleiter'));
+                    ->Orwhere('role_id', config('status.role_Kursleiter'))
+                    ->Orwhere('role_id', config('status.role_Stabsleiter'));
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();

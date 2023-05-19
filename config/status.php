@@ -11,6 +11,7 @@ return [
     'role_Kursleiter' => 2,
     'role_Gruppenleiter' => 3,
     'role_Teilnehmer' => 4,
+    'role_Stabsleiter' => 5,
 
     'camptype_JS1' => 10,
     'camptype_JS2' => 20,

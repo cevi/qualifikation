@@ -96,7 +96,7 @@
             </div>
             <br>
         @endif
-        @if ($aktUser->isLeader())
+        @if ($aktUser->id == $survey->campUser->leader_id)
             <div class="form-group row">
                 {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@finish',$survey->id]]) !!}
                 {!! Form::submit('Qualifikationsprozess abschliessen', ['class' => 'btn btn-primary'])!!}

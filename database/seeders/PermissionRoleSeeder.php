@@ -24,6 +24,7 @@ class PermissionRoleSeeder extends Seeder
         Role::create(['id' => config('status.role_Kursleiter'), 'name' => 'Kursleitende', 'is_admin' => false, 'is_campleader' => true, 'is_leader' => false]);
         Role::create(['id' => config('status.role_Gruppenleiter'), 'name' => 'Gruppenleitende', 'is_admin' => false, 'is_campleader' => false, 'is_leader' => true]);
         Role::create(['id' => config('status.role_Teilnehmer'), 'name' => 'Teilnehmende', 'is_admin' => false, 'is_campleader' => false, 'is_leader' => false]);
+        Role::create(['id' => config('status.role_Stabsleiter'), 'name' => 'Stabsleitende', 'is_admin' => false, 'is_campleader' => false, 'is_leader' => true]);
 
         $user = User::create([
             'id' => 1,
