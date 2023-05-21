@@ -168,22 +168,20 @@ class AdminCampsController extends Controller
 
     public function opensurvey()
     {
-        if (! Auth::user()->demo) {
-            $camp = Auth::user()->camp;
-            if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen')){
-                $camp->update(['survey_status_id' => config('status.survey_2offen')]);
+        $camp = Auth::user()->camp;
+        if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen')){
+            $camp->update(['survey_status_id' => config('status.survey_2offen')]);
+        }
+        else {
+            $surveys = $camp->surveys;
+            foreach ($surveys as $survey) {
+                if ($survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen')) {
+                    $survey->update(['survey_status_id' => config('status.survey_2offen')]);
+                }
             }
-            else {
-                $surveys = $camp->surveys;
-                foreach ($surveys as $survey) {
-                    if ($survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen')) {
-                        $survey->update(['survey_status_id' => config('status.survey_2offen')]);
-                    }
-                }
-                $camp->update(['secondsurveyopen' => true]);
-                if($camp['status_control'] && $camp['survey_status_id'] == config('status.survey_2offen')){
-                    $camp->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
-                }
+            $camp->update(['secondsurveyopen' => true]);
+            if($camp['status_control'] && $camp['survey_status_id'] == config('status.survey_2offen')){
+                $camp->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
             }
         }
 

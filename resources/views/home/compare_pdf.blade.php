@@ -76,7 +76,7 @@
                 <br><br>
             @endforeach
             <div>
-                <h2 class="displasy">Bemerkung:</h2>
+                <h2 class="display">Bemerkung:</h2>
                 {!! nl2br($survey['comment']) !!}
             </div>
             <br>

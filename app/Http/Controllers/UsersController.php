@@ -94,13 +94,11 @@ class UsersController extends Controller
     {
         $aktUser = Auth::user();
 
-        if (!$aktUser->demo) {
-            $camp = $aktUser->camp;
-            $camp_user = CampUser::where('user_id', '=', $id)->where('camp_id', '=', $camp['id'])->first();
-            $user = User::findOrFail($id);
-            if ($aktUser->isCampleader() || $aktUser['id'] == $camp_user['leader_id']) {
-                $camp_user->update(['classification_id' => $color]);
-            }
+        $camp = $aktUser->camp;
+        $camp_user = CampUser::where('user_id', '=', $id)->where('camp_id', '=', $camp['id'])->first();
+        $user = User::findOrFail($id);
+        if ($aktUser->isCampleader() || $aktUser['id'] == $camp_user['leader_id']) {
+            $camp_user->update(['classification_id' => $color]);
         }
 
         return true;

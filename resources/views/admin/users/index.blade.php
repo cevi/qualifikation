@@ -109,7 +109,13 @@
                     {data: 'user', name: 'user'},
                     {data: 'picture', name: 'picture', orderable: false, serachable: false},
                     {data: 'email', name: 'email'},
-                    {data: 'role', name: 'role'},
+                    {
+                        data: {
+                            _: 'role.display',
+                            sort: 'role.sort'
+                        },
+                        name: 'role',
+                    },
                     {data: 'leader', name: 'leader'},
                     {data: 'classification', name: 'classification'},
                     {data: 'camp', name: 'camp'},

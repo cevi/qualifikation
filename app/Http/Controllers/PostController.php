@@ -59,31 +59,32 @@ class PostController extends Controller
     {
         //
         $aktUser = Auth::user();
-        if (!$aktUser->demo) {
-            $camp = $aktUser->camp;
+        $camp = $aktUser->camp;
 
-            $input = $request->all();
-            $input['leader_id'] = $aktUser->id;
-            $input['camp_id'] = $camp->id;
-            $input['show_on_survey'] = $request->has('show_on_survey');
-            if ($file = $request->file('file')) {
-                $save_path = 'app/files/' . Str::slug($camp['name']);
-                $directory = storage_path($save_path);
-                if (!File::isDirectory($directory)) {
-                    File::makeDirectory($directory, 0775, true);
-                }
-                $input['uuid'] = Str::uuid();
-                $name = str_replace(' ', '', $file->getClientOriginalName());
-                $file->move($directory, $name);
-                $input['file'] = $save_path . '/' . $name;
+        $input = $request->all();
+        $input['leader_id'] = $aktUser->id;
+        $input['camp_id'] = $camp->id;
+        $input['show_on_survey'] = $request->has('show_on_survey');
+        if (!$aktUser->demo && $file = $request->file('file')) {
+            $save_path = 'app/files/' . Str::slug($camp['name']);
+            $directory = storage_path($save_path);
+            if (!File::isDirectory($directory)) {
+                File::makeDirectory($directory, 0775, true);
             }
+            $input['uuid'] = Str::uuid();
+            $name = str_replace(' ', '', $file->getClientOriginalName());
+            $file->move($directory, $name);
+            $input['file'] = $save_path . '/' . $name;
+        }
+        else{
+            $input['file'] = null;
+        }
 
-            if (!$input['post_id']) {
-                Post::create($input);
-            } else {
-                $post = Post::findOrFail($input['post_id']);
-                $post->update($input);
-            }
+        if (!$input['post_id']) {
+            Post::create($input);
+        } else {
+            $post = Post::findOrFail($input['post_id']);
+            $post->update($input);
         }
 
         return redirect()->back();
@@ -146,12 +147,10 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
-        if (!Auth::user()->demo) {
-            if($post['file']){
-                unlink(storage_path($post['file']));
-            }
-            $post->delete();
+        if($post['file']){
+            unlink(storage_path($post['file']));
         }
+        $post->delete();
 
         return redirect()->back();
     }

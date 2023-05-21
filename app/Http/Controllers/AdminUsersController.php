@@ -61,7 +61,10 @@ class AdminUsersController extends Controller
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('users.edit', $user['slug']).'>'.$user['username'].'</a>';
             })
             ->addColumn('role', function (User $user) {
-                return $user->role ? $user->role['name'] : '';
+                return [
+                    'display' => $user->role ? $user->role['name'] : '',
+                    'sort' =>$user->role ? $user->role['id'] : '',
+                ];
             })
             ->addColumn('leader', function (User $user) {
                 return $user->leader ? $user->leader['username'] : '';
