@@ -127,24 +127,24 @@
                 minLength: 3,
                 highlight: true,
                 source: function( request, response ) {
-                        $.ajax({
-                            url: "{{ route('searchajaxuser') }}",
-                            dataType: "json",
-                            data: {
-                                term : request.term,
-                                type : type,
-                            },
-                            success: function(data) {
-                                var array = $.map(data, function (item) {
-                                return {
-                                    label: item['username'],
-                                    value: item[autoType],
-                                    data : item
-                                }
-                            });
-                                response(array)
+                    $.ajax({
+                        url: "{{ route('searchajaxuser') }}",
+                        dataType: "json",
+                        data: {
+                            term : request.term,
+                            type : type,
+                        },
+                        success: function(data) {
+                            var array = $.map(data, function (item) {
+                            return {
+                                label: item['username'] + ' - ' +  item['email'],
+                                value: item[autoType],
+                                data : item
                             }
                         });
+                            response(array)
+                        }
+                    });
                 },
                 select: function( event, ui ) {
                     var data = ui.item.data;

@@ -12,21 +12,28 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Qualifikationen</h1>
             </header>
-            @if (!Auth::user()->demo)
-                <div class="row">
-                    <div class="col-sm-3" style="margin-bottom: 10px;">
-                        <a href="javascript:;" class="btn btn-primary create" role="button">Qualifikationen erstellen</a>
-                    </div>
-                    @if(!$camp['secondsurveyopen'])
-                    <div class="col-sm-4" style="margin-bottom: 10px;">
-                    <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Zweite Selbsteinschätzung freigeben</a>
-                    </div>
-                    @endif
+            <div class="row">
+                <div class="col-sm-4" style="margin-bottom: 10px;">
+                    <a href="javascript:;" class="btn btn-primary create" role="button">Qualifikationen erstellen</a>
                 </div>
-            @endif
+                <div class="col-sm-4" style="margin-bottom: 10px;">
+                    <a href="{{route('surveys.downloadPDF')}}" target="_blank" class="btn btn-primary" role="button">Druckversion aller Qualifikationen</a>
+                </div>
+                @if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen'))
+                    <div class="col-sm-4" style="margin-bottom: 10px;">
+                        <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Erste Selbsteinschätzung freigeben</a>
+                    </div>
+                @else
+                    @if(!$camp['secondsurveyopen'])
+                        <div class="col-sm-4" style="margin-bottom: 10px;">
+                            <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Zweite Selbsteinschätzung freigeben</a>
+                        </div>
+                    @endif
+                @endif
+            </div>
             <table class="table table-striped table-bordered" style="width:100%" id="datatable">
                 <thead>
                     <tr>
@@ -100,7 +107,7 @@
                     { data: 'camp', name: 'camp' },
                     { data: 'status', name: 'status', orderable:false,serachable:false},
                     { data: 'Actions', name: 'Actions', orderable:false,serachable:false},
-                    
+
                     ]
             });
         });

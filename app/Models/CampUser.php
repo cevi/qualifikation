@@ -10,7 +10,7 @@ class CampUser extends Model
     use HasFactory;
 
     protected $fillable = [
-        'camp_id', 'user_id', 'role_id', 'leader_id', 'classification_id',
+        'camp_id', 'user_id', 'role_id', 'leader_id', 'classification_id', 'avatar'
     ];
 
     public function user()

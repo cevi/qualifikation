@@ -8,6 +8,9 @@ use App\Models\CampUser;
 use App\Models\Survey;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
+use Str;
 
 class Helper
 {
@@ -45,8 +48,44 @@ class Helper
         $user->update([
             'camp_id' => $camp->id,
             'leader_id' => $leader_id,
-            'role_id' => $camp_user->role->id, ]);
+            'role_id' => $camp_user->role->id,
+        ]);
     }
+
+    public static function updateAvatar($request, $user){
+        if ($file = $request->file('avatar')) {
+            $input = $request->all();
+            $aktUser = Auth::user();
+            $camp = $aktUser->camp;
+            if ($input['cropped_photo_id']) {
+                $save_path = Str::slug($camp['name']).'/profiles';
+                $directory = storage_path('app/public/'.$save_path);
+                if (!File::isDirectory($directory)) {
+                    File::makeDirectory($directory, 0775, true);
+                }
+                $name =  Str::uuid() . '_' . str_replace(' ', '', $file->getClientOriginalName());
+                Image::make($input['cropped_photo_id'])->save($directory.'/'.$name, 80);
+                $input['avatar'] = $save_path.'/'.$name;
+                $camp_user = CampUser::where('user_id', $user->id)->where('camp_id', $camp->id)->first();
+                $camp_user->update(['avatar' => $input['avatar']]);
+            }
+        }
+    }
+
+    public static function getAvatarPath($avatar)
+    {
+        $path = null;
+        if($avatar){
+            if(str_starts_with($avatar, 'https')){
+                $path = $avatar;
+            }
+            else{
+                $path = asset("storage/".$avatar);
+            }
+        }
+        return $path;
+    }
+
 
     public static function GetSurveyLabels($surveys){
 
@@ -70,6 +109,7 @@ class Helper
         $dataset = [];
 
         foreach ($surveys as $survey) {
+            $camp = $survey->campUser->camp;
             $first_answers = [];
             $second_answers = [];
             $leader_answers = [];
@@ -82,30 +122,34 @@ class Helper
             $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers);
             $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers);
             $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers);
-            if(($survey['survey_status_id'] >= config('status.survey_2offen')) &&
-                (Auth::user()->role_id != config('status.role_Teilnehmer') )) {
-                $dataset_add = [
-                    $dataset_first,
-                    $dataset_second,
-                    $dataset_leader,
-                ];
-            }
-            elseif($survey['survey_status_id'] >= config('status.survey_2offen')){
-                $dataset_add = [
-                    $dataset_first,
-                    $dataset_second,
-                ];
-            }
-            elseif (Auth::user()->role_id != config('status.role_Teilnehmer')){
-                $dataset_add = [
-                    $dataset_first,
-                    $dataset_leader,
-                ];
+            if(Auth::user()->role_id != config('status.role_Teilnehmer')) {
+                if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
+                    ($camp['secondsurveyopen'])) {
+                    $dataset_add = [
+                        $dataset_first,
+                        $dataset_second,
+                        $dataset_leader,
+                    ];
+                } else {
+                    $dataset_add = [
+                        $dataset_first,
+                        $dataset_leader,
+                    ];
+                }
             }
             else{
-                $dataset_add = [
-                    $dataset_first,
-                ];
+                if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
+                    ($camp['secondsurveyopen'])) {
+                    $dataset_add = [
+                        $dataset_first,
+                        $dataset_second,
+                    ];
+                }
+                else {
+                    $dataset_add = [
+                        $dataset_first,
+                    ];
+                }
             }
             $dataset[] = $dataset_add;
         }

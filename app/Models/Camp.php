@@ -23,7 +23,7 @@ class Camp extends Model
     }
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter',
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id'
     ];
 
     protected $casts = [
@@ -31,6 +31,7 @@ class Camp extends Model
         'global_camp' => 'boolean',
         'demo' => 'boolean',
         'finish' => 'boolean',
+        'status_control' => 'boolean',
     ];
 
     public function users()
@@ -71,6 +72,11 @@ class Camp extends Model
     public function group()
     {
         return $this->belongsTo('App\Models\Group');
+    }
+
+    public function survey_status()
+    {
+        return $this->belongsTo(SurveyStatus::class);
     }
 
     public function surveys()

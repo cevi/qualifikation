@@ -6,14 +6,18 @@ use Illuminate\View\Component;
 
 class RadarChart extends Component
 {
+
+    public $id;
+    public $name;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($id = 1, $name= '')
     {
-        //
+        $this->id = $id;
+        $this->name = $name;
     }
 
     /**

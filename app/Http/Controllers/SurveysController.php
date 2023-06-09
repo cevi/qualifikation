@@ -44,7 +44,8 @@ class SurveysController extends Controller
     public function update(Request $request, Survey $survey)
     {
         $aktUser = Auth::user();
-        $camp = $aktUser->camp();
+
+        $camp = $aktUser->camp;
         $answers = $request->answers;
 
         foreach ($answers as $index => $answer) {
@@ -74,7 +75,7 @@ class SurveysController extends Controller
             }
         }
 
-        if (! $aktUser->isLeader()) {
+        if (!$aktUser->isLeader()) {
             if ($request->action === 'close') {
                 if (($survey['survey_status_id'] < config('status.survey_2offen') && $camp->secondsurveyopen)) {
                     $survey->update(['survey_status_id' => config('status.survey_2offen')]);
@@ -86,6 +87,9 @@ class SurveysController extends Controller
             } elseif ($survey['survey_status_id'] === config('status.survey_neu')) {
                 $survey->update(['survey_status_id' => config('status.survey_1offen')]);
             }
+        }
+        else{
+            $survey->update(['comment' => $request['comment']]);
         }
 
         return redirect()->refresh();
@@ -123,13 +127,14 @@ class SurveysController extends Controller
         $labels = Helper::GetSurveyLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.compare_pdf', compact('survey', 'surveys', 'camp', 'labels' , 'datasets'));
+        return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));
     }
 
     public function finish($id)
     {
         $survey = Survey::findOrFail($id);
         $user = Auth::user();
+
         if ($survey['survey_status_id'] === config('status.survey_tnAbgeschlossen') && $user->isleader()) {
             $survey->update(['survey_status_id' => config('status.survey_fertig')]);
         }

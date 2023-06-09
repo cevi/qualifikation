@@ -16,12 +16,18 @@ class AdminController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $surveys = $user->camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
+        $camp = $user->camp;
+        $surveys = $camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
            ->get()->sortBy('campuser.user.username')->values();
-        $surveys_all = $user->camp->surveys()->count();
-        $surveys_1offen = $user->camp->surveys()->where('survey_status_id', '>', config('status.survey_1offen'))->count();
-        $surveys_2offen = $user->camp->surveys()->where('survey_status_id', '>', config('status.survey_2offen'))->count();
-        $surveys_fertig = $user->camp->surveys()->where('survey_status_id', config('status.survey_fertig'))->count();
+        $surveys_all = $camp->surveys()->count();
+        $surveys_1offen = $camp->surveys()->where('survey_status_id', '>', config('status.survey_1offen'))->count();
+        if($camp['secondsurveyopen']) {
+            $surveys_2offen = $camp->surveys()->where('survey_status_id', '>', config('status.survey_2offen'))->count();
+        }
+        else{
+            $surveys_2offen = 0;
+        }
+        $surveys_fertig = $camp->surveys()->where('survey_status_id', config('status.survey_fertig'))->count();
 
         $title = 'Dashboard';
 

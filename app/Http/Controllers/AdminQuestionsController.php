@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Chapter;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class AdminQuestionsController extends Controller
@@ -17,9 +18,18 @@ class AdminQuestionsController extends Controller
     public function index()
     {
         //
-        $questions = Question::all();
+        $user = Auth::user();
+        if($user->isAdmin()) {
+            $questions = Question::all();
+            $chapters = Chapter::where('default_chapter',true)->pluck('name', 'id')->all();
+        }
+        else{
+            $camp_Type = $user->camp->camp_type;
+            $questions = $camp_Type->questions;
+            $chapters = $camp_Type->chapters->pluck('name', 'id')->all();
+        }
 
-        return view('admin.questions.index', compact('questions'));
+        return view('admin.questions.index', compact('questions', 'chapters'));
     }
 
     /**
@@ -30,9 +40,6 @@ class AdminQuestionsController extends Controller
     public function create()
     {
         //
-        $chapters = Chapter::pluck('name', 'id')->all();
-
-        return view('admin.questions.create', compact('chapters'));
     }
 
     /**
@@ -44,9 +51,19 @@ class AdminQuestionsController extends Controller
     public function store(Request $request)
     {
         //
-        Question::create($request->all());
 
-        return view('admin.questions.create');
+        $user = Auth::user();
+        if(!$user->demo) {
+
+            $input = $request->all();
+            if (!$user->isAdmin()) {
+                $camp_type = $user->camp->camp_type;
+                $input['camp_type_id'] = $camp_type['id'];
+            }
+            Question::create($input);
+        }
+
+        return redirect('admin/questions');
     }
 
     /**
@@ -58,8 +75,15 @@ class AdminQuestionsController extends Controller
     public function edit($id)
     {
         //
+        $user = Auth::user();
         $question = Question::findOrFail($id);
-        $chapters = Chapter::pluck('name', 'id')->all();
+        if($user->isAdmin()) {
+            $chapters = Chapter::where('default_chapter',true)->pluck('name', 'id')->all();
+        }
+        else{
+            $camp_Type = $user->camp->camp_type;
+            $chapters = $camp_Type->chapters->pluck('name', 'id')->all();
+        }
 
         return view('admin.questions.edit', compact('question', 'chapters'));
     }

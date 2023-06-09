@@ -703,6 +703,7 @@ footer.main-footer p {
 
 footer.main-footer a {
     color: white;
+text-decoration: underline;
 }
 
 /* MAIN FOOTER MEDIAQUERIES ------------------------- */

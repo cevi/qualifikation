@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Helper\Helper;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -79,6 +81,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Post::class, 'leader_id');
     }
 
+
+    public function chapters()
+    {
+        return $this->hasManyThrough(Chapter::class, CampType::class, 'user_id', 'camp_type_id');
+    }
+
     public function isAdmin()
     {
         if ($this->role['is_admin'] == 1) {
@@ -114,5 +122,23 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+
+    public function getAvatar()
+    {
+        $camp = Auth::user()->camp;
+        $camp_user = CampUser::where('user_id', $this->id)->where('camp_id', $camp->id)->first();
+        $path = null;
+        if ($camp_user) {
+            $path = Helper::getAvatarPath($camp_user->avatar);
+        }
+        if($path === null){
+            $path = Helper::getAvatarPath($this->avatar);
+        }
+        if($path === null){
+            $path = '/img/default_avatar.svg';
+        }
+        return $path;
     }
 }

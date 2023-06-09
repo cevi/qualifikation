@@ -86,6 +86,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::get('/compare/{survey}/downloadPDF', ['as' => 'survey.downloadPDF', 'uses' => 'SurveysController@downloadPDF']);
 
     Route::resource('/post', 'PostController');
+    Route::get('/post/downloadFile/{id}', ['as'=>'downloadFile','uses'=>'PostController@downloadFile']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::get('/profile/{user}', ['as' => 'home.profile', 'uses' => 'UsersController@edit']);
@@ -93,6 +94,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::patch('/user/{id}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
 
     Route::resource('/camps', 'CampsController', ['as' => 'home'])->only(['create', 'store', 'update']);
+    Route::resource('/camp_types', 'CampTypesController');
 
     Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
 
@@ -120,6 +122,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::resource('admin/surveys', 'AdminSurveysController');
         Route::get('surveys/createDataTables', ['as' => 'surveys.CreateDataTables', 'uses' => 'AdminSurveysController@createDataTables']);
+        Route::get('surveys/downloadPDF', ['as' => 'surveys.downloadPDF', 'uses' => 'AdminSurveysController@downloadPDF']);
 
         Route::resource('admin/chapters', 'AdminChaptersController');
         Route::resource('admin/competences', 'AdminCompetencesController');

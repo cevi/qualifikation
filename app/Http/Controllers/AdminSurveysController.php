@@ -57,11 +57,20 @@ class AdminSurveysController extends Controller
             })
             ->addIndexColumn()
             ->addColumn('status', function ($survey) {
-                $survey_statuses_id = [config('status.survey_neu'),
-                    config('status.survey_1offen'),
-                    config('status.survey_2offen'),
-                    config('status.survey_tnAbgeschlossen'),
-                    config('status.survey_fertig'), ];
+                $camp = $survey->campuser->camp;
+                if(!$camp['secondsurveyopen']) {
+                    $survey_statuses_id = [config('status.survey_neu'),
+                        config('status.survey_1offen'),
+                        config('status.survey_tnAbgeschlossen'),
+                        config('status.survey_fertig'),];
+                }
+                else{
+                    $survey_statuses_id = [config('status.survey_neu'),
+                        config('status.survey_1offen'),
+                        config('status.survey_2offen'),
+                        config('status.survey_tnAbgeschlossen'),
+                        config('status.survey_fertig'), ];
+                }
                 $result = '<div class="card card-progress">
                 <ul id="progressbar" class="text-center">';
                 foreach ($survey_statuses_id as $status_id) {
@@ -88,34 +97,42 @@ class AdminSurveysController extends Controller
     public function create()
     {
         //
-        $camp = Auth::user()->camp;
-        $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
-        $chapters = Chapter::all();
-        $answer = Answer::where('name', '0')->first();
 
-        foreach ($camp_users as $camp_user) {
-            $input['name'] = 'Qualifikationsprozess';
-            $input['camp_user_id'] = $camp_user->id;
-            $user = User::find($camp_user['user_id']);
-            $input['slug'] = Str::slug($user['slug'].'@'.$camp['name']);
-            $input['survey_status_id'] = config('status.survey_neu');
-            $survey = Survey::create($input);
-            foreach ($chapters as $chapter) {
-                $input['chapter_id'] = $chapter->id;
-                $input['survey_id'] = $survey->id;
-                $survey_chapter = SurveyChapter::create($input);
-                $questions = Question::where('chapter_id', $chapter->id)->get();
-                foreach ($questions as $question) {
-                    $input['survey_chapter_id'] = $survey_chapter->id;
-                    $input['question_id'] = $question->id;
-                    $input['answer_first_id'] = $answer->id;
-                    $input['answer_second_id'] = $answer->id;
-                    $input['answer_leader_id'] = $answer->id;
-                    SurveyQuestion::create($input);
+        if (! Auth::user()->demo) {
+            $camp = Auth::user()->camp;
+            $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
+            $camp_type = $camp->camp_type;
+            $answer = Answer::where('name', '0')->first();
+            if($camp_type['default_type']) {
+                $chapters = Chapter::where('default_chapter',true)->get();
+            }
+            else{
+                $chapters = Chapter::where('camp_type_id',$camp_type['id'])->get();
+            }
+
+            foreach ($camp_users as $camp_user) {
+                $input['name'] = 'Qualifikationsprozess';
+                $input['camp_user_id'] = $camp_user->id;
+                $user = User::find($camp_user['user_id']);
+                $input['slug'] = Str::slug($user['slug'] . '@' . $camp['name']);
+                $input['survey_status_id'] = config('status.survey_neu');
+                $survey = Survey::create($input);
+                foreach ($chapters as $chapter) {
+                    $input['chapter_id'] = $chapter->id;
+                    $input['survey_id'] = $survey->id;
+                    $survey_chapter = SurveyChapter::create($input);
+                    $questions = Question::where('chapter_id', $chapter->id)->get();
+                    foreach ($questions as $question) {
+                        $input['survey_chapter_id'] = $survey_chapter->id;
+                        $input['question_id'] = $question->id;
+                        $input['answer_first_id'] = $answer->id;
+                        $input['answer_second_id'] = $answer->id;
+                        $input['answer_leader_id'] = $answer->id;
+                        SurveyQuestion::create($input);
+                    }
                 }
             }
         }
-
         return true;
     }
 
@@ -163,6 +180,17 @@ class AdminSurveysController extends Controller
         }
 
         return redirect('/admin/surveys');
+    }
+
+    public function downloadPDF()
+    {
+        $camp = Auth::user()->camp;
+        $surveys = $camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->get()->sortBy('campuser.user.username')->values();
+
+        $labels = Helper::GetSurveyLabels($surveys);
+        $datasets = Helper::GetSurveysDataset($surveys);
+
+        return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));
     }
 
     /**

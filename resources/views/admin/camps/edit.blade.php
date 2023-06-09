@@ -31,6 +31,10 @@
                             {!! Form::label('camp_type_id', 'Kurstyp:') !!}
                             {!! Form::select('camp_type_id', [''=>'Wähle Kurstyp'] + $camptypes, null,  ['class' => 'form-control', 'required']) !!}
                         </div>
+                        <div class="form-group">
+                            {!! Form::label('status_control', 'Quali-Ablauf kontrollieren:') !!}
+                            {!! Form::checkbox('status_control', '1',  $camp['status_control']) !!}
+                        </div>
                         @if (config('app.import_db'))
                             <div class="form-group">
                                 {!! Form::label('group_id', 'Organisierende Gruppe:') !!}
@@ -45,13 +49,11 @@
                             {!! Form::submit('Änderungen speichern', ['class' => 'btn btn-primary'])!!}
                         </div>
                     {!! Form::close()!!}
-                    @if (!Auth::user()->demo)
-                        {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
-                        <div class="form-group">
-                            {!! Form::submit('Kurs löschen', ['class' => 'btn btn-danger confirm'])!!}
-                        </div>
-                        {!! Form::close()!!}
-                    @endif
+                    {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp->id], 'id'=> "DeleteForm"]) !!}
+                    <div class="form-group">
+                        {!! Form::submit('Kurs löschen', ['class' => 'btn btn-danger confirm'])!!}
+                    </div>
+                    {!! Form::close()!!}
                  </div>
             </div>
         </div>
