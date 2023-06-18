@@ -15,6 +15,8 @@ services:
       - ENV_FILE_PATH=/run/secrets/.env
     volumes:
       - .env:/run/secrets/.env
+      - profile-picture-storage:/var/www/html/storage/app/public:rw
+      - protected-file-storage:/var/www/html/storage/app/files:rw
 
   nginx:
     image: registry.cevi.tools/cevi/qualitool_nginx:latest
@@ -27,7 +29,8 @@ services:
       - internal-net
     depends_on:
       - php
-
+    volumes:
+      - profile-picture-storage:/var/www/html/public/storage:ro
   mysql:
     image: registry.cevi.tools/cevi/qualitool_mysql_server:latest
     build:
@@ -49,4 +52,10 @@ networks:
 
 volumes:
   mysql-data-production:
+    driver: local
+
+  profile-picture-storage:
+    driver: local
+
+  protected-file-storage:
     driver: local
