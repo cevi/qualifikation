@@ -66,7 +66,7 @@ class PostController extends Controller
         $input['camp_id'] = $camp->id;
         $input['show_on_survey'] = $request->has('show_on_survey');
         if (!$aktUser->demo && $file = $request->file('file')) {
-            $save_path = 'app/files/' . Str::slug($camp['name']);
+            $save_path = 'app/files/' . $camp['id'] . '_'. Str::slug($camp['name']);
             $directory = storage_path($save_path);
             if (!File::isDirectory($directory)) {
                 File::makeDirectory($directory, 0775, true);
