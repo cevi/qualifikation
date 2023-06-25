@@ -15,7 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'Cevi Qualifizierungen'),
 
-    'version' => env('VERSION', 'V1.0'),
+    'version' => 'V6.4',
 
     /*
     |--------------------------------------------------------------------------

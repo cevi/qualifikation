@@ -58,7 +58,7 @@ class Helper
             $aktUser = Auth::user();
             $camp = $aktUser->camp;
             if ($input['cropped_photo_id']) {
-                $save_path = Str::slug($camp['name']).'/profiles';
+                $save_path = $camp['id'] . '_'. Str::slug($camp['name']).'/profiles';
                 $directory = storage_path('app/public/'.$save_path);
                 if (!File::isDirectory($directory)) {
                     File::makeDirectory($directory, 0775, true);
