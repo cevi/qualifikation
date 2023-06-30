@@ -56,6 +56,7 @@
                                     <th scope="col">Kursleiter</th>
                                     <th scope="col">Kurstyp</th>
                                     <th scope="col">Gruppe</th>
+                                    <th scope="col">End-Datum</th>
                                     <th scope="col">Abgeschlossen</th>
                                     @if(Auth::user()->isAdmin())
                                         <th scope="col"># Qualifikationen</th>
@@ -70,6 +71,7 @@
                                     <td>{{$camp->user ? $camp->user['username'] : ''}}</a></td>
                                     <td>{{$camp->camp_type ? $camp->camp_type['name'] : ''}}</a></td>
                                     <td>{{$camp->group ? $camp->group['name'] : ''}}</a></td>
+                                    <td>{{$camp->end_date > 1 ? date('d.m.Y', strtotime($camp->end_date)) : ''}}</a></td>
                                     <td>{{$camp->finish ? 'Ja' : 'Nein'}}</td>
                                     @if(Auth::user()->isAdmin())
                                         <td>{{$camp->counter ?: 0}}</td>
