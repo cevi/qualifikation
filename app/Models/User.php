@@ -116,7 +116,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isTeilnehmer()
     {
-        return ! $this->isLeader() && ! $this->isCampleader();
+        return !$this->isLeader() && !$this->isCampleader();
     }
 
     public function getRouteKeyName()

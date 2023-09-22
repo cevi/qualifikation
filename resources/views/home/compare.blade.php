@@ -104,7 +104,7 @@
             <br>
         @endif
         {!! Form::close()!!}
-        @if($aktUser->isLeader())
+        @if($aktUser->isLeader() || $aktUser->isCampleader())
             <x-post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'" :editable="false"/>
         @endif
         <x-radar-chart/>

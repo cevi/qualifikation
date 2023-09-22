@@ -38,7 +38,10 @@
                 <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
                     Möglichkeit, das Ausfüllen der Qualifikationen im Menüpunkt "Qualifikationen" zu steuern. <br>
                     Ansicht der ersten und zweiten Selbsteinschätzung überarbeitet. <br>
-                    Eigene Kurs-Typen erstellen mit persönlichen Kapitel, Fragen und Kernkompetenzen.
+                    Eigene Kurs-Typen erstellen mit persönlichen Kapitel, Fragen und Kernkompetenzen. <br>
+                    Kursleiter sehen auch Rückmeldung beim Vergleich. <br>
+                    Das Löschen einer Rückmeldung wird erst nach Bestätigung durchgeführt. <br>
+                    Absätze werden in den Rückmeldungen korrekt dargestellt. <br>
                 </p>
             </li>
             <li class="mb-10 ml-4">
