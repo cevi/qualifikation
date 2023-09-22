@@ -109,8 +109,6 @@ class SurveysController extends Controller
             $answers = Answer::all();
             $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich '.$survey->campUser->user['username'];
-
-
             $labels = Helper::GetSurveyLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
