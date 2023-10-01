@@ -17,7 +17,12 @@ class AdminController extends Controller
     {
         $user = Auth::user();
         $camp = $user->camp;
-        $surveys = $camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
+        $surveys = $camp->surveys()->with([
+            'chapters.questions.answer_first',
+            'chapters.questions.answer_second',
+            'chapters.questions.answer_leader',
+            'campuser.user',
+            'chapters.questions.question'])
            ->get()->sortBy('campuser.user.username')->values();
         $surveys_all = $camp->surveys()->count();
         $surveys_1offen = $camp->surveys()->where('survey_status_id', '>', config('status.survey_1offen'))->count();

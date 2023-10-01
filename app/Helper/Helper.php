@@ -92,7 +92,7 @@ class Helper
         $labels = [];
         if($surveys->count()>0) {
             $survey = $surveys[0];
-            $questions = $survey->questions;
+            $questions =  $surveys[0]->questions()->with('question')->get()->sortBy('question.sort-index')->values();
             foreach ($questions as $survey_question) {
                 $question = $survey_question->question;
                 $text = $survey_question->competence_text() ? '*' : '';
@@ -113,7 +113,7 @@ class Helper
             $first_answers = [];
             $second_answers = [];
             $leader_answers = [];
-            $questions = $survey->questions()->get();
+            $questions =  $surveys[0]->questions()->with('question')->get()->sortBy('question.sort-index')->values();
             foreach ($questions as $i => $question) {
                 $first_answers[] = $question->answer_first['count'];
                 $second_answers[] = $question->answer_second['count'];
