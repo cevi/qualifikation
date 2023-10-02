@@ -187,7 +187,7 @@ class AdminSurveysController extends Controller
         $camp = Auth::user()->camp;
         $surveys = $camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->get()->sortBy('campuser.user.username')->values();
 
-        $labels = Helper::GetSurveyLabels($surveys);
+        $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
         return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));

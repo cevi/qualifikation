@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\CampCreated;
+use App\Exports\PostsExport;
+use App\Exports\UsersExport;
 use App\Helper\Helper;
 use App\Models\Camp;
 use App\Models\CampType;
@@ -12,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Str;
 
 class AdminCampsController extends Controller
@@ -186,5 +189,21 @@ class AdminCampsController extends Controller
         }
 
         return redirect('/admin/surveys');
+    }
+
+
+    public function export()
+    {
+        $camp = Auth::user()->camp;
+        $save_path = 'files/' . $camp['id'] . '_' . Str::slug($camp['name']);
+        $directory = storage_path($save_path);
+        if (!File::isDirectory($directory)) {
+            File::makeDirectory($directory, 0775, true);
+        }
+        $posts_name = $save_path . '/posts.xlsx';
+        Excel::store(new PostsExport, $posts_name);
+        $users_name = $save_path .'/users.xlsx';
+        Excel::store(new UsersExport, $users_name);
+        return redirect('/admin/camps');
     }
 }

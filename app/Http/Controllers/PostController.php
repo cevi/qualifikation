@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PostsExport;
 use App\Models\HealthForm;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Str;
 
 class PostController extends Controller
@@ -154,4 +156,5 @@ class PostController extends Controller
 
         return redirect()->back();
     }
+
 }
