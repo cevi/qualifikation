@@ -13,7 +13,7 @@
     <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
+            <header>
                 <h1 class="h3 display">Kompetenzen</h1>
             </header>
             <div class="row">
@@ -34,13 +34,16 @@
                             {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
 
-
                         <div class="form-group">
                                 {!! Form::label('competence', 'Kompetenz:') !!}
                                 {!! Form::text('competence', null, ['class' => 'form-control', 'required']) !!}
                         </div>
 
-                        
+                        <div class="form-group">
+                            {!! Form::label('sort-index', 'Index zur Anzeige im Radar (Im Uhrzeigensinn ab 12Uhr):') !!}
+                            {!! Form::text('sort-index', null, ['class' => 'form-control', 'required']) !!}
+                        </div>
+
                         <div class="form-group">
                             {!! Form::submit('Update Kompetenz', ['class' => 'btn btn-primary'])!!}
                         </div>
@@ -55,6 +58,6 @@
                     @endif
                  </div>
             </div>
-        </div>    
-    </section>   
+        </div>
+    </section>
 @endsection

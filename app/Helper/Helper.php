@@ -102,7 +102,7 @@ class Helper
     public static function GetSurveyLabels($survey){
 
         $labels = [];
-        $questions = $survey->questions;
+        $questions =  $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
         foreach ($questions as $survey_question) {
             $question = $survey_question->question;
             $text = $survey_question->competence_text() ? '*' : '';
@@ -133,7 +133,7 @@ class Helper
         $first_answers = [];
         $second_answers = [];
         $leader_answers = [];
-        $questions = $survey->questions()->get();
+        $questions =  $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
         foreach ($questions as $i => $question) {
             $first_answers[] = $question->answer_first['count'];
             $second_answers[] = $question->answer_second['count'];
