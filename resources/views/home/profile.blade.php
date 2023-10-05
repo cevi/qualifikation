@@ -91,6 +91,7 @@
 
 @section('scripts')
     @include('home.radar')
+    @include('home.post_delete')
     <script>
         $('.ampel-btn').on('click', function () {
             $.ajaxSetup({

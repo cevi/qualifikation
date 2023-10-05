@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\CampCreated;
+use App\Exports\PostsExport;
+use App\Exports\UsersExport;
 use App\Helper\Helper;
 use App\Models\Camp;
 use App\Models\CampType;
@@ -12,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Str;
 
 class AdminCampsController extends Controller
@@ -186,5 +189,56 @@ class AdminCampsController extends Controller
         }
 
         return redirect('/admin/surveys');
+    }
+
+
+    public function export()
+    {
+        $camp = Auth::user()->camp;
+//        $save_path = 'files/' . $camp['id'] . '_' . Str::slug($camp['name']);
+//        $directory = storage_path($save_path);
+//        if (!File::isDirectory($directory)) {
+//            File::makeDirectory($directory, 0775, true);
+//        }
+//        $posts_name = $save_path . '/exports/posts.xlsx';
+        return Excel::download(new PostsExport, 'Rückmeldungen_'. Str::slug($camp['name']) . '.xlsx');
+//        $users_name = $save_path .'/exports/users.xlsx';
+//        Excel::store(new UsersExport, $users_name);
+
+//        $zip = new ZipArchive;
+//        $zip_file = Str::slug($camp['name']) . '.zip';
+//        if($zip->open(public_path($zip_file), ZipArchive::CREATE) === TRUE)
+//        {
+//            Log::info('Status Zip: ' . $zip->status);
+
+    //        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
+//           $files = Storage::allFiles($save_path);
+//            foreach ($files as $key => $value) {
+//                Log::info('Name file: ' . $value);
+//                $relativeNameInZipFile = basename($value);
+//                Log::info('FilePath: ' . $relativeNameInZipFile);
+//                $zip->addFile($value, $relativeNameInZipFile);
+//            }
+//            Log::info("Anzahl files: " . $zip->numFiles);
+//            Log::info("Status Zip: " . $zip->status);
+//            $zip->close();
+//        }
+//        return response()->download(public_path($zip_file));
+
+//        if ($zip->open(public_path($zip_file), ZipArchive::CREATE) === TRUE)
+//        {
+//            $files = \File::files(storage_path($save_path));
+//            foreach ($files as $key => $value) {
+//                Log::info('Name file: '.$value);
+//                $relativeNameInZipFile = basename($value);
+//                $zip->addFile($value, $relativeNameInZipFile);
+//            }
+//            Log::info("Anzahl files: ".$zip->numFiles);
+//            Log::info("Status Zip: ".$zip->status);
+//            $zip->close();
+//        }
+//        return response()->download(public_path($zip_file));
+
+//        return  redirect()->route('surveys.downloadPDF');
     }
 }

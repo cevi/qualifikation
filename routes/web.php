@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\UsersController;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -113,6 +114,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::resource('admin/answers', 'AdminAnswersController');
 
+        Route::get('admin/camps/export/',  ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
 
@@ -127,5 +129,6 @@ Route::group(['middleware' => 'verified'], function () {
         Route::resource('admin/competences', 'AdminCompetencesController');
         Route::resource('admin/classifications', 'AdminClassificationController');
         Route::resource('admin/groups', 'AdminGroupsController');
+
     });
 });

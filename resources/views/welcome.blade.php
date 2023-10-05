@@ -51,7 +51,7 @@
                         <h4 class="text-uppercase mb-3">Sicher</h4>
                         <p class="text-sm">Jeder Teilnehmende sieht nur die eigenen Eingaben der
                             Qualifikation. Und auch die Leitenden sehen nur die Qualifikationen der zugewiesenen
-                            Teilnehmenden.</p>
+                            Teilnehmenden. Nach Beendigung des Kurses werden alle Qualifikationen und Rückmeldungen gelöscht.</p>
                     </div>
                     <!-- Service-->
                     <div class="col-lg-4 col-md-6 block-icon-hover text-center">

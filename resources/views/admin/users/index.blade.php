@@ -40,6 +40,7 @@
                     {{ Form::submit('Teilnehmerliste hochladen', ['class' => 'btn btn-primary']) }}
                     {!! Form::close() !!}
                 </div>
+
             </div>
             <br>
             <table class="table table-striped table-bordered" style="width:100%" id="datatable">

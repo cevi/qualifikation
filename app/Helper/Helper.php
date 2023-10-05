@@ -87,17 +87,26 @@ class Helper
     }
 
 
-    public static function GetSurveyLabels($surveys){
+    public static function GetSurveysLabels($surveys){
 
         $labels = [];
         if($surveys->count()>0) {
             $survey = $surveys[0];
-            $questions = $survey->questions;
-            foreach ($questions as $survey_question) {
-                $question = $survey_question->question;
-                $text = $survey_question->competence_text() ? '*' : '';
-                $labels[] = $text . $question['number'] . ' ' . $question['competence'];
-            }
+            $labels = Self::GetSurveyLabels($survey);
+        }
+
+        return $labels;
+
+    }
+
+    public static function GetSurveyLabels($survey){
+
+        $labels = [];
+        $questions =  $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
+        foreach ($questions as $survey_question) {
+            $question = $survey_question->question;
+            $text = $survey_question->competence_text() ? '*' : '';
+            $labels[] = $text . $question['number'] . ' ' . $question['competence'];
         }
 
         return $labels;
@@ -109,53 +118,58 @@ class Helper
         $dataset = [];
 
         foreach ($surveys as $survey) {
-            $camp = $survey->campUser->camp;
-            $first_answers = [];
-            $second_answers = [];
-            $leader_answers = [];
-            $questions = $survey->questions()->get();
-            foreach ($questions as $i => $question) {
-                $first_answers[] = $question->answer_first['count'];
-                $second_answers[] = $question->answer_second['count'];
-                $leader_answers[] = $question->answer_leader['count'];
-            }
-            $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers);
-            $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers);
-            $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers);
-            if(Auth::user()->role_id != config('status.role_Teilnehmer')) {
-                if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
-                    ($camp['secondsurveyopen'])) {
-                    $dataset_add = [
-                        $dataset_first,
-                        $dataset_second,
-                        $dataset_leader,
-                    ];
-                } else {
-                    $dataset_add = [
-                        $dataset_first,
-                        $dataset_leader,
-                    ];
-                }
-            }
-            else{
-                if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
-                    ($camp['secondsurveyopen'])) {
-                    $dataset_add = [
-                        $dataset_first,
-                        $dataset_second,
-                    ];
-                }
-                else {
-                    $dataset_add = [
-                        $dataset_first,
-                    ];
-                }
-            }
-            $dataset[] = $dataset_add;
+            $dataset[] = Self::GetSurveyDataset($survey);
         }
 
         return $dataset;
 
+    }
+
+
+    public static function GetSurveyDataset($survey)
+    {
+        $dataset_add = [];
+        $camp = $survey->campUser->camp;
+        $first_answers = [];
+        $second_answers = [];
+        $leader_answers = [];
+        $questions =  $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
+        foreach ($questions as $i => $question) {
+            $first_answers[] = $question->answer_first['count'];
+            $second_answers[] = $question->answer_second['count'];
+            $leader_answers[] = $question->answer_leader['count'];
+        }
+        $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers);
+        $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers);
+        $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers);
+        if (Auth::user()->role_id != config('status.role_Teilnehmer')) {
+            if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
+                ($camp['secondsurveyopen'])) {
+                $dataset_add = [
+                    $dataset_first,
+                    $dataset_second,
+                    $dataset_leader,
+                ];
+            } else {
+                $dataset_add = [
+                    $dataset_first,
+                    $dataset_leader,
+                ];
+            }
+        } else {
+            if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
+                ($camp['secondsurveyopen'])) {
+                $dataset_add = [
+                    $dataset_first,
+                    $dataset_second,
+                ];
+            } else {
+                $dataset_add = [
+                    $dataset_first,
+                ];
+            }
+        }
+        return $dataset_add;
     }
 
     public static function GetDataset($title, $color, $point_color, $borderwith, $dataset){
