@@ -48,18 +48,18 @@
                                             @if ($aktUser->isLeader())
 
                                                 <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => (($ch_key*3)+$q_key) . '.3.' . $question->question['number'].$answer['id']])}}
+                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.3.' . $question->question['number'].$answer['id']])}}
                                                     {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                 </td>
                                             @else
                                                 @isFirstSurvey($survey->survey_status_id)
                                                 <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                    {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => (($ch_key*3)+$q_key) . '.1.' .$question->question['number'].$answer['id']]) }}
+                                                    {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.1.' .$question->question['number'].$answer['id']]) }}
                                                     {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                 </td>
                                                 @else
                                                     <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => (($ch_key*3)+$q_key) . '.2.' . $question->question['number'].$answer['id']]) }}
+                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.2.' . $question->question['number'].$answer['id']]) }}
                                                         {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
                                                     </td>
                                                 @endif

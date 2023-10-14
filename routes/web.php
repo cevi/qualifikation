@@ -67,10 +67,6 @@ Route::get('admin/run-deployment', function () {
     return true;
 });
 
-Route::get('admin/run-migrations-seed', function () {
-    return Artisan::call('migrate:refresh', ['--seed' => true]);
-});
-
 Auth::routes(['verify' => true]);
 
 Route::get('login/hitobito', [LoginController::class, 'redirectToHitobitoOAuth'])->name('login.hitobito');

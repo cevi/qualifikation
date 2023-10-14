@@ -42,6 +42,7 @@
                     Kursleiter sehen auch Rückmeldung beim Vergleich. <br>
                     Das Löschen einer Rückmeldung wird erst nach Bestätigung durchgeführt. <br>
                     Absätze werden in den Rückmeldungen korrekt dargestellt. <br>
+                    Sort-Index für Fragen, Reihenfolge kann geändert werden. <br>
                 </p>
             </li>
             <li class="mb-10 ml-4">

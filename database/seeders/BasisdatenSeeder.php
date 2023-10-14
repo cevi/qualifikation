@@ -237,7 +237,7 @@ class BasisdatenSeeder extends Seeder
         SurveyStatus::updateOrCreate(['id' => config('status.survey_1offen')],
             ['name' => '1. Selbsteinschätzung Offen']);
         SurveyStatus::updateOrCreate(['id' => config('status.survey_2offen')],
-            ['name' => '2 Selbsteinschätzung Offen']);
+            ['name' => '2. Selbsteinschätzung Offen']);
         SurveyStatus::updateOrCreate(['id' => config('status.survey_tnAbgeschlossen')],
             ['name' => 'TN Selbsteinschätzung Abgeschlossen']);
         SurveyStatus::updateOrCreate(['id' => config('status.survey_fertig')],
