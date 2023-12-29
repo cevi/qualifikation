@@ -1,0 +1,61 @@
+# For more information: https://laravel.com/docs/sail
+version: '3.8'
+services:
+
+  php:
+    image: registry.cevi.tools/cevi/qualitool_php_fpm:latest
+    build:
+      context: .
+      dockerfile: docker/php.Dockerfile
+    networks:
+      - internal-net
+    depends_on:
+      - mysql
+    environment:
+      - ENV_FILE_PATH=/run/secrets/.env
+    volumes:
+      - .env:/run/secrets/.env
+      - profile-picture-storage:/var/www/html/storage/app/public:rw
+      - protected-file-storage:/var/www/html/storage/app/files:rw
+
+  nginx:
+    image: registry.cevi.tools/cevi/qualitool_nginx:latest
+    build:
+      context: .
+      dockerfile: docker/nginx.Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - internal-net
+    depends_on:
+      - php
+    volumes:
+      - profile-picture-storage:/var/www/html/public/storage:ro
+  mysql:
+    image: registry.cevi.tools/cevi/qualitool_mysql_server:latest
+    build:
+      context: .
+      dockerfile: docker/mysql.Dockerfile
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-data-production:/var/lib/mysql
+      - .env:/run/secrets/.env
+    environment:
+      - ENV_FILE_PATH=/run/secrets/.env
+    networks:
+      - internal-net
+
+networks:
+  internal-net:
+    driver: bridge
+
+volumes:
+  mysql-data-production:
+    driver: local
+
+  profile-picture-storage:
+    driver: local
+
+  protected-file-storage:
+    driver: local
