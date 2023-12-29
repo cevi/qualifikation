@@ -40,11 +40,15 @@
                         {!! Form::label('status_control', 'Quali-Ablauf kontrollieren:') !!}
                         {!! Form::checkbox('status_control', 'yes',  false) !!}
                     </div>
+                    <div class="form-group">
+                        {!! Form::label('end_date', 'Schlussdatum:') !!}
+                        {!! Form::date('end_date', null,  ['class' => 'form-control', 'required']) !!}
+                    </div>
+                    <div class="form-group">
+                        {!! Form::label('group_id', 'Organisierende Gruppe:') !!}
+                        {!! Form::select('group_id', [''=>'Wähle Gruppe'] + $groups, null,  ['class' => 'form-control', 'required']) !!}
+                    </div>
                     @if (config('app.import_db'))
-                        <div class="form-group">
-                            {!! Form::label('group_id', 'Organisierende Gruppe:') !!}
-                            {!! Form::select('group_id', [''=>'Wähle Gruppe'] + $groups, null,  ['class' => 'form-control']) !!}
-                        </div>
                         <div class="form-group">
                             {!! Form::label('foreign_id', 'Kurs ID (Cevi-DB):') !!}
                             {!! Form::text('foreign_id', null,  ['class' => 'form-control']) !!}

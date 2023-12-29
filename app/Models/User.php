@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Exports\UsersExport;
 use App\Helper\Helper;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -116,7 +118,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isTeilnehmer()
     {
-        return ! $this->isLeader() && ! $this->isCampleader();
+        return !$this->isLeader() && !$this->isCampleader();
     }
 
     public function getRouteKeyName()
@@ -141,4 +143,5 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         return $path;
     }
+
 }

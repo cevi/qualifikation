@@ -44,7 +44,7 @@ class HomeController extends Controller
         $title = 'Übersicht';
 
 
-        $labels = Helper::GetSurveyLabels($surveys);
+        $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
         return view('home.surveys', compact('aktUser', 'users', 'surveys', 'title', 'labels', 'datasets'));

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserCreated;
+use App\Exports\UsersExport;
 use App\Helper\Helper;
 use App\Imports\UsersImport;
 use App\Models\CampUser;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Ixudra\Curl\Facades\Curl;
+use Maatwebsite\Excel\Facades\Excel;
 use Str;
 use File;
 use Yajra\DataTables\Facades\DataTables;
@@ -432,4 +434,5 @@ class AdminUsersController extends Controller
 
         return redirect('/admin/users');
     }
+
 }

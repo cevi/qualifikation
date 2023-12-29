@@ -4,7 +4,7 @@
         @foreach ($posts as $post)
             <div class="row">
                 <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
-                    {{$post->comment}}
+                    {!! nl2br($post->comment) !!}
                 </div>
                 <div class="col-lg-3 col-md-10 col-sm-10 col-xs-10 text-right">
                     <div class="row">
@@ -38,9 +38,9 @@
                         <div class="row">
                             <div
                                 class="col-lg-12 col-md-6 col-sm-6 col-xs-6 text-right">
-                                {!! Form::model($post, ['method' => 'DELETE', 'action'=>['PostController@destroy',$post]]) !!}
+                                {!! Form::model($post, ['method' => 'DELETE', 'action'=>['PostController@destroy',$post], 'id'=> "DeleteForm"]) !!}
                                 <div class="form-group">
-                                    {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-sm'])!!}
+                                    {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-sm confirm'])!!}
                                 </div>
                                 {!! Form::close()!!}
                             </div>
@@ -58,3 +58,5 @@
         @endforeach
     </div>
 </section>
+
+

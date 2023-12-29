@@ -58,7 +58,7 @@
                                             {!! Form::hidden('post_id', null, ['id' => 'post_id']) !!}
                                         </div>
                                         <div class="form-group">
-                                            {!! Form::hidden('user_id', $user->id) !!}
+                                            {!! Form::hidden('user_id', $user->id, ['id' => 'post_id']) !!}
                                         </div>
                                         <div class="form-group">
                                             {!! Form::label('comment', 'Rückmeldung:') !!}
@@ -91,6 +91,7 @@
 
 @section('scripts')
     @include('home.radar')
+    @include('home.post_delete')
     <script>
         $('.ampel-btn').on('click', function () {
             $.ajaxSetup({
@@ -109,12 +110,6 @@
                 }
             });
         });
-
-        function editPost(post) {
-            $('#post_id').val(post['id']);
-            $('#comment').val(post['comment']);
-            $('#show_on_survey').prop("checked", post['show_on_survey']);
-        }
     </script>
 @endsection
 

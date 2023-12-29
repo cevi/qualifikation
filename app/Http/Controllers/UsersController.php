@@ -58,7 +58,7 @@ class UsersController extends Controller
 
             $title = $user['username'];
 
-            $labels = Helper::GetSurveyLabels($surveys);
+            $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
             return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title', 'labels', 'datasets'));
