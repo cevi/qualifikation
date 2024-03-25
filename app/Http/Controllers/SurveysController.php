@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Camp;
+use App\Models\Help;
+use App\Models\Post;
 use App\Helper\Helper;
 use App\Models\Answer;
-use App\Models\Camp;
-use App\Models\CampUser;
-use App\Models\Post;
 use App\Models\Survey;
-use App\Models\SurveyQuestion;
+use App\Models\CampUser;
 use Illuminate\Http\Request;
+use App\Models\SurveyQuestion;
 use Illuminate\Support\Facades\Auth;
 
 class SurveysController extends Controller
@@ -32,13 +33,15 @@ class SurveysController extends Controller
         $answers = Answer::all();
         $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
-        $title = 'Qualifikation '.$survey->campUser->user['username'];
+        $title = 'Qualifikation';
+        $subtitle = $survey->campUser->user['username'];
+        $help = Help::where('title',$title)->first();
 
 
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.survey', compact('aktUser', 'surveys','labels', 'datasets', 'answers', 'camp', 'users', 'posts', 'title'));
+        return view('home.survey', compact('aktUser', 'surveys','labels', 'datasets', 'answers', 'camp', 'users', 'posts', 'title', 'subtitle', 'help'));
     }
 
     public function update(Request $request, Survey $survey)
@@ -108,11 +111,13 @@ class SurveysController extends Controller
             $users = $camp->participants;
             $answers = Answer::all();
             $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
-            $title = 'Vergleich '.$survey->campUser->user['username'];
+            $title = 'Vergleich';
+            $subtitle = $survey->campUser->user['username'];
+            $help = Help::where('title',$title)->first();
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
-            return view('home.compare', compact('aktUser', 'surveys','labels', 'datasets', 'camp', 'users', 'answers', 'posts', 'title'));
+            return view('home.compare', compact('aktUser', 'surveys','labels', 'datasets', 'camp', 'users', 'answers', 'posts', 'title', 'subtitle', 'help'));
         }
     }
 

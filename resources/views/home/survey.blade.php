@@ -3,11 +3,7 @@
 @section('survey_content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     @foreach ($surveys as $survey)
-        <h1>{{$survey->surveyName()}}</h1>
-
-        <p class="lead">
-            von {{$survey->campuser->user['username']}}
-        </p>
+        <x-page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         <p>
             Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für deine
             Ausbildungsstufe.
@@ -127,7 +123,7 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
     @include('popper::assets')
     @include('home.radar')
-@endsection
+@endpush

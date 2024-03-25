@@ -90,7 +90,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::patch('/user/{id}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
 
     Route::resource('/camps', 'CampsController', ['as' => 'home'])->only(['create', 'store', 'update']);
-    Route::resource('/camp_types', 'CampTypesController');
+    Route::resource('/camp_types', 'CampTypesController')->only(['create','store']);
 
     Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
 
@@ -113,6 +113,8 @@ Route::group(['middleware' => 'verified'], function () {
         Route::get('admin/camps/export/',  ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
+        
+        Route::resource('admin/camp_types', 'CampTypesController');
 
         Route::resource('admin/questions', 'AdminQuestionsController');
         Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
@@ -125,6 +127,8 @@ Route::group(['middleware' => 'verified'], function () {
         Route::resource('admin/competences', 'AdminCompetencesController');
         Route::resource('admin/classifications', 'AdminClassificationController');
         Route::resource('admin/groups', 'AdminGroupsController');
+
+        Route::resource('admin/helps', 'AdminHelpController');
 
     });
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\Helper;
 use App\Models\Answer;
 use App\Models\Chapter;
+use App\Models\Help;
 use App\Models\Question;
 use App\Models\Survey;
 use App\Models\SurveyChapter;
@@ -29,7 +30,10 @@ class AdminSurveysController extends Controller
         $camp = Auth::user()->camp;
         $title = 'Qualifikationen';
 
-        return view('admin.surveys.index', compact('camp', 'title'));
+        $help = Help::where('title',$title)->first();
+
+
+        return view('admin.surveys.index', compact('camp', 'title', 'help'));
     }
 
     public function createDataTables()
@@ -79,7 +83,7 @@ class AdminSurveysController extends Controller
                     $result = $result.'<li class="'.$step.' step0" title="'.$survey_status['name'].'"></li>';
                 }
 
-                return $result;
+                return $result . "</ul></div>";
             })
             ->addColumn('Actions', function ($survey) {
                 return '<a href='.\URL::route('survey.compare', $survey['slug']).'>Zur Qualifikationen</a><br><br>
@@ -150,8 +154,13 @@ class AdminSurveysController extends Controller
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
         $survey_statuses_id = SurveyStatus::pluck('name', 'id')->all();
         $user_id = $survey->campUser->user();
+        $title = 'Qualifikation bearbeiten';
 
-        return view('admin.surveys.edit', compact('survey', 'users', 'leaders', 'survey_statuses_id', 'user_id'));
+        $help = Help::where('title',$title)->first();
+        $help['main_route'] = '/admin/surveys';
+        $help['main_title'] = 'Qualifikationen';
+
+        return view('admin.surveys.edit', compact('survey', 'users', 'leaders', 'survey_statuses_id', 'user_id', 'title', 'help'));
     }
 
     /**

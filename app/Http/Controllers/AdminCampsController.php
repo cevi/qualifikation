@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Str;
+use App\Models\Camp;
+use App\Models\Help;
+use App\Models\User;
+use App\Models\Group;
+use App\Helper\Helper;
+use App\Models\CampType;
 use App\Events\CampCreated;
 use App\Exports\PostsExport;
 use App\Exports\UsersExport;
-use App\Helper\Helper;
-use App\Models\Camp;
-use App\Models\CampType;
-use App\Models\Group;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use Str;
+use Illuminate\Support\Facades\Storage;
 
 class AdminCampsController extends Controller
 {
@@ -43,8 +44,13 @@ class AdminCampsController extends Controller
         $camptypes = CampType::pluck('name', 'id')->all();
         $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
         $title = 'Kursübersicht';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.camps.index', compact('camps', 'camptypes', 'groups', 'title'));
+        $title_modal = 'Kurs abschliessen?';
+        $text_modal = "Beim Kurs abschliessen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.";
+        confirmDelete($title_modal, $text_modal);
+
+        return view('admin.camps.index', compact('camps', 'camptypes', 'groups', 'title', 'help'));
     }
 
     /**
@@ -113,8 +119,12 @@ class AdminCampsController extends Controller
         $camptypes = CampType::pluck('name', 'id')->all();
         $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
         $users = User::where('role_id', config('status.role_Kursleiter'))->pluck('username', 'id')->all();
+        $title = "Lager bearbeiten";
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Lager';
+        $help['main_route'] = '/admin/camps';
 
-        return view('admin.camps.edit', compact('camp', 'users', 'camptypes', 'groups'));
+        return view('admin.camps.edit', compact('camp', 'users', 'camptypes', 'groups', 'title', 'help'));
     }
 
     /**
@@ -147,7 +157,7 @@ class AdminCampsController extends Controller
      */
     public function destroy(Camp $camp)
     {
-        if (!Auth::user()->demo) {
+        if (!Auth::user()->demo){
             $users = Auth::user()->camp->allUsers;
             $camp_global = Camp::where('global_camp', true)->first();
 

@@ -178,10 +178,9 @@
                     <div class="col-lg-6 p-3">
                         <h3 class="text-uppercase mb-0">Versuche es gleich selbst mit einem Test-Login aus.</h3>
                     </div>
-                    <div class="col-lg-2 p-3"><a class="btn btn-outline-light" href="/loginTN">Teilnehmende</a></div>
+                    <div class="col-lg-2 p-3"><a class="btn btn-outline-light" href="/loginKursleiter">Kursleitende</a></div>
                     <div class="col-lg-2 p-3"><a class="btn btn-outline-light" href="/loginLeiter">Leitende</a></div>
-                    <div class="col-lg-2 p-3"><a class="btn btn-outline-light" href="/loginKursleiter">Kursleitende</a>
-                    </div>
+                    <div class="col-lg-2 p-3"><a class="btn btn-outline-light" href="/loginTN">Teilnehmende</a></div>
                 </div>
             </div>
         </div>

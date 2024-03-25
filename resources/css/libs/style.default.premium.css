@@ -128,6 +128,7 @@ h2 {
     margin-bottom: 30px;
     -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    padding-bottom: 10px;
 }
 
 .card-header h1,
@@ -703,7 +704,7 @@ footer.main-footer p {
 
 footer.main-footer a {
     color: white;
-text-decoration: underline;
+    text-decoration: underline;
 }
 
 /* MAIN FOOTER MEDIAQUERIES ------------------------- */
@@ -1285,7 +1286,7 @@ button {
 * ==========================================================
 */
 .ms-container {
-    background: transparent url("../img/multiselect-switch.png") no-repeat 50% 50%;
+    background: transparent url("../../img/multiselect-switch.png") no-repeat 50% 50%;
     width: 370px;
 }
 
@@ -5064,6 +5065,7 @@ a > code {
     background-color: var(--background-card);
     border: 0 solid #eee;
     border-radius: 0;
+    padding-bottom: 10px;
 }
 
 .card > .list-group:first-child .list-group-item:first-child {

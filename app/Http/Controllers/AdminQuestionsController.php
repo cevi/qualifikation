@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Help;
 use App\Models\Chapter;
 use App\Models\Question;
 use Illuminate\Http\Request;
@@ -28,8 +29,10 @@ class AdminQuestionsController extends Controller
             $questions = $camp_Type->questions;
             $chapters = $camp_Type->chapters->pluck('name', 'id')->all();
         }
+        $title = "Kompetenzen";
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.questions.index', compact('questions', 'chapters'));
+        return view('admin.questions.index', compact('questions', 'chapters', 'title', 'help'));
     }
 
     /**
@@ -84,8 +87,12 @@ class AdminQuestionsController extends Controller
             $camp_Type = $user->camp->camp_type;
             $chapters = $camp_Type->chapters->pluck('name', 'id')->all();
         }
+        $title = "Kompetenz bearbeiten";
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Kompetenzen';
+        $help['main_route'] = '/admin/questions';
 
-        return view('admin.questions.edit', compact('question', 'chapters'));
+        return view('admin.questions.edit', compact('question', 'chapters', 'title', 'help'));
     }
 
     /**

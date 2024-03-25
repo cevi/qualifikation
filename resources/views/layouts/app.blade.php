@@ -12,9 +12,8 @@
     <x-footer/>
 </div>
 <!-- jQuery -->
-<script src="{{ asset('js/libs.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
-<script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
-@yield('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+@stack('scripts')
 </body>
 </html>

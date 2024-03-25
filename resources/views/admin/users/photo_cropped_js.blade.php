@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     var $modal = $('#modal');
     var image = document.getElementById('image');
     var cropper;
@@ -42,7 +42,7 @@
         canvas.toBlob(function(blob) {
             url = URL.createObjectURL(blob);
             var reader = new FileReader();
-            reader.readAsDataURL(blob); 
+            reader.readAsDataURL(blob);
             reader.onloadend = function() {
                 var base64data = reader.result;
                 $("#cropped_photo_id").val(base64data);

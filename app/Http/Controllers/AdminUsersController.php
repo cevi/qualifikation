@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\UserCreated;
-use App\Exports\UsersExport;
-use App\Helper\Helper;
-use App\Imports\UsersImport;
-use App\Models\CampUser;
-use App\Models\Role;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
-use Ixudra\Curl\Facades\Curl;
-use Maatwebsite\Excel\Facades\Excel;
 use Str;
 use File;
+use App\Models\Help;
+use App\Models\Role;
+use App\Models\User;
+use App\Helper\Helper;
+use App\Models\CampUser;
+use App\Events\UserCreated;
+use App\Exports\UsersExport;
+use App\Imports\UsersImport;
+use Illuminate\Http\Request;
+use Ixudra\Curl\Facades\Curl;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Crypt;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class AdminUsersController extends Controller
@@ -41,8 +42,9 @@ class AdminUsersController extends Controller
         }
 
         $title = 'Personen';
-
-        return view('admin.users.index', compact('has_api_token', 'title'));
+        $help = Help::where('title',$title)->first();
+        
+        return view('admin.users.index', compact('has_api_token', 'title', 'help'));
     }
 
     public function createDataTables()
@@ -63,10 +65,23 @@ class AdminUsersController extends Controller
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('users.edit', $user['slug']).'>'.$user['username'].'</a>';
             })
             ->addColumn('role', function (User $user) {
-                return [
-                    'display' => $user->role ? $user->role['name'] : '',
-                    'sort' =>$user->role ? $user->role['id'] : '',
-                ];
+                $camp = null;
+                if (!Auth::user()->isAdmin()) {
+                    $camp = Auth::user()->camp;
+                }
+                if ($camp) {
+                    $camp_user = CampUser::where('camp_id','=',$camp['id'])->where('user_id','=',$user['id'])->first();
+                    return [
+                        'display' => $camp_user->role ? $camp_user->role['name'] : '',
+                        'sort' => $camp_user->role ? $camp_user->role['id'] : '',
+                    ];
+                }
+                else {
+                    return [
+                        'display' => $user->role ? $user->role['name'] : '',
+                        'sort' => $user->role ? $user->role['id'] : '',
+                    ];
+                }
             })
             ->addColumn('leader', function (User $user) {
                 return $user->leader ? $user->leader['username'] : '';
@@ -121,8 +136,12 @@ class AdminUsersController extends Controller
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
+        $title = "Person erstellen / suchen";
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Personen';
+        $help['main_route'] = '/admin/users';
 
-        return view('admin.users.create', compact('roles', 'leaders'));
+        return view('admin.users.create', compact('roles', 'leaders', 'title', 'help'));
     }
 
     public function import()
@@ -379,8 +398,12 @@ class AdminUsersController extends Controller
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
+        $title = "Person bearbeiten";
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Personen';
+        $help['main_route'] = '/admin/users';
 
-        return view('admin.users.edit', compact('user', 'roles', 'leaders'));
+        return view('admin.users.edit', compact('user', 'roles', 'leaders', 'title', 'help'));
     }
 
     /**

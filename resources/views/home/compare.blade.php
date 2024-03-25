@@ -3,11 +3,7 @@
 @section('survey_content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     @foreach ($surveys as $survey)
-        <h1>Übersicht</h1>
-
-        <p class="lead">
-            von {{$survey->campuser->user['username']}}
-        </p>
+        <x-page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         @if(!$aktUser->isTeilnehmer())
             <p>
                 <a type="button" class="btn btn-primary btn-sm"
@@ -112,7 +108,7 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
     @include('popper::assets')
     @include('home.radar')
-@endsection
+@endpush

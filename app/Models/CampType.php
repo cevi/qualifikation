@@ -17,6 +17,11 @@ class CampType extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    public function camps()
+    {
+        return $this->hasMany(Camp::class);
+    }
+
     public function chapters()
     {
         return $this->hasMany(Chapter::class);
