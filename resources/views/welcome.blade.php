@@ -124,16 +124,16 @@
                 <!-- Counters-->
                 <div class="row gy-4 text-center" id="counterUp">
                     <div class="col-lg-6 col-sm-6">
-                        <div class="text-center text-gray-700">
-                            <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i
+                        <div class="text-center">
+                            <div class="icon-outlined icon-outlined-primary icon-lg mx-auto mb-3 icon-thin"><i
                                     class="fa-solid fa-campground"></i></div>
                             <h1 class="counter mb-3" data-counter="{{$camp_counter}}">0</h1>
                             <h2 class="text-uppercase fw-bold mb-0">Kurse</h2>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6">
-                        <div class="text-center text-gray-700">
-                            <div class="icon-outlined border-gray-600 icon-lg mx-auto mb-3 icon-thin"><i
+                        <div class="text-center">
+                            <div class="icon-outlined icon-outlined-primary icon-lg mx-auto mb-3 icon-thin"><i
                                     class="fa-solid fa-poll-h"></i></div>
                             <h1 class="counter mb-3" data-counter="{{$survey_counter}}">0</h1>
                             <h2 class="text-uppercase fw-bold mb-0">Qualifikationen</h2>

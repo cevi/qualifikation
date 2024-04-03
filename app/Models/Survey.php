@@ -63,18 +63,21 @@ class Survey extends Model
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
         $max_status =  config('status.survey_fertig');
-        $result = ($aktUser->isLeader() && $this->campUser->leader['id'] == $aktUser['id'] && $this['survey_status_id'] < $max_status);
-        if(!$result) {
-            if ($camp['status_control']){
-                $max_status = $camp['survey_status_id'];
-            }
+        $result = $aktUser->isAdmin();
+        if(!$result){
+            $result = ($aktUser->isLeader() && $this->campUser->leader['id'] == $aktUser['id'] && $this['survey_status_id'] < $max_status);
+            if(!$result) {
+                if ($camp['status_control']){
+                    $max_status = $camp['survey_status_id'];
+                }
 
-            $result = $this['survey_status_id'] < $max_status;
-            if ($result) {
-                if ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id']) {
-                    $result = $this['survey_status_id'] <= config('status.survey_1offen');
-                    if (!$result) {
-                        $result = $camp['secondsurveyopen'];
+                $result = $this['survey_status_id'] < $max_status;
+                if ($result) {
+                    if ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id']) {
+                        $result = $this['survey_status_id'] <= config('status.survey_1offen');
+                        if (!$result) {
+                            $result = $camp['secondsurveyopen'];
+                        }
                     }
                 }
             }

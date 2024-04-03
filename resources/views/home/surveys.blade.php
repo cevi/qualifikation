@@ -26,22 +26,22 @@
                                 $aktUser->isLeader())
                                 <td>
                                     @if ($survey->TNisAllowed())
-                                        <a href="{{route('survey.survey', $survey->slug)}}">{{$survey->SurveyName()}}</a>
+                                        <a href="{{route('survey.survey', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->SurveyName()}}</a>
                                     @else
                                         {{$survey->SurveyName()}}
                                     @endif
                                 </td>
                             @endif
                             @if ($aktUser->isTeilnehmer() && $survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen'))
-                                <td><a href="{{route('survey.compare', $survey->slug)}}">{{$survey->SurveyName()}}</a>
+                                <td><a href="{{route('survey.compare', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->SurveyName()}}</a>
                                 </td>
                             @endif
                             @if (!$aktUser->isTeilnehmer())
-                                <td><a href="{{route('survey.compare', $survey->slug)}}">Vergleich</a></td>
+                                <td><a href="{{route('survey.compare', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Vergleich</a></td>
                             @endif
                             <td>
                                 @if (!$aktUser->isTeilnehmer())
-                                    <a href="{{route('home.profile', $survey->campuser->user->slug)}}">{{$survey->campuser->user['username']}}</a>
+                                    <a href="{{route('home.profile', $survey->campuser->user->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->campuser->user['username']}}</a>
                                 @else
                                     {{$survey->campuser->user['username']}}
                                 @endif

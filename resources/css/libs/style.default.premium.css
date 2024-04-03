@@ -89,7 +89,8 @@ table {
     right: 0;
     -webkit-transition: width 0.3s linear;
     transition: width 0.3s linear;
-    width: calc(100% - 200px);
+    /* width: calc(100% - 200px); */
+    width: 100%;
     background-color: var(--color-bg-primary);
     min-height: 100vh;
     padding-bottom: 50px;
@@ -195,7 +196,7 @@ section header {
 *     Main NAVBAR
 * ==========================================================
 */
-nav.navbar {
+.navbar-background {
     background: var(--background-header);
     padding: .8rem 0;
     /* Navbar Brand --------- */
