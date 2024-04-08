@@ -26,7 +26,7 @@ RUN curl -sS https://getcomposer.org/installer -o composer-setup.php && \
 # Configure PHP
 RUN mkdir -p /run/php/ && touch /run/php/php8.1-fpm.pid
 
-COPY docker/php.ini-production /etc/php81/php.ini
+COPY docker/php.ini-production /usr/local/etc/php/php.ini
 
 # Copy application files
 COPY . .
