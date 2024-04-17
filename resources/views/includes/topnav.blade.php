@@ -1,4 +1,4 @@
-<nav class="dark:bg-gray-800 border-b border-gray-200 px-4 lg:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+<nav class="dark:bg-gray-800 bg-gray-100 border-b border-gray-200 px-4 lg:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
     <div class="flex flex-wrap justify-between items-center">
         <div class="flex justify-start items-center">
             @auth

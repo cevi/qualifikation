@@ -76,7 +76,7 @@ class PostController extends Controller
                 File::makeDirectory($directory, 0775, true);
             }
             $input['uuid'] = Str::uuid();
-            $name = str_replace(' ', '', $file->getClientOriginalName());
+            $name = $input['uuid'] . '_' . str_replace(' ', '', $file->getClientOriginalName());
             $file->move($directory, $name);
             $input['file'] = $save_path . '/' . $name;
         }

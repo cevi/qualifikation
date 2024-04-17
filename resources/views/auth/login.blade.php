@@ -7,28 +7,25 @@
                 <div class="w-100 py-5">
                     <div class="text-center"><img src="/img/logo.svg" alt="..." class="img-fluid mb-4">
                     </div>
-                    <div class="form-group row">
-                        <div class="col-md-6 offset-md-3">
-                            <a
-                                class="btn btn-primary form-control{{ $errors->has('hitobito') ? ' is-invalid' : '' }}"
-                                style="width: 100%"
-                                href="{{ route('login.hitobito') }}">
-                                Anmelden mit Cevi-DB
-                            </a>
-                            @if ($errors->has('hitobito'))
-                                <span class="invalid-feedback" role="alert">
-                        <strong>{{ $errors->first('hitobito') }}</strong>
-                    </span>
-                            @endif
-                        </div>
+                    <div class="col-md-6 offset-md-3">
+                        <a
+                            class="focus:outline-none text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 btn-block {{ $errors->has('hitobito') ? ' is-invalid' : '' }}"
+                            href="{{ route('login.hitobito') }}">
+                            Anmelden mit Cevi-DB
+                        </a>
+                        @if ($errors->has('hitobito'))
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $errors->first('hitobito') }}</strong>
+                            </span>
+                        @endif
                     </div>
                     <div class="hr-label">oder</div>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <div class="form-group">
-                            <label for="email">E-Mail</label>
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">E-Mail</label>
                             <input id="email" type="text"
-                                   class="form-control @error('email') is-invalid @enderror"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('email') is-invalid @enderror"
                                    name="email" placeholder="name@abt.ch" value="{{ old('email') }}" required
                                    autocomplete="email" autofocus>
                             @error('email')
@@ -40,7 +37,8 @@
                         <div class="form-group mb-4">
                             <div class="row">
                                 <div class="col">
-                                    <label for="password">Passwort</label>
+                                    <label for="password" 
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Passwort</label>
                                 </div>
                                 @if (Route::has('password.request'))
                                     <div class="col-auto">
@@ -52,7 +50,7 @@
                                 @endif
                             </div>
                             <input id="password" placeholder="Passwort" type="password"
-                                   class="form-control @error('password') is-invalid @enderror" name="password" required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 @error('password') is-invalid @enderror" name="password" required
                                    autocomplete="current-password">
 
                             @error('password')
@@ -74,7 +72,7 @@
                             </div>
                         </div>
                         <!-- Submit-->
-                        <button class="btn btn-lg btn-block btn-primary mb-3">{{ __('Login') }}</button>
+                        <button class="btn-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 mb-3">{{ __('Login') }}</button>
                     </form>
                 </div>
             </div>

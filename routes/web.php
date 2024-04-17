@@ -101,7 +101,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::resource('/admin/feedback', 'FeedbackController');
         Route::post('users/feedback/send', 'FeedbackController@send');
 
-        Route::resource('admin/users', 'AdminUsersController');
+        Route::resource('admin/users', 'AdminUsersController', ['as' => 'admin']);
         Route::get('users/createDataTables', ['as' => 'users.CreateDataTables', 'uses' => 'AdminUsersController@createDataTables']);
         Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
         Route::get('admin/users/download', ['as' => 'users.download', 'uses' => 'AdminUsersController@download']);

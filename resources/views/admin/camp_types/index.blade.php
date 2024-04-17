@@ -17,7 +17,7 @@
                         @foreach ($camp_types as $camp_type)
                             <tbody>
                                 <tr>
-                                    <td><a href="{{route('camp_types.edit',$camp_type)}}">{{$camp_type->name}}</a></td>
+                                    <td><a href="{{route('camp_types.edit',$camp_type)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$camp_type->name}}</a></td>
                                     <td>{{$camp_type->user ? $camp_type->user['username'] : ''}}</a></td>
                                 </tr>
                             </tbody>

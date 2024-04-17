@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Str;
 use File;
+use App\Models\Camp;
 use App\Models\Help;
 use App\Models\Role;
 use App\Models\User;
@@ -62,7 +63,7 @@ class AdminUsersController extends Controller
                 return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user" alt="" src="' . $user->getAvatar() . '"></a>';
             })
             ->addColumn('user', function ($user) {
-                return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('users.edit', $user['slug']).'>'.$user['username'].'</a>';
+                return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('admin.users.edit', $user['slug']).'>'.$user['username'].'</a>';
             })
             ->addColumn('role', function (User $user) {
                 $camp = null;
@@ -402,6 +403,10 @@ class AdminUsersController extends Controller
         $help = Help::where('title',$title)->first();
         $help['main_title'] = 'Personen';
         $help['main_route'] = '/admin/users';
+        
+        $title_modal = 'Person Löschen?';
+        $text_modal = "Die Person wird aus dem Kurs entfernt und ihre Qualifikation wird gelöscht.";
+        confirmDelete($title_modal, $text_modal);
 
         return view('admin.users.edit', compact('user', 'roles', 'leaders', 'title', 'help'));
     }
@@ -447,12 +452,15 @@ class AdminUsersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
         //
 
         if (!Auth::user()->demo) {
-            User::findOrFail($id)->delete();
+            $camp = Auth::user()->camp;
+            $camp_global = Camp::where('global_camp', true)->first();
+            Helper::updateCamp($user, $camp_global);
+            CampUser::where('camp_id', $camp->id)->where('user_id', $user->id)->delete();
         }
 
         return redirect('/admin/users');

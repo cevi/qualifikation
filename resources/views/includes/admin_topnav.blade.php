@@ -31,7 +31,7 @@
         </li>
         @if (isset(Auth::user()->camp) OR (Auth::user()->isAdmin()))
           <li>
-            <a href="{{route('users.index')}}"
+            <a href="{{route('admin.users.index')}}"
               type="button"
               class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
             >

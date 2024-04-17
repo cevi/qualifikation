@@ -51,7 +51,7 @@ class AdminSurveysController extends Controller
             ->addColumn('user', function ($survey) {
                 $username = $survey->campuser ? $survey->campuser->user['username'] : '';
 
-                return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil">'.$username.'</a>';
+                return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$username.'</a>';
             })
             ->addColumn('responsible', function (Survey $survey) {
                 return $survey->campuser->leader ? $survey->campuser->leader['username'] : '';
@@ -86,8 +86,8 @@ class AdminSurveysController extends Controller
                 return $result . "</ul></div>";
             })
             ->addColumn('Actions', function ($survey) {
-                return '<a href='.\URL::route('survey.compare', $survey['slug']).'>Zur Qualifikationen</a><br><br>
-                <a href='.\URL::route('surveys.edit', $survey->slug).'>Bearbeiten</a>';
+                return '<a href='.\URL::route('survey.compare', $survey['slug']).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Zur Qualifikationen</a><br><br>
+                <a href='.\URL::route('surveys.edit', $survey->slug).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Bearbeiten</a>';
             })
             ->rawColumns(['user', 'Actions', 'status'])
             ->make(true);

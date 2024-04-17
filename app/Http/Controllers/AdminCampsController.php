@@ -123,6 +123,10 @@ class AdminCampsController extends Controller
         $help = Help::where('title',$title)->first();
         $help['main_title'] = 'Lager';
         $help['main_route'] = '/admin/camps';
+        
+        $title_modal = 'Kurs abschliessen?';
+        $text_modal = "Beim Kurs abschliessen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.";
+        confirmDelete($title_modal, $text_modal);
 
         return view('admin.camps.edit', compact('camp', 'users', 'camptypes', 'groups', 'title', 'help'));
     }

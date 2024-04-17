@@ -1,6 +1,6 @@
 <!-- drawer component -->
 <div id="drawer-right-example"
-     class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-white w-80 dark:bg-gray-800"
+     class="fixed top-[72px] right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-gray-100 w-80 dark:bg-gray-800"
      tabindex="-1" aria-labelledby="drawer-right-label">
     <h5 id="drawer-right-label"
         class="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400">
@@ -20,7 +20,7 @@
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd"></path>
         </svg>
-        <span class="sr-only">Close menu</span>
+        <span class="sr-only">Hilfe schliessen</span>
     </button>
     <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">{!! nl2br($help['content'] ?? '') !!}</p>
 </div>
