@@ -1,5 +1,4 @@
 # For more information: https://laravel.com/docs/sail
-version: '3'
 services:
     laravel.test:
         build:
@@ -24,6 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
+            - phpmyadmin
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -43,6 +43,14 @@ services:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+    phpmyadmin:
+        image: 'phpmyadmin:latest'
+        ports:
+        - 8080:80
+        networks:
+        - sail
+        environment:
+        - PMA_ARBITRARY=1
 networks:
     sail:
         driver: bridge

@@ -13,6 +13,7 @@ import './libs/jquery.waypoints.min.js';
 import 'flowbite';
 import './libs/custom.js';
 
+
 // window.Vue = require('vue').default;
 
 /**

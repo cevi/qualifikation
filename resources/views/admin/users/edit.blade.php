@@ -41,9 +41,11 @@
                     {!! Form::submit('Änderungen speichern', ['class' =>'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'])!!}
                 </div>
                 {!! Form::close()!!}
-
-                <a href="{{ route('admin.users.destroy', $user) }}" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" data-confirm-delete="true">Person Löschen</a>
-
+                {!! Form::model($user, ['method' => 'DELETE', 'action'=>['AdminUsersController@destroy',$user], 'id'=> "DeleteForm"]) !!}
+                <div class="form-group">
+                    {!! Form::submit('Person löschen', ['class' => 'confirm focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'])!!}
+                </div>
+                {!! Form::close()!!}
 
             </div>
         </div>
@@ -80,18 +82,19 @@
 
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @include('admin/users/photo_cropped_js')
-    {{-- <script type="module">
+        <script type="module">
         $(document).ready(function(){
             $('.confirm').on('click', function(e){
                 e.preventDefault(); //cancel default action
 
-                swal({
+                Swal.fire({
                     title: 'Person löschen?',
                     text: 'Sicher, dass die Person gelöscht werden soll?',
                     icon: 'warning',
-                    buttons: ["Abbrechen", "Ja!"],
+                    showCancelButton: true,
+                    confirmButtonText: 'Ja',
+                    cancelButtonText: 'Abbrechen',
                 }).then((willDelete) => {
                     if (willDelete) {
                         document.getElementById("DeleteForm").submit();
@@ -99,5 +102,5 @@
                 });
             });
         });
-    </script> --}}
+    </script>
 @endpush

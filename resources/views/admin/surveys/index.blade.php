@@ -43,12 +43,13 @@
         $(document).ready(function(){
             $('.create').on('click', function(e){
                 e.preventDefault(); //cancel default action
-
-                swal({
+                Swal.fire({
                     title: 'Qualifikationen erstellen?',
                     text: 'Dies erstellt den Qualifikationsprozess für alle Teilnehmer deines Kurses, welche ihn noch nicht haben.',
                     icon: 'info',
-                    buttons: ["Abbrechen", "Ja"],
+                    showCancelButton: true,
+                    confirmButtonText: 'Ja',
+                    cancelButtonText: 'Abbrechen',
                 }).then((willCreate) => {
                     if (willCreate) {
                         $.ajaxSetup({

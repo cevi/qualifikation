@@ -26,7 +26,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="swiper-pagination swiper-pagination-light"></div> --}}
                     </div>
                 </div>
             </div>

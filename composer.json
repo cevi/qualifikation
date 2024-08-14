@@ -24,7 +24,6 @@
         "laravelcollective/html": "^6.1",
         "maatwebsite/excel": "^3.1",
         "nicolaslopezj/searchable": "^1.13",
-        "realrashid/sweet-alert": "^7.1",
         "yajra/laravel-datatables": "^10.0"
     },
     "require-dev": {

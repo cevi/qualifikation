@@ -77,8 +77,12 @@
                                         <a href="{{route('surveys.downloadPDF')}}" target="_blank" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" role="button">Druckversion aller Qualifikationen</a>
                                         <br>
                                         <br>
-                                        <a href="{{ route('admin.camps.destroy', $camp) }}" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" data-confirm-delete="true">Kurs abschliessen?</a>
-                                    @endif
+                                        {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp], 'id'=> "DeleteForm"]) !!}
+                                            <div class="form-group">
+                                                {!! Form::submit('Kurs löschen', ['class' => 'confirm focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'])!!}
+                                            </div>
+                                        {!! Form::close()!!}
+                                     @endif
                                 </td>
                             </tr>
                         </tbody>
@@ -92,9 +96,24 @@
     </div>
 @endsection
 
-
-
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script type="module">
+        $(document).ready(function(){
+            $('.confirm').on('click', function(e){
+                e.preventDefault(); //cancel default action
+                Swal.fire({
+                    title: 'Kurs abschliessen/löschen?',
+                    text: "Beim Kurs abschliessen/löschen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ja',
+                    cancelButtonText: 'Abbrechen',
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        document.getElementById("DeleteForm").submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endpush
-

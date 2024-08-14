@@ -404,10 +404,6 @@ class AdminUsersController extends Controller
         $help['main_title'] = 'Personen';
         $help['main_route'] = '/admin/users';
         
-        $title_modal = 'Person Löschen?';
-        $text_modal = "Die Person wird aus dem Kurs entfernt und ihre Qualifikation wird gelöscht.";
-        confirmDelete($title_modal, $text_modal);
-
         return view('admin.users.edit', compact('user', 'roles', 'leaders', 'title', 'help'));
     }
 

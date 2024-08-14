@@ -11,7 +11,6 @@
             <x-footer/>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
-        @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
         @stack('scripts')
     </body>
 </html>

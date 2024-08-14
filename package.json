@@ -27,6 +27,7 @@
         "chart.js": "^2.9.4",
         "chokidar": "^3.5.1",
         "dropify": "^0.2.2",
-        "jquery": "^3.7.1"
+        "jquery": "^3.7.1",
+        "sweetalert2": "^11.6.13"
     }
 }
