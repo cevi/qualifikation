@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Help;
 use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -17,8 +18,10 @@ class AdminGroupsController extends Controller
     {
         //
         $groups = Group::all();
+        $title = "Gruppen";
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.groups.index', compact('groups'));
+        return view('admin.groups.index', compact('groups', 'title', 'help'));
     }
 
     /**
@@ -69,8 +72,12 @@ class AdminGroupsController extends Controller
     {
         //
         $group = Group::findOrFail($id);
+        $title = "Gruppe bearbeiten";
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Gruppen';
+        $help['main_route'] = '/admin/groups';
 
-        return view('admin.groups.edit', compact('group'));
+        return view('admin.groups.edit', compact('group', 'title', 'help'));
     }
 
     /**

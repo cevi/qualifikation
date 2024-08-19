@@ -1,8 +1,7 @@
 @extends('layouts.layout')
 
 @section('survey_content')
-    <h1>Hallo {{$aktUser->username}}</h1>
-
+    <x-page-title :title="$title" :help="$help" :header=false/>
     @if ($surveys)
         <div class="card table-responsive">
             <table class="table">
@@ -27,22 +26,22 @@
                                 $aktUser->isLeader())
                                 <td>
                                     @if ($survey->TNisAllowed())
-                                        <a href="{{route('survey.survey', $survey->slug)}}">{{$survey->SurveyName()}}</a>
+                                        <a href="{{route('survey.survey', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->SurveyName()}}</a>
                                     @else
                                         {{$survey->SurveyName()}}
                                     @endif
                                 </td>
                             @endif
                             @if ($aktUser->isTeilnehmer() && $survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen'))
-                                <td><a href="{{route('survey.compare', $survey->slug)}}">{{$survey->SurveyName()}}</a>
+                                <td><a href="{{route('survey.compare', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->SurveyName()}}</a>
                                 </td>
                             @endif
                             @if (!$aktUser->isTeilnehmer())
-                                <td><a href="{{route('survey.compare', $survey->slug)}}">Vergleich</a></td>
+                                <td><a href="{{route('survey.compare', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Vergleich</a></td>
                             @endif
                             <td>
                                 @if (!$aktUser->isTeilnehmer())
-                                    <a href="{{route('home.profile', $survey->campuser->user->slug)}}">{{$survey->campuser->user['username']}}</a>
+                                    <a href="{{route('home.profile', $survey->campuser->user->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->campuser->user['username']}}</a>
                                 @else
                                     {{$survey->campuser->user['username']}}
                                 @endif
@@ -63,7 +62,7 @@
 
                 @foreach($surveys as $survey)
                     <figure
-                        class="flex flex-col items-center justify-center p-8 text-center bg-white border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
+                        class="flex flex-col items-center justify-center p-8 text-center border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
                         id="Chart-{{$loop->iteration}}">
                         <!-- Recent Activities Widget      -->
                         <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
@@ -84,8 +83,8 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
     @if ($aktUser->isLeader())
         @include('home.radar')
     @endif
-@endsection
+@endpush

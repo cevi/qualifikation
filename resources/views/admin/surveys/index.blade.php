@@ -1,65 +1,55 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="breadcrumb-holder">
-        <div class="container-fluid">
-            <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item active">Qualifikationen</li>
-            </ul>
-        </div>
-    </div>
-    <section>
-        <div class="container-fluid">
-            <!-- Page Header-->
-            <header>
-                <h1 class="h3 display">Qualifikationen</h1>
-            </header>
-            <div class="row">
-                <div class="col-sm-4" style="margin-bottom: 10px;">
-                    <a href="javascript:;" class="btn btn-primary create" role="button">Qualifikationen erstellen</a>
-                </div>
-                <div class="col-sm-4" style="margin-bottom: 10px;">
-                    <a href="{{route('surveys.downloadPDF')}}" target="_blank" class="btn btn-primary" role="button">Druckversion aller Qualifikationen</a>
-                </div>
-                @if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen'))
-                    <div class="col-sm-4" style="margin-bottom: 10px;">
-                        <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Erste Selbsteinschätzung freigeben</a>
-                    </div>
-                @else
-                    @if(!$camp['secondsurveyopen'])
-                        <div class="col-sm-4" style="margin-bottom: 10px;">
-                            <a href="javascript:;" class="btn btn-primary opensurvey" role="button">Zweite Selbsteinschätzung freigeben</a>
-                        </div>
-                    @endif
-                @endif
+    <div class="container-fluid">
+        <x-page-title :title="$title" :help="$help"/>
+        <!-- Page Header-->
+        <div class="row">
+            <div class="col-sm-4" style="margin-bottom: 10px;">
+                <a href="javascript:;" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 create" role="button">Qualifikationen erstellen</a>
             </div>
-            <table class="table table-striped table-bordered" style="width:100%" id="datatable">
-                <thead>
-                    <tr>
-                        <th scope="col">Teilnehmer</th>
-                        <th scope="col">Leiter</th>
-                        <th scope="col">Kurs</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">TN Qualifikation</th>
-                    </tr>
-                </thead>
-            </table>
+            <div class="col-sm-4" style="margin-bottom: 10px;">
+                <a href="{{route('surveys.downloadPDF')}}" target="_blank" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" role="button">Druckversion aller Qualifikationen</a>
+            </div>
+            @if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen'))
+                <div class="col-sm-4" style="margin-bottom: 10px;">
+                    <a href="javascript:;" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 opensurvey" role="button">Erste Selbsteinschätzung freigeben</a>
+                </div>
+            @else
+                @if(!$camp['secondsurveyopen'])
+                    <div class="col-sm-4" style="margin-bottom: 10px;">
+                        <a href="javascript:;" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 opensurvey" role="button">Zweite Selbsteinschätzung freigeben</a>
+                    </div>
+                @endif
+            @endif
         </div>
-    </section>
+        <table class="table table-striped table-bordered" style="width:100%" id="datatable">
+            <thead>
+                <tr>
+                    <th scope="col">Teilnehmer</th>
+                    <th scope="col">Leiter</th>
+                    <th scope="col">Kurs</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">TN Qualifikation</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 @endsection
 
-@section('scripts')
-    <script>
+
+@push('scripts')
+    <script type="module">
         $(document).ready(function(){
             $('.create').on('click', function(e){
                 e.preventDefault(); //cancel default action
-
-                swal({
+                Swal.fire({
                     title: 'Qualifikationen erstellen?',
                     text: 'Dies erstellt den Qualifikationsprozess für alle Teilnehmer deines Kurses, welche ihn noch nicht haben.',
                     icon: 'info',
-                    buttons: ["Abbrechen", "Ja"],
+                    showCancelButton: true,
+                    confirmButtonText: 'Ja',
+                    cancelButtonText: 'Abbrechen',
                 }).then((willCreate) => {
                     if (willCreate) {
                         $.ajaxSetup({
@@ -97,6 +87,7 @@
                 processing: true,
                 serverSide: true,
                 pageLength: 25,
+                buttons: [],
                 language: {
                     "url": "/lang/Datatables.json"
                 },
@@ -112,4 +103,4 @@
             });
         });
     </script>
-@endsection
+@endpush

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\CampCreated;
-use App\Helper\Helper;
+use Validator;
 use App\Models\Camp;
+use App\Models\Help;
+use App\Models\User;
+use App\Models\Group;
+use App\Helper\Helper;
 use App\Models\CampType;
 use App\Models\CampUser;
-use App\Models\Group;
-use App\Models\User;
+use App\Events\CampCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
 
 class CampsController extends Controller
 {
@@ -38,7 +39,8 @@ class CampsController extends Controller
         $camptypes = CampType::where('default_type',true)->orWhere('user_id','=', Auth::user()->id)->pluck('name', 'id')->all();
         $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
         $title = 'Kurs erstellen';
-        return view('home.camps.create', compact('users', 'camptypes', 'groups', 'title'));
+        $help = Help::where('title',$title)->first();
+        return view('home.camps.create', compact('users', 'camptypes', 'groups', 'title', 'help'));
     }
 
     /**

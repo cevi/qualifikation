@@ -3,11 +3,7 @@
 @section('survey_content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     @foreach ($surveys as $survey)
-        <h1>{{$survey->surveyName()}}</h1>
-
-        <p class="lead">
-            von {{$survey->campuser->user['username']}}
-        </p>
+        <x-page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         <p>
             Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für deine
             Ausbildungsstufe.
@@ -105,14 +101,16 @@
         @endif
         <div class="form-group row">
             <div class="col-sm-4">
-                <button type="submit" name="action" value="save" class="btn btn-primary">{{$survey->surveyName()}}
-                    speichern
+                
+                <button type="submit" name="action" value="save" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    {{$survey->surveyName()}} speichern
                 </button>
             </div>
             @if ($aktUser->isTeilnehmer())
                 <div class="col-sm-4">
                     <button type="submit" name="action" value="close"
-                            class="btn btn-secondary">{{$survey->surveyName()}} speichern und abschliessen
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    {{$survey->surveyName()}} speichern und abschliessen
                     </button>
                 </div>
             @endif
@@ -127,7 +125,7 @@
 
 @endsection
 
-@section('scripts')
+@push('scripts')
     @include('popper::assets')
     @include('home.radar')
-@endsection
+@endpush

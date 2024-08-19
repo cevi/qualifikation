@@ -1,4 +1,4 @@
-<script>
+<script type="module">
     $(document).ready(function(){
         $('.confirm').on('click', function(e){
             e.preventDefault(); //cancel default action

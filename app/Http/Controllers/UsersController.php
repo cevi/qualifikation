@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\Helper;
-use App\Models\CampUser;
+use App\Models\Help;
 use App\Models\Post;
 use App\Models\Role;
-use App\Models\Survey;
 use App\Models\User;
+use App\Helper\Helper;
+use App\Models\Survey;
+use App\Models\CampUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -32,7 +33,10 @@ class UsersController extends Controller
             $users_id = $users->pluck('id')->all();
         }
         if ($aktUser->id == $user->id) {
-            return view('home.user', compact('aktUser', 'users'));
+            
+            $title = 'Profil';
+            $help = Help::where('title',$title)->first();
+            return view('home.user', compact('aktUser', 'users', 'title', 'help'));
         } else {
             return redirect()->back();
         }
@@ -56,12 +60,14 @@ class UsersController extends Controller
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
                 ->where('camp_user_id', $camp_user->id)->get()->values();
 
-            $title = $user['username'];
+            $title = "Profil";
+            $subtitle = "von " . $user['username'];
+            $help = Help::where('title',$title)->first();
 
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title', 'labels', 'datasets'));
+            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help'));
         } else {
             return redirect()->back();
         }

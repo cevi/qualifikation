@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Answer;
+use App\Models\Help;
 use Illuminate\Http\Request;
 
 class AdminAnswersController extends Controller
@@ -16,8 +17,10 @@ class AdminAnswersController extends Controller
     {
         //
         $answers = Answer::all();
+        $title= 'Antworten';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.answers.index', compact('answers'));
+        return view('admin.answers.index', compact('answers', 'title', 'help'));
     }
 
     /**
@@ -65,8 +68,12 @@ class AdminAnswersController extends Controller
     {
         //
         $answer = Answer::findOrFail($id);
+        $title= 'Antworten bearbeiten';
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Antworten';
+        $help['main_route'] = '/admin/answers';
 
-        return view('admin.answers.edit', compact('answer'));
+        return view('admin.answers.edit', compact('answer', 'title', 'help'));
     }
 
     /**

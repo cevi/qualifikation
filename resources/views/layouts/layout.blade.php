@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         @if(Session::has('message'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <p>{{ Session::get('message') }}</p>

@@ -1,21 +1,9 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="breadcrumb-holder">
-        <div class="container-fluid">
-            <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="/admin/answers">Antworten</a></li>
-            <li class="breadcrumb-item active">Bearbeiten</li>
-            </ul>
-        </div>
-    </div>
-    <section>
         <div class="container-fluid">
             <!-- Page Header-->
-            <header> 
-                <h1 class="h3 display">Antworten</h1>
-            </header>
+            <x-page-title :title="$title" :help="$help"/>
             <div class="row">
                 <div class="col-sm-6">
                     {!! Form::model($answer, ['method' => 'Patch', 'action'=>['AdminAnswersController@update',$answer->id]]) !!}
@@ -44,5 +32,4 @@
                  </div>
             </div>
         </div>    
-    </section>   
 @endsection

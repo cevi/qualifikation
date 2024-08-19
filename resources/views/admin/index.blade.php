@@ -2,6 +2,7 @@
 
 @section('content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+    <x-page-title :title="$title" :help="$help" :header=false/>
     <!-- Counts Section -->
     <section class="dashboard-counts section-padding">
         <div class="container-fluid">
@@ -53,7 +54,7 @@
                     class="grid mb-8 border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 md:mb-12 md:grid-cols-2">
                     @foreach($surveys as $survey)
                         <figure
-                            class="flex flex-col items-center justify-center p-8 text-center bg-white border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
+                            class="flex flex-col items-center justify-center p-8 text-center border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
                             id="Chart-{{$loop->iteration}}">
                             <!-- Recent Activities Widget      -->
                             <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
@@ -86,9 +87,10 @@
 
 @endsection
 
-@section('scripts')
+
+@push('scripts')
     @include('home.radar')
-    <script>
+    <script type="module">
         var $sidebar = $("#Sidepanel"),
             $window = $(window),
             offset = $sidebar.offset(),
@@ -105,5 +107,5 @@
             }
         });
     </script>
-@endsection
+@endpush
 

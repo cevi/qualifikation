@@ -1,6 +1,23 @@
-/*@tailwind base;*/
-/*@tailwind components;*/
-/*@tailwind utilities;*/
+
+
+@import './libs/welcome.css';
+@import './libs/bootstrap.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
+/*@import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";*/
+@import 'datatables.net-select-bs5/css/select.bootstrap5.css';
+
+@import './libs/jquery-ui.css';
+@import './libs/jquery.mCustomScrollbar.css';
+@import './libs/swiper-bundle.min.css';
+@import './libs/style.default.premium.css';
+@import './libs/dropify.min.css';
+@import './libs/custom.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 :root {
     --color-bg-primary: #F4F7FA;
@@ -36,12 +53,6 @@
     --color-border: #fafafa;
 }
 
-@media (prefers-color-scheme: dark) {
-    img {
-        filter: brightness(.8) contrast(1.2);
-    }
-}
-
 .text-dark__white {
     color: var(--color-bg-primary) !important;
 }
@@ -58,5 +69,8 @@
     color: var(--color-text-primary) !important;
 }
 
+.text-uppercase {
+    letter-spacing: .1em;
+}
 
 

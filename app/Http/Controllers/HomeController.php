@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Help;
 use App\Helper\Helper;
-use App\Models\CampUser;
 use App\Models\Survey;
+use App\Models\CampUser;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -42,11 +43,12 @@ class HomeController extends Controller
                 ->orWhereIn('camp_user_id', $camp_users_id)->get()->sortBy('campuser.user.username')->values();
         }
         $title = 'Übersicht';
+        $help = Help::where('title',$title)->first();
 
 
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.surveys', compact('aktUser', 'users', 'surveys', 'title', 'labels', 'datasets'));
+        return view('home.surveys', compact('aktUser', 'users', 'surveys', 'title', 'labels', 'datasets', 'help'));
     }
 }
