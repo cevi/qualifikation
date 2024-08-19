@@ -53,9 +53,12 @@ networks:
 volumes:
   mysql-data-production:
     driver: local
+    name: qualitool_mysql_data_production
 
   profile-picture-storage:
     driver: local
+    name: qualitool_profile_picture_storage
 
   protected-file-storage:
     driver: local
+    name: qualitool_protected_file_storage
