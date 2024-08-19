@@ -22,7 +22,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: 🧹 Create Environment File
-        run: echo ${{ secrets.ENV_FILE }} > .env
+        run: |
+          touch .env
+          echo ${{ secrets.ENV_FILE }} >> .env
 
       - name: 🏗️ Build the stack
         run: docker compose -f docker-compose.prod.yml build
