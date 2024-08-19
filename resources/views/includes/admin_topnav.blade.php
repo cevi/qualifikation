@@ -99,7 +99,7 @@
               </li>
               <li>
                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                  href="{{route('camp_types.index')}}"
+                  href="{{route('admin.camp_types.index')}}"
                 >
                   <i class="fas fa-campground"></i>
                   <span class="flex-1 ml-3 text-left whitespace-nowrap">
