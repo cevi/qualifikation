@@ -24,7 +24,7 @@ jobs:
       - name: 🧹 Create Environment File
         run: |
           touch .env
-          echo ${{ secrets.ENV_FILE }} >> .env
+          echo "${{ secrets.ENV_FILE }}" >> .env
 
       - name: 🏗️ Build the stack
         run: docker compose -f docker-compose.prod.yml build
