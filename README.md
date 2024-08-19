@@ -58,6 +58,7 @@ docker compose -f docker-compose.prod.yml up --build [-d]
 ```
 
 The CI/CD pipeline will automatically deploy the app to the production server upon a push to the `master` branch.
+See `.github/workflows/prod_build.yml` for more information.
 
 ### Caveats for Production Environment
 
