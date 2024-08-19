@@ -27,8 +27,12 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
     <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <!-- Styles -->
-    <link href="{{asset('css/libs.css')}}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'])
 </head>
 
 <body>
@@ -101,8 +105,8 @@
 
 
 <!-- jQuery -->
-<script src="{{asset('js/libs.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     @include('home.radar')
 
 </body>

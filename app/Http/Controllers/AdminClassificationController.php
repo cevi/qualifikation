@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\classification;
+use App\Models\Help;
 use Illuminate\Http\Request;
+use App\Models\Classification;
 
 class AdminClassificationController extends Controller
 {
@@ -16,8 +17,10 @@ class AdminClassificationController extends Controller
     {
         //
         $classifications = Classification::all();
+        $title= 'Klassifizierungen';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.classifications.index', compact('classifications'));
+        return view('admin.classifications.index', compact('classifications', 'title', 'help'));
     }
 
     /**
@@ -62,8 +65,12 @@ class AdminClassificationController extends Controller
     {
         //
         $classification = Classification::findOrFail($id);
+        $title= 'Klassifizierung bearbeiten';
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Klassifizierungen';
+        $help['main_route'] = '/admin/classifications';
 
-        return view('admin.classifications.edit', compact('classification'));
+        return view('admin.classifications.edit', compact('classification', 'title', 'help'));
     }
 
     /**

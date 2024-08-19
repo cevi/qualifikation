@@ -28,7 +28,7 @@
                             <div
                                 class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">
                                 <a href="{{route('downloadFile',$post['uuid'] ?? '0')}}"
-                                   target="_blank">{{basename($post->file)}}</a>
+                                   target="_blank" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$post->filename()}}</a>
                             </div>
                         @endif
                     </div>

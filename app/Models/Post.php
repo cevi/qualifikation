@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
@@ -30,5 +31,14 @@ class Post extends Model
     public function camp()
     {
         return $this->belongsTo('App\Models\Camp');
+    }
+    public function filename()
+    {
+        $name =  basename($this->file);
+        $uuid = Str::before($name,'_');
+        if(Str::isuuid($uuid)){
+            $name =  Str::after($name,'_');
+        }
+        return $name;
     }
 }

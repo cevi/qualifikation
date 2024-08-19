@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CampType;
+use Validator;
+use App\Models\Help;
 use App\Models\Chapter;
+use App\Models\CampType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
 
 class AdminChaptersController extends Controller
 {
@@ -25,7 +26,9 @@ class AdminChaptersController extends Controller
         else{
             $chapters = $user->camp->camp_type->chapters;
         }
-        return view('admin.chapters.index', compact('chapters'));
+        $title = "Kapitel";
+        $help = Help::where('title',$title)->first();
+        return view('admin.chapters.index', compact('chapters', 'title', 'help'));
     }
 
     /**
@@ -77,8 +80,12 @@ class AdminChaptersController extends Controller
     {
         //
         $chapter = Chapter::findOrFail($id);
+        $title = "Kapitel bearbeiten";
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Kapitel';
+        $help['main_route'] = '/admin/chapters';
 
-        return view('admin.chapters.edit', compact('chapter'));
+        return view('admin.chapters.edit', compact('chapter', 'help', 'title'));
     }
 
     /**

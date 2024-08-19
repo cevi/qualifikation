@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Help;
 use App\Helper\Helper;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,16 +36,18 @@ class AdminController extends Controller
         $surveys_fertig = $camp->surveys()->where('survey_status_id', config('status.survey_fertig'))->count();
 
         $title = 'Dashboard';
+        $help = Help::where('title',$title)->first();
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
-        return view('admin/index', compact('user', 'surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title', 'labels', 'datasets', 'surveys'));
+        return view('admin/index', compact('user', 'surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title', 'labels', 'datasets', 'surveys', 'help'));
     }
 
     public function changes()
     {
         $user = Auth::user();
         $title = 'Rückmeldungen / Änderungen';
+        $help = Help::where('title',$title)->first();
 
-        return view('admin/changes', compact('user', 'title'));
+        return view('admin/changes', compact('user', 'title', 'help'));
     }
 }

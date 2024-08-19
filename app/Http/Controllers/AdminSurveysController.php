@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\Helper;
 use App\Models\Answer;
 use App\Models\Chapter;
+use App\Models\Help;
 use App\Models\Question;
 use App\Models\Survey;
 use App\Models\SurveyChapter;
@@ -29,7 +30,10 @@ class AdminSurveysController extends Controller
         $camp = Auth::user()->camp;
         $title = 'Qualifikationen';
 
-        return view('admin.surveys.index', compact('camp', 'title'));
+        $help = Help::where('title',$title)->first();
+
+
+        return view('admin.surveys.index', compact('camp', 'title', 'help'));
     }
 
     public function createDataTables()
@@ -47,7 +51,7 @@ class AdminSurveysController extends Controller
             ->addColumn('user', function ($survey) {
                 $username = $survey->campuser ? $survey->campuser->user['username'] : '';
 
-                return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil">'.$username.'</a>';
+                return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$username.'</a>';
             })
             ->addColumn('responsible', function (Survey $survey) {
                 return $survey->campuser->leader ? $survey->campuser->leader['username'] : '';
@@ -79,11 +83,11 @@ class AdminSurveysController extends Controller
                     $result = $result.'<li class="'.$step.' step0" title="'.$survey_status['name'].'"></li>';
                 }
 
-                return $result;
+                return $result . "</ul></div>";
             })
             ->addColumn('Actions', function ($survey) {
-                return '<a href='.\URL::route('survey.compare', $survey['slug']).'>Zur Qualifikationen</a><br><br>
-                <a href='.\URL::route('surveys.edit', $survey->slug).'>Bearbeiten</a>';
+                return '<a href='.\URL::route('survey.compare', $survey['slug']).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Zur Qualifikationen</a><br><br>
+                <a href='.\URL::route('surveys.edit', $survey->slug).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Bearbeiten</a>';
             })
             ->rawColumns(['user', 'Actions', 'status'])
             ->make(true);
@@ -150,8 +154,13 @@ class AdminSurveysController extends Controller
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
         $survey_statuses_id = SurveyStatus::pluck('name', 'id')->all();
         $user_id = $survey->campUser->user();
+        $title = 'Qualifikation bearbeiten';
 
-        return view('admin.surveys.edit', compact('survey', 'users', 'leaders', 'survey_statuses_id', 'user_id'));
+        $help = Help::where('title',$title)->first();
+        $help['main_route'] = '/admin/surveys';
+        $help['main_title'] = 'Qualifikationen';
+
+        return view('admin.surveys.edit', compact('survey', 'users', 'leaders', 'survey_statuses_id', 'user_id', 'title', 'help'));
     }
 
     /**

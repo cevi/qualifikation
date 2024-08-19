@@ -20,27 +20,11 @@
                 </li>
                 @if ((isset(Auth::user()->camp) OR (Auth::user()->isAdmin())))
                     <li>
-                        <button type="button"
-                                class="flex items-center p-2 w-full text-base font-normal text-gray-900 transition duration-75 group dark:text-white  hover:bg-gray-100 dark:hover:bg-gray-700"
-                                aria-controls="dropdown-persons" data-collapse-toggle="dropdown-persons">
+                        <a href="{{route('users.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fas fa-users"></i>
-                            <span class="flex-1 ml-3 text-left whitespace-nowrap" sidebar-toggle-item>Personen</span>
-                            <i class="fa-solid fa-angle-down"></i>
-                        </button>
-                        <ul id="dropdown-persons" class="hidden py-2 space-y-2">
-                            <li>
-                                <a href="{{route('users.index')}}"
-                                   class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Alle
-                                    Personen</a>
-                            </li>
-                            @if (!Auth::user()->demo)
-                                <li>
-                                    <a href="{{route('users.create')}}"
-                                       class="flex items-center p-2 pl-11 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Person
-                                        erstellen</a>
-                                </li>
-                            @endif
-                        </ul>
+                            <span class="ml-3">Personen</span>
+                        </a>
                     </li>
                 @endif
             </ul>
@@ -93,6 +77,13 @@
                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fas fa-clipboard-list"></i>
                             <span class="ml-3">Feedbacks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('helps.index')}}"
+                           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fa-solid fa-question"></i>
+                            <span class="ml-3">Hilfe-Artikel</span>
                         </a>
                     </li>
                 @endif

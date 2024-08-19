@@ -999,6 +999,11 @@ a.text-hover-dark:focus, a.text-hover-dark:hover {
     color: var(--color-text-primary);
 }
 
+.icon-outlined-white {
+    border-color: var(--color-border);
+    color: var(--color-border);
+}
+
 
 /*
      CONTENT BOXES

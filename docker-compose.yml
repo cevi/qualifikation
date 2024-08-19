@@ -1,9 +1,8 @@
 # For more information: https://laravel.com/docs/sail
-version: '3'
 services:
     laravel.test:
         build:
-            context: ./vendor/laravel/sail/runtimes/8.1
+            context: ./docker/8.1
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
@@ -12,6 +11,7 @@ services:
             - 'host.docker.internal:host-gateway'
         ports:
             - '${APP_PORT:-80}:80'
+            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -23,6 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
+            - phpmyadmin
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -42,6 +43,14 @@ services:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+    phpmyadmin:
+        image: 'phpmyadmin:latest'
+        ports:
+        - 8080:80
+        networks:
+        - sail
+        environment:
+        - PMA_ARBITRARY=1
 networks:
     sail:
         driver: bridge

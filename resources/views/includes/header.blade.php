@@ -24,10 +24,12 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
     <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <!-- Styles -->
-    <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.4/dist/flowbite.min.css"/>
-    <link href="{{asset('css/app.css')}}" rel="stylesheet">
-    <link href="{{asset('css/libs.css')}}" rel="stylesheet">
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'])
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <script>
         // It's best to inline this in `head` to avoid FOUC (flash of unstyled content) when changing pages or themes
         if (localStorage.getItem('color-theme') === 'dark' ||

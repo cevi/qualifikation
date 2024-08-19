@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\PostsExport;
-use App\Models\HealthForm;
+use Str;
+use App\Models\Help;
 use App\Models\Post;
+use App\Models\HealthForm;
+use App\Exports\PostsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use Str;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -37,8 +38,9 @@ class PostController extends Controller
             $users_select = $users->pluck('username', 'id')->all();
         }
         $title = 'Rückmeldungen';
+        $help = Help::where('title',$title)->first();
 
-        return view('home.posts.index', compact('aktUser', 'users', 'posts_user', 'posts_no_user', 'users_select', 'title'));
+        return view('home.posts.index', compact('aktUser', 'users', 'posts_user', 'posts_no_user', 'users_select', 'title','help'));
     }
 
     /**
@@ -74,7 +76,7 @@ class PostController extends Controller
                 File::makeDirectory($directory, 0775, true);
             }
             $input['uuid'] = Str::uuid();
-            $name = str_replace(' ', '', $file->getClientOriginalName());
+            $name = $input['uuid'] . '_' . str_replace(' ', '', $file->getClientOriginalName());
             $file->move($directory, $name);
             $input['file'] = $save_path . '/' . $name;
         }

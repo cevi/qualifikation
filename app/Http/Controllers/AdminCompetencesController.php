@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Help;
 use App\Models\CampType;
-use App\Models\Competence;
 use App\Models\Question;
+use App\Models\Competence;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,8 +31,10 @@ class AdminCompetencesController extends Controller
             $competences = $camp_type->competences;
             $camp_types =  $user->camp->camp_type()->pluck('name', 'id')->toArray();
         }
+        $title = "Kernkompetenzen";
+        $help = Help::where('title',$title)->first();
 
-        return view('admin.competences.index', compact('competences', 'questions', 'camp_types'));
+        return view('admin.competences.index', compact('competences', 'questions', 'camp_types', 'help', 'title'));
     }
 
     /**
@@ -59,8 +62,12 @@ class AdminCompetencesController extends Controller
         //
         $questions = Question::pluck('competence', 'id')->all();
         $camp_types = CampType::pluck('name', 'id')->all();
+        $title = "Kernkompetenz bearbeiten";
+        $help = Help::where('title',$title)->first();
+        $help['main_title'] = 'Kernkompetenzen';
+        $help['main_route'] = '/admin/competences';
 
-        return view('admin.competences.edit', compact('competence', 'questions', 'camp_types'));
+        return view('admin.competences.edit', compact('competence', 'questions', 'camp_types', 'title', 'help'));
     }
 
     /**
