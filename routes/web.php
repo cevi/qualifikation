@@ -114,7 +114,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
         
-        Route::resource('admin/camp_types', 'CampTypesController');
+        Route::resource('admin/camp_types', 'CampTypesController', ['as' => 'admin']);
 
         Route::resource('admin/questions', 'AdminQuestionsController');
         Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
