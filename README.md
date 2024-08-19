@@ -57,6 +57,8 @@ To run the app in production-mode, use the following command (this also works on
 docker compose -f docker-compose.prod.yml up --build [-d]
 ```
 
+The CI/CD pipeline will automatically deploy the app to the production server upon a push to the `master` branch.
+
 ### Caveats for Production Environment
 
 The dev and production environment differs quite a bit. In production, we split the web server into two containers:
