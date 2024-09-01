@@ -50,8 +50,10 @@
                     showCancelButton: true,
                     confirmButtonText: 'Ja',
                     cancelButtonText: 'Abbrechen',
-                }).then((willCreate) => {
-                    if (willCreate) {
+                    confirmButtonColor: 'blue',
+                    cancelButtonColor: 'red',
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         $.ajaxSetup({
                             headers: {
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
