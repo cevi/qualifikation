@@ -3,13 +3,17 @@
         $('.confirm').on('click', function(e){
             e.preventDefault(); //cancel default action
 
-            swal({
+            Swal.fire({
                 title: 'Rückmeldung löschen?',
                 text: 'Willst du die Rückmeldung wirklich löschen?',
                 icon: 'info',
-                buttons: ["Abbrechen", "Ja"],
-            }).then((willDelete) => {
-                if (willDelete) {
+                showCancelButton: true,
+                confirmButtonText: 'Ja',
+                cancelButtonText: 'Abbrechen',
+                confirmButtonColor: 'blue',
+                cancelButtonColor: 'red',
+            }).then((result) => {
+                if (result.isConfirmed) {
                     document.getElementById("DeleteForm").submit();
                 }
             });
@@ -21,4 +25,5 @@
         $('#user_id').val(post['user_id']);
         $('#show_on_survey').prop("checked", post['show_on_survey']);
     }
+    window.editPost = editPost;
 </script>

@@ -66,8 +66,10 @@
                     showCancelButton: true,
                     confirmButtonText: 'Ja',
                     cancelButtonText: 'Abbrechen',
-                }).then((willDelete) => {
-                    if (willDelete) {
+                    confirmButtonColor: 'blue',
+                    cancelButtonColor: 'red',
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         document.getElementById("DeleteForm").submit();
                     }
                 });
