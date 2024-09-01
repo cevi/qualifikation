@@ -48,7 +48,7 @@ class DemoCampSeeder extends Seeder
             'user_id' => $user['id']], [
             'role_id' => config('status.role_Teilnehmer'),
         ]);
-        if($camp->participants->count === 0){
+        if($camp->participants->count() === 0){
             for ($i = 0; $i < 4; $i++) {
                 $name = 'leiter' . ($i + 1) . '@demo';
                 $leader = User::factory()
