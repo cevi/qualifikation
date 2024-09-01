@@ -8,8 +8,10 @@ window._ = _;
  * code may be modified to fit the specific needs of your application.
  */
 
+import 'bootstrap/dist/js/bootstrap.bundle';
+
 try {
-    window.Popper = require('popper.js').default;
+    // window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
