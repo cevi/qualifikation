@@ -147,7 +147,6 @@ class AdminUsersController extends Controller
 
     public function import()
     {
-
         if (!Auth::user()->demo) {
             $aktUser = Auth::user();
             $camp = $aktUser->camp;
@@ -227,7 +226,7 @@ class AdminUsersController extends Controller
                     return true;
                 } else {
                     $errorText = 'Der DB-Import steht nur den Kursleitern zur Verfügung';
-                    abort(412, $errorText);
+                    return response()->json(['error' => $errorText, 'ok' => false], 404); // Status code here
                 }
             } else {
                 $errorText = '';
@@ -241,7 +240,8 @@ class AdminUsersController extends Controller
                 } elseif (!$camp->group['api_token']) {
                     $errorText = $errorText + ' Deine Region hat den DB-Import nicht freigeschalten.';
                 }
-                abort(412, $errorText);
+                // abort(412, $errorText);
+                return response()->json(['error' => $errorText, 'ok' => false], 404); // Status code here
             }
         }
     }
