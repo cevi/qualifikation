@@ -23,12 +23,12 @@
                             <span class="flex-1 ml-3 text-left whitespace-nowrap">       
                                 Dashboard
                             </span>
-                        </a>
+                        </a>    
                     </li>
                 @endif
                 @if (!Auth::user()->isTeilnehmer())
-                    @isset($users)
-                        @if(count($users)>0)
+                    @isset($camp)
+                        @if($camp->participants()->count()>0)
                             <li>
                                 <button
                                     type="button"
@@ -59,9 +59,10 @@
                                 class="hidden z-50 my-4 w-56 text-base list-none navbar-background rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                                 id="dropdown-users"
                             >
-                                @if ($users)
+                            
+                                @if(count($camp->my_participants)>0)
                                     <ul aria-labelledby="dropdown-users" class="py-1 text-gray-700 dark:text-gray-300">
-                                        @foreach ($users as $user_profile)
+                                        @foreach ($camp->my_participants as $user_profile)
                                             <li>
                                                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                                                     href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
@@ -69,6 +70,20 @@
                                         @endforeach
                                     </ul>
                                 @endif
+                                
+                                @if(count($camp->other_participants)>0 && count($camp->my_participants)>0)
+                                <hr>
+                                @endif
+                                @if(count($camp->other_participants)>0)
+                                <ul aria-labelledby="dropdown-users" class="py-1 text-gray-700 dark:text-gray-300">
+                                    @foreach ($camp->other_participants as $user_profile)
+                                        <li>
+                                            <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
+                                                href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                             </div>
                         @endif
                     @endisset

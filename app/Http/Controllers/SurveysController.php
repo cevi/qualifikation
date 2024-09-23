@@ -29,7 +29,6 @@ class SurveysController extends Controller
         } else {
             return redirect('/home');
         }
-        $users = $aktUser->camp->participants;
         $answers = Answer::all();
         $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
@@ -41,7 +40,7 @@ class SurveysController extends Controller
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.survey', compact('aktUser', 'surveys','labels', 'datasets', 'answers', 'camp', 'users', 'posts', 'title', 'subtitle', 'help'));
+        return view('home.survey', compact('aktUser', 'surveys','labels', 'datasets', 'answers', 'camp', 'posts', 'title', 'subtitle', 'help'));
     }
 
     public function update(Request $request, Survey $survey)
@@ -101,14 +100,13 @@ class SurveysController extends Controller
     public function compare(Survey $survey)
     {
         $aktUser = Auth::user();
-        $camp = $aktUser->camp;
+        $camp = $aktUser->camp()->first();
         $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $camp['id'])->first();
         $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
 
         if ($aktUser->isTeilnehmer() && $camp_user->user->id != $aktUser['id']) {
             return redirect()->back();
         } else {
-            $users = $camp->participants;
             $answers = Answer::all();
             $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich';
@@ -117,7 +115,7 @@ class SurveysController extends Controller
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
-            return view('home.compare', compact('aktUser', 'surveys','labels', 'datasets', 'camp', 'users', 'answers', 'posts', 'title', 'subtitle', 'help'));
+            return view('home.compare', compact('aktUser', 'surveys','labels', 'datasets', 'camp', 'answers', 'posts', 'title', 'subtitle', 'help'));
         }
     }
 

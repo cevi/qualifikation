@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Camp extends Model
 {
@@ -52,6 +53,16 @@ class Camp extends Model
     public function participants()
     {
         return $this->allUsers()->where('camp_users.role_id', config('status.role_Teilnehmer'))->OrderBy('username');
+    }
+    
+    public function my_participants()
+    {
+        return $this->participants()->where('camp_users.leader_id', Auth::user()->id);
+    }
+
+    public function other_participants()
+    {
+        return $this->participants()->where('camp_users.leader_id', '<>', Auth::user()->id);
     }
 
     public function camp_users()

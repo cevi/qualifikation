@@ -27,16 +27,12 @@ class UsersController extends Controller
         if (! $aktUser) {
             return redirect('/home');
         }
-        $users = $aktUser->camp->participants;
-        $users_id = [];
-        if ($users) {
-            $users_id = $users->pluck('id')->all();
-        }
+        $camp = $aktUser->camp()->first();
         if ($aktUser->id == $user->id) {
             
             $title = 'Profil';
             $help = Help::where('title',$title)->first();
-            return view('home.user', compact('aktUser', 'users', 'title', 'help'));
+            return view('home.user', compact('aktUser', 'camp', 'title', 'help'));
         } else {
             return redirect()->back();
         }
@@ -47,11 +43,7 @@ class UsersController extends Controller
         //
         $aktUser = Auth::user();
         if (! $aktUser->isTeilnehmer()) {
-            $users = $aktUser->camp->participants;
-            $users_id = [];
-            if ($users) {
-                $users_id = $users->pluck('id')->all();
-            }
+            $camp = $aktUser->camp()->first();
             $camp_user = CampUser::where('user_id', $user['id'])->where('camp_id', $aktUser->camp['id'])->first();
 
             $posts = Post::where('user_id', $user->id)->get()->sortByDesc('created_at');
@@ -67,7 +59,7 @@ class UsersController extends Controller
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'users', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help'));
+            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help'));
         } else {
             return redirect()->back();
         }
