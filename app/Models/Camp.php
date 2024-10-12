@@ -62,7 +62,8 @@ class Camp extends Model
 
     public function other_participants()
     {
-        return $this->participants()->where('camp_users.leader_id', '<>', Auth::user()->id);
+        return $this->participants()->where(function ($query){
+            $query->whereNull('camp_users.leader_id')->orWhere('camp_users.leader_id', '<>', Auth::user()->id);});
     }
 
     public function camp_users()

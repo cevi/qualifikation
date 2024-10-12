@@ -75,7 +75,7 @@
                                 <hr>
                                 @endif
                                 @if(count($camp->other_participants)>0)
-                                <ul aria-labelledby="dropdown-users" class="py-1 text-gray-700 dark:text-gray-300">
+                                <ul aria-labelledby="dropdown-users" class="h-dropdown py-1 text-gray-700 dark:text-gray-300 overflow-y-auto">
                                     @foreach ($camp->other_participants as $user_profile)
                                         <li>
                                             <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
