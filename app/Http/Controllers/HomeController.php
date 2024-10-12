@@ -28,10 +28,9 @@ class HomeController extends Controller
     public function index()
     {
         $aktUser = Auth::user();
-        $users = [];
+        $camp = $aktUser->camp()->first();
         $surveys = [];
         if ($aktUser->camp) {
-            $users = $aktUser->camp->participants;
             if ($aktUser->isCampleader() || $aktUser->role_id == config('status.role_Stabsleiter')) {
                 $camp_users_id = CampUser::where('camp_id', $aktUser->camp['id'])->pluck('id')->all();
             } else {
@@ -49,6 +48,6 @@ class HomeController extends Controller
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.surveys', compact('aktUser', 'users', 'surveys', 'title', 'labels', 'datasets', 'help'));
+        return view('home.surveys', compact('aktUser', 'camp', 'surveys', 'title', 'labels', 'datasets', 'help'));
     }
 }

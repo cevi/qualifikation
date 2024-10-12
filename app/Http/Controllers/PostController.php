@@ -29,18 +29,14 @@ class PostController extends Controller
     {
         //
         $aktUser = Auth::user();
-        $camp = $aktUser->camp;
+        $camp = $aktUser->camp()->first();
         $posts_no_user = $aktUser->posts->whereNull('user_id')->where('camp_id', $camp->id);
         $posts_user = $aktUser->posts->whereNotNull('user_id')->where('camp_id', $camp->id);
-        $users = $aktUser->camp->participants;
-        $users_select = [];
-        if ($users) {
-            $users_select = $users->pluck('username', 'id')->all();
-        }
+         $users_select = $aktUser->camp->participants->pluck('username', 'id')->all();
         $title = 'Rückmeldungen';
         $help = Help::where('title',$title)->first();
 
-        return view('home.posts.index', compact('aktUser', 'users', 'posts_user', 'posts_no_user', 'users_select', 'title','help'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'users_select', 'title','help'));
     }
 
     /**

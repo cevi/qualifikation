@@ -319,3 +319,7 @@ select option {
 .background--bg {
     background-color: var(--color-bg-primary);
 }
+
+.h-dropdown{
+    height: 85vh;
+}
