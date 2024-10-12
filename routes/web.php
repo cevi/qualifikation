@@ -71,6 +71,8 @@ Auth::routes(['verify' => true]);
 
 Route::get('login/hitobito', [LoginController::class, 'redirectToHitobitoOAuth'])->name('login.hitobito');
 Route::get('login/hitobito/callback', [LoginController::class, 'handleHitobitoOAuthCallback'])->name('login.hitobito.callback');
+Route::get('login/hitobito_jemk', [LoginController::class, 'redirectToHitobitoJEMKOAuth'])->name('login.hitobito_jemk');
+Route::get('login/hitobito_jemk/callback', [LoginController::class, 'handleHitobitoJEMKOAuthCallback'])->name('login.hitobito_jemk.callback');
 
 Route::group(['middleware' => 'verified'], function () {
     Route::get('/home', 'HomeController@index');
