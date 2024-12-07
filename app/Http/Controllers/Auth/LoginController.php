@@ -92,7 +92,7 @@ class LoginController extends Controller
 
     public function redirectToHitobitoJEMKOAuth()
     {
-        return Socialite::driver('hitobito_jemk')->setScopes(['name', 'with_roles'])->redirect();
+        return Socialite::driver('hitobito_jemk')->setScopes(['name'])->redirect();
     }
 
     public function handleHitobitoJEMKOAuthCallback(Request $request)

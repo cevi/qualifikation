@@ -16,6 +16,10 @@
                         {!! Form::text('foreign_id', null,  ['class' => 'form-control']) !!}
                     </div>
                     <div class="form-group">
+                        {!! Form::label('url', 'URL (Cevi-DB):') !!}
+                        {!! Form::text('url', null,  ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="form-group">
                         {!! Form::label('api_token', 'API Token (Cevi-DB):') !!}
                         {!! Form::text('api_token', null,  ['class' => 'form-control']) !!}
                     </div>
