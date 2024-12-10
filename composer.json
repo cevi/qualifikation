@@ -10,7 +10,6 @@
     "require": {
         "php": "^8.1",
         "andcarpi/laravel-popper": "^0.9.4",
-        "calebporzio/parental": "^1.0",
         "doctrine/dbal": "^3.0",
         "fakerphp/faker": "^1.21",
         "genealabs/laravel-caffeine": "^11.0",

@@ -13,6 +13,11 @@
                             href="{{ route('login.hitobito') }}">
                             Anmelden mit Cevi-DB
                         </a>
+                        <a
+                            class="focus:outline-none text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 btn-block {{ $errors->has('hitobito') ? ' is-invalid' : '' }}"
+                            href="{{ route('login.hitobito_jemk') }}">
+                            Anmelden mit JEMK-DB
+                        </a>
                         @if ($errors->has('hitobito'))
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $errors->first('hitobito') }}</strong>
