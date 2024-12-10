@@ -34,7 +34,15 @@ return [
         'base_url' => env('HITOBITO_BASE_URL', 'http://demo.hitobito.com'),
         'client_id' => env('HITOBITO_CLIENT_UID'),
         'client_secret' => env('HITOBITO_CLIENT_SECRET'),
-        'redirect' => env('HITOBITO_CALLBACK_URI', 'https://quali.cevi.tools/login/hitobito/callback'),
+        'redirect' => env('HITOBITO_CALLBACK_URI', 'https://demo.hitobito.com/login/hitobito/callback'),
     ],
+
+    'hitobito_jemk' => [
+        'base_url' => env('JEMK_BASE_URL', 'http://demo.hitobito.com'),
+        'client_id' => env('JEMK_CLIENT_UID'),
+        'client_secret' => env('JEMK_CLIENT_SECRET'),
+        'redirect' => env('JEMK_CALLBACK_URI', 'https://demo.hitobito.com/login/hitobito/callback'),
+    ],
+
 
 ];

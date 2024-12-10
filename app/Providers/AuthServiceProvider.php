@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use App\Auth\HitobitoProvider;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Auth\HitobitoProvider;
+use App\Auth\HitobitoJEMKProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         $this->bootHitobitoSocialite();
+        $this->bootHitobitoJEMKSocialite();
 
         //
     }
@@ -40,6 +42,23 @@ class AuthServiceProvider extends ServiceProvider
                 $config = config('services.hitobito');
 
                 return new HitobitoProvider(
+                    $this->app['request'], $config['base_url'], $config['client_id'],
+                    $config['client_secret'], $this->formatRedirectUrl($config),
+                    Arr::get($config, 'guzzle', [])
+                );
+            }
+        );
+    }
+
+    private function bootHitobitoJEMKSocialite()
+    {
+        $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
+        $socialite->extend(
+            'hitobito_jemk',
+            function ($app) {
+                $config = config('services.hitobito_jemk');
+
+                return new HitobitoJEMKProvider(
                     $this->app['request'], $config['base_url'], $config['client_id'],
                     $config['client_secret'], $this->formatRedirectUrl($config),
                     Arr::get($config, 'guzzle', [])

@@ -90,6 +90,34 @@ class LoginController extends Controller
         return $this->sendLoginResponse($request);
     }
 
+    public function redirectToHitobitoJEMKOAuth()
+    {
+        return Socialite::driver('hitobito_jemk')->setScopes(['name'])->redirect();
+    }
+
+    public function handleHitobitoJEMKOAuthCallback(Request $request)
+    {
+        if ($request->error) {
+            // User has denied access in Hitobito
+            return $this->redirectWithError('Zugriff in JEMK-DB verweigert.');
+        }
+        try {
+            $socialiteUser = Socialite::driver('hitobito_jemk')->setRequest($request)->setScopes(['name'])->user();
+            $user = $this->findOrCreateSocialiteUser($socialiteUser);
+        } catch (InvalidStateException $exception) {
+            // User has reused an old link or modified the redirect?
+            return $this->redirectWithError('Etwas hat nicht geklappt. Versuche es noch einmal.');
+        } catch (InvalidLoginProviderException $exception) {
+            return $this->redirectWithError('Melde dich bitte wie üblich mit Benutzernamen und Passwort an.');
+        } catch (Exception $exception) {
+            return $this->redirectWithError('Leider klappt es momentan gerade nicht. Versuche es später wieder, oder registriere dich mit einem klassischen Account.');
+        }
+
+        $this->guard()->login($user);
+
+        return $this->sendLoginResponse($request);
+    }
+
     private function redirectWithError($error)
     {
         return Redirect::route('login')->withErrors([

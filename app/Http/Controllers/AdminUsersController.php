@@ -151,7 +151,7 @@ class AdminUsersController extends Controller
             $aktUser = Auth::user();
             $camp = $aktUser->camp;
             if ($aktUser->foreign_id && $camp->foreign_id && $camp->group && $camp->group['api_token']) {
-                $url = 'https://db.cevi.ch/groups/' . $camp->group['foreign_id'] . '/events/' . $camp['foreign_id'] . '/participations.json';
+                $url = $camp->group['url'] . '/groups/' . $camp->group['foreign_id'] . '/events/' . $camp['foreign_id'] . '/participations.json';
                 $response = Curl::to($url)
                     ->withData(['token' => Crypt::decryptString($camp->group['api_token'])])
                     ->get();
@@ -210,9 +210,6 @@ class AdminUsersController extends Controller
                             } else {
                                 $user = Auth::user();
                             }
-//                        if(!$user->avatar){
-//                            $user->update(['avatar' => 'https://db.cevi.ch'. $participant->picture->url]);
-//                        }
                             if (!$user->email) {
                                 $user->update(['email' => $participant->email]);
                             }
