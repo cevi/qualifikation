@@ -34,6 +34,7 @@
     --color-fg-default: #adbac7;
     --color-accent-fg: #539bf5;
     --color-border: #dee2e6;
+    --color-logo: #1c2128;
 }
 
 .dark {
@@ -51,6 +52,7 @@
     --color-fg-default: #adbac7;
     --color-accent-fg: #539bf5;
     --color-border: #fafafa;
+    --color-logo:  #F4F7FA;
 }
 
 .text-dark__white {

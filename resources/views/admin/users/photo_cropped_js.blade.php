@@ -50,4 +50,10 @@
             }
         });
     })
+    $("#close").click(function(){
+        $modal.modal('hide');
+    })
+    $("#close_btn").click(function(){
+        $modal.modal('hide');
+    })
 </script>

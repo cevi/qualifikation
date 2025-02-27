@@ -1,4 +1,4 @@
-<div class="flex items-center lg:order-2">
+<div class="flex flex-shrink-0 justify-between items-center ml-4 lg:order-2">
     <x-camp-dropdown/>
     <x-user-dropdown/>
     <x-toggle-switch/>
