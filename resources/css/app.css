@@ -14,10 +14,10 @@
 @import './libs/dropify.min.css';
 @import './libs/custom.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+/* @tailwind base; */
+/* @tailwind components; */
+/* @tailwind utilities; */
+@import "tailwindcss";
 
 :root {
     --color-bg-primary: #F4F7FA;
