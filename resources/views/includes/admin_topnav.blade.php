@@ -1,8 +1,8 @@
 <nav class="dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
   <div class="flex flex-wrap justify-between items-center">
     <div class="flex justify-start items-center">
-      <a href="{{ url('/admin') }}" class="flex items-center justify-between mr-4">
-          <img src="/img/logo.svg" alt="QualiTool Logo" class="mr-3 h-6 lg:h-12">
+      <a class="navbar-brand" href="{{ url('/admin') }}"  class="flex items-center">
+        <x-logo/>
       </a>
     </div>
     <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">

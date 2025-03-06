@@ -71,7 +71,7 @@
                                     @endif
                                     
                                     @if(count($camp->other_participants)>0 && count($camp->my_participants)>0)
-                                    <hr>
+                                        <hr class="h-px bg-gray-400 border-0 dark:bg-gray-200">
                                     @endif
                                     @if(count($camp->other_participants)>0)
                                     <ul aria-labelledby="dropdown-users" class="h-dropdown py-1 text-gray-700 dark:text-gray-300 overflow-y-auto">
