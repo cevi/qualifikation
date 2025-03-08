@@ -11,12 +11,12 @@
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <a
-                                    class="focus:outline-none text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 btn-block {{ $errors->has('hitobito') ? ' is-invalid' : '' }}"
+                                    class="focus:outline-hidden text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 btn-block {{ $errors->has('hitobito') ? ' is-invalid' : '' }}"
                                     href="{{ route('login.hitobito') }}">
                                     Anmelden mit Cevi-DB
                                 </a>
                                 <a
-                                    class="focus:outline-none text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 btn-block {{ $errors->has('hitobito') ? ' is-invalid' : '' }}"
+                                    class="focus:outline-hidden text-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 btn-block {{ $errors->has('hitobito') ? ' is-invalid' : '' }}"
                                     href="{{ route('login.hitobito_jemk') }}">
                                     Anmelden mit JEMK-DB
                                 </a>
@@ -93,7 +93,7 @@
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
-                                    <button type="submit"  class="btn-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 mb-3">
+                                    <button type="submit"  class="btn-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800 mb-3">
                                         {{ __('Registrieren') }}
                                     </button>
                                 </div>

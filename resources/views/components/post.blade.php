@@ -1,5 +1,5 @@
 <section class="content">
-    <h3>{{$title}}</h3>
+    <h3 class="text-3xl font-bold dark:text-white">{{$title}}</h3>
     <div class="profile-table">
         @foreach ($posts as $post)
             <div class="row">

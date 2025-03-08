@@ -2005,7 +2005,7 @@ var safeBlur = $.ui.safeBlur = function( element ) {
 	// Support: IE9 - 10 only
 	// If the <body> is blurred, IE will switch windows, see #9420
 	if ( element && element.nodeName.toLowerCase() !== "body" ) {
-		$( element ).trigger( "blur" );
+		$( element ).trigger( "blur-xs" );
 	}
 };
 
@@ -7761,7 +7761,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 		this._removeClass( this.active.children( ".ui-menu-item-wrapper" ),
 			null, "ui-state-active" );
 
-		this._trigger( "blur", event, { item: this.active } );
+		this._trigger( "blur-xs", event, { item: this.active } );
 		this.active = null;
 	},
 
@@ -15748,7 +15748,7 @@ $.widget( "ui.tooltip", {
 
 		// Close open tooltips
 		$.each( this.tooltips, function( id, tooltipData ) {
-			var event = $.Event( "blur" );
+			var event = $.Event( "blur-xs" );
 			event.target = event.currentTarget = tooltipData.element[ 0 ];
 			that.close( event, true );
 		} );
@@ -15804,7 +15804,7 @@ $.widget( "ui.tooltip", {
 				var parent = $( this ),
 					blurEvent;
 				if ( parent.data( "ui-tooltip-open" ) ) {
-					blurEvent = $.Event( "blur" );
+					blurEvent = $.Event( "blur-xs" );
 					blurEvent.target = blurEvent.currentTarget = this;
 					that.close( blurEvent, true );
 				}
@@ -16082,7 +16082,7 @@ $.widget( "ui.tooltip", {
 		$.each( this.tooltips, function( id, tooltipData ) {
 
 			// Delegate to close method to handle common cleanup
-			var event = $.Event( "blur" ),
+			var event = $.Event( "blur-xs" ),
 				element = tooltipData.element;
 			event.target = event.currentTarget = element[ 0 ];
 			that.close( event, true );

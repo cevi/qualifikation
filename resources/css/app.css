@@ -1,23 +1,43 @@
-
-
-@import './libs/welcome.css';
-@import './libs/bootstrap.css';
-@import 'bootstrap-icons/font/bootstrap-icons.css';
-@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
+@import './libs/welcome.css' layer(base);
+@import './libs/bootstrap.css' layer(base);
+@import 'bootstrap-icons/font/bootstrap-icons.css' layer(base);
+@import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css' layer(base);
 /*@import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";*/
-@import 'datatables.net-select-bs5/css/select.bootstrap5.css';
+@import 'datatables.net-select-bs5/css/select.bootstrap5.css' layer(base);
 
-@import './libs/jquery-ui.css';
-@import './libs/jquery.mCustomScrollbar.css';
-@import './libs/swiper-bundle.min.css';
-@import './libs/style.default.premium.css';
-@import './libs/dropify.min.css';
-@import './libs/custom.css';
+@import './libs/jquery-ui.css' layer(base);
+@import './libs/jquery.mCustomScrollbar.css' layer(base);
+@import './libs/style.default.premium.css' layer(base);
+@import './libs/dropify.min.css' layer(base);
+@import './libs/custom.css' layer(base);
 
-/* @tailwind base; */
-/* @tailwind components; */
-/* @tailwind utilities; */
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@plugin 'flowbite/plugin';
+
+@source '../../node_modules/flowbite/**/*.js';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+/* @import "tailwindcss"; */
 
 :root {
     --color-bg-primary: #F4F7FA;
@@ -74,5 +94,4 @@
 .text-uppercase {
     letter-spacing: .1em;
 }
-
 

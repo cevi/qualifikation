@@ -17,78 +17,60 @@
                 <div id="accordion-flush-body-{{$chapter->chapter['number']}}" class="hidden"
                      aria-labelledby="accordion-flush-heading-{{$chapter->chapter['number']}}">
                     @foreach ($chapter->questions as $q_key => $question)
-                        <table class="table">
-                            <tbody>
-                            <tr class="{{$question->competence_text() ? 'core_competence':''}}">
-                                <td width="50px">{{$question->question['number']}}</td>
-                                <td width="150px">{{$question->question['competence']}}</td>
-                                <td width="300px"
+                        <div class="mx-2 my-4 row text-xl {{$question->competence_text() ? 'core_competence':''}}">
+                            <div class="col-sm-1 col-2">{{$question->question['number']}}</div>
+                            <div class="col-sm-3 col-10">{{$question->question['competence']}}</div>
+                            <div class="col-sm-8 col-12" 
+                            @if($question->competence_text())
+                                {{Popper::pop($question->competence_text())}}
+                                @endif>{{$question->question['name']}}
+
                                 @if($question->competence_text())
-                                    {{Popper::pop($question->competence_text())}}
-                                    @endif>{{$question->question['name']}}
-
-                                    @if($question->competence_text())
-                                        <i class="fas fa-info-circle"></i>
-                                    @endif
-                                </td>
-                            </tr>
-                            </tbody>
-
-                        </table>
-                        <div class="form-group row" style="padding-left:10px; padding-right:10px">
-                            <div class="col-sm-12">
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        @foreach ($answers as $answer)
-                                            @if ($aktUser->isLeader())
-
-                                                <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.3.' . $question->question['number'].$answer['id']])}}
-                                                    {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
-                                                </td>
-                                            @else
-                                                @isFirstSurvey($survey->survey_status_id)
-                                                <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                    {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.1.' .$question->question['number'].$answer['id']]) }}
-                                                    {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
-                                                </td>
-                                                @else
-                                                    <td width="50px" {{ Popper::pop($answer['description'])}}>
-                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.2.' . $question->question['number'].$answer['id']]) }}
-                                                        {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ") !!}
-                                                    </td>
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                    </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
-                            <div class="col-sm-2">
-                                @if($aktUser->isLeader())
-                                    {!! Form::label('comment_leader', 'Kommentar:') !!}
-                                @else
-                                    @isFirstSurvey($survey->survey_status_id)
-                                    {!! Form::label('comment_first', 'Kommentar:') !!}
-                                    @else
-                                        {!! Form::label('comment_second', 'Kommentar:') !!}
-                                    @endif
+                                    <i class="fas fa-info-circle"></i>
                                 @endif
                             </div>
-                            <div class="col-sm-10">
+                        </div>
+                        <div class="form-group" style="padding-left:10px; padding-right:10px">
+                            <div >
+                                <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                    @foreach ($answers as $answer)
+                                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                                            <div class="flex items-center ps-3"  {{ Popper::pop($answer['description'])}}>
+                                                @if ($aktUser->isLeader())
+                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.3.' . $question->question['number'].$answer['id']], ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500'])}}
+                                                    {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ", ['class' => 'w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300']) !!}
+                                                @else
+                                                    @isFirstSurvey($survey->survey_status_id)
+                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.1.' .$question->question['number'].$answer['id']], ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500']) }}
+                                                        {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ", ['class' => 'w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300']) !!}
+                                                    @else
+                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['sort-index']-1 . '.2.' . $question->question['number'].$answer['id']], ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500']) }}
+                                                        {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ", ['class' => 'w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300']) !!}
+                                                    @endif
+                                                @endif
+                                        </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <div class="mt-4 mb-6">
                                 @if($aktUser->isLeader())
-                                    {!! Form::textarea('comments['.$question['id'].']', $question['comment_leader'], ['class' => 'form-control', 'rows'=> 2]) !!}
+                                    {!! Form::label('comment_leader', 'Kommentar:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                                    {!! Form::textarea('comments['.$question['id'].']', $question['comment_leader'], ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'rows'=> 2]) !!}
                                 @else
                                     @isFirstSurvey($survey->survey_status_id)
-                                    {!! Form::textarea('comments['.$question['id'].']', $question['comment_first'], ['class' => 'form-control', 'rows'=> 2]) !!}
+                                        {!! Form::label('comment_first', 'Kommentar:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                                        {!! Form::textarea('comments['.$question['id'].']', $question['comment_first'], ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'rows'=> 2]) !!}
                                     @else
-                                        {!! Form::textarea('comments['.$question['id'].']', $question['comment_second'], ['class' => 'form-control', 'rows'=> 2]) !!}
+                                        {!! Form::label('comment_second', 'Kommentar:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}    
+                                        {!! Form::textarea('comments['.$question['id'].']', $question['comment_second'], ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'rows'=> 2]) !!}
                                     @endif
                                 @endif
                             </div>
                         </div>
+                        @if(!$loop->last)
+                            <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+                        @endif
                     @endforeach
                 </div>
             @endforeach
@@ -96,20 +78,20 @@
         @if($aktUser->isLeader())
             <br>
             {!! Form::label('comment', 'Bemerkung:') !!}
-            {!! Form::textarea('comment', null, ['class' => 'form-control', 'rows'=> 2]) !!}
+            {!! Form::textarea('comment', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'rows'=> 2]) !!}
             <br>
         @endif
         <div class="form-group row">
             <div class="col-sm-4">
                 
-                <button type="submit" name="action" value="save" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                <button type="submit" name="action" value="save" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800">
                     {{$survey->surveyName()}} speichern
                 </button>
             </div>
             @if ($aktUser->isTeilnehmer())
                 <div class="col-sm-4">
                     <button type="submit" name="action" value="close"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800">
                     {{$survey->surveyName()}} speichern und abschliessen
                     </button>
                 </div>

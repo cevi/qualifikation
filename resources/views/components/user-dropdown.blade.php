@@ -9,7 +9,7 @@
     </button>
     <!-- Dropdown menu -->
     <div
-    class="hidden z-50 my-4 w-56 text-base list-none navbar-background rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+    class="hidden z-50 my-4 w-56 text-base list-none navbar-background rounded-xs divide-y divide-gray-100 shadow-xs dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
     id="dropdown"
     >
         <div class="py-3 px-4">
