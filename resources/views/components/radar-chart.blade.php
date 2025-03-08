@@ -1,6 +1,6 @@
 <div class="card radar-chart-example">
     <div class="card-header d-flex align-items-center">
-        <h4>Kompetenzendarstellung {{$name}}</h4>
+        <h4 class="text-2xl font-bold dark:text-white">Kompetenzendarstellung {{$name}}</h4>
     </div>
     <div class="card-body">
         <div class="chart-container">

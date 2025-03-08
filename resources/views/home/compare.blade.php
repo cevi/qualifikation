@@ -6,7 +6,7 @@
         <x-page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         @if(!$aktUser->isTeilnehmer())
             <p>
-                <a type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                <a type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800"
                    href="{{route('survey.downloadPDF', $survey)}}">Druckansicht</a>
             </p>
             <p>
@@ -25,57 +25,58 @@
                 <div id="accordion-flush-body-{{$chapter->chapter['number']}}" class="hidden"
                      aria-labelledby="accordion-flush-heading-{{$chapter->chapter['number']}}">
 
-                    <table class="table col-sm-12">
-                        <thead>
-                        <tr>
-                            <th rowspan="2" width="50px">Nr.</th>
-                            <th rowspan="2" width="150px">Kompetenz</th>
-                            <th rowspan="2" width="300px">Thema</th>
-                            <th colspan="2" width="250">1. Selbsteinschätzung</th>
-                            @if($camp['secondsurveyopen'])
-                                <th colspan="2" width="250">2. Selbsteinschätzung</th>
-                            @endif
-                            @if(!$aktUser->isTeilnehmer())
-                                <th colspan="2" width="250">Leiter</th>
-                            @endif
-                        </tr>
-                        <tr>
-                            <th width="50px"></th>
-                            <th width="200px">Kommentar</th>
-                            @if($camp['secondsurveyopen'])
-                                <th width="50px"></th>
-                                <th width="200px">Kommentar</th>
-                            @endif
-                            @if(!$aktUser->isTeilnehmer())
-                                <th width="50px"></th>
-                                <th width="200px">Kommentar</th>
-                            @endif
-                        </tr>
+                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th rowspan="2" width="50px" class="px-6 py-3">Nr.</th>
+                                <th rowspan="2" width="150px" class="px-6 py-3">Kompetenz</th>
+                                <th rowspan="2" width="300px" class="px-6 py-3">Thema</th>
+                                <th colspan="2" width="250px" class="px-6 py-3">1. Selbsteinschätzung</th>
+                                @if($camp['secondsurveyopen'])
+                                    <th colspan="2" width="250px" class="px-6 py-3">2. Selbsteinschätzung</th>
+                                @endif
+                                @if(!$aktUser->isTeilnehmer())
+                                    <th colspan="2" width="250px" class="px-6 py-3">Leiter</th>
+                                @endif
+                            </tr>
+                            <tr>
+                                <th width="50px" class="px-6 py-3"></th>
+                                <th width="200px" class="px-6 py-3">Kommentar</th>
+                                @if($camp['secondsurveyopen'])
+                                    <th width="50px" class="px-6 py-3"></th>
+                                    <th width="200px" class="px-6 py-3">Kommentar</th>
+                                @endif
+                                @if(!$aktUser->isTeilnehmer())
+                                    <th width="50px" class="px-6 py-3"></th>
+                                    <th width="200px" class="px-6 py-3">Kommentar</th>
+                                @endif
+                            </tr>
                         </thead>
                         <tbody>
                         @foreach ($chapter->questions as $question)
-                            <tr class="{{$question->competence_text() ? 'core_competence':''}}">
-                                <td width="50px">{{$question->question['number']}}</td>
-                                <td width="150px">{{$question->question['competence']}}</td>
-                                <td width="300px"
-                                @if($question->competence_text())
-                                    {{Popper::pop($question->competence_text())}}
-                                    @endif>{{$question->question['name']}}
-
+                            <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 {{$question->competence_text() ? 'core_competence':''}}">
+                                <td width="50px" class="px-6 py-4">{{$question->question['number']}}</td>
+                                <td width="150px" class="px-6 py-4">{{$question->question['competence']}}</td>
+                                <td width="300px" class="px-6 py-4"
+                                    @if($question->competence_text())
+                                        {{Popper::pop($question->competence_text())}}
+                                    @endif
+                                >
+                                    {{$question->question['name']}}
                                     @if($question->competence_text())
                                         <i class="fas fa-info-circle"></i>
                                     @endif
                                 </td>
-                                <td width="50px" {{ Popper::pop($question->answer_first['description'])}}>{{$question->answer_first['name']}}</td>
-                                <td width="200px">{{$question['comment_first']}}</td>
+                                <td width="50px" class="px-6 py-4" {{ Popper::pop($question->answer_first['description'])}}>{{$question->answer_first['name']}}</td>
+                                <td width="200px" class="px-6 py-4">{{$question['comment_first']}}</td>
 
                                 @if($camp['secondsurveyopen'])
-                                <td width="50px" {{ Popper::pop($question->answer_second['description'])}}>{{$question->answer_second['name']}}</td>
-                                <td width="200px">{{$question['comment_second']}}</td>
+                                <td width="50px" class="px-6 py-4" {{ Popper::pop($question->answer_second['description'])}}>{{$question->answer_second['name']}}</td>
+                                <td width="200px" class="px-6 py-4">{{$question['comment_second']}}</td>
                                 @endif
                                 @if(!$aktUser->isTeilnehmer())
-                                    <td width="50px" {{ Popper::pop($question->answer_leader['description'])}}>{{$question->answer_leader['name']}}</td>
-                                    <td width="200px">{{$question['comment_leader']}}</td>
+                                    <td width="50px" class="px-6 py-4" {{ Popper::pop($question->answer_leader['description'])}}>{{$question->answer_leader['name']}}</td>
+                                    <td width="200px" class="px-6 py-4">{{$question['comment_leader']}}</td>
                                 @endif
                             </tr>
                         @endforeach

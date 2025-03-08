@@ -1,6 +1,6 @@
-<h2 id="accordion-flush-heading-{{$chapter->chapter['number']}}">
+<h2 class="text-4xl font-bold dark:text-white" id="accordion-flush-heading-{{$chapter->chapter['number']}}">
     <button type="button"
-            class="flex items-center justify-between w-full p-3 font-medium text-left text-gray-500 border border-b-0 border-gray-200 rounded-t-xl dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            class="flex items-center my-4 justify-between w-full p-3 font-medium text-left text-gray-500 border border-b-0 border-gray-200 rounded-xl dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
             data-accordion-target="#accordion-flush-body-{{$chapter->chapter['number']}}"
             aria-expanded="false"
             aria-controls="accordion-flush-body-{{$chapter->chapter['number']}}">

@@ -1,5 +1,5 @@
 @auth
-    <button type="button" data-dropdown-toggle="dropdown-curses" class="justify-center items-center py-2 px-4 mr-2 text-sm font-medium dark:text-white bg-primary-700 rounded-lg sm:inline-flex hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+    <button type="button" data-dropdown-toggle="dropdown-curses" class="justify-center items-center py-2 px-4 mr-2 text-sm font-medium dark:text-white bg-primary-700 rounded-lg sm:inline-flex hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-hidden dark:focus:ring-primary-800">
         <span class="flex-1 ml-3 text-left whitespace-nowrap">            
             @if(Auth::user()->camp && !Auth::user()->camp['global_camp'] )
                 {{Auth::user()->camp['name']}}
@@ -12,7 +12,7 @@
         </svg>
     </button>
     <div
-        class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+        class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow-xs dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
         id="dropdown-curses">
         <ul aria-labelledby="dropdown-curses" class="h-dropdown py-1 text-gray-700 dark:text-gray-300 overflow-y-auto" >
             @if(!Auth::user()->demo )
