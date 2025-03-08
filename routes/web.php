@@ -115,6 +115,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::get('admin/camps/export/',  ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
+        Route::get('camps/createDataTables', ['as' => 'camps.CreateDataTables', 'uses' => 'AdminCampsController@createDataTables']);
         
         Route::resource('admin/camp_types', 'CampTypesController', ['as' => 'admin']);
 

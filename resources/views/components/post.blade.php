@@ -54,7 +54,7 @@
                     @endif
                 </div>
             </div>
-            <hr>
+            <hr class="h-px bg-gray-400 border-0 dark:bg-gray-200">
         @endforeach
     </div>
 </section>

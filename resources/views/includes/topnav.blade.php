@@ -62,21 +62,21 @@
                                             @foreach ($camp->my_participants as $user_profile)
                                                 <li>
                                                     <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
+                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
                                     @endif
                                     
                                     @if(count($camp->other_participants)>0 && count($camp->my_participants)>0)
-                                    <hr>
+                                        <hr class="h-px bg-gray-400 border-0 dark:bg-gray-200">
                                     @endif
                                     @if(count($camp->other_participants)>0)
                                     <ul aria-labelledby="dropdown-users" class="h-dropdown py-1 text-gray-700 dark:text-gray-300 overflow-y-auto">
                                         @foreach ($camp->other_participants as $user_profile)
                                             <li>
                                                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
+                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
                                             </li>
                                         @endforeach
                                     </ul>
