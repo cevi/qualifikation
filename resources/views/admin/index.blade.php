@@ -51,7 +51,7 @@
         <section class="col-lg-10 dashboard-header section-padding">
             <div class="container-fluid">
                 <div
-                    class="grid mb-8 border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 md:mb-12 md:grid-cols-2">
+                    class="grid mb-8 border border-gray-200 rounded-lg shadow-2xs dark:border-gray-700 md:mb-12 md:grid-cols-2">
                     @foreach($surveys as $survey)
                         <figure
                             class="flex flex-col items-center justify-center p-8 text-center border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"

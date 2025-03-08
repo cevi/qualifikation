@@ -1,20 +1,18 @@
-<header class="flex flex-col antialiased">
-      <nav class="dark:bg-gray-800 bg-gray-100 border-b border-gray-200 px-4 lg:px-6 py-2.5 dark:border-gray-700 order-1">
-        <div class="flex justify-between items-center">
-
-            <div class="flex flex-shrink-0 justify-start items-center">
-                @auth
-                    <a class="navbar-brand" href="{{ url('/home') }}"  class="flex items-center">
-                        <x-logo/>
-                    </a>
-                @else
-                    <a class="navbar-brand" href="{{ url('/') }}"  class="flex items-center">
-                        <x-logo/>
-                    </a>
-                @endauth
-            </div>
-
-            <ul class="hidden flex-col justify-center mt-0 w-full text-sm font-medium text-gray-500 md:flex-row dark:text-gray-400 md:flex">
+<nav class="dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+    <div class="flex flex-wrap justify-between items-center">
+        <div class="flex shrink-0 justify-start items-center">
+            @auth
+                <a class="navbar-brand" href="{{ url('/home') }}"  class="flex items-center">
+                    <x-logo/>
+                </a>
+            @else
+                <a class="navbar-brand" href="{{ url('/') }}"  class="flex items-center">
+                    <x-logo/>
+                </a>
+            @endauth
+        </div>
+        <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
+            <ul class="flex flex-col font-medium lg:flex-row lg:space-x-8">
                 @auth
                     @if (Auth::user()->isCampleader())
                         <li>
@@ -55,7 +53,7 @@
                                     </button>
                                 </li>
                                 <div
-                                    class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                                    class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow-xs dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
                                     id="dropdown-users"
                                 >
                                 
@@ -64,21 +62,21 @@
                                             @foreach ($camp->my_participants as $user_profile)
                                                 <li>
                                                     <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
+                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
                                     @endif
                                     
                                     @if(count($camp->other_participants)>0 && count($camp->my_participants)>0)
-                                    <hr>
+                                        <hr class="h-px bg-gray-400 border-0 dark:bg-gray-200">
                                     @endif
                                     @if(count($camp->other_participants)>0)
                                     <ul aria-labelledby="dropdown-users" class="h-dropdown py-1 text-gray-700 dark:text-gray-300 overflow-y-auto">
                                         @foreach ($camp->other_participants as $user_profile)
                                             <li>
                                                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->leader_id === Auth::user()->id ? '*' : ''}}{{$user_profile->username}}</a>
+                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -99,9 +97,9 @@
                     @endif
                 @endauth
             </ul>
-
-            
-            <x-right-navbar/>
         </div>
-    </nav>
-</header>
+
+        
+        <x-right-navbar/>
+    </div>
+</nav>

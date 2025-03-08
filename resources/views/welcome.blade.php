@@ -8,21 +8,19 @@
             <div class="overlay-content py-5">
                 <div class="container py-4">
                     <!-- Hero slider-->
-                    <div class="swiper-container homepage-slider">
-                        <div class="swiper-wrapper">
-                            <!-- Hero Slide-->
-                            <div class="swiper-slide h-auto mb-5">
-                                <div class="row gy-5 h-100 align-items-center">
-                                    <div class="col-lg-5 text-lg-end">
-                                        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl">
-                                            Online Qualifikationstool für J+S-Kurse</h1>
-                                            <p class="mb-6 text-lg font-normal lg:text-xl8">
-                                                Verwalte und Erstelle Qualifikationen für deinen
-                                                    J+S-Lagersport/Trekking-Kurs nach dem offiziellen Dokument.
-                                            </p>
-                                    </div>
-                                    <div class="col-lg-7"><img class="img-fluid" src="img/template-homepage.png" alt="">
-                                    </div>
+                    <div class="homepage-slider">>
+                        <!-- Hero Slide-->
+                        <div class=" h-auto mb-5">
+                            <div class="row gy-5 h-100 align-items-center">
+                                <div class="col-lg-5 text-lg-end">
+                                    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl">
+                                        Online Qualifikationstool für J+S-Kurse</h1>
+                                        <p class="mb-6 text-lg font-normal lg:text-xl8">
+                                            Verwalte und Erstelle Qualifikationen für deinen
+                                                J+S-Lagersport/Trekking-Kurs nach dem offiziellen Dokument.
+                                        </p>
+                                </div>
+                                <div class="col-lg-7"><img class="img-fluid" src="img/template-homepage.png" alt="">
                                 </div>
                             </div>
                         </div>
@@ -121,10 +119,10 @@
         <section class="py-5 bg-pentagon">
             <div class="container py-4">
                 <!-- Counters-->
-                <div class="row gy-4 text-center" id="counterUp">
+                <div class="row gy-4 text-center text-gray-900" id="counterUp">
                     <div class="col-lg-6 col-sm-6">
                         <div class="text-center">
-                            <div class="icon-outlined icon-outlined-primary icon-lg mx-auto mb-3 icon-thin"><i
+                            <div class="icon-outlined text-gray-900 icon-lg mx-auto mb-3 icon-thin"><i
                                     class="fa-solid fa-campground"></i></div>
                             <h2 class="text-4xl counter font-bold" data-counter="{{$camp_counter}}">0</h2>
                             <h3 class="text-3xl font-bold">Kurse</h2>
@@ -132,7 +130,7 @@
                     </div>
                     <div class="col-lg-6 col-sm-6">
                         <div class="text-center">
-                            <div class="icon-outlined icon-outlined-primary icon-lg mx-auto mb-3 icon-thin"><i
+                            <div class="icon-outlined text-gray-900 icon-lg mx-auto mb-3 icon-thin"><i
                                     class="fa-solid fa-poll-h"></i></div>
                             <h2 class="text-4xl counter font-bold" data-counter="{{$survey_counter}}">0</h2>
                             <h3 class="text-3xl font-bold">Qualifikationen</h3>
@@ -177,9 +175,9 @@
                     <div class="col-lg-6 p-3">
                         <h3 class="text-3xl font-bold">Versuche es gleich selbst mit einem Test-Login aus.</h3>
                     </div>
-                    <div class="col-lg-2 p-3"><a class="text-gray-100 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" href="/loginKursleiter">Kursleitende</a></div>
-                    <div class="col-lg-2 p-3"><a class="text-gray-100 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" href="/loginLeiter">Leitende</a></div>
-                    <div class="col-lg-2 p-3"><a class="text-gray-100 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" href="/loginTN">Teilnehmende</a></div>
+                    <div class="col-lg-2 p-3"><a class="text-gray-100 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-hidden focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" href="/loginKursleiter">Kursleitende</a></div>
+                    <div class="col-lg-2 p-3"><a class="text-gray-100 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-hidden focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" href="/loginLeiter">Leitende</a></div>
+                    <div class="col-lg-2 p-3"><a class="text-gray-100 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-hidden focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" href="/loginTN">Teilnehmende</a></div>
                 </div>
             </div>
         </div>
