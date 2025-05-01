@@ -36,7 +36,7 @@
             <thead>
             <tr>
                 <th scope="col">Name</th>
-                <th scope="col" width="10%">Bild</th>
+                <th scope="col">Bild</th>
                 <th scope="col">E-Mail</th>
                 <th scope="col">Rolle</th>
                 <th scope="col">Leiter</th>

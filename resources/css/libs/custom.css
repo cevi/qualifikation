@@ -300,7 +300,7 @@ select option {
 }
 
 .img-user {
-    height: 50px !important;
+    max-height: 50px;
 }
 
 @media print {

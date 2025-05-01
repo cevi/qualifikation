@@ -60,7 +60,7 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('picture', function ($user) {
-                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user" alt="" src="' . $user->getAvatar() . '"></a>';
+                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user rounded-full" alt="" src="' . $user->getAvatar() . '"></a>';
             })
             ->addColumn('user', function ($user) {
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('admin.users.edit', $user['slug']).'>'.$user['username'].'</a>';
