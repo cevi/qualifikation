@@ -86,17 +86,15 @@
             id="dropdown-dashboard"
         >
           <ul aria-labelledby="dropdown-dashboard" class="py-1 text-gray-700 dark:text-gray-300">
+            <li>
+              <a href="{{route('admin.camps.index')}}" class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">
+                <i class="fas fa-campground"></i>
+                <span class="flex-1 ml-3 text-left whitespace-nowrap">
+                  Kurs
+                </span>
+              </a>
+            </li>
             @if (Auth::user()->isAdmin() || !Auth::user()->camp->camp_type['default_type'])
-              <li>
-                <a href="{{route('admin.camps.index')}}"
-                  class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                >
-                  <i class="fas fa-campground"></i>
-                  <span class="flex-1 ml-3 text-left whitespace-nowrap">
-                    Kurs
-                  </span>
-                </a>
-              </li>
               <li>
                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                   href="{{route('admin.camp_types.index')}}"

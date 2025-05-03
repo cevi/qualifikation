@@ -18,7 +18,7 @@
                                 </div>
                             </div>
                             <div class="profile_user">
-                                <h3 class="user_name_max">{{$user->username}}</h3>
+                                <h3 class="user_name_max">{{$user->username}} {{$user->group['shortname'] ?? ''}}</h3>
                                 <p>{{$user->leader ? $user->leader->username : ''}}</p>
                             </div>
                             <br>

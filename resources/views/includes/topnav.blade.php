@@ -62,7 +62,7 @@
                                             @foreach ($camp->my_participants as $user_profile)
                                                 <li>
                                                     <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
+                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}} {{$user_profile->group['shortname'] ?? ''}}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -76,7 +76,7 @@
                                         @foreach ($camp->other_participants as $user_profile)
                                             <li>
                                                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
+                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}} {{$user_profile->group['shortname'] ?? ''}}</a>
                                             </li>
                                         @endforeach
                                     </ul>

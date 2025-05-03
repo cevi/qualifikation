@@ -53,7 +53,8 @@ class UsersController extends Controller
                 ->where('camp_user_id', $camp_user->id)->get()->values();
 
             $title = "Profil";
-            $subtitle = "von " . $user['username'];
+            $group = $user->group['shortname'] ?? '';;
+            $subtitle = "von " . $user['username'] . " " . $group;
             $help = Help::where('title',$title)->first();
 
             $labels = Helper::GetSurveysLabels($surveys);

@@ -33,7 +33,8 @@ class SurveysController extends Controller
         $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         $title = 'Qualifikation';
-        $subtitle = $survey->campUser->user['username'];
+        $group = $survey->campUser->user->group['shortname'] ?? '';
+        $subtitle = $survey->campUser->user['username'] . " " . $group;
         $help = Help::where('title',$title)->first();
 
 
@@ -110,7 +111,8 @@ class SurveysController extends Controller
             $answers = Answer::all();
             $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich';
-            $subtitle = $survey->campUser->user['username'];
+            $group = $survey->campUser->user->group['shortname'] ?? '';
+            $subtitle = $survey->campUser->user['username'] . " " . $group;
             $help = Help::where('title',$title)->first();
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
