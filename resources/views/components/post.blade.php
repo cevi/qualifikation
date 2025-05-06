@@ -44,11 +44,10 @@
                                 </div>
                                 {!! Form::close()!!}
                             </div>
-                            <div
-                                class="col-lg-12 col-md-6 col-sm-6 col-xs-6 text-right">
-                                <button class="btn btn-sm"
-                                        onclick="editPost({{$post}})"><i
-                                        class="fas fa-edit"></i></button>
+                            <div class="col-lg-12 col-md-6 col-sm-6 col-xs-6 text-right">
+                                <a href="{{$user ? route('profile.post.edit', [$user, $post]) : route('posts.edit', $post)}}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                             </div>
                         </div>
                     @endif

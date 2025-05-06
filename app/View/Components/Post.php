@@ -13,19 +13,21 @@ class Post extends Component
     public $title;
 
     public $editable;
+    public $user;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($posts, $showLeader, $title, $editable = true)
+    public function __construct($posts, $showLeader, $title, $editable = true,  $user = null)
     {
         //
         $this->posts = $posts;
         $this->showLeader = $showLeader;
         $this->title = $title;
         $this->editable = $editable;
+        $this->user = $user;
     }
 
     /**

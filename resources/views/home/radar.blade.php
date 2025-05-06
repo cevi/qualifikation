@@ -35,6 +35,7 @@
                     options: {
                         scales: {
                             r: {
+                                startAngle: 15,
                                 min: -2,
                                 max: 2,
                                 ticks: {
