@@ -48,7 +48,9 @@ class UsersController extends Controller
         if (! $aktUser->isTeilnehmer()) {
             $camp = $aktUser->camp()->first();
             $camp_user = CampUser::where('user_id', $user['id'])->where('camp_id', $aktUser->camp['id'])->first();
-
+            if(! $camp_user) {
+                return redirect()->back();
+            }
             $posts = Post::where('user_id', $user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name', 'id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();

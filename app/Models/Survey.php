@@ -71,13 +71,11 @@ class Survey extends Model
                     $max_status = $camp['survey_status_id'];
                 }
 
-                $result = $this['survey_status_id'] < $max_status;
-                if ($result) {
-                    if ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id']) {
-                        $result = $this['survey_status_id'] <= config('status.survey_1offen');
-                        if (!$result) {
-                            $result = $camp['secondsurveyopen'];
-                        }
+                if (($this['survey_status_id'] < $max_status) &&
+                    ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id'])) {
+                    $result = ($this['survey_status_id'] <= config('status.survey_1offen'));
+                    if (!$result) {
+                        $result = $camp['secondsurveyopen'];
                     }
                 }
             }

@@ -121,7 +121,7 @@ class AdminSurveysController extends Controller
                 $input['name'] = 'Qualifikationsprozess';
                 $input['camp_user_id'] = $camp_user->id;
                 $user = User::find($camp_user['user_id']);
-                $input['slug'] = Str::slug($user['slug'] . '@' . $camp['name']);
+                $input['slug'] = Str::uuid();
                 $input['survey_status_id'] = config('status.survey_neu');
                 $survey = Survey::create($input);
                 foreach ($chapters as $chapter) {
