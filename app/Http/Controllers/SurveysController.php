@@ -28,7 +28,7 @@ class SurveysController extends Controller
         $camp = $aktUser->camp;
         $max_status =  config('status.survey_fertig');
         
-        if ($survey->TNisAllowed()) {
+        if ($survey->TNIsAllowed()) {
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader'])->where('id', $survey['id'])->get()->sortBy('user.username')->values();
         } else {
             return redirect('/home');
@@ -106,12 +106,12 @@ class SurveysController extends Controller
     {
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
-        $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $camp['id'])->first();
-        $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
-
-        if ($aktUser->isTeilnehmer() && ($camp_user->user->id != $aktUser['id'])) {
-            return redirect()->back();
+        $camp_user = $survey->campUser()->first();
+        
+        if ($survey->SurveyIsAllowed()) {
+            return redirect('/home');
         } else {
+            $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
             $answers = Answer::all();
             $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich';

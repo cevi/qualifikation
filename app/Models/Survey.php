@@ -58,28 +58,43 @@ class Survey extends Model
         return $this->belongsTo('App\Models\SurveyStatus');
     }
 
-    public function TNisAllowed()
+    public function TNIsAllowed()
+    {
+        $result = $this->SurveyIsAllowed() &&
+            ( $this['survey_status_id'] < config('status.survey_fertig'));
+        if(!$result){       
+            $aktUser = Auth::user();
+            $camp = $aktUser->camp;
+            if ($camp['status_control']){
+                $max_status = $camp['survey_status_id'];
+            }
+            else {
+                $max_status = config('status.survey_tnAbgeschlossen');
+            }
+
+            if (($this['survey_status_id'] < $max_status) &&
+                ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id'])) {
+                $result = ($this['survey_status_id'] <= config('status.survey_1offen'));
+                if (!$result) {
+                    $result = $camp['secondsurveyopen'];
+                }
+            }
+        }
+        return $result;
+    }
+
+    public function SurveyIsAllowed()
     {
         $aktUser = Auth::user();
         $result = $aktUser->isAdmin();
         if(!$result){
-            $result = ($aktUser->isLeader() && $this->campUser->leader['id'] == $aktUser['id'] && $this['survey_status_id'] < config('status.survey_fertig'));
-            if(!$result) {
-                $camp = $aktUser->camp;
-                if ($camp['status_control']){
-                    $max_status = $camp['survey_status_id'];
-                }
-                else {
-                    $max_status = config('status.survey_tnAbgeschlossen');
-                }
-
-                if (($this['survey_status_id'] < $max_status) &&
-                    ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id'])) {
-                    $result = ($this['survey_status_id'] <= config('status.survey_1offen'));
-                    if (!$result) {
-                        $result = $camp['secondsurveyopen'];
-                    }
-                }
+            $camp = $aktUser->camp;
+            $camp_survey = $this->campUser->camp;
+            if($camp === $camp_survey){
+             
+                $result = 
+                    $aktUser->isLeader() && 
+                    ($this->campUser->leader['id'] == $aktUser['id']);
             }
         }
         return $result;
