@@ -1,5 +1,5 @@
 @auth
-    <button type="button" data-dropdown-toggle="dropdown-curses" class="justify-center items-center py-2 px-4 mr-2 text-sm font-medium dark:text-white bg-primary-700 rounded-lg sm:inline-flex hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-hidden dark:focus:ring-primary-800">
+    <button type="button" data-dropdown-toggle="dropdown-curses" class="justify-center items-center py-2 px-4 mr-2 text-sm font-medium dark:text-white bg-primary-700 rounded-lg sm:inline-flex hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 focus:outline-hidden">
         <span class="flex-1 ml-3 text-left whitespace-nowrap">            
             @if(Auth::user()->camp && !Auth::user()->camp['global_camp'] )
                 {{Auth::user()->camp['name']}}

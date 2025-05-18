@@ -60,10 +60,11 @@ class Survey extends Model
 
     public function TNIsAllowed()
     {
+        $aktUser = Auth::user();
         $result = $this->SurveyIsAllowed() &&
-            ( $this['survey_status_id'] < config('status.survey_fertig'));
+            ( $this['survey_status_id'] < config('status.survey_fertig')) &&
+             (!$aktUser->isCampleader());
         if(!$result){       
-            $aktUser = Auth::user();
             $camp = $aktUser->camp;
             if ($camp['status_control']){
                 $max_status = $camp['survey_status_id'];
@@ -90,11 +91,11 @@ class Survey extends Model
         if(!$result){
             $camp = $aktUser->camp;
             $camp_survey = $this->campUser->camp;
-            if($camp === $camp_survey){
-             
+            if($camp == $camp_survey){
                 $result = 
-                    $aktUser->isLeader() && 
-                    ($this->campUser->leader['id'] == $aktUser['id']);
+                    ($aktUser->isCampleader()) ||
+                    ($aktUser->isLeader() && ($this->campUser->leader['id'] == $aktUser['id'])) ||
+                    ($aktUser->isTeilnehmer() && ($this->campUser->user['id'] == $aktUser['id']));
             }
         }
         return $result;

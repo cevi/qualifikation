@@ -106,9 +106,8 @@ class SurveysController extends Controller
     {
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
-        $camp_user = $survey->campUser()->first();
         
-        if ($survey->SurveyIsAllowed()) {
+        if (!$survey->SurveyIsAllowed()) {
             return redirect('/home');
         } else {
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
