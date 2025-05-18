@@ -24,7 +24,11 @@ class SurveysController extends Controller
     public function survey(Survey $survey)
     {
         $aktUser = Auth::user();
-        if ($survey->TNisAllowed()) {
+        $aktUser = Auth::user();
+        $camp = $aktUser->camp;
+        $max_status =  config('status.survey_fertig');
+        
+        if ($survey->TNIsAllowed()) {
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader'])->where('id', $survey['id'])->get()->sortBy('user.username')->values();
         } else {
             return redirect('/home');
@@ -33,7 +37,8 @@ class SurveysController extends Controller
         $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         $title = 'Qualifikation';
-        $subtitle = $survey->campUser->user['username'];
+        $group = $survey->campUser->user->group['shortname'] ?? '';
+        $subtitle = $survey->campUser->user['username'] . " " . $group;
         $help = Help::where('title',$title)->first();
 
 
@@ -101,16 +106,16 @@ class SurveysController extends Controller
     {
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
-        $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $camp['id'])->first();
-        $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
-
-        if ($aktUser->isTeilnehmer() && $camp_user->user->id != $aktUser['id']) {
-            return redirect()->back();
+        
+        if (!$survey->SurveyIsAllowed()) {
+            return redirect('/home');
         } else {
+            $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
             $answers = Answer::all();
             $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich';
-            $subtitle = $survey->campUser->user['username'];
+            $group = $survey->campUser->user->group['shortname'] ?? '';
+            $subtitle = $survey->campUser->user['username'] . " " . $group;
             $help = Help::where('title',$title)->first();
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);

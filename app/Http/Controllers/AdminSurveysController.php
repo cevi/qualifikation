@@ -49,9 +49,12 @@ class AdminSurveysController extends Controller
 
         return DataTables::of($surveys)
             ->addColumn('user', function ($survey) {
-                $username = $survey->campuser ? $survey->campuser->user['username'] : '';
+                $username = $survey->campuser ? $survey->campuser->user['username']: '';
 
                 return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$username.'</a>';
+            })
+            ->addColumn('group', function (Survey $survey) {
+                return $survey->campuser->user->group ? $survey->campuser->user->group['shortname'] : '';
             })
             ->addColumn('responsible', function (Survey $survey) {
                 return $survey->campuser->leader ? $survey->campuser->leader['username'] : '';
@@ -118,7 +121,7 @@ class AdminSurveysController extends Controller
                 $input['name'] = 'Qualifikationsprozess';
                 $input['camp_user_id'] = $camp_user->id;
                 $user = User::find($camp_user['user_id']);
-                $input['slug'] = Str::slug($user['slug'] . '@' . $camp['name']);
+                $input['slug'] = Str::uuid();
                 $input['survey_status_id'] = config('status.survey_neu');
                 $survey = Survey::create($input);
                 foreach ($chapters as $chapter) {

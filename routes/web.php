@@ -83,11 +83,13 @@ Route::group(['middleware' => 'verified'], function () {
     Route::patch('/compare/{id}', ['as' => 'survey.finish', 'uses' => 'SurveysController@finish']);
     Route::get('/compare/{survey}/downloadPDF', ['as' => 'survey.downloadPDF', 'uses' => 'SurveysController@downloadPDF']);
 
-    Route::resource('/post', 'PostController');
-    Route::get('/post/downloadFile/{id}', ['as'=>'downloadFile','uses'=>'PostController@downloadFile']);
+    Route::resource('/posts', 'PostController');
+    Route::get('/posts/downloadFile/{id}', ['as'=>'downloadFile','uses'=>'PostController@downloadFile']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::get('/profile/{user}', ['as' => 'home.profile', 'uses' => 'UsersController@edit']);
+    Route::get('/profile/{user}/posts/{post}/edit', ['as' => 'profile.post.edit', 'uses' => 'UsersController@editPost']);
+    Route::post('/profile/{user}/posts/storePost', ['as' => 'profile.post.store', 'uses' => 'UsersController@storePost']);
     Route::patch('/changeClassifications/{id}/{color}', ['as' => 'users.changeClassifications', 'uses' => 'UsersController@changeClassifications']);
     Route::patch('/user/{id}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
 

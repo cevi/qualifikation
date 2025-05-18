@@ -41,9 +41,9 @@
                             @endif
                             <td>
                                 @if (!$aktUser->isTeilnehmer())
-                                    <a href="{{route('home.profile', $survey->campuser->user->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->campuser->user['username']}}</a>
+                                    <a href="{{route('home.profile', $survey->campuser->user->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->campuser->user['username']}} {{$survey->campuser->user->group['shortname'] ?? ''}}</a>
                                 @else
-                                    {{$survey->campuser->user['username']}}
+                                    {{$survey->campuser->user['username']}} {{$survey->campuser->user->group['shortname'] ?? ''}}
                                 @endif
                             </td>
                             <td class="px-6 py-4">{{$survey->survey_status['name']}}</td>

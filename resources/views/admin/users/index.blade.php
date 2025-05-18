@@ -36,12 +36,13 @@
             <thead>
             <tr>
                 <th scope="col">Name</th>
-                <th scope="col" width="10%">Bild</th>
+                <th scope="col">Bild</th>
                 <th scope="col">E-Mail</th>
                 <th scope="col">Rolle</th>
                 <th scope="col">Leiter</th>
                 <th scope="col">Klassifizierung</th>
                 <th scope="col">Kurs</th>
+                <th scope="col">Abteilung</th>
                 <th scope="col">Passwortänderung</th>
                 <th scope="col">Letztes Login</th>
             </tr>
@@ -84,6 +85,7 @@
                     {data: 'leader', name: 'leader'},
                     {data: 'classification', name: 'classification'},
                     {data: 'camp', name: 'camp'},
+                    {data: 'group', name: 'group'},
                     {data: 'password_changed', name: 'password_changed'},
                     {data: 'last_login_at', name: 'last_login_at'},
 

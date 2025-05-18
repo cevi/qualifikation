@@ -61,7 +61,7 @@
                                 <a href="{{route('survey.compare',$survey['slug'])}}" target="blank">
 
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                        {{$survey->campuser->user['username']}} - {{$survey->survey_status['name']}}
+                                        {{$survey->campuser->user['username']}} {{$survey->campuser->user->group['shortname'] ?? ''}} - {{$survey->survey_status['name']}}
                                     </h3>
                                 </a>
                             </blockquote>
@@ -77,7 +77,7 @@
                 <div class="row d-flex align-items-md-stretch">
                     <ul class="list-unstyled">
                         @foreach ($surveys as $survey)
-                            <li><a href="#Chart-{{$loop->iteration}}">{{$survey->campuser->user['username']}}</a></li>
+                            <li><a href="#Chart-{{$loop->iteration}}">{{$survey->campuser->user['username']}} {{$survey->campuser->user->group['shortname'] ?? ''}}</a></li>
                         @endforeach
                     </ul>
                 </div>

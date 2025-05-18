@@ -2,15 +2,17 @@
 
 namespace App\Helper;
 
-use App\Models\Answer;
+use Str;
 use App\Models\Camp;
-use App\Models\CampUser;
-use App\Models\Survey;
+use App\Models\Post;
 use App\Models\User;
+use App\Models\Answer;
+use App\Models\Survey;
+use App\Models\CampUser;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
-use Str;
 
 class Helper
 {
@@ -184,6 +186,48 @@ class Helper
             'pointHoverBorderColor' => $color,
             'data' => $dataset
         ];
+    }
+
+    public static function storePost(Request $request, User $user = null){
+        $aktUser = Auth::user();
+        $camp = $aktUser->camp;
+        $input = $request->all();
+
+        $input['leader_id'] = $aktUser->id;
+        $input['camp_id'] = $camp->id;
+        $input['show_on_survey'] = $request->has('show_on_survey');
+        if(isset($user)){
+            $input['user_id'] = $user->id;
+        }
+        
+        $post = Post::find($input['post_id']);
+        if (!$aktUser->demo && $file = $request->file('file')) {
+            $save_path = 'app/files/' . $camp['id'] . '_'. Str::slug($camp['name']);
+            $directory = storage_path($save_path);
+            if (!File::isDirectory($directory)) {
+                File::makeDirectory($directory, 0775, true);
+            }
+            $input['uuid'] = Str::uuid();
+            $name = $input['uuid'] . '_' . str_replace(' ', '', $file->getClientOriginalName());
+            $file->move($directory, $name);
+            $input['file'] = $save_path . '/' . $name;
+        }
+        else{
+            if ($input['post_id']) {
+                if($request->has('delete_file')){
+                    $input['file'] = null;
+                }
+            }
+            else{
+                $input['file'] = null;
+            }
+        }
+
+        if (!$input['post_id']) {
+            Post::create($input);
+        } else {
+            $post->update($input);
+        }
     }
 
 }

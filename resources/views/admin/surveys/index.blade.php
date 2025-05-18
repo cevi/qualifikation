@@ -29,6 +29,7 @@
                     <th scope="col">Teilnehmer</th>
                     <th scope="col">Leiter</th>
                     <th scope="col">Kurs</th>
+                    <th scope="col">Abteilung</th>
                     <th scope="col">Status</th>
                     <th scope="col">TN Qualifikation</th>
                 </tr>
@@ -98,6 +99,7 @@
                     { data: 'user', name: 'user' },
                     { data: 'responsible', name: 'responsible' },
                     { data: 'camp', name: 'camp' },
+                    { data: 'group', name: 'group' },
                     { data: 'status', name: 'status', orderable:false,serachable:false},
                     { data: 'Actions', name: 'Actions', orderable:false,serachable:false},
 

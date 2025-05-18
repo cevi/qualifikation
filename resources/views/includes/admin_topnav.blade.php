@@ -1,4 +1,4 @@
-<nav class="dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+<nav class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
   <div class="flex flex-wrap justify-between items-center">
     <div class="flex justify-start items-center">
       <a class="navbar-brand" href="{{ url('/admin') }}"  class="flex items-center">
@@ -86,17 +86,15 @@
             id="dropdown-dashboard"
         >
           <ul aria-labelledby="dropdown-dashboard" class="py-1 text-gray-700 dark:text-gray-300">
+            <li>
+              <a href="{{route('admin.camps.index')}}" class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">
+                <i class="fas fa-campground"></i>
+                <span class="flex-1 ml-3 text-left whitespace-nowrap">
+                  Kurs
+                </span>
+              </a>
+            </li>
             @if (Auth::user()->isAdmin() || !Auth::user()->camp->camp_type['default_type'])
-              <li>
-                <a href="{{route('admin.camps.index')}}"
-                  class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                >
-                  <i class="fas fa-campground"></i>
-                  <span class="flex-1 ml-3 text-left whitespace-nowrap">
-                    Kurs
-                  </span>
-                </a>
-              </li>
               <li>
                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
                   href="{{route('admin.camp_types.index')}}"

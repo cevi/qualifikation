@@ -26,6 +26,6 @@ class MakeUserSlug
     public function handle(UserCreated $event)
     {
         //
-        $event->user->update(['slug' => Str::slug($event->user['username'].'-'.$event->user['id'])]);
+        $event->user->update(['slug' => Str::uuid()]);
     }
 }

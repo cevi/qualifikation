@@ -1,4 +1,4 @@
-<nav class="dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
+<nav class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 px-4 xl:px-6 py-2.5 dark:border-gray-700 fixed left-0 right-0 top-0 z-50">
     <div class="flex flex-wrap justify-between items-center">
         <div class="flex shrink-0 justify-start items-center">
             @auth
@@ -62,7 +62,7 @@
                                             @foreach ($camp->my_participants as $user_profile)
                                                 <li>
                                                     <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
+                                                        href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}} {{$user_profile->group['shortname'] ?? ''}}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
@@ -76,7 +76,7 @@
                                         @foreach ($camp->other_participants as $user_profile)
                                             <li>
                                                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
-                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}}</a>
+                                                    href="{{route('home.profile', $user_profile->slug)}}">{{$user_profile->username}} {{$user_profile->group['shortname'] ?? ''}}</a>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -85,7 +85,7 @@
                             @endif
                         @endisset
                         <li>
-                            <a href="/post"
+                            <a href="/posts"
                             type="button"
                             class="flex items-center p-2 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                             >

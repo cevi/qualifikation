@@ -25,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at',
-        'avatar', 'slug', 'foreign_id', 'email', 'email_verified_at',
+        'avatar', 'slug', 'foreign_id', 'email', 'email_verified_at', 'group_id'
     ];
 
     /**
@@ -61,6 +61,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function camp()
     {
         return $this->belongsTo('App\Models\Camp');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo('App\Models\Group');
     }
 
     public function camps()

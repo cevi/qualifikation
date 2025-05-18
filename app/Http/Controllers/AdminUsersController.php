@@ -13,6 +13,7 @@ use App\Models\CampUser;
 use App\Events\UserCreated;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Ixudra\Curl\Facades\Curl;
 use Illuminate\Support\Facades\Auth;
@@ -60,7 +61,7 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('picture', function ($user) {
-                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user" alt="" src="' . $user->getAvatar() . '"></a>';
+                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user rounded-full" alt="" src="' . $user->getAvatar() . '"></a>';
             })
             ->addColumn('user', function ($user) {
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('admin.users.edit', $user['slug']).'>'.$user['username'].'</a>';
@@ -86,6 +87,9 @@ class AdminUsersController extends Controller
             })
             ->addColumn('leader', function (User $user) {
                 return $user->leader ? $user->leader['username'] : '';
+            })
+            ->addColumn('group', function (User $user) {
+                return $user->group ? $user->group['shortname'] : '';
             })
             ->addColumn('classification', function (User $user) {
                 $camp = Auth::user()->camp;
@@ -129,6 +133,7 @@ class AdminUsersController extends Controller
         } else {
             $roles = Role::where('id', '>', config('status.role_Administrator'))->pluck('name', 'id')->all();
         }
+        $groups = group::orderBy('campgroup', 'DESC')->orderBy('shortname')->pluck('name', 'id')->all();
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
                 $query->where('role_id', config('status.role_Gruppenleiter'))
@@ -142,7 +147,7 @@ class AdminUsersController extends Controller
         $help['main_title'] = 'Personen';
         $help['main_route'] = '/admin/users';
 
-        return view('admin.users.create', compact('roles', 'leaders', 'title', 'help'));
+        return view('admin.users.create', compact('roles', 'leaders', 'title', 'help', 'groups'));
     }
 
     public function import()
@@ -215,6 +220,12 @@ class AdminUsersController extends Controller
                             }
                             if (!$user->foreign_id) {
                                 $user->update(['foreign_id' => $participant->links->person]);
+                            }
+                            if (!$user->group_id) {
+                                $group = Group::where('foreign_id', $participant->ortsgruppe_id)->first();
+                                if ($group) {
+                                    $user->update(['group_id' => $group->id]);
+                                }
                             }
                             Helper::updateCamp($user, $camp);
                         }
@@ -388,6 +399,7 @@ class AdminUsersController extends Controller
         // $user = User::findOrFail($id);
         $aktUser = Auth::user();
         $roles = Role::where('id', '>', config('status.role_Administrator'))->pluck('name', 'id')->all();
+        $groups = group::orderBy('campgroup', 'DESC')->orderBy('shortname')->pluck('name', 'id')->all();
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
                 $query->where('role_id', config('status.role_Gruppenleiter'))
@@ -401,7 +413,7 @@ class AdminUsersController extends Controller
         $help['main_title'] = 'Personen';
         $help['main_route'] = '/admin/users';
         
-        return view('admin.users.edit', compact('user', 'roles', 'leaders', 'title', 'help'));
+        return view('admin.users.edit', compact('user', 'roles', 'leaders', 'title', 'help', 'groups'));
     }
 
     /**
