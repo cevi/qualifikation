@@ -8,7 +8,7 @@
             <div class="overlay-content py-5">
                 <div class="container py-4">
                     <!-- Hero slider-->
-                    <div class="homepage-slider">>
+                    <div class="homepage-slider">
                         <!-- Hero Slide-->
                         <div class=" h-auto mb-5">
                             <div class="row gy-5 h-100 align-items-center">
