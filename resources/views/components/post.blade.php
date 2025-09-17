@@ -13,7 +13,7 @@
                             @if($showLeader)
                                 {{$post->leader ? $post->leader['username'] : ''}}
                             @else
-                                {{$post->user ? $post->user['username'] : ''}}
+                                {{$post->campUser ? $post->campUser->user['username'] : ''}}
                             @endif
                         </div>
                         <div

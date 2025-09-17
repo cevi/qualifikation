@@ -51,7 +51,7 @@ class UsersController extends Controller
             if(! $camp_user) {
                 return redirect()->back();
             }
-            $posts = Post::where('user_id', $user->id)->get()->sortByDesc('created_at');
+            $posts = Post::where('camp_user_id', $camp_user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name', 'id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
@@ -80,7 +80,7 @@ class UsersController extends Controller
             $camp = $aktUser->camp()->first();
             $camp_user = CampUser::where('user_id', $user['id'])->where('camp_id', $aktUser->camp['id'])->first();
 
-            $posts = Post::where('user_id', $user->id)->get()->sortByDesc('created_at');
+            $posts = Post::where('camp_user_id', $camp_user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name', 'id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])

@@ -188,16 +188,20 @@ class Helper
         ];
     }
 
-    public static function storePost(Request $request, User $user = null){
+    public static function storePost(Request $request, ?User $user){
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
         $input = $request->all();
+        $input['camp_id'] = $camp->id;
 
         $input['leader_id'] = $aktUser->id;
-        $input['camp_id'] = $camp->id;
         $input['show_on_survey'] = $request->has('show_on_survey');
         if(isset($user)){
             $input['user_id'] = $user->id;
+        }
+        $camp_user = CampUser::where('user_id', $input['user_id'])->where('camp_id', $camp->id)->first();
+        if($camp_user){
+            $input['camp_user_id'] = $camp_user->id;
         }
         
         $post = Post::find($input['post_id']);

@@ -34,7 +34,7 @@ class SurveysController extends Controller
             return redirect('/home');
         }
         $answers = Answer::all();
-        $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
+        $posts = Post::where('camp_user_id', $survey->campUser['id'])->where('show_on_survey', true)->get();
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         $title = 'Qualifikation';
         $group = $survey->campUser->user->group['shortname'] ?? '';
@@ -112,7 +112,7 @@ class SurveysController extends Controller
         } else {
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
             $answers = Answer::all();
-            $posts = Post::where('user_id', $survey->campUser->user['id'])->where('show_on_survey', true)->get();
+            $posts = Post::where('camp_user_id', $survey->campUser['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich';
             $group = $survey->campUser->user->group['shortname'] ?? '';
             $subtitle = $survey->campUser->user['username'] . " " . $group;
