@@ -27,8 +27,8 @@ class PostController extends Controller
         //
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
-        $posts_no_user = $aktUser->posts->whereNull('user_id')->where('camp_id', $camp->id);
-        $posts_user = $aktUser->posts->whereNotNull('user_id')->where('camp_id', $camp->id);
+        $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
+        $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
         $users_select = $aktUser->camp->participants->pluck('username', 'id')->all();
         $title = 'Rückmeldungen';
         $help = Help::where('title',$title)->first();
@@ -56,7 +56,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         //
-       Helper::storePost($request);
+       Helper::storePost($request, null);
 
         return redirect('/posts');
     }
@@ -65,7 +65,7 @@ class PostController extends Controller
     {
         //
         $post = Post::where('uuid', $id)->firstOrFail();
-        $camp_post = $post->camp;
+        $camp_post = $post->campUser->camp;
         $aktUser = Auth::user();
         $camp_user = $aktUser->camp;
         if (($camp_post->id == $camp_user->id) && !$aktUser->isTeilnehmer()){
