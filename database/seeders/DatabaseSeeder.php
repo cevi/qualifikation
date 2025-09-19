@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Database\Seeders\BasisdatenSeeder;
 use Database\Seeders\DemoCampSeeder;
 use Database\Seeders\PermissionRoleSeeder;
