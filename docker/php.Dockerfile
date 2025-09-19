@@ -1,5 +1,5 @@
 # custom image based on https://dev.to/jackmiras/laravel-with-php7-4-in-an-alpine-container-3jk6
-FROM php:8.1-fpm-alpine3.17
+FROM php:8.3.26RC1-fpm-alpine3.21
 
 WORKDIR /var/www/html/
 
@@ -24,7 +24,7 @@ RUN curl -sS https://getcomposer.org/installer -o composer-setup.php && \
     rm -rf composer-setup.php
 
 # Configure PHP
-RUN mkdir -p /run/php/ && touch /run/php/php8.1-fpm.pid
+RUN mkdir -p /run/php/ && touch /run/php/php8.3-fpm.pid
 
 COPY docker/php.ini-production /usr/local/etc/php/php.ini
 
