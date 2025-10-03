@@ -87,38 +87,3 @@ if(!Object.is(themeToggleBtn, null)){
         }
     });
 }
-
-self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Installing');
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] Activated');
-  return self.clients.claim();
-});
-
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-
-  // Nur für eigene Requests (nicht z. B. für Google Fonts)
-  if (request.url.startsWith('https://')) {
-    const modifiedRequest = new Request(request.url, {
-      method: request.method,
-      headers: new Headers({
-        ...Object.fromEntries(request.headers),
-        'ngrok-skip-browser-warning': 'true'
-      }),
-      mode: request.mode,
-      credentials: request.credentials,
-      redirect: request.redirect,
-      referrer: request.referrer,
-      cache: request.cache,
-    });
-
-    event.respondWith(fetch(modifiedRequest).catch((error) => {
-      console.error('[Service Worker] Fetch failed:', error);
-      return new Response('Offline or error', { status: 503 });
-    }));
-  }
-});

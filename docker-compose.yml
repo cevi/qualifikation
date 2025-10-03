@@ -1,12 +1,12 @@
 # For more information: https://laravel.com/docs/sail
 services:
-    laravel.test:
+    laravel.test:        
         build:
-            context: ./docker/8.3
+            context: ./docker/8.1
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: sail-8.3/app
+        image: sail-8.1/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
