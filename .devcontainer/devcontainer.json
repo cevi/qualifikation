@@ -1,0 +1,21 @@
+{
+  "name": "Quali: Devcontainer",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "laravel.test",
+  "workspaceFolder": "/var/www/html",
+
+  "postCreateCommand": "cp /workspaces/quali/.devcontainer/.bashrc ~/.bashrc",
+
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "extensions": [
+    "ms-php.php-pack",
+    "xdebug.php-debug",
+    "bmewburn.vscode-intelephense-client",
+    "esbenp.prettier-vscode"
+  ],
+  "remoteUser": "sail"
+}
