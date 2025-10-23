@@ -47,11 +47,12 @@ services:
     phpmyadmin:
         image: 'phpmyadmin:latest'
         ports:
-        - 8080:80
+            - 8080:80
         networks:
-        - sail
+            - sail
         environment:
-        - PMA_ARBITRARY=1
+            - PMA_ARBITRARY=1
+            - UPLOAD_LIMIT=128M
 networks:
     sail:
         driver: bridge
