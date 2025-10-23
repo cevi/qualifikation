@@ -4,30 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Help;
 use App\Models\User;
-use App\Models\CampType;
 use Illuminate\Http\Request;
+use App\Models\StandardText;
 use Illuminate\Support\Facades\Auth;
 
-class CampTypesController extends Controller
+class StandardTextsController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
         //
         $user = Auth::user();
         if($user->isAdmin()) {
-            $camp_types = CampType::all();
+            $standard_texts = StandardText::all();
         }
         else{
-            $camp_types = $user->camp_types;
+            $camp = $user->camp;
+            $standard_texts = $camp->standard_texts;
         }
-        $title = 'Kurs-Typen';
+        $title = 'Standard-Text';
         $help = Help::where('title',$title)->first();
-        return view('admin.camp_types.index', compact('title', 'camp_types', 'help'));
+        return view('admin.standard_texts.index', compact('title', 'standard_texts', 'help'));
 
     }
 
@@ -39,9 +38,9 @@ class CampTypesController extends Controller
     public function create()
     {
         //
-        $title = 'Kurs-Typ erstellen';
+        $title = 'Standard-Texterstellen';
         $help = Help::where('title',$title)->first();
-        return view('home.camp_types.create', compact('title', 'help'));
+        return view('admin.standard_texts.create', compact('title', 'help'));
     }
 
     /**
@@ -55,11 +54,11 @@ class CampTypesController extends Controller
         //
         if (!Auth::user()->demo) {
             $input = $request->all();
-            $user = User::findOrFail(Auth::user()->id);
-            $input['user_id'] = $user->id;
-            CampType::create($input);
+            $camp = Auth::user()->camp;
+            $input['camp_id'] = $camp->id;
+            StandardText::create($input);
         }
-        return redirect()->route('home.camps.create');
+        return redirect('/admin/standard_texts');
 
     }
 
@@ -80,14 +79,14 @@ class CampTypesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(CampType $camp_type)
+    public function edit(StandardText $standard_text)
     {
         //
-        $title = 'Kurs-Typ bearbeiten';
+        $title = 'Standart-Text bearbeiten';
         $help = Help::where('title',$title)->first();
-        $help['main_title'] = "Kurs-Typen";
-        $help['main_route'] ='/admin/camp_types';
-        return view('admin.camp_types.edit', compact('camp_type', 'title', 'help'));
+        $help['main_title'] = "Standart-Texte";
+        $help['main_route'] ='/admin/standard_texts';
+        return view('admin.standard_texts.edit', compact('standard_text', 'title', 'help'));
     }
 
     /**
@@ -97,12 +96,12 @@ class CampTypesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CampType $camp_type)
+    public function update(Request $request, StandardText $standard_text)
     {
         //
-        $camp_type->update($request->all());
+        $standard_text->update($request->all());
 
-        return redirect('/admin/camp_types');
+        return redirect('/admin/standard_texts');
     }
 
     /**
@@ -111,11 +110,11 @@ class CampTypesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CampType $camp_type)
+    public function destroy(StandardText $standard_text)
     {
         //
-        $camp_type->delete();
+        $standard_text->delete();
 
-        return redirect('/admin/camp_types');
+        return redirect('/admin/standard_texts');
     }
 }

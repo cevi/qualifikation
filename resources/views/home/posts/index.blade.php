@@ -5,14 +5,11 @@
         <x-page-title :title="$title" :help="$help" :header=false/>
         <div class="row">
             <div class="col-md-4">
-                Rückmeldung erstellen:
+                <h5 class="text-xl font-bold dark:text-white" data-modal-target="default-modal">Rückmeldung erstellen:</h5>
                 {!! Form::model($post_new, ['method' => 'POST', 'action'=>'PostController@store',  'files' => true]) !!}
                     <div class="form-group">
-                        {!! Form::hidden('post_id', $post_new['id']) !!}
-                    </div>
-                    <div class="form-group">
-                        {!! Form::label('comment', 'Rückmeldung:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                        {!! Form::textarea('comment', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required', 'rows' => 3]) !!}
+                        {!! Form::label('comment', 'Rückmeldung (// für Standard-Texte eingeben):', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
+                        {!! Form::textarea('comment', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required', 'rows' => 10]) !!}
                     </div>
                     <div class="form-group">
                         {!! Form::label('user_id', 'Benutzer:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}

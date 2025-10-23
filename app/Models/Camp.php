@@ -100,4 +100,9 @@ class Camp extends Model
     {
         return $this->hasManyThrough(Post::class, CampUser::class);
     }
+
+    public function standardtexts()
+    {
+        return $this->hasMany('App\Models\Standardtext');
+    }
 }

@@ -81,7 +81,7 @@ class AdminCampsController extends Controller
                 return $camp->counter ?: count($camp->surveys);
             })
             ->addColumn('actions', function($camp){
-                if(!$camp->finish && Auth::user()->camp['id'] === $camp['id'])
+                if(!$camp->finish && (Auth::user()->camp['id'] === $camp['id']) || Auth::user()->isAdmin())
                     return '<a href="'.\URL::route('admin.camps.export').'" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" role="button">Export der Rückmeldungen</a>
                     <a href="'.\URL::route('surveys.downloadPDF').'" target="_blank" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" role="button">Druckversion aller Qualifikationen</a>';
             })

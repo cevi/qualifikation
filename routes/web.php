@@ -121,6 +121,8 @@ Route::group(['middleware' => 'verified'], function () {
         
         Route::resource('admin/camp_types', 'CampTypesController', ['as' => 'admin']);
 
+        Route::resource('admin/standard_texts', 'StandardTextsController', ['as' => 'admin']);
+
         Route::resource('admin/questions', 'AdminQuestionsController');
         Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
 

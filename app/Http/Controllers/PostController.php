@@ -6,9 +6,11 @@ use Str;
 use App\Models\Help;
 use App\Models\Post;
 use App\Helper\Helper;
+use App\Models\StandardText;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use PhpParser\PrettyPrinter\Standard;
 
 class PostController extends Controller
 {
@@ -32,9 +34,10 @@ class PostController extends Controller
         $users_select = $aktUser->camp->participants->pluck('username', 'id')->all();
         $title = 'Rückmeldungen';
         $help = Help::where('title',$title)->first();
-        $post_new = new Post();    
+        $post_new = new Post();   
+        $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'users_select', 'title','help', 'post_new'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'users_select', 'title','help', 'post_new', 'standard_texts'));
     }
 
     /**

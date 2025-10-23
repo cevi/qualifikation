@@ -44,7 +44,7 @@
                 {!! Form::close()!!}
                 {!! Form::model($camp, ['method' => 'DELETE', 'action'=>['AdminCampsController@destroy',$camp], 'id'=> "DeleteForm"]) !!}
                     <div class="form-group">
-                        {!! Form::submit('Kurs löschen', ['class' => 'confirm focus:outline-hidden text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'])!!}
+                        {!! Form::submit('Kurs abschliessen / löschen', ['class' => 'confirm focus:outline-hidden text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'])!!}
                     </div>
                 {!! Form::close()!!}
 
@@ -60,7 +60,7 @@
                 e.preventDefault(); //cancel default action
 
                 Swal.fire({
-                    title: 'Kurs abschliessen/löschen?',
+                    title: 'Kurs abschliessen / löschen?',
                     text: "Beim Kurs abschliessen/löschen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.",
                     icon: 'warning',
                     showCancelButton: true,
@@ -68,6 +68,7 @@
                     cancelButtonText: 'Abbrechen',
                     confirmButtonColor: 'blue',
                     cancelButtonColor: 'red',
+                    theme:(localStorage.getItem('color-theme') === 'dark') ? 'dark' : 'light',
                 }).then((result) => {
                     if (result.isConfirmed) {
                         document.getElementById("DeleteForm").submit();
