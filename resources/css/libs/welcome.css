@@ -919,10 +919,6 @@ a.text-hover-dark:focus, a.text-hover-dark:hover {
     background: none !important;
 }
 
-.bg-pentagon {
-    background: url("../img/texture-bw.png") center center repeat;
-}
-
 .bg-fixed {
     background-attachment: fixed !important;
 }

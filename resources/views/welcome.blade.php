@@ -116,7 +116,7 @@
             </div>
         </section>
         <!-- SHOWCASE SECTION-->
-        <section class="py-5 bg-pentagon">
+        <section class="py-5" style="background: url(img/texture-bw.png) center center repeat;">
             <div class="container py-4">
                 <!-- Counters-->
                 <div class="row gy-4 text-center text-gray-900" id="counterUp">
