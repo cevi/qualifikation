@@ -6,9 +6,11 @@ use Str;
 use App\Models\Help;
 use App\Models\Post;
 use App\Helper\Helper;
+use App\Models\StandardText;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use PhpParser\PrettyPrinter\Standard;
 
 class PostController extends Controller
 {
@@ -27,14 +29,15 @@ class PostController extends Controller
         //
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
-        $posts_no_user = $aktUser->posts->whereNull('user_id')->where('camp_id', $camp->id);
-        $posts_user = $aktUser->posts->whereNotNull('user_id')->where('camp_id', $camp->id);
+        $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
+        $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
         $users_select = $aktUser->camp->participants->pluck('username', 'id')->all();
         $title = 'Rückmeldungen';
         $help = Help::where('title',$title)->first();
-        $post_new = new Post();    
+        $post_new = new Post();   
+        $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'users_select', 'title','help', 'post_new'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'users_select', 'title','help', 'post_new', 'standard_texts'));
     }
 
     /**
@@ -56,7 +59,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         //
-       Helper::storePost($request);
+       Helper::storePost($request, null);
 
         return redirect('/posts');
     }
@@ -65,7 +68,7 @@ class PostController extends Controller
     {
         //
         $post = Post::where('uuid', $id)->firstOrFail();
-        $camp_post = $post->camp;
+        $camp_post = $post->campUser->camp;
         $aktUser = Auth::user();
         $camp_user = $aktUser->camp;
         if (($camp_post->id == $camp_user->id) && !$aktUser->isTeilnehmer()){

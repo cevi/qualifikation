@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Helper\Helper;
 use App\Models\Survey;
 use App\Models\CampUser;
+use App\Models\StandardText;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -35,7 +36,8 @@ class UsersController extends Controller
             $title = 'Profil';
             $help = Help::where('title',$title)->first();
             $post_new = new Post();
-            return view('home.user', compact('aktUser', 'camp', 'title', 'help', 'post_new'));
+            $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
+            return view('home.user', compact('aktUser', 'camp', 'title', 'help', 'post_new', 'standard_texts'));
         } else {
             return redirect()->back();
         }
@@ -51,7 +53,7 @@ class UsersController extends Controller
             if(! $camp_user) {
                 return redirect()->back();
             }
-            $posts = Post::where('user_id', $user->id)->get()->sortByDesc('created_at');
+            $posts = Post::where('camp_user_id', $camp_user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name', 'id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
@@ -66,7 +68,8 @@ class UsersController extends Controller
             $datasets = Helper::GetSurveysDataset($surveys);
 
             $post_new = new Post();
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new'));
+            $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
+            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts'));
         } else {
             return redirect()->back();
         }
@@ -80,7 +83,7 @@ class UsersController extends Controller
             $camp = $aktUser->camp()->first();
             $camp_user = CampUser::where('user_id', $user['id'])->where('camp_id', $aktUser->camp['id'])->first();
 
-            $posts = Post::where('user_id', $user->id)->get()->sortByDesc('created_at');
+            $posts = Post::where('camp_user_id', $camp_user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name', 'id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])

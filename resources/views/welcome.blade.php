@@ -8,7 +8,7 @@
             <div class="overlay-content py-5">
                 <div class="container py-4">
                     <!-- Hero slider-->
-                    <div class="homepage-slider">>
+                    <div class="homepage-slider">
                         <!-- Hero Slide-->
                         <div class=" h-auto mb-5">
                             <div class="row gy-5 h-100 align-items-center">
@@ -116,7 +116,7 @@
             </div>
         </section>
         <!-- SHOWCASE SECTION-->
-        <section class="py-5 bg-pentagon">
+        <section class="py-5" style="background: url(img/texture-bw.png) center center repeat;">
             <div class="container py-4">
                 <!-- Counters-->
                 <div class="row gy-4 text-center text-gray-900" id="counterUp">
