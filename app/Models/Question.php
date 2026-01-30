@@ -8,7 +8,7 @@ class Question extends Model
 {
     //
     protected $fillable = [
-        'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description', 'camp_type_id'
+        'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description', 'camp_type_id', 'sort-index'
     ];
 
     protected $casts = [
