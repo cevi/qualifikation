@@ -98,7 +98,7 @@ class Camp extends Model
 
     public function posts()
     {
-        return $this->hasManyThrough(Post::class, CampUser::class);
+        return $this->hasMany(Post::class);
     }
 
     public function standardtexts()

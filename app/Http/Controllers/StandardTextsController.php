@@ -22,7 +22,9 @@ class StandardTextsController extends Controller
         }
         else{
             $camp = $user->camp;
-            $standard_texts = $camp->standard_texts;
+            $standard_texts = StandardText::where('camp_id', $camp->id)
+                ->orWhere('global', true)
+                ->get();
         }
         $title = 'Standard-Text';
         $help = Help::where('title',$title)->first();
