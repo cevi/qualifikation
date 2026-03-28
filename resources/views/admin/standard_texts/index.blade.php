@@ -35,12 +35,11 @@
                     @foreach ($standard_texts as $standard_text)
                         <tbody>
                             <tr>
-                                @if (!$standard_text['global'] || Auth::user()->isAdmin())){
+                                @if (!$standard_text['global'] || Auth::user()->isAdmin())
                                     <td><a href="{{route('admin.standard_texts.edit',$standard_text)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$standard_text->title}}</a></td>
-                                } 
-                                @else {
+                                @else
                                     <td>{{$standard_text->title}}</td>
-                                }
+                                @endif
                                 <td>{{$standard_text['content']}}</a></td>
                                 <td>{{$standard_text->camp ? $standard_text->camp['name'] : ''}}</a></td>
                                 <td>{{$standard_text['global'] ? 'Ja' : 'Nein'}}</a></td>
