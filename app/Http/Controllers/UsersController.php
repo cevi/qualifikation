@@ -36,7 +36,7 @@ class UsersController extends Controller
             $title = 'Profil';
             $help = Help::where('title',$title)->first();
             $post_new = new Post();
-            $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
+            $standard_texts = $this->getStandardTextsForCamp($camp->id); 
             return view('home.user', compact('aktUser', 'camp', 'title', 'help', 'post_new', 'standard_texts'));
         } else {
             return redirect()->back();
@@ -68,7 +68,7 @@ class UsersController extends Controller
             $datasets = Helper::GetSurveysDataset($surveys);
 
             $post_new = new Post();
-            $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
+            $standard_texts = $this->getStandardTextsForCamp($camp->id); 
             return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts'));
         } else {
             return redirect()->back();
@@ -98,8 +98,9 @@ class UsersController extends Controller
             $datasets = Helper::GetSurveysDataset($surveys);
 
             $post_new = $post;    
+            $standard_texts = $this->getStandardTextsForCamp($camp->id); 
 
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new'));
+            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts'));
         } else {
             return redirect()->back();
         }
@@ -148,5 +149,10 @@ class UsersController extends Controller
         }
 
         return true;
+    }
+
+    private function getStandardTextsForCamp($campId)
+    {
+        return StandardText::where('camp_id', $campId)->orWhere('global', true)->get();
     }
 }
