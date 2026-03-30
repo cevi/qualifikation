@@ -8,16 +8,16 @@
             <div class="col-sm-4" style="margin-bottom: 10px;">
                 <a href="javascript:;" class="focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 create" role="button">Qualifikationen erstellen</a>
             </div>
-            <x-survey-button text="Druckversion aller Qualifikationen" :has-surveys="$camp->surveys()->count() > 0" url="{{ route('surveys.downloadPDF') }}" target="_blank" btn-class="" />
+            <x-survey-button text="Druckversion aller Qualifikationen" :has-surveys="$hasSurveys" url="{{ route('surveys.downloadPDF') }}" target="_blank" btn-class="" />
             @if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen'))
-                <x-survey-button text="Erste Selbsteinschätzung freigeben" :has-surveys="$camp->surveys()->count() > 0" />
+                <x-survey-button text="Erste Selbsteinschätzung freigeben" :has-surveys="$hasSurveys" />
             @else
                 @if(!$camp['secondsurveyopen'])
-                    <x-survey-button text="Zweite Selbsteinschätzung freigeben" :has-surveys="$camp->surveys()->count() > 0" />
+                    <x-survey-button text="Zweite Selbsteinschätzung freigeben" :has-surveys="$hasSurveys" />
                 @endif
             @endif
         </div>
-        @if($camp->surveys()->count() > 0)
+        @if($hasSurveys)
             <table class="table table-striped table-bordered" style="width:100%" id="datatable">
                 <thead>
                     <tr>

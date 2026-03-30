@@ -31,9 +31,9 @@ class AdminSurveysController extends Controller
         $title = 'Qualifikationen';
 
         $help = Help::where('title',$title)->first();
+        $hasSurveys = $camp->surveys()->exists();
 
-
-        return view('admin.surveys.index', compact('camp', 'title', 'help'));
+        return view('admin.surveys.index', compact('camp', 'title', 'help', 'hasSurveys'));
     }
 
     public function createDataTables()
