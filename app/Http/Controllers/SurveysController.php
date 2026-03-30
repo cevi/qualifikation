@@ -53,7 +53,7 @@ class SurveysController extends Controller
         $aktUser = Auth::user();
 
         $camp = $aktUser->camp;
-        $answers = $request->answers;
+        $answers = $request->answers ?? [];
 
         foreach ($answers as $index => $answer) {
             $surveyquestion = SurveyQuestion::findOrFail($index);
@@ -68,7 +68,7 @@ class SurveysController extends Controller
             }
         }
 
-        $comments = $request->comments;
+        $comments = $request->comments ?? [];
         foreach ($comments as $index => $comment) {
             $surveyquestion = SurveyQuestion::findOrFail($index);
             if ($aktUser->isLeader()) {
@@ -97,6 +97,10 @@ class SurveysController extends Controller
         }
         else{
             $survey->update(['comment' => $request['comment']]);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true]);
         }
 
         return redirect()->refresh();
