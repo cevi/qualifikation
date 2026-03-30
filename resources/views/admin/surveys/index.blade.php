@@ -107,8 +107,8 @@
                         { data: 'responsible', name: 'responsible' },
                         { data: 'camp', name: 'camp' },
                         { data: 'group', name: 'group' },
-                        { data: 'status', name: 'status', orderable:false,serachable:false},
-                        { data: 'Actions', name: 'Actions', orderable:false,serachable:false},
+                        { data: 'status', name: 'status', orderable:false,searchable:false},
+                        { data: 'Actions', name: 'Actions', orderable:false,searchable:false},
                     ]
                 });
             }
