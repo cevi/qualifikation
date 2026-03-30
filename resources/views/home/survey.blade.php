@@ -9,7 +9,7 @@
             Ausbildungsstufe.
         </p>
         <x-bewertungs-schluessel :answers="$answers"/>
-        {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->slug]]) !!}
+        {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->slug], 'class' => 'survey-form']) !!}
         <div data-accordion="collapse" id="accordion-flush">
             @foreach ($survey->chapters as $ch_key => $chapter)
 
@@ -110,4 +110,71 @@
 @push('scripts')
     @include('popper::assets')
     @include('home.radar')
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const forms = document.querySelectorAll('.survey-form');
+            
+            forms.forEach(form => {
+                let timeout = null;
+                const saveBtn = form.querySelector('button[name="action"][value="save"]');
+                const originalText = saveBtn ? saveBtn.innerText : 'Speichern';
+                
+                function autoSave() {
+                    clearTimeout(timeout);
+                    
+                    timeout = setTimeout(() => {
+                        if (saveBtn && saveBtn.innerText !== 'Wird gespeichert...') {
+                            saveBtn.innerText = 'Wird gespeichert...';
+                        }
+
+                        const formData = new FormData(form);
+                        formData.set('action', 'save');
+                        
+                        // Prevent the page from reloading if it is manually submitted while autosaving
+                        fetch(form.getAttribute('action'), {
+                            method: form.getAttribute('method') || 'POST',
+                            body: formData,
+                            credentials: 'same-origin',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        }).then(response => {
+                            if (response.ok || response.redirected) {
+                                if (saveBtn) {
+                                    saveBtn.innerText = 'Gespeichert ✓';
+                                    setTimeout(() => {
+                                        saveBtn.innerText = originalText;
+                                    }, 2000);
+                                }
+                            } else {
+                                if (saveBtn) {
+                                    saveBtn.innerText = 'Fehler beim Speichern';
+                                    setTimeout(() => {
+                                        saveBtn.innerText = originalText;
+                                    }, 3000);
+                                }
+                            }
+                        }).catch(error => {
+                            console.error('Error during autosave:', error);
+                            if (saveBtn) {
+                                saveBtn.innerText = 'Fehler beim Speichern';
+                                setTimeout(() => {
+                                    saveBtn.innerText = originalText;
+                                }, 3000);
+                            }
+                        });
+                    }, 1_000);
+                }
+
+                form.querySelectorAll('input[type="radio"], textarea').forEach(element => {
+                    if(element.tagName === 'TEXTAREA') {
+                        element.addEventListener('input', autoSave);
+                    } else {
+                        element.addEventListener('change', autoSave);
+                    }
+                });
+            });
+        });
+    </script>
 @endpush
