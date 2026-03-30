@@ -199,12 +199,18 @@ class Helper
         if(isset($user)){
             $input['user_id'] = $user->id;
         }
-        $camp_user = CampUser::where('user_id', $input['user_id'])->where('camp_id', $camp->id)->first();
+        
+        if (isset($input['user_id']) && $input['user_id'] === 'null') {
+            $input['user_id'] = null;
+        }
+
+        $camp_user = CampUser::where('user_id', $input['user_id'] ?? null)->where('camp_id', $camp->id)->first();
         if($camp_user){
             $input['camp_user_id'] = $camp_user->id;
         }
         
-        $post = Post::find($input['post_id']);
+        $post_id = $input['post_id'] ?? null;
+        $post = $post_id ? Post::find($post_id) : null;
         if (!$aktUser->demo && $file = $request->file('file')) {
             $save_path = 'app/files/' . $camp['id'] . '_'. Str::slug($camp['name']);
             $directory = storage_path($save_path);
@@ -217,7 +223,7 @@ class Helper
             $input['file'] = $save_path . '/' . $name;
         }
         else{
-            if ($input['post_id']) {
+            if ($post_id) {
                 if($request->has('delete_file')){
                     $input['file'] = null;
                 }
@@ -227,9 +233,9 @@ class Helper
             }
         }
 
-        if (!$input['post_id']) {
+        if (!$post_id) {
             Post::create($input);
-        } else {
+        } elseif ($post) {
             $post->update($input);
         }
     }
