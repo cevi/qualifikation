@@ -45,6 +45,9 @@ cp .env.example .env
 # initialize the database (in another terminal)
 ./vendor/bin/sail artisan migrate --seed
 
+# install front-end dependencies and run the Vite dev server
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run dev
 ```
 
 Anschliessend kannst du dein Tool unter [http://localhost](http://localhost) aufrufen.

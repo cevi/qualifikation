@@ -15,5 +15,5 @@ yarn-error.log
 # IDE files
 /.idea
 
-# Vite build files
+# Build files
 /public/build
