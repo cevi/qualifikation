@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container mx-auto">
         <x-page-title :title="$title" :help="$help"/>
         <!-- Page Header-->
         <div class="row">
