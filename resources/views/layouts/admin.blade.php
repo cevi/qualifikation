@@ -4,7 +4,7 @@
     <body class="text-dark__black">
         <div class="antialiased page">
             @include('includes/admin_topnav')
-            <main class="p-4 md:ml-64 h-auto pt-20">
+            <main class="p-4 h-auto pt-20">
                 @yield('content')
             </main>
             <x-footer/>
