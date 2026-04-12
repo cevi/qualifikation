@@ -1,10 +1,10 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Layouts;
 
 use Illuminate\View\Component;
 
-class ToggleSwitch extends Component
+class HelpButton extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class ToggleSwitch extends Component
      */
     public function render()
     {
-        return view('components.toggle-switch');
+        return view('components.layouts.help-button');
     }
 }

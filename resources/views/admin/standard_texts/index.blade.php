@@ -3,23 +3,23 @@
 @section('content')
     <div class="container-fluid">
         <!-- Page Header-->
-        <x-page-title :title="$title" :help="$help"/>
+        <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="row">
             <div class="col-sm-4">
                 <p>Standard-Text Erfassen:</p>
-                {!! Form::open(['method' => 'POST', 'action'=>'StandardTextsController@store']) !!}
-                <div class="form-group">
-                    {!! Form::label('title', 'Titel:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::text('title', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required']) !!}
-                </div>
-                <div class="form-group">
-                    {!! Form::label('content', 'Inhalt:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::textarea('content', null, ['rows' => 10, 'required', 'class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required']) !!}
-                </div>
-                <div class="form-group">
-                    {!! Form::submit('Standard-Text Erfassen', ['class' => 'btn btn-primary'])!!}
-                </div>
-                {!! Form::close()!!}
+                <x-forms.form :action="route('admin.standard_texts.store')" accept-charset="UTF-8" method="POST">
+                    <x-forms.container> 
+                        <x-forms.text label="Titel:" name="title" required=true/>
+                    </x-forms.container> 
+                    <x-forms.container>
+                        <x-forms.text-area label="Inhalt:" name="content" rows="10"/>
+                    </x-forms.container>
+                    <x-forms.container>
+                        <x-forms.button type="submit" class="btn btn-primary">
+                            Standard-Text Erfassen
+                        </x-forms.button>
+                    </x-forms.container>
+                </x-forms.form>
             </div>
             <div class="col-md-8">
                 @if ($standard_texts)

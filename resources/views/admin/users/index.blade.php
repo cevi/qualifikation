@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid">
         <!-- Page Header-->
-        <x-page-title :title="$title" :help="$help"/>
+        <x-layouts.page-title :title="$title" :help="$help"/>
         @if (Session::has('deleted_user'))
             <p class="bg-danger">{{session('deleted_user')}}</p>
         @endif

@@ -7,7 +7,7 @@
 @section('content')
     <div class="container-fluid">
         <!-- Page Header-->
-        <x-page-title :title="$title" :help="$help"/>
+        <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="row">
             <div class="col-sm-6">
                 <h3 class="text-3xl font-bold">Person Suchen:</h3>

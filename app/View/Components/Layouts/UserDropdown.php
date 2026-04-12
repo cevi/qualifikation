@@ -1,22 +1,19 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Layouts;
 
 use Illuminate\View\Component;
 
-class BewertungsSchluessel extends Component
+class UserDropdown extends Component
 {
-    public $answers;
-
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($answers)
+    public function __construct()
     {
         //
-        $this->answers = $answers;
     }
 
     /**
@@ -26,6 +23,6 @@ class BewertungsSchluessel extends Component
      */
     public function render()
     {
-        return view('components.bewertungs-schluessel');
+        return view('components.layouts.user-dropdown');
     }
 }

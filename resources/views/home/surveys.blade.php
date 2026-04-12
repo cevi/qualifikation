@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('survey_content')
-    <x-page-title :title="$title" :help="$help" :header=false/>
+    <x-layouts.page-title :title="$title" :help="$help" :header=false/>
     @if ($surveys)
         <div class="card table-responsive">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

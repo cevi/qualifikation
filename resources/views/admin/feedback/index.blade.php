@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid">
         <!-- Page Header-->
-        <x-page-title :title="$title" :help="$help"/>
+        <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="row">
             <div class="col-sm-3">
                 @if (session()->has('success'))

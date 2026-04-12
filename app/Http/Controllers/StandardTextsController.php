@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
 use App\Models\Help;
+use App\Models\StandardText;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\StandardText;
 use Illuminate\Support\Facades\Auth;
 
 class StandardTextsController extends Controller
@@ -22,9 +23,7 @@ class StandardTextsController extends Controller
         }
         else{
             $camp = $user->camp;
-            $standard_texts = StandardText::where('camp_id', $camp->id)
-                ->orWhere('global', true)
-                ->get();
+            $standard_texts = Helper::getStandardTextsForCamp($camp->id);
         }
         $title = 'Standard-Text';
         $help = Help::where('title',$title)->first();

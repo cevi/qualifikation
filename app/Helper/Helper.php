@@ -2,17 +2,18 @@
 
 namespace App\Helper;
 
-use Str;
-use App\Models\Camp;
-use App\Models\Post;
-use App\Models\User;
 use App\Models\Answer;
-use App\Models\Survey;
+use App\Models\Camp;
 use App\Models\CampUser;
+use App\Models\Post;
+use App\Models\StandardText;
+use App\Models\Survey;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
+use Str;
 
 class Helper
 {
@@ -86,6 +87,11 @@ class Helper
             }
         }
         return $path;
+    }
+
+    public static function getStandardTextsForCamp($campId)
+    {
+        return StandardText::where('camp_id', $campId)->orWhere('global', true)->get();
     }
 
 

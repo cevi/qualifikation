@@ -1,23 +1,19 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Layouts;
 
 use Illuminate\View\Component;
 
-class RadarChart extends Component
+class ToggleSwitch extends Component
 {
-
-    public $id;
-    public $name;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($id = 1, $name= '')
+    public function __construct()
     {
-        $this->id = $id;
-        $this->name = $name;
+        //
     }
 
     /**
@@ -27,6 +23,6 @@ class RadarChart extends Component
      */
     public function render()
     {
-        return view('components.radar-chart');
+        return view('components.layouts.toggle-switch');
     }
 }

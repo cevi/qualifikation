@@ -171,10 +171,9 @@ class AdminCampsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Camp $camp)
     {
         if (!Auth::user()->demo) {
-            $camp = Camp::findOrFail($id);
             $input = $request->all();
             $input['status_control'] = $request->has('status_control');
             if ($input['status_control'] && $camp['survey_status_id'] == null){

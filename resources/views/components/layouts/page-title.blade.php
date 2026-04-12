@@ -16,11 +16,11 @@
         <header>
             <h3 class="text-3xl font-bold dark:text-white">{{$title}} {{$subtitle}}
                 @if(isset($help['content']))
-                    <x-help-button/>
+                    <x-layouts.help-button/>
                 @endif
             </h3>
         </header>
 
-        <x-drawer-content :help="$help"/>
+        <x-layouts.drawer-content :help="$help"/>
     </div>
 </section>

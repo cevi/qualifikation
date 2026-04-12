@@ -3,11 +3,11 @@
         <div class="flex shrink-0 justify-start items-center">
             @auth
                 <a class="navbar-brand" href="{{ url('/home') }}"  class="flex items-center">
-                    <x-logo/>
+                    <x-layouts.logo/>
                 </a>
             @else
                 <a class="navbar-brand" href="{{ url('/') }}"  class="flex items-center">
-                    <x-logo/>
+                    <x-layouts.logo/>
                 </a>
             @endauth
         </div>
@@ -100,6 +100,6 @@
         </div>
 
         
-        <x-right-navbar/>
+        <x-layouts.right-navbar/>
     </div>
 </nav>
