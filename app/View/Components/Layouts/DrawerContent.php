@@ -1,19 +1,20 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Layouts;
 
 use Illuminate\View\Component;
 
-class Footer extends Component
+class DrawerContent extends Component
 {
+    public $help;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($help = null)
     {
-        //
+        $this->help = $help;
     }
 
     /**
@@ -23,6 +24,6 @@ class Footer extends Component
      */
     public function render()
     {
-        return view('components.footer');
+        return view('components.layouts.drawer-content');
     }
 }

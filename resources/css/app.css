@@ -20,7 +20,7 @@
 :root {
     --color-bg-primary: #F4F7FA;
     --color-text-primary: #666;
-    --blue: #4f92c7;
+    --blue: #256191;
     --background-card: #fafafa;
     --background-dropdown: #fafafa;
     --background-form: #fafafa;
@@ -73,3 +73,22 @@
     letter-spacing: .1em;
 }
 
+/* Hard override against Tailwind/Flowbite button transparent background resets */
+.btn-primary,
+button.btn-primary,
+input[type="submit"].btn.btn-primary,
+input[type="button"].btn.btn-primary {
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+    color: white !important;
+}
+
+.btn-primary:hover,
+button.btn-primary:hover,
+input[type="submit"].btn.btn-primary:hover,
+input[type="button"].btn.btn-primary:hover {
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+    color: white !important;
+    opacity: 0.9;
+}

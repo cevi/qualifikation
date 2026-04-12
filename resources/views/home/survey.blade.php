@@ -3,17 +3,17 @@
 @section('survey_content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     @foreach ($surveys as $survey)
-        <x-page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
+        <x-layouts.page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         <p>
             Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für deine
             Ausbildungsstufe.
         </p>
-        <x-bewertungs-schluessel :answers="$answers"/>
+        <x-surveys.bewertungs-schluessel :answers="$answers"/>
         {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->slug], 'class' => 'survey-form']) !!}
         <div data-accordion="collapse" id="accordion-flush">
             @foreach ($survey->chapters as $ch_key => $chapter)
 
-                <x-chapter-title :chapter="$chapter"/>
+                <x-surveys.chapter-title :chapter="$chapter"/>
                 <div id="accordion-flush-body-{{$chapter->chapter['number']}}" class="hidden"
                      aria-labelledby="accordion-flush-heading-{{$chapter->chapter['number']}}">
                     @foreach ($chapter->questions as $q_key => $question)
@@ -99,9 +99,9 @@
         </div>
         {!! Form::close()!!}
         @if($aktUser->isLeader())
-            <x-post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'"/>
+            <x-posts.post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'"/>
         @endif
-        <x-radar-chart/>
+        <x-surveys.radar-chart/>
 
     @endforeach
 

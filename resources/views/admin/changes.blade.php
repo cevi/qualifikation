@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <x-page-title :title="$title" :help="$help"/>
+    <x-layouts.page-title :title="$title" :help="$help"/>
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     <section
         class="section-features block p-6 bg-gray-100 border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">

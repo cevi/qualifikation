@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Layouts;
 
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -29,6 +29,6 @@ class PageTitle extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.page-title');
+        return view('components.layouts.page-title');
     }
 }

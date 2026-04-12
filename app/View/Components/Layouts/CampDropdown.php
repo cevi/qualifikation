@@ -1,22 +1,19 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Layouts;
 
-use App\Models\SurveyChapter;
 use Illuminate\View\Component;
 
-class ChapterTitle extends Component
+class CampDropdown extends Component
 {
-    public $chapter;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(SurveyChapter $chapter)
+    public function __construct()
     {
         //
-        $this->chapter = $chapter;
     }
 
     /**
@@ -26,6 +23,6 @@ class ChapterTitle extends Component
      */
     public function render()
     {
-        return view('components.chapter-title');
+        return view('components.layouts.camp-dropdown');
     }
 }

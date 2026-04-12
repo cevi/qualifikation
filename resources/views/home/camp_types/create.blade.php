@@ -2,7 +2,7 @@
 @section('survey_content')
     <div class="container-fluid">
         <!-- Page Header-->
-        <x-page-title :title="$title" :help="$help" :header=false/>
+        <x-layouts.page-title :title="$title" :help="$help" :header=false/>
         @if ($errors->camp_types->any())
             <div class="alert alert-danger">
                 <ul>

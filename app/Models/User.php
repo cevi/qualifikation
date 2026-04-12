@@ -119,7 +119,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isLeader()
     {
-        if (($this->role['is_leader'] === 1) || ($this->role['is_admin'] == 1)) {
+        if (($this->role['is_leader'] === 1) || $this->isAdmin()) {
             return true;
         }
 

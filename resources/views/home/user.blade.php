@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('survey_content')
-    <x-page-title :title="$title" :help="$help" :header=false/>
+    <x-layouts.page-title :title="$title" :help="$help" :header=false/>
     {!! Form::model($aktUser, ['method' => 'PATCH', 'class' => 'card', 'action'=>['UsersController@update', $aktUser->id]]) !!}
         
         <div class="card-header">

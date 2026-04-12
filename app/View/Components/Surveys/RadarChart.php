@@ -1,19 +1,23 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Surveys;
 
 use Illuminate\View\Component;
 
-class HelpButton extends Component
+class RadarChart extends Component
 {
+
+    public $id;
+    public $name;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($id = 1, $name= '')
     {
-        //
+        $this->id = $id;
+        $this->name = $name;
     }
 
     /**
@@ -23,6 +27,6 @@ class HelpButton extends Component
      */
     public function render()
     {
-        return view('components.help-button');
+        return view('components.surveys.radar-chart');
     }
 }

@@ -3,7 +3,7 @@
 @section('survey_content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     @foreach ($surveys as $survey)
-        <x-page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
+        <x-layouts.page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         @if(!$aktUser->isTeilnehmer())
             <p>
                 <a type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800"
@@ -17,11 +17,11 @@
             Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für deine
             Ausbildungsstufe.
         </p>
-        <x-bewertungs-schluessel :answers="$answers"/>
+        <x-surveys.bewertungs-schluessel :answers="$answers"/>
         <div data-accordion="collapse" id="accordion-flush">
             @foreach ($survey->chapters as $chapter)
 
-                <x-chapter-title :chapter="$chapter"/>
+                <x-surveys.chapter-title :chapter="$chapter"/>
                 <div id="accordion-flush-body-{{$chapter->chapter['number']}}" class="hidden"
                      aria-labelledby="accordion-flush-heading-{{$chapter->chapter['number']}}">
 
@@ -102,9 +102,9 @@
         @endif
         {!! Form::close()!!}
         @if($aktUser->isLeader() || $aktUser->isCampleader())
-            <x-post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'" :editable="false"/>
+            <x-posts.post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'" :editable="false"/>
         @endif
-        <x-radar-chart/>
+        <x-surveys.radar-chart/>
     @endforeach
 
 @endsection

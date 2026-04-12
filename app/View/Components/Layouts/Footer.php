@@ -1,15 +1,15 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Layouts;
 
-use Closure;
-use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Logo extends Component
+class Footer extends Component
 {
     /**
      * Create a new component instance.
+     *
+     * @return void
      */
     public function __construct()
     {
@@ -18,9 +18,11 @@ class Logo extends Component
 
     /**
      * Get the view / contents that represent the component.
+     *
+     * @return \Illuminate\Contracts\View\View|\Closure|string
      */
-    public function render(): View|Closure|string
+    public function render()
     {
-        return view('components.logo');
+        return view('components.layouts.footer');
     }
 }

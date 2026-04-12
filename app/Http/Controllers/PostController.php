@@ -31,13 +31,13 @@ class PostController extends Controller
         $camp = $aktUser->camp()->first();
         $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
         $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
-        $users_select = $aktUser->camp->participants->pluck('username', 'id')->all();
+        $campusers_select = $aktUser->camp->camp_users->pluck('user.username', 'id')->all();
         $title = 'Rückmeldungen';
         $help = Help::where('title',$title)->first();
         $post_new = new Post();   
-        $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
+        $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'users_select', 'title','help', 'post_new', 'standard_texts'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts'));
     }
 
     /**
@@ -102,13 +102,13 @@ class PostController extends Controller
         $camp = $aktUser->camp()->first();
         $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
         $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
-        $users_select = $aktUser->camp->participants->pluck('username', 'id')->all();
+        $campusers_select = $aktUser->camp->camp_users->pluck('user.username', 'id')->all();
         $title = 'Rückmeldungen';
         $help = Help::where('title',$title)->first();
         $post_new = $post;    
-        $standard_texts = StandardText::where('camp_id', $camp->id)->orWhere('global',true)->get(); 
+        $standard_texts = Helper::getStandardTextsForCamp($camp->id);
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'users_select', 'title','help', 'post_new', 'standard_texts'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts'));
     }
 
     /**

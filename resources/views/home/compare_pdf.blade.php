@@ -93,7 +93,7 @@
             </div>
             <br>
             <div class="pagebreak">
-                <x-radar-chart :id="$loop->iteration" :name="$survey->campuser->user['username']"/>
+                <x-surveys.radar-chart :id="$loop->iteration" :name="$survey->campuser->user['username']"/>
             </div>
 
         </div>

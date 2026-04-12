@@ -2,7 +2,7 @@
 
 @section('content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
-    <x-page-title :title="$title" :help="$help" :header=false/>
+    <x-layouts.page-title :title="$title" :help="$help" :header=false/>
     <!-- Counts Section -->
     <section class="dashboard-counts section-padding">
         <div class="container-fluid">

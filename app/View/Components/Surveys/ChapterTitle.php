@@ -1,20 +1,22 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Surveys;
 
+use App\Models\SurveyChapter;
 use Illuminate\View\Component;
 
-class DrawerContent extends Component
+class ChapterTitle extends Component
 {
-    public $help;
+    public $chapter;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($help = null)
+    public function __construct(SurveyChapter $chapter)
     {
-        $this->help = $help;
+        //
+        $this->chapter = $chapter;
     }
 
     /**
@@ -24,6 +26,6 @@ class DrawerContent extends Component
      */
     public function render()
     {
-        return view('components.drawer-content');
+        return view('components.surveys.chapter-title');
     }
 }
