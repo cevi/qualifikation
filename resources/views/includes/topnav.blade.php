@@ -53,7 +53,7 @@
                                     </button>
                                 </li>
                                 <div
-                                    class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow-xs dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+                                    class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow-xs dark:bg-gray-700 dark:divide-gray-600 rounded-xl max-h-[85vh] overflow-y-auto"
                                     id="dropdown-users"
                                 >
                                 
@@ -72,7 +72,7 @@
                                         <hr class="h-px bg-gray-400 border-0 dark:bg-gray-200">
                                     @endif
                                     @if(count($camp->other_participants)>0)
-                                    <ul aria-labelledby="dropdown-users" class="h-dropdown py-1 text-gray-700 dark:text-gray-300 overflow-y-auto">
+                                    <ul aria-labelledby="dropdown-users" class="py-1 text-gray-700 dark:text-gray-300">
                                         @foreach ($camp->other_participants as $user_profile)
                                             <li>
                                                 <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"

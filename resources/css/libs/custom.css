@@ -316,10 +316,6 @@ select option {
     background-color: var(--color-bg-primary);
 }
 
-.h-dropdown{
-    max-height: 85vh;
-}
-
 .swal2-actions button{
     background-color: var(--swal2-confirm-button-background-color);
 }

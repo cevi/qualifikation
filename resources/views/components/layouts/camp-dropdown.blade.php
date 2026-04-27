@@ -14,7 +14,7 @@
     <div
         class="hidden z-50 my-4 w-56 text-base list-none navbar-background divide-y divide-gray-100 shadow-xs dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
         id="dropdown-curses">
-        <ul aria-labelledby="dropdown-curses" class="h-dropdown py-1 text-gray-700 dark:text-gray-300 overflow-y-auto" >
+        <ul aria-labelledby="dropdown-curses" class="max-h-[85vh] py-1 text-gray-700 dark:text-gray-300 overflow-y-auto" >
             @if(!Auth::user()->demo )
                 <li>
                     <a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white"
