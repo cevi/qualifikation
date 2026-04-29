@@ -45,9 +45,22 @@
                                 {!! Form::close()!!}
                             </div>
                             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-6 text-right">
-                                <a href="{{$user ? route('profile.post.edit', [$user, $post]) : route('posts.edit', $post)}}">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                @if($user)
+                                    <button type="button" class="edit-post-btn btn btn-sm"
+                                        data-post="{{ json_encode([
+                                            'id' => $post->id,
+                                            'comment' => $post->comment,
+                                            'showOnSurvey' => $post->show_on_survey ? true : false,
+                                            'file' => $post->file ? true : false,
+                                            'filename' => $post->filename(),
+                                        ]) }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                @else
+                                    <a href="{{ route('posts.edit', $post) }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     @endif
