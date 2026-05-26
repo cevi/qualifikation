@@ -36,24 +36,24 @@
             @if(count(Auth::user()->camps) > 0)
                 <hr class="my-1 border-gray-200 dark:border-gray-600">
             @endif
-            @foreach (Auth::user()->camps as $camp)
-                @if(!$camp['global_camp'])
+            @foreach (Auth::user()->camps as $userCamp)
+                @if(!$userCamp['global_camp'])
                     <li class="flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-150 rounded-lg mx-1">
                         <a class="grow block py-2 px-3 text-sm text-gray-700 dark:text-gray-300 dark:hover:text-white text-left truncate"
-                           href="{{route('home.camps.update',$camp['id'])  }}"
+                           href="{{route('home.camps.update',$userCamp['id'])  }}"
                            onclick="event.preventDefault();
-                                    document.getElementById('camps-update-form-{{$camp['id']}}').submit();">
-                            {{$camp['name']}}
+                                    document.getElementById('camps-update-form-{{$userCamp['id']}}').submit();">
+                            {{$userCamp['name']}}
                         </a>
-                        @if(!Auth::user()->demo && $camp->user['id']===Auth::user()->id)
+                        @if(!Auth::user()->demo && $userCamp->user['id']===Auth::user()->id)
                             <a class="py-2 px-3 text-gray-400 hover:text-blue-600 dark:hover:text-white transition-colors duration-150 flex items-center justify-center"
-                               href="{{route('admin.camps.edit',$camp)  }}">
+                               href="{{route('admin.camps.edit',$userCamp)  }}">
                                 <i class="fa-solid fa-pen-to-square text-sm"></i>
                             </a>
                         @endif
 
-                        <form id="camps-update-form-{{$camp['id']}}"
-                                action="{{route('home.camps.update',$camp['id'])  }}" method="POST"
+                        <form id="camps-update-form-{{$userCamp['id']}}"
+                                action="{{route('home.camps.update',$userCamp['id'])  }}" method="POST"
                                 style="display: none;">
                             {{ method_field('PUT') }}
                             @csrf

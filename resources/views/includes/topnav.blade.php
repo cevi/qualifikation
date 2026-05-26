@@ -143,7 +143,7 @@
                                         </span>
                                     </a>
                                 </li>
-                                @if (Auth::user()->isAdmin() || !Auth::user()->camp->camp_type['default_type'])
+                                @if (Auth::user()->isAdmin() || ($camp && !$camp->camp_type['default_type']))
                                     <li class="mx-1">
                                         <a class="block py-2 px-3 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-150 text-left"
                                            href="{{route('admin.camp_types.index')}}"
@@ -270,6 +270,8 @@
                             type="button"
                             class="flex justify-between items-center w-full py-2 text-lg font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150 focus:outline-hidden focus:ring-0 focus:border-0"
                             data-collapse-toggle="mobile-dropdown-curses"
+                            aria-controls="mobile-dropdown-curses"
+                            aria-expanded="false"
                         >
                             <span>
                                 @if(Auth::user()->camp && !Auth::user()->camp['global_camp'] )
@@ -296,24 +298,24 @@
                             @if(count(Auth::user()->camps) > 0)
                                 <hr class="border-gray-100 dark:border-gray-800">
                             @endif
-                            @foreach (Auth::user()->camps as $camp)
-                                @if(!$camp['global_camp'])
+                            @foreach (Auth::user()->camps as $userCamp)
+                                @if(!$userCamp['global_camp'])
                                     <div class="flex items-center justify-between">
                                         <a class="block py-1.5 text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                                        href="{{route('home.camps.update',$camp['id'])  }}"
+                                        href="{{route('home.camps.update',$userCamp['id'])  }}"
                                             onclick="event.preventDefault();
-                                                                        document.getElementById('mobile-camps-update-form-{{$camp['id']}}').submit();">
-                                            {{$camp['name']}}
+                                                                        document.getElementById('mobile-camps-update-form-{{$userCamp['id']}}').submit();">
+                                            {{$userCamp['name']}}
                                         </a>
-                                        @if(!Auth::user()->demo && $camp->user['id']===Auth::user()->id)
+                                        @if(!Auth::user()->demo && $userCamp->user['id']===Auth::user()->id)
                                         <a class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                                            href="{{route('admin.camps.edit',$camp)  }}">
+                                            href="{{route('admin.camps.edit',$userCamp)  }}">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         @endif
                                     </div>
-                                    <form id="mobile-camps-update-form-{{$camp['id']}}"
-                                            action="{{route('home.camps.update',$camp['id'])  }}" method="POST"
+                                    <form id="mobile-camps-update-form-{{$userCamp['id']}}"
+                                            action="{{route('home.camps.update',$userCamp['id'])  }}" method="POST"
                                             style="display: none;">
                                         {{ method_field('PUT') }}
                                         @csrf
@@ -339,6 +341,8 @@
                                         type="button"
                                         class="flex justify-between items-center w-full py-2 text-lg font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150 focus:outline-hidden focus:ring-0 focus:border-0"
                                         data-collapse-toggle="mobile-dropdown-users"
+                                        aria-controls="mobile-dropdown-users"
+                                        aria-expanded="false"
                                     >
                                         <span>Teilnehmer</span>
                                         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -388,6 +392,8 @@
                                 type="button"
                                 class="flex justify-between items-center w-full py-2 text-lg font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150 focus:outline-hidden focus:ring-0 focus:border-0"
                                 data-collapse-toggle="mobile-dropdown-kursadmin"
+                                aria-controls="mobile-dropdown-kursadmin"
+                                aria-expanded="false"
                             >
                                 <span>Kursadmin</span>
                                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -414,7 +420,7 @@
                                     <i class="fas fa-campground w-5 text-center mr-2"></i>
                                     <span>Kurs</span>
                                 </a>
-                                @if (Auth::user()->isAdmin() || !Auth::user()->camp->camp_type['default_type'])
+                                @if (Auth::user()->isAdmin() || ($camp && !$camp->camp_type['default_type']))
                                     <a href="{{route('admin.camp_types.index')}}" class="flex items-center py-1.5 text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                         <i class="fas fa-campground w-5 text-center mr-2"></i>
                                         <span>Kurs-Typen</span>
@@ -472,6 +478,8 @@
                             type="button"
                             class="flex justify-between items-center w-full py-2 text-lg font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150 focus:outline-hidden focus:ring-0 focus:border-0"
                             data-collapse-toggle="mobile-dropdown-profile"
+                            aria-controls="mobile-dropdown-profile"
+                            aria-expanded="false"
                         >
                             <span class="flex items-center">
                                 <img
