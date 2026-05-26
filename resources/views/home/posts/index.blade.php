@@ -4,17 +4,22 @@
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help" :header=false/>
         <div class="row">
-            <div class="col-md-4">
-                <h5 class="text-xl font-bold dark:text-white" data-modal-target="default-modal">Rückmeldung erstellen:</h5>
-                <x-posts.form :post="$post_new" :campusers="$campusers_select" :chooseFromUser="true" :route="route('posts.store')"/>
-            </div>
-            <div class="col-md-8">
+            <div class="col-md-12">
+                <button type="button" id="new-feedback-btn" class="btn btn-primary mb-3">
+                    Neue Rückmeldung
+                </button>
                 <x-posts.post :posts="$posts_no_user" :showLeader="false" :title="'Nicht zugeordnete Rückmeldungen'"/>
                 <br>
                 <x-posts.post :posts="$posts_user" :showLeader="false" :title="'Zugeordnete Rückmeldungen'"/>
             </div>
         </div>
     </div>
+
+    @include('home.feedback_modal', [
+        'route' => route('posts.store'),
+        'campusers' => $campusers_select,
+        'chooseFromUser' => true,
+    ])
 @endsection
 
 @push('scripts')
