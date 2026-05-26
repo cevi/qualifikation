@@ -33,7 +33,7 @@ class Form extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct(string $method = 'POST', $model = [], string $enctype = null)
+    public function __construct(string $method = 'POST', $model = [], ?string $enctype = null)
     {
         $this->method = strtoupper($method);
         $this->model = $model;
