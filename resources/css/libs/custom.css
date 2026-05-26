@@ -1,5 +1,10 @@
 /* your styles go here */
 
+@media (hover: hover) and (pointer: fine) {
+    html {
+        overflow-y: scroll;
+    }
+}
 
 body {
     font-family: 'Montserrat', sans-serif;
@@ -318,4 +323,11 @@ select option {
 
 .swal2-actions button{
     background-color: var(--swal2-confirm-button-background-color);
+}
+
+/* Disable default underlines on hover for all top navigation dropdown menu links to prevent stray icon underlines */
+nav [id^="dropdown"] a,
+nav [id^="dropdown"] a:hover,
+nav [id^="dropdown"] a:focus {
+    text-decoration: none !important;
 }

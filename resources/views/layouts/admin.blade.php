@@ -2,8 +2,8 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     @include('includes/header')
     <body class="text-dark__black">
+        @include('includes/topnav')
         <div class="antialiased page">
-            @include('includes/admin_topnav')
             <main class="p-4 h-auto pt-20">
                 @yield('content')
             </main>
