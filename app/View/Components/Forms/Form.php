@@ -24,14 +24,21 @@ class Form extends Component
      * Request method.
      */
     public $model;
+
+    /**
+     * Form enctype.
+     */
+    public ?string $enctype;
+
     /**
      * Create a new component instance.
      */
-    public function __construct(string $method = 'POST', $model = [])
+    public function __construct(string $method = 'POST', $model = [], ?string $enctype = null)
     {
         $this->method = strtoupper($method);
         $this->model = $model;
         $this->spoofMethod = in_array($this->method, ['PUT', 'PATCH', 'DELETE']);
+        $this->enctype = $enctype;
     }
 
     public function hasError($bag = 'default'): bool

@@ -15,7 +15,10 @@
         <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">oder</p>
     </div>
     <x-forms.container>
-        <x-forms.file name="file"/>
+        <x-forms.file name="file" :disabled="Auth::user()->demo"/>
+        @if(Auth::user()->demo)
+            <p class="mt-1 text-xs text-red-500">Dateiupload in der Demoversion deaktiviert</p>
+        @endif
     </x-forms.container>
     <x-forms.container>
        <x-forms.checkbox label="Sichtbar für Qualifikation" name="show_on_survey" value="{{$post['show_on_survey']}}"/>

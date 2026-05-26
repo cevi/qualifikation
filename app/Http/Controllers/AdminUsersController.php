@@ -366,9 +366,9 @@ class AdminUsersController extends Controller
         if (!Auth::user()->demo) {
             $camp = $aktUser->camp;
             if (trim($request->password) == '') {
-                $input = $request->except('password');
+                $input = $request->except(['password', 'avatar']);
             } else {
-                $input = $request->all();
+                $input = $request->except('avatar');
                 $input['password'] = bcrypt($request->password);
             }
 
@@ -455,9 +455,9 @@ class AdminUsersController extends Controller
 
         if (! $aktuser->demo) {
             if (trim($request->password) == '') {
-                $input = $request->except('password');
+                $input = $request->except(['password', 'avatar']);
             } else {
-                $input = $request->all();
+                $input = $request->except('avatar');
                 $input['password'] = bcrypt($request->password);
             }
             // $input['slug'] = Str::slug($input['username']);
