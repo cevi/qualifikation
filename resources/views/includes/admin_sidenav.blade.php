@@ -88,7 +88,7 @@
                     </li>
                 @endif
 
-                @if (Auth::user()->isAdmin() || !Auth::user()->camp->camp_type['default_type'])
+                @if (Auth::user()->isAdmin() || (Auth::user()->camp && !Auth::user()->camp->camp_type['default_type']))
                     <li>
                         <a href="{{route('camp_types.index')}}"
                            class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
