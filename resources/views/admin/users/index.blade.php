@@ -92,6 +92,7 @@
                 ]
             });
 
+            var defaultOrder = @json($defaultOrder);
             var isPopState = false;
             var isInitial = true;
 
@@ -116,17 +117,32 @@
 
             $(window).on('popstate', function () {
                 var orderParam = new URLSearchParams(window.location.search).get('order');
-                var newOrder = [[3, "asc"], [4, "asc"], [0, "asc"]];
+                var newOrder = defaultOrder;
                 if (orderParam) {
-                    try {
-                        const parsed = orderParam.split(',').map(item => {
-                            const parts = item.split(':');
-                            return [parseInt(parts[0], 10), parts[1]];
-                        });
-                        if (parsed.length > 0 && parsed.every(o => !isNaN(o[0]) && (o[1] === 'asc' || o[1] === 'desc'))) {
-                            newOrder = parsed;
+                    var parsed = [];
+                    var isValid = true;
+                    var items = orderParam.split(',');
+                    for (var i = 0; i < items.length; i++) {
+                        var parts = items[i].split(':');
+                        if (parts.length === 2) {
+                            var colIndex = parseInt(parts[0], 10);
+                            var dir = parts[1];
+                            if (!isNaN(colIndex) && colIndex >= 0 && colIndex <= 9 && (dir === 'asc' || dir === 'desc')) {
+                                parsed.push([colIndex, dir]);
+                            } else {
+                                isValid = false;
+                                break;
+                            }
+                        } else {
+                            isValid = false;
+                            break;
                         }
-                    } catch (e) {}
+                    }
+                    if (isValid && parsed.length > 0) {
+                        newOrder = parsed;
+                    } else {
+                        console.warn('Malformed or invalid order URL parameter:', orderParam);
+                    }
                 }
                 isPopState = true;
                 table.order(newOrder).draw();

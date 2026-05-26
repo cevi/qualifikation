@@ -47,21 +47,29 @@ class AdminUsersController extends Controller
         $help = Help::where('title',$title)->first();
 
         // Server-side parsing of the sorting order query parameter
-        $initialOrder = [[3, 'asc'], [4, 'asc'], [0, 'asc']]; // Default
+        $defaultOrder = [[3, 'asc'], [4, 'asc'], [0, 'asc']];
+        $initialOrder = $defaultOrder;
         if ($orderParam = request('order')) {
-            $parsed = [];
-            foreach (explode(',', $orderParam) as $item) {
-                $parts = explode(':', $item);
-                if (count($parts) === 2 && in_array($parts[1], ['asc', 'desc'])) {
-                    $parsed[] = [(int)$parts[0], $parts[1]];
+            if (is_string($orderParam) && strlen($orderParam) <= 100) {
+                $parsed = [];
+                $items = explode(',', $orderParam);
+                $items = array_slice($items, 0, 10);
+                foreach ($items as $item) {
+                    $parts = explode(':', $item);
+                    if (count($parts) === 2 && is_numeric($parts[0]) && in_array($parts[1], ['asc', 'desc'])) {
+                        $colIndex = (int)$parts[0];
+                        if ($colIndex >= 0 && $colIndex <= 9) {
+                            $parsed[] = [$colIndex, $parts[1]];
+                        }
+                    }
                 }
-            }
-            if (count($parsed) > 0) {
-                $initialOrder = $parsed;
+                if (count($parsed) > 0) {
+                    $initialOrder = $parsed;
+                }
             }
         }
         
-        return view('admin.users.index', compact('has_api_token', 'title', 'help', 'initialOrder'));
+        return view('admin.users.index', compact('has_api_token', 'title', 'help', 'initialOrder', 'defaultOrder'));
     }
 
     public function createDataTables()
