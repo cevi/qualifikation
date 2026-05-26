@@ -129,7 +129,7 @@
         const fileInput = feedbackModal.querySelector('input[name="file"]');
         const deleteFileContainer = feedbackModal.querySelector('#delete-file-container');
         const deleteFileCheckbox = feedbackModal.querySelector('input[name="delete_file"]');
-        const deleteFileLabel = feedbackModal.querySelector('#delete-file-label');
+        const deleteFileLabel = feedbackModal.querySelector('label[for="delete_file"]');
         const submitBtn = feedbackModal.querySelector('button[type="submit"]');
 
         function openFeedbackModal() {
