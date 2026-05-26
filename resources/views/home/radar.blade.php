@@ -24,7 +24,7 @@
         for (var [i, dataset] of Object.entries(datasets_array)) {
             var RADARCHART = $('#radarChart-' + (parseInt(i) + 1));
 
-            Chart.defaults.color = 'grey';
+            Chart.defaults.color = '#333';
 
             var chart = new Chart(RADARCHART, {
                     type: 'radar',
@@ -40,7 +40,7 @@
                                 max: 2,
                                 ticks: {
                                     maxTicksLimit: 5,
-                                    color: 'darkgrey',
+                                    color: '#333',
                                     backdropColor: 'transparent',
                                     z: 5,
                                 },
@@ -55,15 +55,15 @@
                                         },
                                     },
                                     color: function (pointLabel, index, labels) {
-                                        return pointLabel.label[0][0] === '*' ? blue : 'grey';
+                                        return pointLabel.label[0][0] === '*' ? blue : '#333';
                                     },
                                 },
                                 angleLines: {
-                                    color: 'grey' // lines radiating from the center
+                                    color: '#aaa' // lines radiating from the center
                                 }
                                 ,
                                 grid: {
-                                    color: 'grey'
+                                    color: '#aaa'
                                 }
 
                             },
