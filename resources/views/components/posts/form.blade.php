@@ -10,7 +10,7 @@
     @endif
     <div id="delete-file-container" class="{{ $post->file ? '' : 'hidden' }}">
         <x-forms.container>
-            <x-forms.checkbox name="delete_file" id="delete_file" :label="$post->file ? 'Bestehende Datei ' . $post->filename() . ' löschen' : 'Bestehende Datei löschen'" :value="$post['delete_file']"/>
+            <x-forms.checkbox name="delete_file" id="delete_file" :label="$post->file ? 'Bestehende Datei ' . e($post->filename()) . ' löschen' : 'Bestehende Datei löschen'" :value="$post['delete_file']"/>
         </x-forms.container>
         <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">oder</p>
     </div>

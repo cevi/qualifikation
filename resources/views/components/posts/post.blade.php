@@ -52,7 +52,7 @@
                                             'comment' => $post->comment,
                                             'showOnSurvey' => $post->show_on_survey ? true : false,
                                             'file' => $post->file ? true : false,
-                                            'filename' => $post->filename(),
+                                            'filename' => $post->file ? $post->filename() : null,
                                         ]) }}">
                                         <i class="fas fa-edit"></i>
                                     </button>
