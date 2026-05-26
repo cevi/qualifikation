@@ -9,6 +9,7 @@
         var rs = getComputedStyle(r);
         var blue = rs.getPropertyValue('--blue');
         var textColor = rs.getPropertyValue('--color-text-primary').trim();
+        var gridColor = rs.getPropertyValue('--color-chart-grid').trim();
 
         $('input[type=radio]').change(function () {
             let id = this.id;
@@ -60,11 +61,10 @@
                                     },
                                 },
                                 angleLines: {
-                                    color: '#aaa' // lines radiating from the center
-                                }
-                                ,
+                                    color: gridColor
+                                },
                                 grid: {
-                                    color: '#aaa'
+                                    color: gridColor
                                 }
 
                             },
