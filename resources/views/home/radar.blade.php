@@ -8,6 +8,7 @@
         var r = document.querySelector(':root');
         var rs = getComputedStyle(r);
         var blue = rs.getPropertyValue('--blue');
+        var textColor = rs.getPropertyValue('--color-text-primary').trim();
 
         $('input[type=radio]').change(function () {
             let id = this.id;
@@ -24,7 +25,7 @@
         for (var [i, dataset] of Object.entries(datasets_array)) {
             var RADARCHART = $('#radarChart-' + (parseInt(i) + 1));
 
-            Chart.defaults.color = '#333';
+            Chart.defaults.color = textColor;
 
             var chart = new Chart(RADARCHART, {
                     type: 'radar',
@@ -40,7 +41,7 @@
                                 max: 2,
                                 ticks: {
                                     maxTicksLimit: 5,
-                                    color: '#333',
+                                    color: textColor,
                                     backdropColor: 'transparent',
                                     z: 5,
                                 },
@@ -55,7 +56,7 @@
                                         },
                                     },
                                     color: function (pointLabel, index, labels) {
-                                        return pointLabel.label[0][0] === '*' ? blue : '#333';
+                                        return pointLabel.label[0][0] === '*' ? blue : textColor;
                                     },
                                 },
                                 angleLines: {
