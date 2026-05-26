@@ -20,6 +20,7 @@
 :root {
     --color-bg-primary: #F4F7FA;
     --color-text-primary: #666;
+    --color-chart-grid: #aaa;
     --blue: #256191;
     --background-card: #fafafa;
     --background-dropdown: #fafafa;
@@ -38,6 +39,7 @@
 .dark {
     --color-bg-primary: #1c2128;
     --color-text-primary: rgb(200, 200, 200);
+    --color-chart-grid: #555;
     --blue: #699fc9;
     --background-card: #22272e;
     --background-dropdown: #3a3939;

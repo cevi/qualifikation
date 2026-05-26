@@ -180,11 +180,11 @@ class Helper
         return $dataset_add;
     }
 
-    public static function GetDataset($title, $color, $border_color, $point_color, $borderwith, $dataset){
+    public static function GetDataset($title, $color, $border_color, $point_color, $borderWidth, $dataset){
         return [
             'label' => $title,
             'backgroundColor' => $color,
-            'borderWidth' => $borderwith,
+            'borderWidth' => $borderWidth,
             'borderColor' => $border_color,
             'pointBackgroundColor' => $border_color,
             'pointBorderColor' => $point_color,
