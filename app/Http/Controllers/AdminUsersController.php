@@ -45,8 +45,23 @@ class AdminUsersController extends Controller
 
         $title = 'Personen';
         $help = Help::where('title',$title)->first();
+
+        // Server-side parsing of the sorting order query parameter
+        $initialOrder = [[3, 'asc'], [4, 'asc'], [0, 'asc']]; // Default
+        if ($orderParam = request('order')) {
+            $parsed = [];
+            foreach (explode(',', $orderParam) as $item) {
+                $parts = explode(':', $item);
+                if (count($parts) === 2 && in_array($parts[1], ['asc', 'desc'])) {
+                    $parsed[] = [(int)$parts[0], $parts[1]];
+                }
+            }
+            if (count($parsed) > 0) {
+                $initialOrder = $parsed;
+            }
+        }
         
-        return view('admin.users.index', compact('has_api_token', 'title', 'help'));
+        return view('admin.users.index', compact('has_api_token', 'title', 'help', 'initialOrder'));
     }
 
     public function createDataTables()

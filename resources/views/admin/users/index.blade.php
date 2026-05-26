@@ -60,7 +60,7 @@
 @push('scripts')
     <script type="module">
         $(document).ready(function () {
-            $('#datatable').DataTable({
+            var table = $('#datatable').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
@@ -70,7 +70,7 @@
                     "url": "/lang/Datatables.json"
                 },
                 ajax: "{!! route('users.CreateDataTables') !!}",
-                order: [[3, "asc"], [4, "asc"], [0, "asc"]],
+                order: @json($initialOrder),
                 columns: [
                     {data: 'user', name: 'user'},
                     {data: 'picture', name: 'picture', orderable: false, serachable: false},
@@ -91,6 +91,47 @@
 
                 ]
             });
+
+            var isPopState = false;
+            var isInitial = true;
+
+            table.on('order.dt', function () {
+                if (isInitial) {
+                    isInitial = false;
+                    return;
+                }
+                if (isPopState) {
+                    isPopState = false;
+                    return;
+                }
+                var order = table.order();
+                var orderStr = order.map(o => `${o[0]}:${o[1]}`).join(',');
+                var url = new URL(window.location.href);
+                var currentOrder = url.searchParams.get('order');
+                if (currentOrder !== orderStr) {
+                    url.searchParams.set('order', orderStr);
+                    window.history.pushState({ order: order }, '', url.toString());
+                }
+            });
+
+            $(window).on('popstate', function () {
+                var orderParam = new URLSearchParams(window.location.search).get('order');
+                var newOrder = [[3, "asc"], [4, "asc"], [0, "asc"]];
+                if (orderParam) {
+                    try {
+                        const parsed = orderParam.split(',').map(item => {
+                            const parts = item.split(':');
+                            return [parseInt(parts[0], 10), parts[1]];
+                        });
+                        if (parsed.length > 0 && parsed.every(o => !isNaN(o[0]) && (o[1] === 'asc' || o[1] === 'desc'))) {
+                            newOrder = parsed;
+                        }
+                    } catch (e) {}
+                }
+                isPopState = true;
+                table.order(newOrder).draw();
+            });
+
             $('#showImport').on('click', function () {
                 Swal.fire({
                     title: 'Personen aus Cevi-DB importieren',
