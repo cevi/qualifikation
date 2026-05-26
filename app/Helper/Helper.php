@@ -147,9 +147,9 @@ class Helper
             $second_answers[] = $question->answer_second['count'];
             $leader_answers[] = $question->answer_leader['count'];
         }
-        $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers);
-        $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers);
-        $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers);
+        $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(70,130,180,0.45)', 'rgb(70,130,180)', '#fff', 2, $first_answers);
+        $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(220,150,30,0.45)', 'rgb(220,150,30)', '#fff', 2, $second_answers);
+        $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(46,139,87,0.45)', 'rgb(46,139,87)', '#fff', 2, $leader_answers);
         if (Auth::user()->role_id != config('status.role_Teilnehmer')) {
             if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
                 ($camp['secondsurveyopen'])) {
@@ -180,16 +180,16 @@ class Helper
         return $dataset_add;
     }
 
-    public static function GetDataset($title, $color, $point_color, $borderwith, $dataset){
+    public static function GetDataset($title, $color, $border_color, $point_color, $borderwith, $dataset){
         return [
             'label' => $title,
             'backgroundColor' => $color,
             'borderWidth' => $borderwith,
-            'borderColor' => $color,
-            'pointBackgroundColor' => $color,
+            'borderColor' => $border_color,
+            'pointBackgroundColor' => $border_color,
             'pointBorderColor' => $point_color,
             'pointHoverBackgroundColor' => $point_color,
-            'pointHoverBorderColor' => $color,
+            'pointHoverBorderColor' => $border_color,
             'data' => $dataset
         ];
     }
