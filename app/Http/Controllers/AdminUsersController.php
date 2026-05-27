@@ -15,7 +15,7 @@ use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 use App\Models\Group;
 use Illuminate\Http\Request;
-use Ixudra\Curl\Facades\Curl;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
@@ -152,106 +152,155 @@ class AdminUsersController extends Controller
 
     public function import()
     {
-        if (!Auth::user()->demo) {
-            $aktUser = Auth::user();
-            $camp = $aktUser->camp;
-            if ($aktUser->foreign_id && $camp->foreign_id && $camp->group && $camp->group['api_token']) {
-                $url = $camp->group['url'] . 'groups/' . $camp->group['foreign_id'] . '/events/' . $camp['foreign_id'] . '/participations.json';
-                $response = Curl::to($url)
-                    ->withData(['token' => Crypt::decryptString($camp->group['api_token'])])
-                    ->get();
-                $response = json_decode($response);
-                $participants = $response->event_participations;
-                for ($i = 1; $i < $response->total_pages; $i++) {
-                    $url = $response->next_page_link;
-                    $response = Curl::to($url)
-                        ->withData([
-                            'page' => $i + 1,
-                            'token' => Crypt::decryptString($camp->group['api_token'])
-                        ])
-                        ->get();
-                    $response = json_decode($response);
-                    $participants = array_merge($participants, $response->event_participations);
-                }
-                $isLeader = false;
-                foreach ($participants as $participant) {
-                    if ((intval($participant->links->person) === $aktUser['foreign_id']) && ($participant->roles[0]->type === 'Event::Role::Leader')) {
-                        $isLeader = true;
-                    }
-                }
-                if ($isLeader) {
-                    foreach ($participants as $participant) {
-                        if ($participant->roles[0]->type === 'Event::Course::Role::Participant' ||
-                            $participant->roles[0]->type === 'Event::Role::AssistantLeader' ||
-                            $participant->roles[0]->type === 'Event::Role::Leader') {
-                            if ($participant->links->person != $aktUser['foreign_id']) {
-                                $username = $participant->nickname ? $participant->nickname : $participant->first_name;
-                                switch ($participant->roles[0]->type) {
-                                    case  'Event::Course::Role::Participant':
-                                        $role_id = config('status.role_Teilnehmer');
-                                        break;
-                                    case  'Event::Role::AssistantLeader':
-                                        $role_id = config('status.role_Gruppenleiter');
-                                        break;
-                                    case  'Event::Role::Leader':
-                                        $role_id = config('status.role_Kursleiter');
-                                        break;
-                                }
-                                $insertData = [
-                                    'username' => $username,
-                                    'email' => $participant->email,
-                                    'email_verified_at' => now(),
-                                    'classification_id' => config('status.classification_yellow'),];
-                                $user = User::whereraw('LOWER(`email`) LIKE "' . mb_strtolower($participant->email) . '"')->Orwhere('foreign_id', $participant->links->person)->first();
-                                if (!$user) {
-                                    $user = User::create($insertData);
-                                    UserCreated::dispatch($user);
-                                }
-                                $user->update([
-                                    'role_id' => $role_id,
-                                    'camp_id' => $camp['id'],
-                                    'classification_id' => config('status.classification_yellow'),
-                                ]);
-                            } else {
-                                $user = Auth::user();
-                            }
-                            if (!$user->email) {
-                                $user->update(['email' => $participant->email]);
-                            }
-                            if (!$user->foreign_id) {
-                                $user->update(['foreign_id' => $participant->links->person]);
-                            }
-                            if (!$user->group_id) {
-                                $group = Group::where('foreign_id', $participant->ortsgruppe_id)->first();
-                                if ($group) {
-                                    $user->update(['group_id' => $group->id]);
-                                }
-                            }
-                            Helper::updateCamp($user, $camp);
-                        }
-                    }
+        if (Auth::user()->demo) {
+            return;
+        }
 
-                    return true;
-                } else {
-                    $errorText = 'Der DB-Import steht nur den Kursleitern zur Verfügung';
-                    return response()->json(['error' => $errorText, 'ok' => false], 404); // Status code here
-                }
-            } else {
-                $errorText = '';
-                if (!$camp->foreign_id) {
-                    $errorText = 'Keine Cevi-DB-ID auf dem Kurs hinterlegt.';
-                }
-                if (!$aktUser->foreign_id) {
-                    $errorText = 'Dein Cevi-DB-Benutzer ist noch nicht mit deinem Benutzer verknüpft.';
-                } elseif (!$camp->group) {
-                    $errorText = $errorText + ' Keine Gruppe auf dem Kurs hinterlegt.';
-                } elseif (!$camp->group['api_token']) {
-                    $errorText = $errorText + ' Deine Region hat den DB-Import nicht freigeschalten.';
-                }
-                // abort(412, $errorText);
-                return response()->json(['error' => $errorText, 'ok' => false], 404); // Status code here
+        $aktUser = Auth::user();
+        $camp = $aktUser->camp;
+
+        if (!$aktUser->foreign_id) {
+            return response()->json(['error' => 'Dein Cevi-DB-Benutzer ist noch nicht mit deinem Benutzer verknüpft.', 'ok' => false], 404);
+        }
+        if (!$camp->foreign_id) {
+            return response()->json(['error' => 'Keine Cevi-DB-ID auf dem Kurs hinterlegt.', 'ok' => false], 404);
+        }
+        if (!$camp->group) {
+            return response()->json(['error' => 'Keine Gruppe auf dem Kurs hinterlegt.', 'ok' => false], 404);
+        }
+        if (!$camp->group['api_token']) {
+            return response()->json(['error' => 'Deine Region hat den DB-Import nicht freigeschalten.', 'ok' => false], 404);
+        }
+
+        $token = Crypt::decryptString($camp->group['api_token']);
+        $baseUrl = rtrim($camp->group['url'], '/');
+
+        // Fetch all participations with sideloaded person and role data, following pagination links
+        $participations = [];
+        $included = [];
+        $url = $baseUrl . '/api/event_participations?' . http_build_query([
+            'filter[event_id][eq]' => $camp['foreign_id'],
+            'include' => 'participant,roles',
+        ]);
+
+        while ($url) {
+            $body = Http::withHeaders(['X-TOKEN' => $token])
+                ->accept('application/vnd.api+json')
+                ->get($url)
+                ->json();
+            $participations = array_merge($participations, $body['data'] ?? []);
+            $included = array_merge($included, $body['included'] ?? []);
+            $url = $body['links']['next'] ?? null;
+        }
+
+        // Build lookup maps from sideloaded resources
+        $peopleById = [];
+        $rolesById = [];
+        foreach ($included as $resource) {
+            if ($resource['type'] === 'people') {
+                $peopleById[$resource['id']] = $resource;
+            } elseif ($resource['type'] === 'event_roles') {
+                $rolesById[$resource['id']] = $resource;
             }
         }
+
+        // Verify the requesting user is a course leader
+        $isLeader = false;
+        foreach ($participations as $participation) {
+            $personId = $participation['relationships']['participant']['data']['id'] ?? null;
+            if (intval($personId) !== $aktUser['foreign_id']) {
+                continue;
+            }
+            foreach ($participation['relationships']['roles']['data'] ?? [] as $roleRef) {
+                if (($rolesById[$roleRef['id']]['attributes']['type'] ?? null) === 'Event::Role::Leader') {
+                    $isLeader = true;
+                    break 2;
+                }
+            }
+        }
+
+        if (!$isLeader) {
+            return response()->json(['error' => 'Der DB-Import steht nur den Kursleitern zur Verfügung', 'ok' => false], 404);
+        }
+
+        $relevantRoles = ['Event::Course::Role::Participant', 'Event::Role::AssistantLeader', 'Event::Role::Leader'];
+
+        foreach ($participations as $participation) {
+            $personId = $participation['relationships']['participant']['data']['id'] ?? null;
+            if (!$personId) {
+                continue;
+            }
+
+            // Resolve the first matching role for this participation
+            $roleType = null;
+            foreach ($participation['relationships']['roles']['data'] ?? [] as $roleRef) {
+                $type = $rolesById[$roleRef['id']]['attributes']['type'] ?? null;
+                if ($type) {
+                    $roleType = $type;
+                    break;
+                }
+            }
+
+            if (!in_array($roleType, $relevantRoles)) {
+                continue;
+            }
+
+            $isSelf = intval($personId) === $aktUser['foreign_id'];
+            $person = $peopleById[$personId] ?? null;
+            $attrs = $person['attributes'] ?? [];
+
+            if ($isSelf) {
+                $user = Auth::user();
+            } else {
+                if (!$person) {
+                    continue;
+                }
+                $email = $attrs['email'];
+                $username = $attrs['nickname'] ?? $attrs['first_name'];
+                $role_id = match ($roleType) {
+                    'Event::Course::Role::Participant' => config('status.role_Teilnehmer'),
+                    'Event::Role::AssistantLeader'     => config('status.role_Gruppenleiter'),
+                    default                            => config('status.role_Kursleiter'),
+                };
+
+                $user = User::whereRaw('LOWER(`email`) LIKE ?', [mb_strtolower($email)])
+                    ->orWhere('foreign_id', $personId)
+                    ->first();
+
+                if (!$user) {
+                    $user = User::create([
+                        'username' => $username,
+                        'email' => $email,
+                        'email_verified_at' => now(),
+                        'classification_id' => config('status.classification_yellow'),
+                    ]);
+                    UserCreated::dispatch($user);
+                }
+
+                $user->update([
+                    'role_id' => $role_id,
+                    'camp_id' => $camp['id'],
+                    'classification_id' => config('status.classification_yellow'),
+                ]);
+            }
+
+            if (!$user->email && isset($attrs['email'])) {
+                $user->update(['email' => $attrs['email']]);
+            }
+            if (!$user->foreign_id) {
+                $user->update(['foreign_id' => intval($personId)]);
+            }
+            if (!$user->group_id && isset($attrs['primary_group_id'])) {
+                $group = Group::where('foreign_id', $attrs['primary_group_id'])->first();
+                if ($group) {
+                    $user->update(['group_id' => $group->id]);
+                }
+            }
+
+            Helper::updateCamp($user, $camp);
+        }
+
+        return true;
     }
 
     public function uploadFile(Request $request)
