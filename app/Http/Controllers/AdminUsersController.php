@@ -52,12 +52,8 @@ class AdminUsersController extends Controller
     public function createDataTables()
     {
         //
-        if (! Auth::user()->isAdmin()) {
             $camp = Auth::user()->camp;
             $users = $camp->allusers;
-        } else {
-            $users = User::get();
-        }
 
         return DataTables::of($users)
             ->addColumn('picture', function ($user) {
@@ -159,9 +155,9 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
 
-        if (!$aktUser->foreign_id) {
-            return response()->json(['error' => 'Dein Cevi-DB-Benutzer ist noch nicht mit deinem Benutzer verknüpft.', 'ok' => false], 404);
-        }
+        // if (!$aktUser->foreign_id) {
+        //     return response()->json(['error' => 'Dein Cevi-DB-Benutzer ist noch nicht mit deinem Benutzer verknüpft.', 'ok' => false], 404);
+        // }
         if (!$camp->foreign_id) {
             return response()->json(['error' => 'Keine Cevi-DB-ID auf dem Kurs hinterlegt.', 'ok' => false], 404);
         }
@@ -193,182 +189,86 @@ class AdminUsersController extends Controller
             $url = $body['links']['next'] ?? null;
         }
 
-        // Build lookup maps from sideloaded resources
-        $peopleById = [];
-        $rolesById = [];
-        foreach ($included as $resource) {
-            if ($resource['type'] === 'people') {
-                $peopleById[$resource['id']] = $resource;
-            } elseif ($resource['type'] === 'event_roles') {
-                $rolesById[$resource['id']] = $resource;
-            }
-        }
-
-        // Verify the requesting user is a course leader
-        $isLeader = false;
-        foreach ($participations as $participation) {
-            $personId = $participation['relationships']['participant']['data']['id'] ?? null;
-            if (intval($personId) !== $aktUser['foreign_id']) {
-                continue;
-            }
-            foreach ($participation['relationships']['roles']['data'] ?? [] as $roleRef) {
-                if (($rolesById[$roleRef['id']]['attributes']['type'] ?? null) === 'Event::Role::Leader') {
-                    $isLeader = true;
-                    break 2;
-                }
-            }
-        }
-
-        if (!$isLeader) {
-            return response()->json(['error' => 'Der DB-Import steht nur den Kursleitern zur Verfügung', 'ok' => false], 404);
-        }
-
-        $relevantRoles = ['Event::Course::Role::Participant', 'Event::Role::AssistantLeader', 'Event::Role::Leader'];
-
-        foreach ($participations as $participation) {
-            $personId = $participation['relationships']['participant']['data']['id'] ?? null;
-            if (!$personId) {
-                continue;
-            }
-
-            // Resolve the first matching role for this participation
-            $roleType = null;
-            foreach ($participation['relationships']['roles']['data'] ?? [] as $roleRef) {
-                $type = $rolesById[$roleRef['id']]['attributes']['type'] ?? null;
-                if ($type) {
-                    $roleType = $type;
-                    break;
-                }
-            }
-
-            if (!in_array($roleType, $relevantRoles)) {
-                continue;
-            }
-
-            $isSelf = intval($personId) === $aktUser['foreign_id'];
-            $person = $peopleById[$personId] ?? null;
-            $attrs = $person['attributes'] ?? [];
-
-            if ($isSelf) {
-                $user = Auth::user();
-            } else {
-                if (!$person) {
-                    continue;
-                }
-                $email = $attrs['email'];
-                $username = $attrs['nickname'] ?? $attrs['first_name'];
-                $role_id = match ($roleType) {
-                    'Event::Course::Role::Participant' => config('status.role_Teilnehmer'),
-                    'Event::Role::AssistantLeader'     => config('status.role_Gruppenleiter'),
-                    default                            => config('status.role_Kursleiter'),
-                };
-
-                $user = User::whereRaw('LOWER(`email`) LIKE ?', [mb_strtolower($email)])
-                    ->orWhere('foreign_id', $personId)
-                    ->first();
-
-                if (!$user) {
-                    $user = User::create([
-                        'username' => $username,
-                        'email' => $email,
-                        'email_verified_at' => now(),
-                        'classification_id' => config('status.classification_yellow'),
-                    ]);
-                    UserCreated::dispatch($user);
-                }
-
-                $user->update([
-                    'role_id' => $role_id,
-                    'camp_id' => $camp['id'],
-                    'classification_id' => config('status.classification_yellow'),
-                ]);
-            }
-
-            if (!$user->email && isset($attrs['email'])) {
-                $user->update(['email' => $attrs['email']]);
-            }
-            if (!$user->foreign_id) {
-                $user->update(['foreign_id' => intval($personId)]);
-            }
-            if (!$user->group_id && isset($attrs['primary_group_id'])) {
-                $group = Group::where('foreign_id', $attrs['primary_group_id'])->first();
-                if ($group) {
-                    $user->update(['group_id' => $group->id]);
-                }
-            }
-
-            Helper::updateCamp($user, $camp);
-        }
-
-        return true;
+        Helper::importParticipations($aktUser, $camp, $participations, $included);
     }
 
     public function uploadFile(Request $request)
     {
-
         if (!Auth::user()->demo) {
             if ($request->hasFile('csv_file')) {
-                $array = (new UsersImport)->toArray(request()->file('csv_file'));
-                $importData_arr = $array[0];
 
-                // Insert to MySQL database
-                $user = Auth::user();
-                $camp = $user->camp;
-                foreach ($importData_arr as $importData) {
-                    $username = mb_strtolower($importData['ceviname']);
+                if (in_array($request->file('csv_file')->getClientOriginalExtension(), ['csv'])) {
+                    $array = (new UsersImport)->toArray(request()->file('csv_file'));
+                    $importData_arr = $array[0];
 
-                    if ($importData['rollen'] === 'K') {
-                        $insertData = [
+                    // Insert to MySQL database
+                    $user = Auth::user();
+                    $camp = $user->camp;
+                    foreach ($importData_arr as $importData) {
+                        $username = mb_strtolower($importData['ceviname']);
 
-                            'username' => $username,
-                            'email' => $importData['e_mail'],
-                            'password' => bcrypt($importData['passwort']),
-                            'role_id' => config('status.role_Kursleiter'),
-                            'camp_id' => $user['camp_id'],
-                            'email_verified_at' => now(),
-                            'classification_id' => config('status.classification_yellow'),];
+                        if ($importData['rollen'] === 'K') {
+                            $insertData = [
 
-                        $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
-                        UserCreated::dispatch($user);
-                        Helper::updateCamp($user, $camp);
-                    } elseif ($importData['rollen'] === 'G') {
-                        $insertData = [
+                                'username' => $username,
+                                'email' => $importData['e_mail'],
+                                'password' => bcrypt($importData['passwort']),
+                                'role_id' => config('status.role_Kursleiter'),
+                                'camp_id' => $user['camp_id'],
+                                'email_verified_at' => now(),
+                                'classification_id' => config('status.classification_yellow'),];
 
-                            'username' => $username,
-                            'email' => $importData['e_mail'],
-                            'password' => bcrypt($importData['passwort']),
-                            'role_id' => config('status.role_Gruppenleiter'),
-                            'camp_id' => $user['camp_id'],
-                            'email_verified_at' => now(),
-                            'classification_id' => config('status.classification_yellow'),];
+                            $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
+                            UserCreated::dispatch($user);
+                            Helper::updateCamp($user, $camp);
+                        } elseif ($importData['rollen'] === 'G') {
+                            $insertData = [
 
-                        $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
-                        UserCreated::dispatch($user);
-                        Helper::updateCamp($user, $camp);
+                                'username' => $username,
+                                'email' => $importData['e_mail'],
+                                'password' => bcrypt($importData['passwort']),
+                                'role_id' => config('status.role_Gruppenleiter'),
+                                'camp_id' => $user['camp_id'],
+                                'email_verified_at' => now(),
+                                'classification_id' => config('status.classification_yellow'),];
+
+                            $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
+                            UserCreated::dispatch($user);
+                            Helper::updateCamp($user, $camp);
+                        }
+                    }
+                    foreach ($importData_arr as $importData) {
+                        $username = mb_strtolower($importData['ceviname']);
+
+                        if ($importData['rollen'] === 'T') {
+                            $user = Auth::user();
+                            $leader = User::where('email', $importData['leiter'])->first();
+
+                            $insertData = [
+
+                                'username' => $username,
+                                'email' => $importData['e_mail'],
+                                'password' => bcrypt($importData['passwort']),
+                                'role_id' => config('status.role_Teilnehmer'),
+                                'camp_id' => $user['camp_id'],
+                                'email_verified_at' => now(),
+                                'leader_id' => $leader['id'],
+                                'classification_id' => config('status.classification_yellow'),];
+
+                            $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
+                            UserCreated::dispatch($user);
+                            Helper::updateCamp($user, $camp);
+                        }
                     }
                 }
-                foreach ($importData_arr as $importData) {
-                    $username = mb_strtolower($importData['ceviname']);
-
-                    if ($importData['rollen'] === 'T') {
-                        $user = Auth::user();
-                        $leader = User::where('email', $importData['leiter'])->first();
-
-                        $insertData = [
-
-                            'username' => $username,
-                            'email' => $importData['e_mail'],
-                            'password' => bcrypt($importData['passwort']),
-                            'role_id' => config('status.role_Teilnehmer'),
-                            'camp_id' => $user['camp_id'],
-                            'email_verified_at' => now(),
-                            'leader_id' => $leader['id'],
-                            'classification_id' => config('status.classification_yellow'),];
-
-                        $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
-                        UserCreated::dispatch($user);
-                        Helper::updateCamp($user, $camp);
-                    }
+                elseif (in_array($request->file('csv_file')->getClientOriginalExtension(), ['json'])) {
+                    $aktUser = Auth::user();
+                    $camp = $aktUser->camp;
+                    $json = file_get_contents(request()->file('csv_file'));
+                    $body = json_decode($json, true);
+                    $participations = $body['data'];
+                    $included = $body['included'];
+                    Helper::importParticipations($aktUser, $camp, $participations, $included);
                 }
             }
         }
