@@ -30,6 +30,7 @@
                         <div class="hr-label">oder</div>
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
+                            <x-honeypot />
 
                             <div class="form-group row">
                                 <label for="username"

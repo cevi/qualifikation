@@ -86,23 +86,12 @@ class AdminUsersController extends Controller
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('admin.users.edit', $user['slug']).'>'.$user['username'].'</a>';
             })
             ->addColumn('role', function (User $user) {
-                $camp = null;
-                if (!Auth::user()->isAdmin()) {
-                    $camp = Auth::user()->camp;
-                }
+                $camp = Auth::user()->camp;
                 if ($camp) {
-                    $camp_user = CampUser::where('camp_id','=',$camp['id'])->where('user_id','=',$user['id'])->first();
-                    return [
-                        'display' => $camp_user->role ? $camp_user->role['name'] : '',
-                        'sort' => $camp_user->role ? $camp_user->role['id'] : '',
-                    ];
+                    $camp_user = CampUser::where('camp_id', '=', $camp['id'])->where('user_id', '=', $user['id'])->first();
+                    return $camp_user && $camp_user->role ? $camp_user->role['name'] : '';
                 }
-                else {
-                    return [
-                        'display' => $user->role ? $user->role['name'] : '',
-                        'sort' => $user->role ? $user->role['id'] : '',
-                    ];
-                }
+                return $user->role ? $user->role['name'] : '';
             })
             ->addColumn('leader', function (User $user) {
                 return $user->leader ? $user->leader['username'] : '';
@@ -197,12 +186,13 @@ class AdminUsersController extends Controller
         // Fetch all participations with sideloaded person and role data, following pagination links
         $participations = [];
         $included = [];
-        $url = $baseUrl . '/api/event_participations?' . http_build_query([
+        $url = '/api/event_participations?' . http_build_query([
             'filter[event_id][eq]' => $camp['foreign_id'],
             'include' => 'participant,roles',
         ]);
 
         while ($url) {
+            $url = $baseUrl . $url;
             $body = Http::withHeaders(['X-TOKEN' => $token])
                 ->accept('application/vnd.api+json')
                 ->get($url)
@@ -212,7 +202,7 @@ class AdminUsersController extends Controller
             $url = $body['links']['next'] ?? null;
         }
 
-        Helper::importParticipations($aktUser, $camp, $participations, $included);
+        return Helper::importParticipations($aktUser, $camp, $participations, $included);
     }
 
     public function uploadFile(Request $request)
