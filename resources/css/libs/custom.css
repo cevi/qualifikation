@@ -1,15 +1,24 @@
 /* your styles go here */
 
+@media (hover: hover) and (pointer: fine) {
+    html {
+        overflow-y: scroll;
+    }
+}
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 0.9rem;
     line-height: 1.6;
     background-color: #f8fafc;
 }
 
 @media (min-width: 1200px) {
-    .container, .container-sm, .container-md, .container-lg, .container-xl {
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl {
         max-width: 80%;
     }
 }
@@ -59,13 +68,13 @@ body {
     width: 20%;
     float: left;
     position: relative;
-    font-weight: 400
+    font-weight: 400;
 }
 
 #progressbar .step0:before {
     font-family: FontAwesome;
     content: "\f10c";
-    color: #fff
+    color: #fff;
 }
 
 #progressbar li:before {
@@ -74,50 +83,50 @@ body {
     line-height: 45px;
     display: block;
     font-size: 20px;
-    background: #B8D3E8;
+    background: #b8d3e8;
     border-radius: 50%;
     margin: auto;
-    padding: 0px
+    padding: 0px;
 }
 
 #progressbar li:after {
-    content: '';
+    content: "";
     width: 100%;
     height: 12px;
-    background: #B8D3E8;
+    background: #b8d3e8;
     position: absolute;
     left: 0;
     top: 16px;
-    z-index: -1
+    z-index: -1;
 }
 
 #progressbar li:last-child:after {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     position: absolute;
-    left: -50%
+    left: -50%;
 }
 
 #progressbar li:not(:first-child):after,
 #progressbar li:not(:last-child):after {
-    left: -50%
+    left: -50%;
 }
 
 #progressbar li:first-child:after {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     position: absolute;
-    left: 50%
+    left: 50%;
 }
 
 #progressbar li:last-child:after {
     border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px
+    border-bottom-right-radius: 10px;
 }
 
 #progressbar li:first-child:after {
     border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px
+    border-bottom-left-radius: 10px;
 }
 
 #progressbar li.active:before,
@@ -127,7 +136,7 @@ body {
 
 #progressbar li.active:before {
     font-family: FontAwesome;
-    content: "\f00c"
+    content: "\f00c";
 }
 
 .profile_user {
@@ -149,7 +158,6 @@ body {
 .profile_status {
     padding: 10px !important;
 }
-
 
 img {
     display: block;
@@ -191,7 +199,7 @@ img {
 .circle::after {
     border-right: 4px solid rgba(255, 255, 255, 0.6);
     border-radius: 100%;
-    content: ' ';
+    content: " ";
     position: absolute;
     top: 5px;
     left: 0px;
@@ -243,7 +251,8 @@ img {
     color: var(--blue);
 }
 
-.navbar-dashboard .navbar-nav .nav-link:focus, .navbar-dashboard .navbar-nav .nav-link:hover {
+.navbar-dashboard .navbar-nav .nav-link:focus,
+.navbar-dashboard .navbar-nav .nav-link:hover {
     color: var(--blue);
 }
 
@@ -251,7 +260,8 @@ img {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.nav-link:hover, .nav-link:focus {
+.nav-link:hover,
+.nav-link:focus {
     text-decoration: underline;
 }
 
@@ -260,15 +270,14 @@ img {
     text-align: center;
     overflow: hidden;
     margin: 1rem 0;
-
 }
 
 .content {
     margin-bottom: 10px;
 }
 
-
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     background-color: transparent;
     border-color: var(--color-accent-fg);
     outline: none;
@@ -304,7 +313,9 @@ select option {
 }
 
 @media print {
-    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+    .pagebreak {
+        page-break-before: always;
+    } /* page-break-after works, as well */
 }
 
 .dark .table.table-hover tbody tr:hover {
@@ -316,6 +327,13 @@ select option {
     background-color: var(--color-bg-primary);
 }
 
-.swal2-actions button{
+.swal2-actions button {
     background-color: var(--swal2-confirm-button-background-color);
+}
+
+/* Disable default underlines on hover for all top navigation dropdown menu links to prevent stray icon underlines */
+nav [id^="dropdown"] a,
+nav [id^="dropdown"] a:hover,
+nav [id^="dropdown"] a:focus {
+    text-decoration: none !important;
 }

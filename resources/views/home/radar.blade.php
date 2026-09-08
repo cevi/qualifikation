@@ -8,6 +8,8 @@
         var r = document.querySelector(':root');
         var rs = getComputedStyle(r);
         var blue = rs.getPropertyValue('--blue');
+        var textColor = rs.getPropertyValue('--color-text-primary').trim();
+        var gridColor = rs.getPropertyValue('--color-chart-grid').trim();
 
         $('input[type=radio]').change(function () {
             let id = this.id;
@@ -24,7 +26,7 @@
         for (var [i, dataset] of Object.entries(datasets_array)) {
             var RADARCHART = $('#radarChart-' + (parseInt(i) + 1));
 
-            Chart.defaults.color = 'grey';
+            Chart.defaults.color = textColor;
 
             var chart = new Chart(RADARCHART, {
                     type: 'radar',
@@ -40,7 +42,7 @@
                                 max: 2,
                                 ticks: {
                                     maxTicksLimit: 5,
-                                    color: 'darkgrey',
+                                    color: textColor,
                                     backdropColor: 'transparent',
                                     z: 5,
                                 },
@@ -55,15 +57,14 @@
                                         },
                                     },
                                     color: function (pointLabel, index, labels) {
-                                        return pointLabel.label[0][0] === '*' ? blue : 'grey';
+                                        return pointLabel.label[0][0] === '*' ? blue : textColor;
                                     },
                                 },
                                 angleLines: {
-                                    color: 'grey' // lines radiating from the center
-                                }
-                                ,
+                                    color: gridColor
+                                },
                                 grid: {
-                                    color: 'grey'
+                                    color: gridColor
                                 }
 
                             },

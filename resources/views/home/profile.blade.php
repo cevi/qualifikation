@@ -53,7 +53,9 @@
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <x-posts.post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'" :user="$user"/>
-                                    <x-posts.form :post="$post_new" :route="route('profile.post.store', $user)"/>
+                                    <button type="button" id="new-feedback-btn" class="btn btn-primary mt-3">
+                                        Neue Rückmeldung
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -62,6 +64,8 @@
             </div>
         </div>
     </div>
+
+    @include('home.feedback_modal', ['route' => route('profile.post.store', $user)])
 @endsection
 
 
@@ -86,6 +90,7 @@
                 }
             });
         });
+
     </script>
 @endpush
 

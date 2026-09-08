@@ -22,7 +22,7 @@
             @endif
             <div class="col-lg-4">
                 {!! Html::link('files/vorlage.xlsx', 'Vorlage herunterladen', ['class' => 'font-medium text-blue-600 dark:text-blue-500 hover:underline']) !!}
-                {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'files' => true]) !!}
                 <div class="form-group">
                     {!! Form::file('csv_file', ['class' => 'block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400']) !!}
                 </div>
@@ -60,7 +60,7 @@
 @push('scripts')
     <script type="module">
         $(document).ready(function () {
-            $('#datatable').DataTable({
+            var table = $('#datatable').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
@@ -70,18 +70,12 @@
                     "url": "/lang/Datatables.json"
                 },
                 ajax: "{!! route('users.CreateDataTables') !!}",
-                order: [[3, "asc"], [4, "asc"], [0, "asc"]],
+                order: @json($initialOrder),
                 columns: [
                     {data: 'user', name: 'user'},
                     {data: 'picture', name: 'picture', orderable: false, serachable: false},
                     {data: 'email', name: 'email'},
-                    {
-                        data: {
-                            _: 'role.display',
-                            sort: 'role.sort'
-                        },
-                        name: 'role',
-                    },
+                    {data: 'role', name: 'role'},
                     {data: 'leader', name: 'leader'},
                     {data: 'classification', name: 'classification'},
                     {data: 'camp', name: 'camp'},
@@ -91,6 +85,63 @@
 
                 ]
             });
+
+            var defaultOrder = @json($defaultOrder);
+            var isPopState = false;
+            var isInitial = true;
+
+            table.on('order.dt', function () {
+                if (isInitial) {
+                    isInitial = false;
+                    return;
+                }
+                if (isPopState) {
+                    isPopState = false;
+                    return;
+                }
+                var order = table.order();
+                var orderStr = order.map(o => `${o[0]}:${o[1]}`).join(',');
+                var url = new URL(window.location.href);
+                var currentOrder = url.searchParams.get('order');
+                if (currentOrder !== orderStr) {
+                    url.searchParams.set('order', orderStr);
+                    window.history.pushState({ order: order }, '', url.toString());
+                }
+            });
+
+            $(window).on('popstate', function () {
+                var orderParam = new URLSearchParams(window.location.search).get('order');
+                var newOrder = defaultOrder;
+                if (orderParam) {
+                    var parsed = [];
+                    var isValid = true;
+                    var items = orderParam.split(',');
+                    for (var i = 0; i < items.length; i++) {
+                        var parts = items[i].split(':');
+                        if (parts.length === 2) {
+                            var colIndex = parseInt(parts[0], 10);
+                            var dir = parts[1];
+                            if (!isNaN(colIndex) && colIndex >= 0 && colIndex <= 9 && (dir === 'asc' || dir === 'desc')) {
+                                parsed.push([colIndex, dir]);
+                            } else {
+                                isValid = false;
+                                break;
+                            }
+                        } else {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                    if (isValid && parsed.length > 0) {
+                        newOrder = parsed;
+                    } else {
+                        console.warn('Malformed or invalid order URL parameter:', orderParam);
+                    }
+                }
+                isPopState = true;
+                table.order(newOrder).draw();
+            });
+
             $('#showImport').on('click', function () {
                 Swal.fire({
                     title: 'Personen aus Cevi-DB importieren',
