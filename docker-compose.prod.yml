@@ -39,12 +39,17 @@ services:
     ports:
       - '3306:3306'
     volumes:
+      - /etc/qualitool/mysql-certs:/etc/mysql/certs:ro
       - mysql-data-production:/var/lib/mysql
       - .env:/run/secrets/.env
     environment:
       - ENV_FILE_PATH=/run/secrets/.env
     networks:
       - internal-net
+    command: >
+      --ssl-ca=/etc/mysql/certs/ca.pem
+      --ssl-cert=/etc/mysql/certs/server-cert.pem
+      --ssl-key=/etc/mysql/certs/server-key.pem
 
 networks:
   internal-net:
