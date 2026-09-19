@@ -188,7 +188,23 @@
                     },
                     allowOutsideClick: () => !Swal.isLoading()
                 }).then((result) => {
-                    location.reload();
+                    const skipped = result.value?.skipped;
+                    if (!skipped || skipped.length === 0) {
+                        location.reload();
+                        return;
+                    }
+                    // Personen ohne E-Mail-Adresse in der Cevi-DB koennen nicht angelegt werden.
+                    Swal.fire({
+                        title: 'Import abgeschlossen',
+                        icon: 'warning',
+                        html: `<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                ${skipped.length} Person(en) wurden übersprungen, weil sie in der
+                                Cevi-DB keine E-Mail-Adresse haben:
+                            </p>
+                            <ul class="mt-2 text-left">${skipped.map(n => `<li>${n}</li>`).join('')}</ul>`,
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: 'blue',
+                    }).then(() => location.reload());
                 });
             });
         });
