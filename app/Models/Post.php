@@ -11,7 +11,7 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
-        'comment', 'leader_id', 'file', 'camp_id', 'camp_user_id', 'show_on_survey', 'uuid'
+        'comment', 'leader_id', 'file', 'camp_id', 'camp_user_id', 'show_on_survey', 'uuid', 'question_id'
     ];
 
     protected $casts = [
@@ -27,6 +27,12 @@ class Post extends Model
     {
         return $this->belongsTo('App\Models\User', 'leader_id', 'id');
     }
+
+    public function question()
+    {
+        return $this->belongsTo('App\Models\Question', 'question_id', 'id');
+    }
+
 
     public function filename()
     {

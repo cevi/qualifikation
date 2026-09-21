@@ -53,6 +53,14 @@ class UsersController extends Controller
             if(! $camp_user) {
                 return redirect()->back();
             }
+            $questions = $aktUser->camp->chaptersWithQuestions()
+                ->flatMap(function ($chapter) {
+                    return $chapter->questions;
+                })
+                ->mapWithKeys(function ($question) {
+                    return [$question->id => $question->number . ' - ' . $question->competence];
+                })
+                ->all();
             $posts = Post::where('camp_user_id', $camp_user->id)->get()->sortByDesc('created_at');
             $roles = Role::pluck('name', 'id')->all();
             $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
@@ -69,7 +77,7 @@ class UsersController extends Controller
 
             $post_new = new Post();
             $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts'));
+            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts', 'questions'));
         } else {
             return redirect()->back();
         }

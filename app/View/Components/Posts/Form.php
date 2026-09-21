@@ -14,15 +14,17 @@ class Form extends Component
     public string $route;   
     public Post $post;
     public Array $campusers;
+    public Array $questions;
     /**
      * Create a new component instance.
      */
-    public function __construct(Post $post, String $route, Array $campusers = [], bool $chooseFromUser = false)
+    public function __construct(Post $post, String $route, Array $campusers = [], Array $questions = [], bool $chooseFromUser = false)
     {
         $this->chooseFromUser = $chooseFromUser;
         $this->post = $post;
         $this->campusers = $campusers;
         $this->route = $route;
+        $this->questions = $questions;
     }
 
     /**

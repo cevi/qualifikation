@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    @include('home.feedback_modal', ['route' => route('profile.post.store', $user)])
+    @include('home.feedback_modal', ['route' => route('profile.post.store', $user), 'questions' => $questions])
 @endsection
 
 

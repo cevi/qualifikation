@@ -24,6 +24,10 @@
                             class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">
                             {{$post->show_on_survey ? 'Auf Quali' : ''}}
                         </div>
+                        <div
+                            class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">
+                            {{$post->question->number ?? ''}} - {{$post->question->competence ?? ''}}
+                        </div>
                         @if ($post->file)
                             <div
                                 class="col-lg-12 col-md-4 col-sm-4 col-xs-4 text-right">

@@ -35,6 +35,11 @@ class SurveyQuestion extends Model
         return $this->belongsTo('App\Models\Question');
     }
 
+    public function posts()
+    {
+        return $this->hasMany('App\Models\Post', 'question_id', 'question_id');
+    }
+
     public function survey_chapter()
     {
         return $this->belongsTo('App\Models\SurveyChapter');

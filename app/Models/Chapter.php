@@ -11,9 +11,14 @@ class Chapter extends Model
         'name', 'number', 'camp_type_id'
     ];
 
-    public function question()
+    public function questions()
     {
         return $this->hasMany('App\Models\Question');
+    }
+
+    public function question()
+    {
+        return $this->questions();
     }
 
     public function camp_type()
