@@ -77,7 +77,28 @@ class UsersController extends Controller
 
             $post_new = new Post();
             $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts', 'questions'));
+            $participants = collect($camp->my_participants)
+                ->concat($camp->other_participants)
+                ->values();
+            $currentUserId = $camp_user->user->id; // oder auth()->id()
+            $currentIndex = $participants->search(function ($participant) use ($currentUserId) {
+                return $participant->id === $currentUserId;
+            });
+            if ($currentIndex === false) {
+                $previousUser = $participants->last();
+                $nextUser = $participants->first();
+            } else {
+                $count = $participants->count();
+
+                $previousUser = $participants->get(
+                    $currentIndex === 0 ? $count - 1 : $currentIndex - 1
+                );
+
+                $nextUser = $participants->get(
+                    $currentIndex === $count - 1 ? 0 : $currentIndex + 1
+                );
+            }
+            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts', 'questions', 'previousUser', 'nextUser'));
         } else {
             return redirect()->back();
         }
