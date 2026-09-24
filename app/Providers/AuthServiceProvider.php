@@ -36,14 +36,15 @@ class AuthServiceProvider extends ServiceProvider
     private function bootHitobitoSocialite()
     {
         $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
+        $authServiceProvider = $this;
         $socialite->extend(
             'hitobito',
-            function ($app) {
-                $config = config('services.hitobito');
+            static function ($app) use ($authServiceProvider) {
+                $config = $authServiceProvider->getHitobitoConfig('hitobito');
 
                 return new HitobitoProvider(
-                    $this->app['request'], $config['base_url'], $config['client_id'],
-                    $config['client_secret'], $this->formatRedirectUrl($config),
+                    $app['request'], $config['base_url'], $config['client_id'],
+                    $config['client_secret'], $authServiceProvider->formatRedirectUrl($config),
                     Arr::get($config, 'guzzle', [])
                 );
             }
@@ -53,18 +54,36 @@ class AuthServiceProvider extends ServiceProvider
     private function bootHitobitoJEMKSocialite()
     {
         $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
+        $authServiceProvider = $this;
         $socialite->extend(
             'hitobito_jemk',
-            function ($app) {
-                $config = config('services.hitobito_jemk');
+            static function ($app) use ($authServiceProvider) {
+                $config = $authServiceProvider->getHitobitoConfig('hitobito_jemk');
 
                 return new HitobitoJEMKProvider(
-                    $this->app['request'], $config['base_url'], $config['client_id'],
-                    $config['client_secret'], $this->formatRedirectUrl($config),
+                    $app['request'], $config['base_url'], $config['client_id'],
+                    $config['client_secret'], $authServiceProvider->formatRedirectUrl($config),
                     Arr::get($config, 'guzzle', [])
                 );
             }
         );
+    }
+
+    public function getHitobitoConfig(string $provider): array
+    {
+        $config = config("services.$provider");
+
+        if (!is_array($config)) {
+            throw new \RuntimeException("Missing configuration for services.$provider. Clear and rebuild the Laravel configuration cache.");
+        }
+
+        foreach (['base_url', 'client_id', 'client_secret', 'redirect'] as $key) {
+            if (blank($config[$key] ?? null)) {
+                throw new \RuntimeException("Missing services.$provider.$key configuration.");
+            }
+        }
+
+        return $config;
     }
 
     /**
@@ -73,7 +92,7 @@ class AuthServiceProvider extends ServiceProvider
      * @param  array  $config
      * @return string
      */
-    protected function formatRedirectUrl(array $config)
+    public function formatRedirectUrl(array $config)
     {
         $redirect = value($config['redirect']);
 
