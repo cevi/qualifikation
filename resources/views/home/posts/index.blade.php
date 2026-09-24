@@ -13,12 +13,11 @@
                 <x-posts.post :posts="$posts_user" :showLeader="false" :title="'Zugeordnete Rückmeldungen'"/>
             </div>
         </div>
-    </div>
-
     @include('home.feedback_modal', [
         'route' => route('posts.store'),
         'campusers' => $campusers_select,
         'chooseFromUser' => true,
+        'questions' => $questions,
     ])
 @endsection
 

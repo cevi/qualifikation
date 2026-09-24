@@ -81,6 +81,25 @@ class Camp extends Model
         return $this->belongsTo('App\Models\CampType');
     }
 
+    public function chaptersWithQuestions()
+    {
+        $campType = $this->camp_type;
+
+        if (!$campType) {
+            return collect();
+        }
+
+        $chapters = Chapter::with('questions');
+
+        if ($campType->default_type) {
+            $chapters->where('default_chapter', true);
+        } else {
+            $chapters->where('camp_type_id', $campType->id);
+        }
+
+        return $chapters->get();
+    }
+
     public function group()
     {
         return $this->belongsTo('App\Models\Group');

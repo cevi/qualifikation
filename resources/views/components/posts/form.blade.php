@@ -8,6 +8,9 @@
             <x-forms.select label="Benutzer:" name="camp_user_id" :collection="$campusers" :with-empty-option="true"/>
         </x-forms.container>
     @endif
+    <x-forms.container>
+        <x-forms.select label="Kompetenz:" name="question_id" :collection="$questions" :with-empty-option="true"/>
+    </x-forms.container>
     <div id="delete-file-container" class="{{ $post->file ? '' : 'hidden' }}">
         <x-forms.container>
             <x-forms.checkbox name="delete_file" id="delete_file" :label="$post->file ? 'Bestehende Datei ' . e($post->filename()) . ' löschen' : 'Bestehende Datei löschen'" :value="$post['delete_file']"/>

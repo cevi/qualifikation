@@ -19,7 +19,7 @@
         </div>
         <!-- Body -->
         <div class="p-4 md:p-5">
-            <x-posts.form :post="$post_new" :campusers="$campusers ?? []" :chooseFromUser="$chooseFromUser ?? false" :route="$route"/>
+            <x-posts.form :post="$post_new" :campusers="$campusers ?? []" :questions="$questions ?? []" :chooseFromUser="$chooseFromUser ?? false" :route="$route"/>
         </div>
     </div>
 </div>

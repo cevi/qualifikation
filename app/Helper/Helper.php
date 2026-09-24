@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Events\UserCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use Str;
@@ -281,80 +282,103 @@ class Helper
         }
 
         $relevantRoles = ['Event::Course::Role::Participant', 'Event::Role::AssistantLeader', 'Event::Role::Leader'];
+        $skipped = [];
+        $skippedIds = [];
 
-        foreach ($participations as $participation) {
-            $personId = $participation['relationships']['participant']['data']['id'] ?? null;
-            if (!$personId) {
-                continue;
-            }
-
-            // Resolve the first matching role for this participation
-            $roleType = null;
-            foreach ($participation['relationships']['roles']['data'] ?? [] as $roleRef) {
-                $type = $rolesById[$roleRef['id']]['attributes']['type'] ?? null;
-                if ($type) {
-                    $roleType = $type;
-                    break;
-                }
-            }
-
-            if (!in_array($roleType, $relevantRoles)) {
-                continue;
-            }
-
-            $isSelf = intval($personId) === $aktUser['foreign_id'];
-            $person = $peopleById[$personId] ?? null;
-            $attrs = $person['attributes'] ?? [];
-
-            if ($isSelf) {
-                $user = Auth::user();
-            } else {
-                if (!$person) {
+        DB::transaction(function () use (
+            $participations, $relevantRoles, $aktUser, $camp, $peopleById, $rolesById, &$skipped, &$skippedIds
+        ) {
+            foreach ($participations as $participation) {
+                $personId = $participation['relationships']['participant']['data']['id'] ?? null;
+                if (!$personId) {
                     continue;
                 }
-                $email = $attrs['email'];
-                $username = $attrs['nickname'] ?? $attrs['first_name'];
-                $role_id = match ($roleType) {
-                    'Event::Course::Role::Participant' => config('status.role_Teilnehmer'),
-                    'Event::Role::AssistantLeader'     => config('status.role_Gruppenleiter'),
-                    default                            => config('status.role_Kursleiter'),
-                };
 
-                $user = User::whereRaw('LOWER(`email`) LIKE ?', [mb_strtolower($email)])
-                    ->orWhere('foreign_id', $personId)
-                    ->first();
+                // Resolve the first matching role for this participation
+                $roleType = null;
+                foreach ($participation['relationships']['roles']['data'] ?? [] as $roleRef) {
+                    $type = $rolesById[$roleRef['id']]['attributes']['type'] ?? null;
+                    if ($type) {
+                        $roleType = $type;
+                        break;
+                    }
+                }
 
-                if (!$user) {
-                    $user = User::create([
-                        'username' => $username,
-                        'email' => $email,
-                        'email_verified_at' => now(),
+                if (!in_array($roleType, $relevantRoles)) {
+                    continue;
+                }
+
+                $isSelf = intval($personId) === $aktUser['foreign_id'];
+                $person = $peopleById[$personId] ?? null;
+                $attrs = $person['attributes'] ?? [];
+
+                if ($isSelf) {
+                    $user = Auth::user();
+                } else {
+                    if (!$person) {
+                        continue;
+                    }
+                    // Cevi-DB erlaubt Personen ohne E-Mail-Adresse, users.email ist aber NOT NULL
+                    // und die Adresse ist unser Matching-Key. Solche Personen koennen wir nicht anlegen.
+                    $email = $attrs['email'] ?? null;
+                    if (!$email) {
+                        $skipped[] = trim(($attrs['first_name'] ?? '') . ' ' . ($attrs['last_name'] ?? '')) ?: ('#' . $personId);
+                        $skippedIds[] = $personId;
+                        continue;
+                    }
+                    $username = $attrs['nickname'] ?? $attrs['first_name'];
+                    $role_id = match ($roleType) {
+                        'Event::Course::Role::Participant' => config('status.role_Teilnehmer'),
+                        'Event::Role::AssistantLeader'     => config('status.role_Gruppenleiter'),
+                        default                            => config('status.role_Kursleiter'),
+                    };
+
+                    $user = User::whereRaw('LOWER(`email`) LIKE ?', [mb_strtolower($email)])
+                        ->orWhere('foreign_id', $personId)
+                        ->first();
+
+                    if (!$user) {
+                        $user = User::create([
+                            'username' => $username,
+                            'email' => $email,
+                            'email_verified_at' => now(),
+                            'classification_id' => config('status.classification_yellow'),
+                        ]);
+                        UserCreated::dispatch($user);
+                    }
+
+                    $user->update([
+                        'role_id' => $role_id,
+                        'camp_id' => $camp['id'],
                         'classification_id' => config('status.classification_yellow'),
                     ]);
-                    UserCreated::dispatch($user);
                 }
 
-                $user->update([
-                    'role_id' => $role_id,
-                    'camp_id' => $camp['id'],
-                    'classification_id' => config('status.classification_yellow'),
-                ]);
-            }
-
-            if (!$user->email && isset($attrs['email'])) {
-                $user->update(['email' => $attrs['email']]);
-            }
-            if (!$user->foreign_id) {
-                $user->update(['foreign_id' => intval($personId)]);
-            }
-            if (!$user->group_id && isset($attrs['primary_group_id'])) {
-                $group = Group::where('foreign_id', $attrs['primary_group_id'])->first();
-                if ($group) {
-                    $user->update(['group_id' => $group->id]);
+                if (!$user->email && isset($attrs['email'])) {
+                    $user->update(['email' => $attrs['email']]);
                 }
-            }
+                if (!$user->foreign_id) {
+                    $user->update(['foreign_id' => intval($personId)]);
+                }
+                if (!$user->group_id && isset($attrs['primary_group_id'])) {
+                    $group = Group::where('foreign_id', $attrs['primary_group_id'])->first();
+                    if ($group) {
+                        $user->update(['group_id' => $group->id]);
+                    }
+                }
 
-            Helper::updateCamp($user, $camp);
+                Helper::updateCamp($user, $camp);
+            }
+        });
+
+        if ($skipped) {
+            logger()->warning('Import: skipped ' . count($skipped) . ' people without an email address (ids: '
+                . implode(', ', $skippedIds) . ')');
+
+            return response()->json([
+                'ok' => true,
+                'skipped' => $skipped,
+            ]);
         }
 
         return true;

@@ -186,9 +186,13 @@ class AdminUsersController extends Controller
         // Fetch all participations with sideloaded person and role data, following pagination links
         $participations = [];
         $included = [];
+        // Without an explicit sort the API orders participations by created_at, which is not
+        // unique for bulk-created rows. Paginating a non-unique order can return a row twice
+        // and skip another, so we sort by id.
         $url = '/api/event_participations?' . http_build_query([
             'filter[event_id][eq]' => $camp['foreign_id'],
             'include' => 'participant,roles',
+            'sort' => 'id',
         ]);
 
         while ($url) {
@@ -200,6 +204,19 @@ class AdminUsersController extends Controller
             $participations = array_merge($participations, $body['data'] ?? []);
             $included = array_merge($included, $body['included'] ?? []);
             $url = $body['links']['next'] ?? null;
+        }
+
+        // The API answers 200 with an empty `included` when the service token lacks the
+        // `people` scope or the `layer_and_below_read` permission, instead of returning an
+        // error. Without this check the missing roles would later surface as the unrelated
+        // "nur den Kursleitern" message.
+        if ($participations && !$included) {
+            return response()->json([
+                'error' => 'Die Cevi-DB hat keine Personen- und Rollendaten geliefert. '
+                    . 'Der API-Key deiner Region braucht die Rechte "Personen" und "Anlässe" '
+                    . 'sowie die Berechtigung "layer_and_below_read".',
+                'ok' => false,
+            ], 404);
         }
 
         return Helper::importParticipations($aktUser, $camp, $participations, $included);

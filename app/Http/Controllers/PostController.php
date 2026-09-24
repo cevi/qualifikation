@@ -29,6 +29,14 @@ class PostController extends Controller
         //
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
+        $questions = $aktUser->camp->chaptersWithQuestions()
+            ->flatMap(function ($chapter) {
+                return $chapter->questions;
+            })
+            ->mapWithKeys(function ($question) {
+                return [$question->id => $question->number . ' - ' . $question->competence];
+            })
+            ->all();
         $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
         $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
         $campusers_select = $aktUser->camp->camp_users->pluck('user.username', 'id')->all();
@@ -37,7 +45,7 @@ class PostController extends Controller
         $post_new = new Post();   
         $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts', 'questions'));
     }
 
     /**
@@ -100,6 +108,14 @@ class PostController extends Controller
         //
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
+        $questions = $aktUser->camp->chaptersWithQuestions()
+            ->flatMap(function ($chapter) {
+                return $chapter->questions;
+            })
+            ->mapWithKeys(function ($question) {
+                return [$question->id => $question->number . ' - ' . $question->competence];
+            })
+            ->all();
         $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
         $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
         $campusers_select = $aktUser->camp->camp_users->pluck('user.username', 'id')->all();
@@ -108,7 +124,7 @@ class PostController extends Controller
         $post_new = $post;    
         $standard_texts = Helper::getStandardTextsForCamp($camp->id);
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts', 'questions'));
     }
 
     /**
