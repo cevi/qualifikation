@@ -13,12 +13,13 @@
 
         $('input[type=radio]').change(function () {
             let id = this.id;
-            let question_id = id.substring(0, id.indexOf('.'));
+            let question_id = Number(id.substring(0, id.indexOf('.')));
             let count = id.slice(-1);
             let right_id = id.substring(id.indexOf('.') + 1);
             let survey_number = right_id.substring(0, right_id.indexOf('.'));
             let survey_number_abs = survey_number > datasets_array[0].length ? 1 : survey_number - 1;
-            datasets_array[0][survey_number_abs].data[question_id] = count - 2;
+            const position = datasets_array[0][survey_number_abs].dataset_ids.indexOf(question_id);
+            datasets_array[0][survey_number_abs].data[position] = count - 2;
             chart.update();
         });
 
