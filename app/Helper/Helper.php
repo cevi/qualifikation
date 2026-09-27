@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
 use Str;
 
 class Helper
@@ -70,7 +70,7 @@ class Helper
                     File::makeDirectory($directory, 0775, true);
                 }
                 $name =  Str::uuid() . '_' . str_replace(' ', '', $file->getClientOriginalName());
-                Image::make($input['cropped_photo_id'])->save($directory.'/'.$name, 80);
+                ImageManager::gd()->read($input['cropped_photo_id'])->save($directory.'/'.$name, quality: 80);
                 $input['avatar'] = $save_path.'/'.$name;
                 $camp_user = CampUser::where('user_id', $user->id)->where('camp_id', $camp->id)->first();
                 $camp_user->update(['avatar' => $input['avatar']]);
@@ -149,10 +149,11 @@ class Helper
             $first_answers[] = $question->answer_first['count'];
             $second_answers[] = $question->answer_second['count'];
             $leader_answers[] = $question->answer_leader['count'];
+            $dataset_ids[] = $question->question->id;
         }
-        $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers);
-        $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers);
-        $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers);
+        $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers, $dataset_ids);
+        $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers, $dataset_ids);
+        $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
         if (Auth::user()->role_id != config('status.role_Teilnehmer')) {
             if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
                 ($camp['secondsurveyopen'])) {
@@ -183,7 +184,7 @@ class Helper
         return $dataset_add;
     }
 
-    public static function GetDataset($title, $color, $point_color, $borderwith, $dataset){
+    public static function GetDataset(String $title, String $color, String $point_color, int $borderwith, array $dataset, array $dataset_ids){
         return [
             'label' => $title,
             'backgroundColor' => $color,
@@ -193,7 +194,8 @@ class Helper
             'pointBorderColor' => $point_color,
             'pointHoverBackgroundColor' => $point_color,
             'pointHoverBorderColor' => $color,
-            'data' => $dataset
+            'data' => $dataset,
+            'dataset_ids' => $dataset_ids
         ];
     }
 

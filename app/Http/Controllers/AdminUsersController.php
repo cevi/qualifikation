@@ -141,7 +141,17 @@ class AdminUsersController extends Controller
         } else {
             $roles = Role::where('id', '>', config('status.role_Administrator'))->pluck('name', 'id')->all();
         }
-        $groups = group::orderBy('campgroup', 'DESC')->orderBy('shortname')->pluck('name', 'id')->all();
+        $groups = Group::orderByRaw("CASE WHEN shortname IS NULL OR TRIM(shortname) = '' THEN 1 ELSE 0 END")
+            ->orderBy('campgroup', 'DESC')
+            ->orderBy('shortname')
+            ->get()
+            ->mapWithKeys(function ($group) {
+                $shortname = trim((string) $group->shortname);
+                $label = $shortname !== '' ? $shortname . ' - ' . $group->name : $group->name;
+
+                return [$group->id => $label];
+            })
+            ->all();
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
                 $query->where('role_id', config('status.role_Gruppenleiter'))
@@ -378,7 +388,17 @@ class AdminUsersController extends Controller
         // $user = User::findOrFail($id);
         $aktUser = Auth::user();
         $roles = Role::where('id', '>', config('status.role_Administrator'))->pluck('name', 'id')->all();
-        $groups = group::orderBy('campgroup', 'DESC')->orderBy('shortname')->pluck('name', 'id')->all();
+        $groups = Group::orderByRaw("CASE WHEN shortname IS NULL OR TRIM(shortname) = '' THEN 1 ELSE 0 END")
+            ->orderBy('campgroup', 'DESC')
+            ->orderBy('shortname')
+            ->get()
+            ->mapWithKeys(function ($group) {
+                $shortname = trim((string) $group->shortname);
+                $label = $shortname !== '' ? $shortname . ' - ' . $group->name : $group->name;
+
+                return [$group->id => $label];
+            })
+            ->all();
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
                 $query->where('role_id', config('status.role_Gruppenleiter'))
