@@ -22,6 +22,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        // Tests brauchen kein gebautes Frontend (public/build).
+        $this->withoutVite();
+
         // Excel-Downloads löschen ihre Temp-Datei erst nach dem Senden, was im Test nie passiert.
         config(['excel.temporary_files.local_path' => sys_get_temp_dir() . '/laravel-excel-tests']);
     }

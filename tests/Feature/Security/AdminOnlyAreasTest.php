@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Security;
 
+use App\Mail\FeedbackCreated;
 use App\Models\Answer;
 use App\Models\Classification;
 use App\Models\Feedback;
@@ -9,6 +10,7 @@ use App\Models\Group;
 use App\Models\Help;
 use Closure;
 use Database\Seeders\DemoCampSeeder;
+use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Support\CampScenario;
 use Tests\TestCase;
@@ -97,12 +99,14 @@ class AdminOnlyAreasTest extends TestCase
     public function test_kursleiter_can_still_submit_feedback()
     {
         $s = CampScenario::create();
+        Mail::fake();
 
         $this->actingAs($s->kursleiter)
             ->post(route('feedback.store'), ['feedback' => 'Bitte mehr Farben'])
             ->assertRedirect('admin/changes');
 
         $this->assertDatabaseHas('feedback', ['user_id' => $s->kursleiter->id, 'feedback' => 'Bitte mehr Farben']);
+        Mail::assertSent(FeedbackCreated::class, fn (FeedbackCreated $mail) => $mail->hasTo(config('mail.camp.address')));
     }
 
     public function test_admin_can_manage_global_data()

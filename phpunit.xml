@@ -19,16 +19,18 @@
         </include>
     </source>
     <php>
+        <!-- force="true": Werte aus der Shell oder .env dürfen Tests nie auf echte Dienste umleiten. -->
         <env name="APP_ENV" value="testing" force="true"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="MAIL_DRIVER" value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <!-- Tests laufen nie gegen die Dev-/Prod-MySQL, siehe Tests\TestCase::assertTestDatabase() -->
+        <env name="BCRYPT_ROUNDS" value="4" force="true"/>
+        <env name="CACHE_DRIVER" value="array" force="true"/>
+        <env name="MAIL_DRIVER" value="array" force="true"/>
+        <env name="MAIL_CAMP_ADDRESS" value="kursteam@example.com" force="true"/>
+        <env name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <env name="SESSION_DRIVER" value="array" force="true"/>
+        <!-- Tests laufen nie gegen die Dev-/Prod-MySQL, siehe Tests\TestCase::beforeRefreshingDatabase() -->
         <env name="DB_CONNECTION" value="sqlite" force="true"/>
         <env name="DB_DATABASE" value=":memory:" force="true"/>
         <env name="DATABASE_URL" value="" force="true"/>
-        <env name="ADMIN_PASSWORD" value="password"/>
+        <env name="ADMIN_PASSWORD" value="password" force="true"/>
     </php>
 </phpunit>

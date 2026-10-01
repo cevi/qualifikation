@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - 'develop'
+  pull_request:
+  # Vom Prod-Build aufgerufen, damit auf master nur getestete Stände gebaut werden.
+  workflow_call:
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo_sqlite, sqlite3, gd, zip, curl, xml, fileinfo
+          coverage: none
+
+      - name: 🗄️ Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: 🧹 Create Environment File
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      # Datenbank: SQLite in-memory aus phpunit.xml, kein MySQL nötig.
+      - name: 🧪 Run tests
+        run: vendor/bin/phpunit
