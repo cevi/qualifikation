@@ -96,7 +96,6 @@ Route::group(['middleware' => 'verified'], function () {
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::get('/profile/{user}', ['as' => 'home.profile', 'uses' => 'UsersController@edit']);
-    Route::get('/profile/{user}/posts/{post}/edit', ['as' => 'profile.post.edit', 'uses' => 'UsersController@editPost']);
     Route::post('/profile/{user}/posts/storePost', ['as' => 'profile.post.store', 'uses' => 'UsersController@storePost']);
     Route::patch('/changeClassifications/{id}/{color}', ['as' => 'users.changeClassifications', 'uses' => 'UsersController@changeClassifications']);
     Route::patch('/user/{id}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
@@ -129,17 +128,17 @@ Route::group(['middleware' => 'verified'], function () {
         
         Route::resource('admin/camp_types', 'CampTypesController', ['as' => 'admin']);
 
-        Route::resource('admin/standard_texts', 'StandardTextsController', ['as' => 'admin']);
+        Route::resource('admin/standard_texts', 'StandardTextsController', ['as' => 'admin'])->except(['create']);
 
-        Route::resource('admin/questions', 'AdminQuestionsController');
+        Route::resource('admin/questions', 'AdminQuestionsController')->except(['show']);
         Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
 
-        Route::resource('admin/surveys', 'AdminSurveysController');
+        Route::resource('admin/surveys', 'AdminSurveysController')->except(['create', 'show']);
         Route::get('surveys/createDataTables', ['as' => 'surveys.CreateDataTables', 'uses' => 'AdminSurveysController@createDataTables']);
         Route::get('surveys/downloadPDF', ['as' => 'surveys.downloadPDF', 'uses' => 'AdminSurveysController@downloadPDF']);
 
-        Route::resource('admin/chapters', 'AdminChaptersController');
-        Route::resource('admin/competences', 'AdminCompetencesController');
+        Route::resource('admin/chapters', 'AdminChaptersController')->except(['create', 'show']);
+        Route::resource('admin/competences', 'AdminCompetencesController')->except(['create', 'show']);
         Route::resource('admin/classifications', 'AdminClassificationController');
         Route::resource('admin/groups', 'AdminGroupsController');
 

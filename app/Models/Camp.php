@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class Camp extends Model
 {
-    //
+    use HasFactory;
+
     public static function boot()
     {
         parent::boot();

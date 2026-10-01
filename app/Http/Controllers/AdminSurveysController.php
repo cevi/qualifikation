@@ -97,16 +97,16 @@ class AdminSurveysController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Erstellt die Qualifikationen für alle Teilnehmenden des aktuellen Kurses, die noch keine haben.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store()
     {
-        //
+        $camp = Auth::user()->camp;
 
-        if (! Auth::user()->demo) {
-            $camp = Auth::user()->camp;
+        // Das Global-Camp hat keinen Kurstyp und damit keine Kapitel.
+        if (! Auth::user()->demo && $camp->camp_type) {
             $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
             $camp_type = $camp->camp_type;
             $answer = Answer::where('name', '0')->first();

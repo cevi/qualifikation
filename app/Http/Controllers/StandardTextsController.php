@@ -32,19 +32,6 @@ class StandardTextsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-        $title = 'Standard-Texterstellen';
-        $help = Help::where('title',$title)->first();
-        return view('admin.standard_texts.create', compact('title', 'help'));
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

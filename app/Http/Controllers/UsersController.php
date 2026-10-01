@@ -80,7 +80,7 @@ class UsersController extends Controller
             $participants = collect($camp->my_participants)
                 ->concat($camp->other_participants)
                 ->values();
-            $currentUserId = $camp_user->user->id; // oder auth()->id()
+            $currentUserId = $user->id;
             $currentIndex = $participants->search(function ($participant) use ($currentUserId) {
                 return $participant->id === $currentUserId;
             });
@@ -99,37 +99,6 @@ class UsersController extends Controller
                 );
             }
             return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts', 'questions', 'previousUser', 'nextUser'));
-        } else {
-            return redirect()->back();
-        }
-    }
-
-    public function editPost(User $user, Post $post)
-    {
-        //
-        $aktUser = Auth::user();
-        if (! $aktUser->isTeilnehmer()) {
-            $camp = $aktUser->camp()->first();
-            $camp_user = CampUser::where('user_id', $user['id'])->where('camp_id', $aktUser->camp['id'])->first();
-
-            $posts = Post::where('camp_user_id', $camp_user->id)->get()->sortByDesc('created_at');
-            $roles = Role::pluck('name', 'id')->all();
-            $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
-            $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
-                ->where('camp_user_id', $camp_user->id)->get()->values();
-
-            $title = "Profil";
-            $group = $user->group['shortname'] ?? '';
-            $subtitle = "von " . $user['username'] . " " . $group;
-            $help = Help::where('title',$title)->first();
-
-            $labels = Helper::GetSurveysLabels($surveys);
-            $datasets = Helper::GetSurveysDataset($surveys);
-
-            $post_new = $post;    
-            $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
-
-            return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts'));
         } else {
             return redirect()->back();
         }

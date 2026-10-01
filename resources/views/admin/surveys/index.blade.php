@@ -67,7 +67,8 @@
                                 }
                         });
                         $.ajax({
-                            url : "{!! route('surveys.create') !!}",
+                            url : "{!! route('surveys.store') !!}",
+                            type: 'POST',
                             success: function(res) {
                                 location.reload();
                             }

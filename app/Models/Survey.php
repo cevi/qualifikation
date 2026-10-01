@@ -74,7 +74,7 @@ class Survey extends Model
             }
 
             if (($this['survey_status_id'] < $max_status) &&
-                ($aktUser->isTeilnehmer() && $this->campUser->user['id'] == $aktUser['id'])) {
+                ($aktUser->isTeilnehmer() && $this->campUser->user_id == $aktUser['id'])) {
                 $result = ($this['survey_status_id'] <= config('status.survey_1offen'));
                 if (!$result) {
                     $result = $camp['secondsurveyopen'];
@@ -91,11 +91,11 @@ class Survey extends Model
         if(!$result){
             $camp = $aktUser->camp;
             $camp_survey = $this->campUser->camp;
-            if($camp == $camp_survey){
-                $result = 
+            if($camp && $camp->is($camp_survey)){
+                $result =
                     ($aktUser->isCampleader()) ||
-                    ($aktUser->isLeader() && ($this->campUser->leader['id'] == $aktUser['id'])) ||
-                    ($aktUser->isTeilnehmer() && ($this->campUser->user['id'] == $aktUser['id']));
+                    ($aktUser->isLeader() && ($this->campUser->leader_id == $aktUser['id'])) ||
+                    ($aktUser->isTeilnehmer() && ($this->campUser->user_id == $aktUser['id']));
             }
         }
         return $result;

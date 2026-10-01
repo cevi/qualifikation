@@ -59,6 +59,7 @@ class DemoCampSeeder extends Seeder
                         'password' => Hash::make($name),
                         'role_id' => config('status.role_Gruppenleiter'),
                         'camp_id' => $camp['id'],
+                        'demo' => true,
                     ]);
                 CampUser::updateOrCreate([
                     'camp_id' => $camp['id'],
@@ -80,6 +81,7 @@ class DemoCampSeeder extends Seeder
                             'slug' => $name,
                             'password' => Hash::make($name),
                             'camp_id' => $camp['id'],
+                            'demo' => true,
                         ]);
                     $camp_user = CampUser::updateOrCreate([
                         'camp_id' => $camp['id'],
