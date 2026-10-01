@@ -109,8 +109,8 @@ Route::group(['middleware' => 'verified'], function () {
         Route::get('/admin', 'AdminController@index');
 
         Route::get('/admin/changes', 'AdminController@changes');
-        Route::resource('/admin/feedback', 'FeedbackController');
-        Route::post('users/feedback/send', 'FeedbackController@send');
+        // Rückmeldungen zum Tool geben alle Kursleitenden ab, verwalten nur Admins (siehe unten).
+        Route::resource('/admin/feedback', 'FeedbackController')->only(['store']);
 
         Route::resource('admin/users', 'AdminUsersController', ['as' => 'admin']);
         Route::get('users/createDataTables', ['as' => 'users.CreateDataTables', 'uses' => 'AdminUsersController@createDataTables']);
@@ -118,8 +118,6 @@ Route::group(['middleware' => 'verified'], function () {
         Route::get('admin/users/download', ['as' => 'users.download', 'uses' => 'AdminUsersController@download']);
         Route::post('admin/users/import', ['as' => 'users.import', 'uses' => 'AdminUsersController@import']);
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
-
-        Route::resource('admin/answers', 'AdminAnswersController');
 
         Route::get('admin/camps/export/',  ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
@@ -139,10 +137,15 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::resource('admin/chapters', 'AdminChaptersController')->except(['create', 'show']);
         Route::resource('admin/competences', 'AdminCompetencesController')->except(['create', 'show']);
-        Route::resource('admin/classifications', 'AdminClassificationController');
-        Route::resource('admin/groups', 'AdminGroupsController');
 
-        Route::resource('admin/helps', 'AdminHelpController');
-
+        // Globale Stammdaten. Kursleitende können sich selbst registrieren und sind dafür nicht berechtigt.
+        Route::group(['middleware' => 'admin'], function () {
+            Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
+            Route::post('users/feedback/send', 'FeedbackController@send');
+            Route::resource('admin/answers', 'AdminAnswersController');
+            Route::resource('admin/classifications', 'AdminClassificationController');
+            Route::resource('admin/groups', 'AdminGroupsController');
+            Route::resource('admin/helps', 'AdminHelpController');
+        });
     });
 });

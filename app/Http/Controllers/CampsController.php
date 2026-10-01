@@ -115,7 +115,9 @@ class CampsController extends Controller
      */
     public function update(Request $request, Camp $camp)
     {
-        //
+        // Helper::updateCamp() nimmt den User sonst mit seiner aktuellen Rolle in jeden Kurs auf.
+        $isMember = CampUser::where('camp_id', $camp->id)->where('user_id', Auth::id())->exists();
+        abort_unless($isMember || $camp->global_camp || Auth::user()->isAdmin(), 403);
 
         if (!Auth::user()->demo) {
             Helper::updateCamp(Auth::user(), $camp);

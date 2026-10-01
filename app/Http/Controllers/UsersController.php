@@ -12,6 +12,7 @@ use App\Models\Survey;
 use App\Models\CampUser;
 use App\Models\StandardText;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\File;
@@ -115,16 +116,20 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+        // Nur das eigene Konto, und nur die Felder der Kontoseite.
+        abort_unless($user->is(Auth::user()), 403);
 
         if (!$user->demo) {
-            if (trim($request->password) == '') {
-                $input = $request->except('password');
+            $request->validate([
+                'email' => ['sometimes', 'required', 'email', Rule::unique('users')->ignore($user->id)],
+            ]);
+            $input = $request->only('email');
+            if (blank($request->password)) {
                 $user->update($input);
             } else {
                 $request->validate([
                     'password' => ['required', 'confirmed'],
                 ]);
-                $input = $request->all();
                 $input['password'] = bcrypt($request->password);
                 $input['password_change_at'] = now();
                 $user->update($input);
