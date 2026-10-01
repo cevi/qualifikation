@@ -20,7 +20,6 @@ class MakeUserSlug
     /**
      * Handle the event.
      *
-     * @param  \App\Events\UserCreated  $event
      * @return void
      */
     public function handle(UserCreated $event)

@@ -21,7 +21,6 @@ class SendCampMail
     /**
      * Handle the event.
      *
-     * @param  \App\Events\CampCreated  $event
      * @return void
      */
     public function handle(CampCreated $event)

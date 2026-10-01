@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\UsersController;
+use App\Models\Camp;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +23,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 // Route::get('/', 'HomeController@index');
 
 Route::get('/', function () {
-    $camp_counter = \App\Models\Camp::where('finish', '=', true)->where('counter', '>', 0)->get()->count();
-    $survey_counter = \App\Models\Camp::where('finish', '=', true)->where('counter', '>', 0)->sum('counter');
+    $camp_counter = Camp::where('finish', '=', true)->where('counter', '>', 0)->get()->count();
+    $survey_counter = Camp::where('finish', '=', true)->where('counter', '>', 0)->sum('counter');
 
     return view('welcome', compact('camp_counter', 'survey_counter'));
 });
@@ -56,9 +56,9 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
+
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
 
 Auth::routes(['register' => false, 'verify' => true]);
 
@@ -83,7 +83,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::get('/compare/{survey}/downloadPDF', ['as' => 'survey.downloadPDF', 'uses' => 'SurveysController@downloadPDF']);
 
     Route::resource('/posts', 'PostController');
-    Route::get('/posts/downloadFile/{id}', ['as'=>'downloadFile','uses'=>'PostController@downloadFile']);
+    Route::get('/posts/downloadFile/{id}', ['as' => 'downloadFile', 'uses' => 'PostController@downloadFile']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::get('/profile/{user}', ['as' => 'home.profile', 'uses' => 'UsersController@edit']);
@@ -92,8 +92,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::patch('/user/{id}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
 
     Route::resource('/camps', 'CampsController', ['as' => 'home'])->only(['create', 'store', 'update']);
-    Route::resource('/camp_types', 'CampTypesController')->only(['create','store']);
-
+    Route::resource('/camp_types', 'CampTypesController')->only(['create', 'store']);
 
     Route::group(['middleware' => 'campleader'], function () {
         Route::get('/admin', 'AdminController@index');
@@ -110,11 +109,11 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/users/import', ['as' => 'users.import', 'uses' => 'AdminUsersController@import']);
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
 
-        Route::get('admin/camps/export/',  ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
+        Route::get('admin/camps/export/', ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
         Route::get('camps/createDataTables', ['as' => 'camps.CreateDataTables', 'uses' => 'AdminCampsController@createDataTables']);
-        
+
         Route::resource('admin/camp_types', 'CampTypesController', ['as' => 'admin']);
 
         Route::resource('admin/standard_texts', 'StandardTextsController', ['as' => 'admin'])->except(['create']);

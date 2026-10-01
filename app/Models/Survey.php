@@ -62,25 +62,25 @@ class Survey extends Model
     {
         $aktUser = Auth::user();
         $result = $this->SurveyIsAllowed() &&
-            ( $this['survey_status_id'] < config('status.survey_fertig')) &&
-             (!$aktUser->isCampleader());
-        if(!$result){       
+            ($this['survey_status_id'] < config('status.survey_fertig')) &&
+             (! $aktUser->isCampleader());
+        if (! $result) {
             $camp = $aktUser->camp;
-            if ($camp['status_control']){
+            if ($camp['status_control']) {
                 $max_status = $camp['survey_status_id'];
-            }
-            else {
+            } else {
                 $max_status = config('status.survey_tnAbgeschlossen');
             }
 
             if (($this['survey_status_id'] < $max_status) &&
                 ($aktUser->isTeilnehmer() && $this->campUser->user_id == $aktUser['id'])) {
                 $result = ($this['survey_status_id'] <= config('status.survey_1offen'));
-                if (!$result) {
+                if (! $result) {
                     $result = $camp['secondsurveyopen'];
                 }
             }
         }
+
         return $result;
     }
 
@@ -88,16 +88,17 @@ class Survey extends Model
     {
         $aktUser = Auth::user();
         $result = $aktUser->isAdmin();
-        if(!$result){
+        if (! $result) {
             $camp = $aktUser->camp;
             $camp_survey = $this->campUser->camp;
-            if($camp && $camp->is($camp_survey)){
+            if ($camp && $camp->is($camp_survey)) {
                 $result =
                     ($aktUser->isCampleader()) ||
                     ($aktUser->isLeader() && ($this->campUser->leader_id == $aktUser['id'])) ||
                     ($aktUser->isTeilnehmer() && ($this->campUser->user_id == $aktUser['id']));
             }
         }
+
         return $result;
     }
 

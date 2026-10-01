@@ -127,7 +127,7 @@ class CampTypeContentTest extends TestCase
      */
     private function customCampTypeFor(CampScenario $s): array
     {
-        $type = CampType::create(['name' => 'Typ von ' . $s->kursleiter->username, 'user_id' => $s->kursleiter->id]);
+        $type = CampType::create(['name' => 'Typ von '.$s->kursleiter->username, 'user_id' => $s->kursleiter->id]);
         $chapter = Chapter::create(['number' => 1, 'name' => 'Kapitel', 'camp_type_id' => $type->id]);
         $question = Question::create([
             'name' => 'Frage', 'number' => '1.1', 'competence' => 'Kompetenz', 'sort-index' => 1,

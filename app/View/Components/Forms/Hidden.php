@@ -9,9 +9,13 @@ use Illuminate\View\Component;
 class Hidden extends Component
 {
     public string $name;
+
     public string $id;
+
     public string $label;
+
     public $value;
+
     /**
      * Create a new component instance.
      */

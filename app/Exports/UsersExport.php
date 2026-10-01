@@ -11,7 +11,7 @@ class UsersExport implements FromView
     public function view(): View
     {
         return view('exports.users', [
-            'camp_users' => Auth::user()->camp->camp_users_all
+            'camp_users' => Auth::user()->camp->camp_users_all,
         ]);
     }
 }

@@ -11,7 +11,7 @@ class PostsExport implements FromView
     public function view(): View
     {
         return view('exports.posts', [
-            'posts' => Auth::user()->camp->posts
+            'posts' => Auth::user()->camp->posts,
         ]);
     }
 }

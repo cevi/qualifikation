@@ -5,20 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Answer;
 use App\Models\Help;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AdminAnswersController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         //
         $answers = Answer::all();
-        $title= 'Antworten';
-        $help = Help::where('title',$title)->first();
+        $title = 'Antworten';
+        $help = Help::where('title', $title)->first();
 
         return view('admin.answers.index', compact('answers', 'title', 'help'));
     }
@@ -26,7 +27,7 @@ class AdminAnswersController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -36,8 +37,7 @@ class AdminAnswersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -51,7 +51,7 @@ class AdminAnswersController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -62,14 +62,14 @@ class AdminAnswersController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
         //
         $answer = Answer::findOrFail($id);
-        $title= 'Antworten bearbeiten';
-        $help = Help::where('title',$title)->first();
+        $title = 'Antworten bearbeiten';
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Antworten';
         $help['main_route'] = '/admin/answers';
 
@@ -79,9 +79,8 @@ class AdminAnswersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -95,7 +94,7 @@ class AdminAnswersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

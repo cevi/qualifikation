@@ -3,7 +3,6 @@
 namespace Tests\Feature\Security;
 
 use App\Models\Camp;
-use App\Models\Survey;
 use App\Models\User;
 use Closure;
 use PHPUnit\Framework\Attributes\DataProvider;

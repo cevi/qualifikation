@@ -9,9 +9,13 @@ use Illuminate\View\Component;
 class TextArea extends Component
 {
     public string $name;
+
     public string $label;
+
     public bool $required;
+
     public $value;
+
     /**
      * Create a new component instance.
      */

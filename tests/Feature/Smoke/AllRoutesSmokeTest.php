@@ -71,8 +71,8 @@ class AllRoutesSmokeTest extends TestCase
         $unexpected = array_merge([], ...array_values(array_diff_key($errors, array_flip($known))));
         $fixed = array_values(array_diff($known, array_keys($errors)));
 
-        $this->assertSame([], $unexpected, "Neue Serverfehler als $role:\n" . implode("\n", $unexpected));
-        $this->assertSame([], $fixed, "Behoben als $role? Bitte aus KNOWN_ISSUES entfernen:\n" . implode("\n", $fixed));
+        $this->assertSame([], $unexpected, "Neue Serverfehler als $role:\n".implode("\n", $unexpected));
+        $this->assertSame([], $fixed, "Behoben als $role? Bitte aus KNOWN_ISSUES entfernen:\n".implode("\n", $fixed));
     }
 
     /**
@@ -95,8 +95,8 @@ class AllRoutesSmokeTest extends TestCase
         }
         $exception = $response->exception;
 
-        return $response->getStatusCode() . ($exception
-            ? ' ' . $exception->getMessage() . ' (' . basename($exception->getFile()) . ':' . $exception->getLine() . ')'
+        return $response->getStatusCode().($exception
+            ? ' '.$exception->getMessage().' ('.basename($exception->getFile()).':'.$exception->getLine().')'
             : '');
     }
 
@@ -137,7 +137,7 @@ class AllRoutesSmokeTest extends TestCase
 
     private function buildUri(Route $route, array $values): string
     {
-        return '/' . ltrim(preg_replace_callback('/\{(\w+)\??\}/', function ($match) use ($values, $route) {
+        return '/'.ltrim(preg_replace_callback('/\{(\w+)\??\}/', function ($match) use ($values, $route) {
             $this->assertArrayHasKey(
                 $match[1],
                 $values,

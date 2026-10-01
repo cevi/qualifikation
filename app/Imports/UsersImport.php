@@ -2,20 +2,18 @@
 
 namespace App\Imports;
 
+use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class UsersImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
+class UsersImport implements ToModel, WithCalculatedFormulas, WithHeadingRow
 {
     use Importable;
 
     /**
-     * @param  array  $row
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return Model|null
      */
-    public function model(array $row)
-    {
-    }
+    public function model(array $row) {}
 }

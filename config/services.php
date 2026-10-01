@@ -44,5 +44,4 @@ return [
         'redirect' => env('JEMK_CALLBACK_URI', 'https://demo.hitobito.com/login/hitobito/callback'),
     ],
 
-
 ];

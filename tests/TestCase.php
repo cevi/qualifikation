@@ -26,7 +26,7 @@ abstract class TestCase extends BaseTestCase
         $this->withoutVite();
 
         // Excel-Downloads löschen ihre Temp-Datei erst nach dem Senden, was im Test nie passiert.
-        config(['excel.temporary_files.local_path' => sys_get_temp_dir() . '/laravel-excel-tests']);
+        config(['excel.temporary_files.local_path' => sys_get_temp_dir().'/laravel-excel-tests']);
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class TestCase extends BaseTestCase
         if ($connection !== 'sqlite' || $database !== ':memory:') {
             throw new RuntimeException(
                 "Tests würden gegen '$connection' ($database) laufen statt gegen SQLite in-memory. "
-                . "Config-Cache aktiv? 'php artisan config:clear' ausführen."
+                ."Config-Cache aktiv? 'php artisan config:clear' ausführen."
             );
         }
     }

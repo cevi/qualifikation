@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Help;
 use App\Helper\Helper;
+use App\Models\Help;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -24,21 +24,21 @@ class AdminController extends Controller
             'chapters.questions.answer_leader',
             'campuser.user',
             'chapters.questions.question'])
-           ->get()->sortBy('campuser.user.username')->values();
+            ->get()->sortBy('campuser.user.username')->values();
         $surveys_all = $camp->surveys()->count();
         $surveys_1offen = $camp->surveys()->where('survey_status_id', '>', config('status.survey_1offen'))->count();
-        if($camp['secondsurveyopen']) {
+        if ($camp['secondsurveyopen']) {
             $surveys_2offen = $camp->surveys()->where('survey_status_id', '>', config('status.survey_2offen'))->count();
-        }
-        else{
+        } else {
             $surveys_2offen = 0;
         }
         $surveys_fertig = $camp->surveys()->where('survey_status_id', config('status.survey_fertig'))->count();
 
         $title = 'Dashboard';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
+
         return view('admin/index', compact('user', 'surveys', 'surveys_all', 'surveys_1offen', 'surveys_2offen', 'surveys_fertig', 'title', 'labels', 'datasets', 'surveys', 'help'));
     }
 
@@ -46,7 +46,7 @@ class AdminController extends Controller
     {
         $user = Auth::user();
         $title = 'Rückmeldungen / Änderungen';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         return view('admin/changes', compact('user', 'title', 'help'));
     }

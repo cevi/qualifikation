@@ -53,7 +53,7 @@ final class CampScenario
 
     public static function create(): self
     {
-        $s = new self();
+        $s = new self;
 
         $s->admin = User::findOrFail(1);
         $s->group = Group::factory()->create();

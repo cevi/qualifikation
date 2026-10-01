@@ -9,6 +9,7 @@ use Illuminate\View\Component;
 class Button extends Component
 {
     public bool $delete = false;
+
     /**
      * Create a new component instance.
      */

@@ -9,7 +9,7 @@ class CampType extends Model
     //
 
     protected $fillable = [
-        'name', 'user_id'
+        'name', 'user_id',
     ];
 
     public function user()

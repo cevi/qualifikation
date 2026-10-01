@@ -17,7 +17,7 @@ class GroupFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Cevi ' . $this->faker->unique()->city,
+            'name' => 'Cevi '.$this->faker->unique()->city,
             'shortname' => $this->faker->lexify('???'),
             'foreign_id' => $this->faker->unique()->numberBetween(10000, 99999),
             'campgroup' => false,

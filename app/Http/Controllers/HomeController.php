@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Help;
 use App\Helper\Helper;
-use App\Models\Survey;
 use App\Models\CampUser;
+use App\Models\Help;
+use App\Models\Survey;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -23,7 +24,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
     public function index()
     {
@@ -42,8 +43,7 @@ class HomeController extends Controller
                 ->orWhereIn('camp_user_id', $camp_users_id)->get()->sortBy('campuser.user.username')->values();
         }
         $title = 'Übersicht';
-        $help = Help::where('title',$title)->first();
-
+        $help = Help::where('title', $title)->first();
 
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);

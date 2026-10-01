@@ -13,6 +13,7 @@ use App\Models\SurveyQuestion;
 use App\Models\SurveyStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
@@ -22,7 +23,7 @@ class AdminSurveysController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -30,7 +31,7 @@ class AdminSurveysController extends Controller
         $camp = Auth::user()->camp;
         $title = 'Qualifikationen';
 
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $hasSurveys = $camp->surveys()->exists();
 
         return view('admin.surveys.index', compact('camp', 'title', 'help', 'hasSurveys'));
@@ -49,7 +50,7 @@ class AdminSurveysController extends Controller
 
         return DataTables::of($surveys)
             ->addColumn('user', function ($survey) {
-                $username = $survey->campuser ? $survey->campuser->user['username']: '';
+                $username = $survey->campuser ? $survey->campuser->user['username'] : '';
 
                 return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$username.'</a>';
             })
@@ -65,13 +66,12 @@ class AdminSurveysController extends Controller
             ->addIndexColumn()
             ->addColumn('status', function ($survey) {
                 $camp = $survey->campuser->camp;
-                if(!$camp['secondsurveyopen']) {
+                if (! $camp['secondsurveyopen']) {
                     $survey_statuses_id = [config('status.survey_neu'),
                         config('status.survey_1offen'),
                         config('status.survey_tnAbgeschlossen'),
-                        config('status.survey_fertig'),];
-                }
-                else{
+                        config('status.survey_fertig'), ];
+                } else {
                     $survey_statuses_id = [config('status.survey_neu'),
                         config('status.survey_1offen'),
                         config('status.survey_2offen'),
@@ -86,7 +86,7 @@ class AdminSurveysController extends Controller
                     $result = $result.'<li class="'.$step.' step0" title="'.$survey_status['name'].'"></li>';
                 }
 
-                return $result . "</ul></div>";
+                return $result.'</ul></div>';
             })
             ->addColumn('Actions', function ($survey) {
                 return '<a href='.\URL::route('survey.compare', $survey['slug']).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Zur Qualifikationen</a><br><br>
@@ -99,7 +99,7 @@ class AdminSurveysController extends Controller
     /**
      * Erstellt die Qualifikationen für alle Teilnehmenden des aktuellen Kurses, die noch keine haben.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store()
     {
@@ -110,11 +110,10 @@ class AdminSurveysController extends Controller
             $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
             $camp_type = $camp->camp_type;
             $answer = Answer::where('name', '0')->first();
-            if($camp_type['default_type']) {
-                $chapters = Chapter::where('default_chapter',true)->get();
-            }
-            else{
-                $chapters = Chapter::where('camp_type_id',$camp_type['id'])->get();
+            if ($camp_type['default_type']) {
+                $chapters = Chapter::where('default_chapter', true)->get();
+            } else {
+                $chapters = Chapter::where('camp_type_id', $camp_type['id'])->get();
             }
 
             foreach ($camp_users as $camp_user) {
@@ -140,6 +139,7 @@ class AdminSurveysController extends Controller
                 }
             }
         }
+
         return true;
     }
 
@@ -147,7 +147,7 @@ class AdminSurveysController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Survey $survey)
     {
@@ -158,7 +158,7 @@ class AdminSurveysController extends Controller
         $user_id = $survey->campUser->user();
         $title = 'Qualifikation bearbeiten';
 
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_route'] = '/admin/surveys';
         $help['main_title'] = 'Qualifikationen';
 
@@ -168,9 +168,8 @@ class AdminSurveysController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -201,14 +200,14 @@ class AdminSurveysController extends Controller
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));
+        return view('home.compare_pdf', compact('surveys', 'camp', 'labels', 'datasets'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Survey $survey)
     {
@@ -216,6 +215,7 @@ class AdminSurveysController extends Controller
         if (! Auth::user()->demo) {
             $survey->delete();
         }
+
         return redirect('/admin/surveys');
     }
 }

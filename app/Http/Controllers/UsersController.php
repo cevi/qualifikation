@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Str;
+use App\Helper\Helper;
+use App\Models\CampUser;
 use App\Models\Help;
 use App\Models\Post;
 use App\Models\Role;
-use App\Models\User;
-use App\Helper\Helper;
 use App\Models\Survey;
-use App\Models\CampUser;
-use App\Models\StandardText;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
 {
@@ -33,11 +30,12 @@ class UsersController extends Controller
         }
         $camp = $aktUser->camp()->first();
         if ($aktUser->id == $user->id) {
-            
+
             $title = 'Profil';
-            $help = Help::where('title',$title)->first();
-            $post_new = new Post();
-            $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
+            $help = Help::where('title', $title)->first();
+            $post_new = new Post;
+            $standard_texts = Helper::getStandardTextsForCamp($camp->id);
+
             return view('home.user', compact('aktUser', 'camp', 'title', 'help', 'post_new', 'standard_texts'));
         } else {
             return redirect()->back();
@@ -51,7 +49,7 @@ class UsersController extends Controller
         if (! $aktUser->isTeilnehmer()) {
             $camp = $aktUser->camp()->first();
             $camp_user = CampUser::where('user_id', $user['id'])->where('camp_id', $aktUser->camp['id'])->first();
-            if(! $camp_user) {
+            if (! $camp_user) {
                 return redirect()->back();
             }
             $questions = $aktUser->camp->chaptersWithQuestions()
@@ -59,7 +57,7 @@ class UsersController extends Controller
                     return $chapter->questions;
                 })
                 ->mapWithKeys(function ($question) {
-                    return [$question->id => $question->number . ' - ' . $question->competence];
+                    return [$question->id => $question->number.' - '.$question->competence];
                 })
                 ->all();
             $posts = Post::where('camp_user_id', $camp_user->id)->get()->sortByDesc('created_at');
@@ -68,16 +66,16 @@ class UsersController extends Controller
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])
                 ->where('camp_user_id', $camp_user->id)->get()->values();
 
-            $title = "Profil";
+            $title = 'Profil';
             $group = $user->group['shortname'] ?? '';
-            $subtitle = "von " . $user['username'] . " " . $group;
-            $help = Help::where('title',$title)->first();
+            $subtitle = 'von '.$user['username'].' '.$group;
+            $help = Help::where('title', $title)->first();
 
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
-            $post_new = new Post();
-            $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
+            $post_new = new Post;
+            $standard_texts = Helper::getStandardTextsForCamp($camp->id);
             $participants = collect($camp->my_participants)
                 ->concat($camp->other_participants)
                 ->values();
@@ -99,17 +97,18 @@ class UsersController extends Controller
                     $currentIndex === $count - 1 ? 0 : $currentIndex + 1
                 );
             }
+
             return view('home.profile', compact('user', 'roles', 'leaders', 'surveys', 'posts', 'camp', 'camp_user', 'title', 'labels', 'datasets', 'subtitle', 'help', 'post_new', 'standard_texts', 'questions', 'previousUser', 'nextUser'));
         } else {
             return redirect()->back();
         }
     }
 
-    
     public function storePost(Request $request, User $user)
     {
-        
-       Helper::storePost($request, $user);
+
+        Helper::storePost($request, $user);
+
         return redirect()->route('home.profile', ['user' => $user]);
     }
 
@@ -119,7 +118,7 @@ class UsersController extends Controller
         // Nur das eigene Konto, und nur die Felder der Kontoseite.
         abort_unless($user->is(Auth::user()), 403);
 
-        if (!$user->demo) {
+        if (! $user->demo) {
             $request->validate([
                 'email' => ['sometimes', 'required', 'email', Rule::unique('users')->ignore($user->id)],
             ]);
@@ -153,6 +152,4 @@ class UsersController extends Controller
 
         return true;
     }
-
-
 }

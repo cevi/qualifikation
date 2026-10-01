@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Helper;
+use App\Models\Answer;
 use App\Models\Camp;
 use App\Models\Help;
 use App\Models\Post;
-use App\Helper\Helper;
-use App\Models\Answer;
 use App\Models\Survey;
-use App\Models\CampUser;
 use Illuminate\Http\Request;
-use App\Models\SurveyQuestion;
 use Illuminate\Support\Facades\Auth;
 
 class SurveysController extends Controller
@@ -26,8 +24,8 @@ class SurveysController extends Controller
         $aktUser = Auth::user();
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
-        $max_status =  config('status.survey_fertig');
-        
+        $max_status = config('status.survey_fertig');
+
         if ($survey->TNIsAllowed()) {
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader'])->where('id', $survey['id'])->get()->sortBy('user.username')->values();
         } else {
@@ -38,14 +36,13 @@ class SurveysController extends Controller
         $camp = Camp::FindOrFail($aktUser['camp_id']);
         $title = 'Qualifikation';
         $group = $survey->campUser->user->group['shortname'] ?? '';
-        $subtitle = $survey->campUser->user['username'] . " " . $group;
-        $help = Help::where('title',$title)->first();
-
+        $subtitle = $survey->campUser->user['username'].' '.$group;
+        $help = Help::where('title', $title)->first();
 
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.survey', compact('aktUser', 'surveys','labels', 'datasets', 'answers', 'camp', 'posts', 'title', 'subtitle', 'help'));
+        return view('home.survey', compact('aktUser', 'surveys', 'labels', 'datasets', 'answers', 'camp', 'posts', 'title', 'subtitle', 'help'));
     }
 
     public function update(Request $request, Survey $survey)
@@ -84,7 +81,7 @@ class SurveysController extends Controller
             }
         }
 
-        if (!$aktUser->isLeader()) {
+        if (! $aktUser->isLeader()) {
             if ($request->action === 'close') {
                 if (($survey['survey_status_id'] < config('status.survey_2offen') && $camp->secondsurveyopen)) {
                     $survey->update(['survey_status_id' => config('status.survey_2offen')]);
@@ -96,8 +93,7 @@ class SurveysController extends Controller
             } elseif ($survey['survey_status_id'] === config('status.survey_neu')) {
                 $survey->update(['survey_status_id' => config('status.survey_1offen')]);
             }
-        }
-        else{
+        } else {
             $survey->update(['comment' => $request['comment']]);
         }
 
@@ -112,8 +108,8 @@ class SurveysController extends Controller
     {
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
-        
-        if (!$survey->SurveyIsAllowed()) {
+
+        if (! $survey->SurveyIsAllowed()) {
             return redirect('/home');
         } else {
             $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user'])->where('id', $survey->id)->get()->values();
@@ -121,12 +117,12 @@ class SurveysController extends Controller
             $posts = Post::where('camp_user_id', $survey->campUser['id'])->where('show_on_survey', true)->get();
             $title = 'Vergleich';
             $group = $survey->campUser->user->group['shortname'] ?? '';
-            $subtitle = $survey->campUser->user['username'] . " " . $group;
-            $help = Help::where('title',$title)->first();
+            $subtitle = $survey->campUser->user['username'].' '.$group;
+            $help = Help::where('title', $title)->first();
             $labels = Helper::GetSurveysLabels($surveys);
             $datasets = Helper::GetSurveysDataset($surveys);
 
-            return view('home.compare', compact('aktUser', 'surveys','labels', 'datasets', 'camp', 'answers', 'posts', 'title', 'subtitle', 'help'));
+            return view('home.compare', compact('aktUser', 'surveys', 'labels', 'datasets', 'camp', 'answers', 'posts', 'title', 'subtitle', 'help'));
         }
     }
 
@@ -135,11 +131,10 @@ class SurveysController extends Controller
         $camp = Auth::user()->camp;
         $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->where('id', $survey->id)->get()->sortBy('user.username')->values();
 
-
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));
+        return view('home.compare_pdf', compact('surveys', 'camp', 'labels', 'datasets'));
     }
 
     public function finish($id)

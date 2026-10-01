@@ -26,7 +26,7 @@ class Camp extends Model
     }
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date'
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date',
     ];
 
     protected $casts = [
@@ -56,7 +56,7 @@ class Camp extends Model
     {
         return $this->allUsers()->where('camp_users.role_id', config('status.role_Teilnehmer'))->OrderBy('username');
     }
-    
+
     public function my_participants()
     {
         return $this->participants()->where('camp_users.leader_id', Auth::user()->id);
@@ -64,8 +64,9 @@ class Camp extends Model
 
     public function other_participants()
     {
-        return $this->participants()->where(function ($query){
-            $query->whereNull('camp_users.leader_id')->orWhere('camp_users.leader_id', '<>', Auth::user()->id);});
+        return $this->participants()->where(function ($query) {
+            $query->whereNull('camp_users.leader_id')->orWhere('camp_users.leader_id', '<>', Auth::user()->id);
+        });
     }
 
     public function camp_users()
@@ -87,7 +88,7 @@ class Camp extends Model
     {
         $campType = $this->camp_type;
 
-        if (!$campType) {
+        if (! $campType) {
             return collect();
         }
 

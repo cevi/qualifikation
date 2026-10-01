@@ -2,15 +2,14 @@
 
 namespace App\Helper;
 
+use App\Events\UserCreated;
 use App\Models\Answer;
 use App\Models\Camp;
 use App\Models\CampUser;
 use App\Models\Group;
 use App\Models\Post;
 use App\Models\StandardText;
-use App\Models\Survey;
 use App\Models\User;
-use App\Events\UserCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -58,18 +57,19 @@ class Helper
         ]);
     }
 
-    public static function updateAvatar($request, $user){
+    public static function updateAvatar($request, $user)
+    {
         if ($file = $request->file('avatar')) {
             $input = $request->all();
             $aktUser = Auth::user();
             $camp = $aktUser->camp;
             if ($input['cropped_photo_id']) {
-                $save_path = $camp['id'] . '_'. Str::slug($camp['name']).'/profiles';
+                $save_path = $camp['id'].'_'.Str::slug($camp['name']).'/profiles';
                 $directory = storage_path('app/public/'.$save_path);
-                if (!File::isDirectory($directory)) {
+                if (! File::isDirectory($directory)) {
                     File::makeDirectory($directory, 0775, true);
                 }
-                $name =  Str::uuid() . '_' . str_replace(' ', '', $file->getClientOriginalName());
+                $name = Str::uuid().'_'.str_replace(' ', '', $file->getClientOriginalName());
                 ImageManager::gd()->read($input['cropped_photo_id'])->save($directory.'/'.$name, quality: 80);
                 $input['avatar'] = $save_path.'/'.$name;
                 $camp_user = CampUser::where('user_id', $user->id)->where('camp_id', $camp->id)->first();
@@ -81,14 +81,14 @@ class Helper
     public static function getAvatarPath($avatar)
     {
         $path = null;
-        if($avatar){
-            if(str_starts_with($avatar, 'https')){
+        if ($avatar) {
+            if (str_starts_with($avatar, 'https')) {
                 $path = $avatar;
-            }
-            else{
-                $path = asset("storage/".$avatar);
+            } else {
+                $path = asset('storage/'.$avatar);
             }
         }
+
         return $path;
     }
 
@@ -97,45 +97,46 @@ class Helper
         return StandardText::where('camp_id', $campId)->orWhere('global', true)->get();
     }
 
-
-    public static function GetSurveysLabels($surveys){
+    public static function GetSurveysLabels($surveys)
+    {
 
         $labels = [];
-        if($surveys->count()>0) {
+        if ($surveys->count() > 0) {
             $survey = $surveys[0];
-            $labels = Self::GetSurveyLabels($survey);
+            $labels = self::GetSurveyLabels($survey);
         }
 
         return $labels;
 
     }
 
-    public static function GetSurveyLabels($survey){
+    public static function GetSurveyLabels($survey)
+    {
 
         $labels = [];
-        $questions =  $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
+        $questions = $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
         foreach ($questions as $survey_question) {
             $question = $survey_question->question;
             $text = $survey_question->competence_text() ? '*' : '';
-            $labels[] = $text . $question['number'] . ' ' . $question['competence'];
+            $labels[] = $text.$question['number'].' '.$question['competence'];
         }
 
         return $labels;
 
     }
 
-    public static function GetSurveysDataset($surveys){
+    public static function GetSurveysDataset($surveys)
+    {
 
         $dataset = [];
 
         foreach ($surveys as $survey) {
-            $dataset[] = Self::GetSurveyDataset($survey);
+            $dataset[] = self::GetSurveyDataset($survey);
         }
 
         return $dataset;
 
     }
-
 
     public static function GetSurveyDataset($survey)
     {
@@ -144,16 +145,16 @@ class Helper
         $first_answers = [];
         $second_answers = [];
         $leader_answers = [];
-        $questions =  $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
+        $questions = $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
         foreach ($questions as $i => $question) {
             $first_answers[] = $question->answer_first['count'];
             $second_answers[] = $question->answer_second['count'];
             $leader_answers[] = $question->answer_leader['count'];
             $dataset_ids[] = $question->question->id;
         }
-        $dataset_first = Self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers, $dataset_ids);
-        $dataset_second = Self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers, $dataset_ids);
-        $dataset_leader = Self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
+        $dataset_first = self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers, $dataset_ids);
+        $dataset_second = self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers, $dataset_ids);
+        $dataset_leader = self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
         if (Auth::user()->role_id != config('status.role_Teilnehmer')) {
             if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
                 ($camp['secondsurveyopen'])) {
@@ -181,10 +182,12 @@ class Helper
                 ];
             }
         }
+
         return $dataset_add;
     }
 
-    public static function GetDataset(String $title, String $color, String $point_color, int $borderwith, array $dataset, array $dataset_ids){
+    public static function GetDataset(string $title, string $color, string $point_color, int $borderwith, array $dataset, array $dataset_ids)
+    {
         return [
             'label' => $title,
             'backgroundColor' => $color,
@@ -195,11 +198,12 @@ class Helper
             'pointHoverBackgroundColor' => $point_color,
             'pointHoverBorderColor' => $color,
             'data' => $dataset,
-            'dataset_ids' => $dataset_ids
+            'dataset_ids' => $dataset_ids,
         ];
     }
 
-    public static function storePost(Request $request, ?User $user){
+    public static function storePost(Request $request, ?User $user)
+    {
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
         $input = $request->all();
@@ -207,46 +211,44 @@ class Helper
 
         $input['leader_id'] = $aktUser->id;
         $input['show_on_survey'] = $request->has('show_on_survey');
-        if(isset($user)){
+        if (isset($user)) {
             $input['user_id'] = $user->id;
         }
-        
+
         if (isset($input['user_id']) && $input['user_id'] === 'null') {
             $input['user_id'] = null;
         }
 
         $camp_user = CampUser::where('user_id', $input['user_id'] ?? null)->where('camp_id', $camp->id)->first();
-        if($camp_user){
+        if ($camp_user) {
             $input['camp_user_id'] = $camp_user->id;
         }
-        
+
         $post_id = $input['post_id'] ?? null;
         $post = $post_id ? Post::find($post_id) : null;
         // Bestehende Rückmeldungen ändert nur, wer sie geschrieben hat.
         abort_if($post && Auth::user()->cannot('manage', $post), 403);
-        if (!$aktUser->demo && $file = $request->file('file')) {
-            $save_path = 'app/files/' . $camp['id'] . '_'. Str::slug($camp['name']);
+        if (! $aktUser->demo && $file = $request->file('file')) {
+            $save_path = 'app/files/'.$camp['id'].'_'.Str::slug($camp['name']);
             $directory = storage_path($save_path);
-            if (!File::isDirectory($directory)) {
+            if (! File::isDirectory($directory)) {
                 File::makeDirectory($directory, 0775, true);
             }
             $input['uuid'] = Str::uuid();
-            $name = $input['uuid'] . '_' . str_replace(' ', '', $file->getClientOriginalName());
+            $name = $input['uuid'].'_'.str_replace(' ', '', $file->getClientOriginalName());
             $file->move($directory, $name);
-            $input['file'] = $save_path . '/' . $name;
-        }
-        else{
+            $input['file'] = $save_path.'/'.$name;
+        } else {
             if ($post_id) {
-                if($request->has('delete_file')){
+                if ($request->has('delete_file')) {
                     $input['file'] = null;
                 }
-            }
-            else{
+            } else {
                 $input['file'] = null;
             }
         }
 
-        if (!$post_id) {
+        if (! $post_id) {
             Post::create($input);
         } elseif ($post) {
             $post->update($input);
@@ -265,7 +267,7 @@ class Helper
                 $rolesById[$resource['id']] = $resource;
             }
         }
-        logger()->info('Importing ' . count($participations) . ' participations with ' . count($peopleById) . ' people and ' . count($rolesById) . ' roles');
+        logger()->info('Importing '.count($participations).' participations with '.count($peopleById).' people and '.count($rolesById).' roles');
 
         // Verify the requesting user is a course leader
         $isLeader = false;
@@ -281,7 +283,7 @@ class Helper
                 }
             }
         }
-        if (!$isLeader) {
+        if (! $isLeader) {
             return response()->json(['error' => 'Der DB-Import steht nur den Kursleitern zur Verfügung', 'ok' => false], 404);
         }
 
@@ -294,7 +296,7 @@ class Helper
         ) {
             foreach ($participations as $participation) {
                 $personId = $participation['relationships']['participant']['data']['id'] ?? null;
-                if (!$personId) {
+                if (! $personId) {
                     continue;
                 }
 
@@ -308,7 +310,7 @@ class Helper
                     }
                 }
 
-                if (!in_array($roleType, $relevantRoles)) {
+                if (! in_array($roleType, $relevantRoles)) {
                     continue;
                 }
 
@@ -319,29 +321,30 @@ class Helper
                 if ($isSelf) {
                     $user = Auth::user();
                 } else {
-                    if (!$person) {
+                    if (! $person) {
                         continue;
                     }
                     // Cevi-DB erlaubt Personen ohne E-Mail-Adresse, users.email ist aber NOT NULL
                     // und die Adresse ist unser Matching-Key. Solche Personen koennen wir nicht anlegen.
                     $email = $attrs['email'] ?? null;
-                    if (!$email) {
-                        $skipped[] = trim(($attrs['first_name'] ?? '') . ' ' . ($attrs['last_name'] ?? '')) ?: ('#' . $personId);
+                    if (! $email) {
+                        $skipped[] = trim(($attrs['first_name'] ?? '').' '.($attrs['last_name'] ?? '')) ?: ('#'.$personId);
                         $skippedIds[] = $personId;
+
                         continue;
                     }
                     $username = $attrs['nickname'] ?? $attrs['first_name'];
                     $role_id = match ($roleType) {
                         'Event::Course::Role::Participant' => config('status.role_Teilnehmer'),
-                        'Event::Role::AssistantLeader'     => config('status.role_Gruppenleiter'),
-                        default                            => config('status.role_Kursleiter'),
+                        'Event::Role::AssistantLeader' => config('status.role_Gruppenleiter'),
+                        default => config('status.role_Kursleiter'),
                     };
 
                     $user = User::whereRaw('LOWER(`email`) LIKE ?', [mb_strtolower($email)])
                         ->orWhere('foreign_id', $personId)
                         ->first();
 
-                    if (!$user) {
+                    if (! $user) {
                         $user = User::create([
                             'username' => $username,
                             'email' => $email,
@@ -358,13 +361,13 @@ class Helper
                     ]);
                 }
 
-                if (!$user->email && isset($attrs['email'])) {
+                if (! $user->email && isset($attrs['email'])) {
                     $user->update(['email' => $attrs['email']]);
                 }
-                if (!$user->foreign_id) {
+                if (! $user->foreign_id) {
                     $user->update(['foreign_id' => intval($personId)]);
                 }
-                if (!$user->group_id && isset($attrs['primary_group_id'])) {
+                if (! $user->group_id && isset($attrs['primary_group_id'])) {
                     $group = Group::where('foreign_id', $attrs['primary_group_id'])->first();
                     if ($group) {
                         $user->update(['group_id' => $group->id]);
@@ -376,8 +379,8 @@ class Helper
         });
 
         if ($skipped) {
-            logger()->warning('Import: skipped ' . count($skipped) . ' people without an email address (ids: '
-                . implode(', ', $skippedIds) . ')');
+            logger()->warning('Import: skipped '.count($skipped).' people without an email address (ids: '
+                .implode(', ', $skippedIds).')');
 
             return response()->json([
                 'ok' => true,
@@ -387,5 +390,4 @@ class Helper
 
         return true;
     }
-
 }

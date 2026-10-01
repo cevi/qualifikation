@@ -2,26 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Str;
-use File;
+use App\Events\UserCreated;
+use App\Helper\Helper;
+use App\Imports\UsersImport;
 use App\Models\Camp;
+use App\Models\CampUser;
+use App\Models\Group;
 use App\Models\Help;
 use App\Models\Role;
 use App\Models\User;
-use App\Helper\Helper;
-use App\Models\CampUser;
-use App\Events\UserCreated;
-use App\Exports\UsersExport;
-use App\Imports\UsersImport;
-use App\Models\Group;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class AdminUsersController extends Controller
@@ -45,7 +41,7 @@ class AdminUsersController extends Controller
         }
 
         $title = 'Personen';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
         // Server-side parsing of the sorting order query parameter
         $defaultOrder = [[3, 'asc'], [4, 'asc'], [0, 'asc']];
@@ -58,7 +54,7 @@ class AdminUsersController extends Controller
                 foreach ($items as $item) {
                     $parts = explode(':', $item);
                     if (count($parts) === 2 && is_numeric($parts[0]) && in_array($parts[1], ['asc', 'desc'])) {
-                        $colIndex = (int)$parts[0];
+                        $colIndex = (int) $parts[0];
                         if ($colIndex >= 0 && $colIndex <= 9) {
                             $parsed[] = [$colIndex, $parts[1]];
                         }
@@ -69,19 +65,19 @@ class AdminUsersController extends Controller
                 }
             }
         }
-        
+
         return view('admin.users.index', compact('has_api_token', 'title', 'help', 'initialOrder', 'defaultOrder'));
     }
 
     public function createDataTables()
     {
         //
-            $camp = Auth::user()->camp;
-            $users = $camp->allusers;
+        $camp = Auth::user()->camp;
+        $users = $camp->allusers;
 
         return DataTables::of($users)
             ->addColumn('picture', function ($user) {
-                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user rounded-full" alt="" src="' . $user->getAvatar() . '"></a>';
+                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user rounded-full" alt="" src="'.$user->getAvatar().'"></a>';
             })
             ->addColumn('user', function ($user) {
                 return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('admin.users.edit', $user['slug']).'>'.$user['username'].'</a>';
@@ -90,8 +86,10 @@ class AdminUsersController extends Controller
                 $camp = Auth::user()->camp;
                 if ($camp) {
                     $camp_user = CampUser::where('camp_id', '=', $camp['id'])->where('user_id', '=', $user['id'])->first();
+
                     return $camp_user && $camp_user->role ? $camp_user->role['name'] : '';
                 }
+
                 return $user->role ? $user->role['name'] : '';
             })
             ->addColumn('leader', function (User $user) {
@@ -126,6 +124,7 @@ class AdminUsersController extends Controller
         $allusers = $camp->allusers->pluck('id')->toArray();
 
         $users = User::where('role_id', '<>', config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
+
         // Nur was die Autovervollständigung beim Hinzufügen braucht.
         return $users->map->only(['id', 'username', 'email'])->values();
     }
@@ -149,7 +148,7 @@ class AdminUsersController extends Controller
             ->get()
             ->mapWithKeys(function ($group) {
                 $shortname = trim((string) $group->shortname);
-                $label = $shortname !== '' ? $shortname . ' - ' . $group->name : $group->name;
+                $label = $shortname !== '' ? $shortname.' - '.$group->name : $group->name;
 
                 return [$group->id => $label];
             })
@@ -162,8 +161,8 @@ class AdminUsersController extends Controller
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
-        $title = "Person erstellen / suchen";
-        $help = Help::where('title',$title)->first();
+        $title = 'Person erstellen / suchen';
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Personen';
         $help['main_route'] = '/admin/users';
 
@@ -182,13 +181,13 @@ class AdminUsersController extends Controller
         // if (!$aktUser->foreign_id) {
         //     return response()->json(['error' => 'Dein Cevi-DB-Benutzer ist noch nicht mit deinem Benutzer verknüpft.', 'ok' => false], 404);
         // }
-        if (!$camp->foreign_id) {
+        if (! $camp->foreign_id) {
             return response()->json(['error' => 'Keine Cevi-DB-ID auf dem Kurs hinterlegt.', 'ok' => false], 404);
         }
-        if (!$camp->group) {
+        if (! $camp->group) {
             return response()->json(['error' => 'Keine Gruppe auf dem Kurs hinterlegt.', 'ok' => false], 404);
         }
-        if (!$camp->group['api_token']) {
+        if (! $camp->group['api_token']) {
             return response()->json(['error' => 'Deine Region hat den DB-Import nicht freigeschalten.', 'ok' => false], 404);
         }
 
@@ -201,14 +200,14 @@ class AdminUsersController extends Controller
         // Without an explicit sort the API orders participations by created_at, which is not
         // unique for bulk-created rows. Paginating a non-unique order can return a row twice
         // and skip another, so we sort by id.
-        $url = '/api/event_participations?' . http_build_query([
+        $url = '/api/event_participations?'.http_build_query([
             'filter[event_id][eq]' => $camp['foreign_id'],
             'include' => 'participant,roles',
             'sort' => 'id',
         ]);
 
         while ($url) {
-            $url = $baseUrl . $url;
+            $url = $baseUrl.$url;
             $body = Http::withHeaders(['X-TOKEN' => $token])
                 ->accept('application/vnd.api+json')
                 ->get($url)
@@ -222,11 +221,11 @@ class AdminUsersController extends Controller
         // `people` scope or the `layer_and_below_read` permission, instead of returning an
         // error. Without this check the missing roles would later surface as the unrelated
         // "nur den Kursleitern" message.
-        if ($participations && !$included) {
+        if ($participations && ! $included) {
             return response()->json([
                 'error' => 'Die Cevi-DB hat keine Personen- und Rollendaten geliefert. '
-                    . 'Der API-Key deiner Region braucht die Rechte "Personen" und "Anlässe" '
-                    . 'sowie die Berechtigung "layer_and_below_read".',
+                    .'Der API-Key deiner Region braucht die Rechte "Personen" und "Anlässe" '
+                    .'sowie die Berechtigung "layer_and_below_read".',
                 'ok' => false,
             ], 404);
         }
@@ -236,7 +235,7 @@ class AdminUsersController extends Controller
 
     public function uploadFile(Request $request)
     {
-        if (!Auth::user()->demo) {
+        if (! Auth::user()->demo) {
             if ($request->hasFile('csv_file')) {
 
                 if (in_array($request->file('csv_file')->getClientOriginalExtension(), ['csv'])) {
@@ -258,7 +257,7 @@ class AdminUsersController extends Controller
                                 'role_id' => config('status.role_Kursleiter'),
                                 'camp_id' => $user['camp_id'],
                                 'email_verified_at' => now(),
-                                'classification_id' => config('status.classification_yellow'),];
+                                'classification_id' => config('status.classification_yellow'), ];
 
                             $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                             UserCreated::dispatch($user);
@@ -272,7 +271,7 @@ class AdminUsersController extends Controller
                                 'role_id' => config('status.role_Gruppenleiter'),
                                 'camp_id' => $user['camp_id'],
                                 'email_verified_at' => now(),
-                                'classification_id' => config('status.classification_yellow'),];
+                                'classification_id' => config('status.classification_yellow'), ];
 
                             $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                             UserCreated::dispatch($user);
@@ -295,15 +294,14 @@ class AdminUsersController extends Controller
                                 'camp_id' => $user['camp_id'],
                                 'email_verified_at' => now(),
                                 'leader_id' => $leader['id'],
-                                'classification_id' => config('status.classification_yellow'),];
+                                'classification_id' => config('status.classification_yellow'), ];
 
                             $user = User::firstOrCreate(['email' => $insertData['email']], $insertData);
                             UserCreated::dispatch($user);
                             Helper::updateCamp($user, $camp);
                         }
                     }
-                }
-                elseif (in_array($request->file('csv_file')->getClientOriginalExtension(), ['json'])) {
+                } elseif (in_array($request->file('csv_file')->getClientOriginalExtension(), ['json'])) {
                     $aktUser = Auth::user();
                     $camp = $aktUser->camp;
                     $json = file_get_contents(request()->file('csv_file'));
@@ -324,7 +322,7 @@ class AdminUsersController extends Controller
         $aktUser = Auth::user();
         // Wie im Formular (create()): Administrator vergeben nur Admins.
         $roleRules = ['required'];
-        if (!$aktUser->isAdmin()) {
+        if (! $aktUser->isAdmin()) {
             $roleRules[] = Rule::notIn([config('status.role_Administrator')]);
         }
         $this->validate($request, [
@@ -335,13 +333,13 @@ class AdminUsersController extends Controller
         ], [
             'role_id.required' => 'Die Rolle muss ausgefüllt sein.', ]);
 
-        if (!Auth::user()->demo) {
+        if (! Auth::user()->demo) {
             $camp = $aktUser->camp;
             // Nur die Felder des Formulars, das Startpasswort eingeschlossen.
             $input = $request->only(['username', 'email', 'role_id', 'leader_id', 'group_id']);
             $input['password'] = bcrypt($request->password);
 
-            if (!$aktUser->isAdmin()) {
+            if (! $aktUser->isAdmin()) {
                 $input['camp_id'] = $camp['id'];
             }
             // $input['slug'] = Str::slug($input['username']);
@@ -360,13 +358,13 @@ class AdminUsersController extends Controller
     {
         $input = $request->all();
 
-        if (!Auth::user()->demo) {
+        if (! Auth::user()->demo) {
             if ($input['user_id']) {
                 $aktUser = Auth::user();
                 $camp = $aktUser->camp;
                 $user = User::findOrFail($input['user_id']);
                 UserCreated::dispatch($user);
-                $user->update(['leader_id' => NULL]);
+                $user->update(['leader_id' => null]);
                 Helper::updateCamp($user, $camp);
             }
         }
@@ -396,7 +394,7 @@ class AdminUsersController extends Controller
             ->get()
             ->mapWithKeys(function ($group) {
                 $shortname = trim((string) $group->shortname);
-                $label = $shortname !== '' ? $shortname . ' - ' . $group->name : $group->name;
+                $label = $shortname !== '' ? $shortname.' - '.$group->name : $group->name;
 
                 return [$group->id => $label];
             })
@@ -409,11 +407,11 @@ class AdminUsersController extends Controller
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
-        $title = "Person bearbeiten";
-        $help = Help::where('title',$title)->first();
+        $title = 'Person bearbeiten';
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Personen';
         $help['main_route'] = '/admin/users';
-        
+
         return view('admin.users.edit', compact('user', 'roles', 'leaders', 'title', 'help', 'groups'));
     }
 
@@ -459,7 +457,7 @@ class AdminUsersController extends Controller
     {
         $this->authorize('manage', $user);
 
-        if (!Auth::user()->demo) {
+        if (! Auth::user()->demo) {
             $camp = Auth::user()->camp;
             $camp_global = Camp::where('global_camp', true)->first();
             Helper::updateCamp($user, $camp_global);
@@ -468,5 +466,4 @@ class AdminUsersController extends Controller
 
         return redirect('/admin/users');
     }
-
 }

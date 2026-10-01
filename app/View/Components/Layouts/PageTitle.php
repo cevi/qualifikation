@@ -9,13 +9,17 @@ use Illuminate\View\Component;
 class PageTitle extends Component
 {
     public $help;
+
     public $title;
+
     public $subtitle;
+
     public $header;
+
     /**
      * Create a new component instance.
      */
-    public function __construct($title, $help = null, $header=true, $subtitle = '')
+    public function __construct($title, $help = null, $header = true, $subtitle = '')
     {
         //
         $this->title = $title;

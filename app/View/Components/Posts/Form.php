@@ -3,7 +3,6 @@
 namespace App\View\Components\Posts;
 
 use App\Models\Post;
-use App\Models\User;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -11,14 +10,19 @@ use Illuminate\View\Component;
 class Form extends Component
 {
     public bool $chooseFromUser;
-    public string $route;   
+
+    public string $route;
+
     public Post $post;
-    public Array $campusers;
-    public Array $questions;
+
+    public array $campusers;
+
+    public array $questions;
+
     /**
      * Create a new component instance.
      */
-    public function __construct(Post $post, String $route, Array $campusers = [], Array $questions = [], bool $chooseFromUser = false)
+    public function __construct(Post $post, string $route, array $campusers = [], array $questions = [], bool $chooseFromUser = false)
     {
         $this->chooseFromUser = $chooseFromUser;
         $this->post = $post;

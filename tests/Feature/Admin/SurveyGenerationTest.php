@@ -149,6 +149,6 @@ class SurveyGenerationTest extends TestCase
         $this->actingAs($s->kursleiter)
             ->get(route('surveys.index'))
             ->assertOk()
-            ->assertSeeInOrder(['url : "' . route('surveys.store') . '"', "type: 'POST'"], false);
+            ->assertSeeInOrder(['url : "'.route('surveys.store').'"', "type: 'POST'"], false);
     }
 }
