@@ -50,13 +50,15 @@ class SurveysController extends Controller
 
     public function update(Request $request, Survey $survey)
     {
+        // Gleiche Bedingung wie für das Anzeigen des Formulars in survey().
+        abort_unless($survey->TNIsAllowed(), 403);
         $aktUser = Auth::user();
 
         $camp = $aktUser->camp;
         $answers = $request->answers ?? [];
 
         foreach ($answers as $index => $answer) {
-            $surveyquestion = SurveyQuestion::findOrFail($index);
+            $surveyquestion = $survey->questions()->findOrFail($index);
             if ($aktUser->isLeader()) {
                 $surveyquestion->update(['answer_leader_id' => $answer]);
             } else {
@@ -70,7 +72,7 @@ class SurveysController extends Controller
 
         $comments = $request->comments ?? [];
         foreach ($comments as $index => $comment) {
-            $surveyquestion = SurveyQuestion::findOrFail($index);
+            $surveyquestion = $survey->questions()->findOrFail($index);
             if ($aktUser->isLeader()) {
                 $surveyquestion->update(['comment_leader' => $comment]);
             } else {
@@ -143,6 +145,8 @@ class SurveysController extends Controller
     public function finish($id)
     {
         $survey = Survey::findOrFail($id);
+        // Gleiche Bedingung wie für das Anzeigen der Vergleichsseite in compare().
+        abort_unless($survey->SurveyIsAllowed(), 403);
         $user = Auth::user();
 
         if ($survey['survey_status_id'] === config('status.survey_tnAbgeschlossen') && $user->isleader()) {

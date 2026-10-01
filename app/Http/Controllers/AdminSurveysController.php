@@ -151,8 +151,7 @@ class AdminSurveysController extends Controller
      */
     public function edit(Survey $survey)
     {
-        //
-        // $survey = Survey::findOrFail($id);
+        $this->authorize('manage', $survey);
         $users = Auth::user()->camp->participants->pluck('username', 'id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
         $survey_statuses_id = SurveyStatus::pluck('name', 'id')->all();
@@ -175,10 +174,10 @@ class AdminSurveysController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $survey = Survey::findOrFail($id);
+        $this->authorize('manage', $survey);
         if (! Auth::user()->demo) {
-            $input = $request->all();
-            $survey = Survey::findOrFail($id);
+            $input = $request->only(['survey_status_id', 'update']);
             $camp = Auth::user()->camp;
             if (isset($input['update'])) {
                 if ($input['survey_status_id'] == config('status.survey_neu')) {
@@ -213,8 +212,10 @@ class AdminSurveysController extends Controller
      */
     public function destroy(Survey $survey)
     {
-        //
-        $survey->delete();
+        $this->authorize('manage', $survey);
+        if (! Auth::user()->demo) {
+            $survey->delete();
+        }
         return redirect('/admin/surveys');
     }
 }

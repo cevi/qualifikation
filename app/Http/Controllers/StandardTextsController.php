@@ -41,7 +41,7 @@ class StandardTextsController extends Controller
     {
         //
         if (!Auth::user()->demo) {
-            $input = $request->all();
+            $input = $request->only(['title', 'content']);
             $camp = Auth::user()->camp;
             $input['camp_id'] = $camp->id;
             StandardText::create($input);
@@ -69,6 +69,7 @@ class StandardTextsController extends Controller
      */
     public function edit(StandardText $standard_text)
     {
+        $this->authorize('manage', $standard_text);
         //
         $title = 'Standart-Text bearbeiten';
         $help = Help::where('title',$title)->first();
@@ -86,8 +87,9 @@ class StandardTextsController extends Controller
      */
     public function update(Request $request, StandardText $standard_text)
     {
+        $this->authorize('manage', $standard_text);
         //
-        $standard_text->update($request->all());
+        $standard_text->update($request->only(['title', 'content']));
 
         return redirect('/admin/standard_texts');
     }
@@ -100,6 +102,7 @@ class StandardTextsController extends Controller
      */
     public function destroy(StandardText $standard_text)
     {
+        $this->authorize('manage', $standard_text);
         //
         $standard_text->delete();
 

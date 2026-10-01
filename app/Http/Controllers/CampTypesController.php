@@ -82,6 +82,7 @@ class CampTypesController extends Controller
      */
     public function edit(CampType $camp_type)
     {
+        $this->authorize('manage', $camp_type);
         //
         $title = 'Kurs-Typ bearbeiten';
         $help = Help::where('title',$title)->first();
@@ -99,8 +100,9 @@ class CampTypesController extends Controller
      */
     public function update(Request $request, CampType $camp_type)
     {
+        $this->authorize('manage', $camp_type);
         //
-        $camp_type->update($request->all());
+        $camp_type->update($request->only(['name']));
 
         return redirect('/admin/camp_types');
     }
@@ -113,6 +115,7 @@ class CampTypesController extends Controller
      */
     public function destroy(CampType $camp_type)
     {
+        $this->authorize('manage', $camp_type);
         //
         $camp_type->delete();
 

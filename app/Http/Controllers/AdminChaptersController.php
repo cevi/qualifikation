@@ -64,7 +64,9 @@ class AdminChaptersController extends Controller
                 $camp_type = $user->camp->camp_type;
                 $input['camp_type_id'] = $camp_type['id'];
             }
-            Chapter::create($input);
+            $chapter = new Chapter($input);
+            $this->authorize('manage', $chapter);
+            $chapter->save();
         }
 
         return redirect('admin/chapters');
@@ -80,6 +82,7 @@ class AdminChaptersController extends Controller
     {
         //
         $chapter = Chapter::findOrFail($id);
+        $this->authorize('manage', $chapter);
         $title = "Kapitel bearbeiten";
         $help = Help::where('title',$title)->first();
         $help['main_title'] = 'Kapitel';
@@ -98,7 +101,9 @@ class AdminChaptersController extends Controller
     public function update(Request $request, $id)
     {
         //
-        Chapter::findOrFail($id)->update($request->all());
+        $chapter = Chapter::findOrFail($id);
+        $this->authorize('manage', $chapter);
+        $chapter->update($request->only(['name', 'number']));
 
         return redirect('/admin/chapters');
     }
@@ -112,7 +117,9 @@ class AdminChaptersController extends Controller
     public function destroy($id)
     {
         //
-        Chapter::findOrFail($id)->delete();
+        $chapter = Chapter::findOrFail($id);
+        $this->authorize('manage', $chapter);
+        $chapter->delete();
 
         return redirect('/admin/chapters');
     }

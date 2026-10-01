@@ -34,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'remember_token', 'password_change_at', ];
+        'password', 'remember_token', 'password_change_at', 'last_login_ip', ];
 
     /**
      * The attributes that should be cast to native types.

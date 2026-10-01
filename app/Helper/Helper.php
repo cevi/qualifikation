@@ -222,6 +222,8 @@ class Helper
         
         $post_id = $input['post_id'] ?? null;
         $post = $post_id ? Post::find($post_id) : null;
+        // Bestehende Rückmeldungen ändert nur, wer sie geschrieben hat.
+        abort_if($post && Auth::user()->cannot('manage', $post), 403);
         if (!$aktUser->demo && $file = $request->file('file')) {
             $save_path = 'app/files/' . $camp['id'] . '_'. Str::slug($camp['name']);
             $directory = storage_path($save_path);

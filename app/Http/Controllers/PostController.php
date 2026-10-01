@@ -105,6 +105,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        $this->authorize('manage', $post);
         //
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
@@ -147,6 +148,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->authorize('manage', $post);
         //
         if($post['file']){
             unlink(storage_path($post['file']));

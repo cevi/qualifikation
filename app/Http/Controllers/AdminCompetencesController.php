@@ -46,7 +46,9 @@ class AdminCompetencesController extends Controller
     public function store(Request $request)
     {
         //
-        Competence::create($request->all());
+        $competence = new Competence($request->only(['name', 'camp_type_id', 'question_id']));
+        $this->authorize('manage', $competence);
+        $competence->save();
 
         return redirect('admin/competences');
     }
@@ -59,6 +61,7 @@ class AdminCompetencesController extends Controller
      */
     public function edit(Competence $competence)
     {
+        $this->authorize('manage', $competence);
         //
         $questions = Question::pluck('competence', 'id')->all();
         $camp_types = CampType::pluck('name', 'id')->all();
@@ -80,7 +83,11 @@ class AdminCompetencesController extends Controller
     public function update(Request $request, Competence $competence)
     {
         //
-        $competence->update($request->all());
+        $this->authorize('manage', $competence);
+        // Auch Kurstyp und Frage aus dem Formular müssen eigene sein.
+        $competence->fill($request->only(['name', 'camp_type_id', 'question_id']));
+        $this->authorize('manage', $competence->setRelations([]));
+        $competence->save();
 
         return redirect('/admin/competences');
     }
@@ -93,6 +100,7 @@ class AdminCompetencesController extends Controller
      */
     public function destroy(Competence $competence)
     {
+        $this->authorize('manage', $competence);
         //
         $competence->delete();
 

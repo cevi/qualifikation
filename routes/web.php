@@ -59,15 +59,6 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::get('admin/run-migrations', function () {
-    return Artisan::call('migrate', ['--force' => true]);
-});
-
-Route::get('admin/run-deployment', function () {
-    Artisan::call('optimize:clear');
-
-    return true;
-});
 
 Auth::routes(['register' => false, 'verify' => true]);
 
@@ -103,7 +94,6 @@ Route::group(['middleware' => 'verified'], function () {
     Route::resource('/camps', 'CampsController', ['as' => 'home'])->only(['create', 'store', 'update']);
     Route::resource('/camp_types', 'CampTypesController')->only(['create','store']);
 
-    Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
 
     Route::group(['middleware' => 'campleader'], function () {
         Route::get('/admin', 'AdminController@index');
@@ -112,6 +102,7 @@ Route::group(['middleware' => 'verified'], function () {
         // Rückmeldungen zum Tool geben alle Kursleitenden ab, verwalten nur Admins (siehe unten).
         Route::resource('/admin/feedback', 'FeedbackController')->only(['store']);
 
+        Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
         Route::resource('admin/users', 'AdminUsersController', ['as' => 'admin']);
         Route::get('users/createDataTables', ['as' => 'users.CreateDataTables', 'uses' => 'AdminUsersController@createDataTables']);
         Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
@@ -140,6 +131,15 @@ Route::group(['middleware' => 'verified'], function () {
 
         // Globale Stammdaten. Kursleitende können sich selbst registrieren und sind dafür nicht berechtigt.
         Route::group(['middleware' => 'admin'], function () {
+            // Der Container migriert beim Start selbst (docker/entrypoint-php.sh).
+            Route::get('admin/run-migrations', function () {
+                return Artisan::call('migrate', ['--force' => true]);
+            });
+            Route::get('admin/run-deployment', function () {
+                Artisan::call('optimize:clear');
+
+                return true;
+            });
             Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
             Route::post('users/feedback/send', 'FeedbackController@send');
             Route::resource('admin/answers', 'AdminAnswersController');

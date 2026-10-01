@@ -153,6 +153,7 @@ class AdminCampsController extends Controller
     {
         //
         $camp = Camp::findOrFail($id);
+        $this->authorize('manage', $camp);
         $camptypes = CampType::pluck('name', 'id')->all();
         $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
         $users = User::where('role_id', config('status.role_Kursleiter'))->pluck('username', 'id')->all();
@@ -173,8 +174,9 @@ class AdminCampsController extends Controller
      */
     public function update(Request $request, Camp $camp)
     {
+        $this->authorize('manage', $camp);
         if (!Auth::user()->demo) {
-            $input = $request->all();
+            $input = $request->only(['name', 'user_id', 'camp_type_id', 'end_date', 'group_id', 'foreign_id']);
             $input['status_control'] = $request->has('status_control');
             if ($input['status_control'] && $camp['survey_status_id'] == null){
                 $input['survey_status_id'] = config('status.survey_neu');
@@ -193,8 +195,9 @@ class AdminCampsController extends Controller
      */
     public function destroy(Camp $camp)
     {
+        $this->authorize('manage', $camp);
         if (!Auth::user()->demo){
-            $users = Auth::user()->camp->allUsers;
+            $users = $camp->allUsers;
             $camp_global = Camp::where('global_camp', true)->first();
 
             foreach ($users as $user) {

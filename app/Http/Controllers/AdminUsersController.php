@@ -15,6 +15,7 @@ use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 use App\Models\Group;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -125,7 +126,8 @@ class AdminUsersController extends Controller
         $allusers = $camp->allusers->pluck('id')->toArray();
 
         $users = User::where('role_id', '<>', config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
-        return $users;
+        // Nur was die Autovervollständigung beim Hinzufügen braucht.
+        return $users->map->only(['id', 'username', 'email'])->values();
     }
 
     /**
@@ -319,24 +321,25 @@ class AdminUsersController extends Controller
     public function store(Request $request)
     {
         //
+        $aktUser = Auth::user();
+        // Wie im Formular (create()): Administrator vergeben nur Admins.
+        $roleRules = ['required'];
+        if (!$aktUser->isAdmin()) {
+            $roleRules[] = Rule::notIn([config('status.role_Administrator')]);
+        }
         $this->validate($request, [
             'username' => 'required|max:255',
             'email' => 'required|unique:users|email',
-            'role_id' => 'required',
+            'role_id' => $roleRules,
             'password' => 'required',
         ], [
             'role_id.required' => 'Die Rolle muss ausgefüllt sein.', ]);
 
-        $aktUser = Auth::user();
-
         if (!Auth::user()->demo) {
             $camp = $aktUser->camp;
-            if (trim($request->password) == '') {
-                $input = $request->except(['password', 'avatar']);
-            } else {
-                $input = $request->except('avatar');
-                $input['password'] = bcrypt($request->password);
-            }
+            // Nur die Felder des Formulars, das Startpasswort eingeschlossen.
+            $input = $request->only(['username', 'email', 'role_id', 'leader_id', 'group_id']);
+            $input['password'] = bcrypt($request->password);
 
             if (!$aktUser->isAdmin()) {
                 $input['camp_id'] = $camp['id'];
@@ -384,8 +387,7 @@ class AdminUsersController extends Controller
      */
     public function edit(User $user)
     {
-        //
-        // $user = User::findOrFail($id);
+        $this->authorize('manage', $user);
         $aktUser = Auth::user();
         $roles = Role::where('id', '>', config('status.role_Administrator'))->pluck('name', 'id')->all();
         $groups = Group::orderByRaw("CASE WHEN shortname IS NULL OR TRIM(shortname) = '' THEN 1 ELSE 0 END")
@@ -420,23 +422,20 @@ class AdminUsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $this->authorize('manage', $user);
         $this->validate($request, [
             'username' => 'required|max:255',
             'email' => 'required|email|unique:users,email,'.$id,
+            // Die Rollenauswahl im Formular bietet Administrator nicht an.
+            'role_id' => ['nullable', Rule::notIn([config('status.role_Administrator')])],
         ]);
-        $user = User::findOrFail($id);
         $aktuser = Auth::user();
         $camp = $aktuser->camp;
 
         if (! $aktuser->demo) {
-            if (trim($request->password) == '') {
-                $input = $request->except(['password', 'avatar']);
-            } else {
-                $input = $request->except('avatar');
-                $input['password'] = bcrypt($request->password);
-            }
-            // $input['slug'] = Str::slug($input['username']);
+            // Nur die Felder des Formulars. Passwörter ändern Personen selbst auf ihrer Kontoseite.
+            $input = $request->only(['username', 'email', 'role_id', 'leader_id', 'group_id']);
 
             $user->update($input);
             // UserCreated::dispatch($user);
@@ -458,7 +457,7 @@ class AdminUsersController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $this->authorize('manage', $user);
 
         if (!Auth::user()->demo) {
             $camp = Auth::user()->camp;

@@ -63,7 +63,9 @@ class AdminQuestionsController extends Controller
                 $camp_type = $user->camp->camp_type;
                 $input['camp_type_id'] = $camp_type['id'];
             }
-            Question::create($input);
+            $question = new Question($input);
+            $this->authorize('manage', $question);
+            $question->save();
         }
 
         return redirect('admin/questions');
@@ -80,6 +82,7 @@ class AdminQuestionsController extends Controller
         //
         $user = Auth::user();
         $question = Question::findOrFail($id);
+        $this->authorize('manage', $question);
         if($user->isAdmin()) {
             $chapters = Chapter::where('default_chapter',true)->pluck('name', 'id')->all();
         }
@@ -106,7 +109,12 @@ class AdminQuestionsController extends Controller
     {
         //
         // return $request;
-        Question::findOrFail($id)->update($request->all());
+        $question = Question::findOrFail($id);
+        $this->authorize('manage', $question);
+        // Auch das Zielkapitel muss zu einem eigenen Kurstyp gehören.
+        $question->fill($request->only(['name', 'number', 'competence', 'chapter_id', 'sort-index']));
+        $this->authorize('manage', $question->setRelations([]));
+        $question->save();
 
         return redirect('/admin/questions');
     }
@@ -120,7 +128,9 @@ class AdminQuestionsController extends Controller
     public function destroy($id)
     {
         //
-        Question::findOrFail($id)->delete();
+        $question = Question::findOrFail($id);
+        $this->authorize('manage', $question);
+        $question->delete();
 
         return redirect('/admin/questions');
     }
