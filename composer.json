@@ -67,6 +67,9 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "post-install-cmd": [
+            "@php -r \"is_dir('.git') && exec('git config core.hooksPath .githooks');\""
         ]
     }
 }

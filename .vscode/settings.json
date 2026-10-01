@@ -1,0 +1,8 @@
+{
+    // PHP beim Speichern mit Laravel Pint formatieren (Regeln: pint.json). Blade-Dateien formatiert Pint nicht.
+    "[php]": {
+        "editor.defaultFormatter": "open-southeners.laravel-pint",
+        "editor.formatOnSave": true
+    },
+    "laravel-pint.enable": true
+}
