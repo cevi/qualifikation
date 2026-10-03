@@ -61,9 +61,11 @@ class Survey extends Model
     public function TNIsAllowed()
     {
         $aktUser = Auth::user();
-        $result = $this->SurveyIsAllowed() &&
-            ($this['survey_status_id'] < config('status.survey_fertig')) &&
-             (! $aktUser->isCampleader());
+        // Leitende füllen ihre Einschätzung aus, bis die Quali fertig ist.
+        $result = $aktUser->isLeader() && ! $aktUser->isCampleader() &&
+            $this->SurveyIsAllowed() &&
+            ($this['survey_status_id'] < config('status.survey_fertig'));
+        // Teilnehmende nur in einer freigegebenen Runde, die sie noch nicht abgeschlossen haben.
         if (! $result) {
             $camp = $aktUser->camp;
             if ($camp['status_control']) {
