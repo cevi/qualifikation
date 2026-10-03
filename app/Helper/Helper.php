@@ -69,7 +69,8 @@ class Helper
                 if (! File::isDirectory($directory)) {
                     File::makeDirectory($directory, 0775, true);
                 }
-                $name = Str::uuid().'_'.str_replace(' ', '', $file->getClientOriginalName());
+                // Fester Name und Format: liegt im öffentlichen storage-Ordner, der Dateiname des Uploads zählt nicht.
+                $name = Str::uuid().'.jpg';
                 ImageManager::gd()->read($input['cropped_photo_id'])->save($directory.'/'.$name, quality: 80);
                 $input['avatar'] = $save_path.'/'.$name;
                 $camp_user = CampUser::where('user_id', $user->id)->where('camp_id', $camp->id)->first();
@@ -207,25 +208,27 @@ class Helper
     {
         $aktUser = Auth::user();
         $camp = $aktUser->camp;
-        $input = $request->all();
+        // Nur die Felder des Formulars. Datei, Autor und Kurs setzt ausschliesslich der Server.
+        $input = $request->only(['comment', 'camp_user_id', 'question_id']);
         $input['camp_id'] = $camp->id;
 
         $input['leader_id'] = $aktUser->id;
         $input['show_on_survey'] = $request->has('show_on_survey');
-        if (isset($user)) {
-            $input['user_id'] = $user->id;
+        $user_id = isset($user) ? $user->id : $request->input('user_id');
+        if ($user_id === 'null') {
+            $user_id = null;
         }
 
-        if (isset($input['user_id']) && $input['user_id'] === 'null') {
-            $input['user_id'] = null;
-        }
-
-        $camp_user = CampUser::where('user_id', $input['user_id'] ?? null)->where('camp_id', $camp->id)->first();
+        $camp_user = CampUser::where('user_id', $user_id)->where('camp_id', $camp->id)->first();
         if ($camp_user) {
             $input['camp_user_id'] = $camp_user->id;
         }
+        // Rückmeldungen nur zu Personen des eigenen Kurses.
+        if (! empty($input['camp_user_id'])) {
+            abort_unless(CampUser::whereKey($input['camp_user_id'])->where('camp_id', $camp->id)->exists(), 403);
+        }
 
-        $post_id = $input['post_id'] ?? null;
+        $post_id = $request->input('post_id');
         $post = $post_id ? Post::find($post_id) : null;
         // Bestehende Rückmeldungen ändert nur, wer sie geschrieben hat.
         abort_if($post && Auth::user()->cannot('manage', $post), 403);

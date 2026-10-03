@@ -8,6 +8,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class PostController extends Controller
 {
@@ -72,14 +73,16 @@ class PostController extends Controller
     {
         //
         $post = Post::where('uuid', $id)->firstOrFail();
-        $camp_post = $post->campUser->camp;
         $aktUser = Auth::user();
-        $camp_user = $aktUser->camp;
-        if (($camp_post->id == $camp_user->id) && ! $aktUser->isTeilnehmer()) {
-            return response()->download(storage_path($post['file']));
-        } else {
+        // Über camp_id, damit auch allgemeine Rückmeldungen ohne Person funktionieren.
+        if ($post->camp_id != $aktUser->camp_id || $aktUser->isTeilnehmer()) {
             return redirect()->back();
         }
+        // Nur Dateien aus dem Upload-Ordner der Rückmeldungen ausliefern.
+        $path = realpath(storage_path((string) $post['file']));
+        abort_unless($path && str_starts_with($path, realpath(storage_path('app/files')).DIRECTORY_SEPARATOR), 404);
+
+        return response()->download($path);
     }
 
     /**
@@ -146,7 +149,7 @@ class PostController extends Controller
         $this->authorize('manage', $post);
         //
         if ($post['file']) {
-            unlink(storage_path($post['file']));
+            File::delete(storage_path($post['file']));
         }
         $post->delete();
 

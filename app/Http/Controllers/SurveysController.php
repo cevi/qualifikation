@@ -128,6 +128,9 @@ class SurveysController extends Controller
 
     public function downloadPDF(Survey $survey)
     {
+        // Wie die Vergleichsseite. Die Druckansicht zeigt die Leiter-Einschätzung, deshalb nicht für TN
+        // (die Vergleichsseite bietet ihnen den Link auch nicht an).
+        abort_unless($survey->SurveyIsAllowed() && ! Auth::user()->isTeilnehmer(), 403);
         $camp = Auth::user()->camp;
         $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->where('id', $survey->id)->get()->sortBy('user.username')->values();
 
