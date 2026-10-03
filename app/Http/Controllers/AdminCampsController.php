@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Events\CampCreated;
 use App\Exports\PostsExport;
-use App\Exports\UsersExport;
 use App\Helper\Helper;
 use App\Models\Camp;
 use App\Models\CampType;
