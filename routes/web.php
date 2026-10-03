@@ -105,7 +105,6 @@ Route::group(['middleware' => 'verified'], function () {
         Route::resource('admin/users', 'AdminUsersController', ['as' => 'admin']);
         Route::get('users/createDataTables', ['as' => 'users.CreateDataTables', 'uses' => 'AdminUsersController@createDataTables']);
         Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
-        Route::get('admin/users/download', ['as' => 'users.download', 'uses' => 'AdminUsersController@download']);
         Route::post('admin/users/import', ['as' => 'users.import', 'uses' => 'AdminUsersController@import']);
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
 

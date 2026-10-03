@@ -145,6 +145,7 @@ class Helper
         $first_answers = [];
         $second_answers = [];
         $leader_answers = [];
+        $dataset_ids = [];
         $questions = $survey->questions()->with('question')->get()->sortBy('question.sort-index')->values();
         foreach ($questions as $i => $question) {
             $first_answers[] = $question->answer_first['count'];
@@ -340,7 +341,8 @@ class Helper
                         default => config('status.role_Kursleiter'),
                     };
 
-                    $user = User::whereRaw('LOWER(`email`) LIKE ?', [mb_strtolower($email)])
+                    // Exakter Vergleich: bei LIKE wären "_" und "%" in Adressen Platzhalter.
+                    $user = User::whereRaw('LOWER(`email`) = ?', [mb_strtolower($email)])
                         ->orWhere('foreign_id', $personId)
                         ->first();
 
