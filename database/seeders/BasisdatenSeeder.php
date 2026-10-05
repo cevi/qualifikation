@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Classification;
 use App\Enums\SurveyStatus;
 use App\Models\Answer;
 use App\Models\CampType;
 use App\Models\Chapter;
-use App\Models\Classification;
+use App\Models\Classification as ClassificationModel;
 use App\Models\Competence;
 use App\Models\Group;
 use App\Models\Question;
@@ -38,9 +39,9 @@ class BasisdatenSeeder extends Seeder
         $chapter_3 = Chapter::updateOrCreate(['id' => 3], ['number' => 3, 'name' => 'Selbstkompetenz']);
         $chapter_4 = Chapter::updateOrCreate(['id' => 4], ['number' => 4, 'name' => 'Sozialkompetenz']);
 
-        Classification::updateOrCreate(['id' => config('status.classification_red')], ['name' => 'Rot']);
-        Classification::updateOrCreate(['id' => config('status.classification_yellow')], ['name' => 'Gelb']);
-        Classification::updateOrCreate(['id' => config('status.classification_green')], ['name' => 'Grün']);
+        ClassificationModel::updateOrCreate(['id' => Classification::Rot->value], ['name' => 'Rot']);
+        ClassificationModel::updateOrCreate(['id' => Classification::Gelb->value], ['name' => 'Gelb']);
+        ClassificationModel::updateOrCreate(['id' => Classification::Gruen->value], ['name' => 'Grün']);
 
         Group::updateOrCreate(['name' => 'Cevi Schweiz'], ['shortname' => 'Cevi', 'foreign_id' => 1, 'campgroup' => 1]);
         Group::updateOrCreate(['name' => 'Region Zürich'], ['foreign_id' => 2, 'campgroup' => 1]);

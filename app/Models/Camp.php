@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,7 @@ class Camp extends Model
             // get the admin user and assign roles/permissions on new team model
             CampUser::create([
                 'user_id' => 1,
-                'role_id' => config('status.role_Administrator'),
+                'role_id' => Role::Administrator,
                 'camp_id' => $camp['id'],
             ]);
         });
@@ -52,12 +53,12 @@ class Camp extends Model
 
     public function allUsers()
     {
-        return $this->belongsToMany('App\Models\User', 'camp_users')->where('camp_users.role_id', '<>', config('status.role_Administrator'));
+        return $this->belongsToMany('App\Models\User', 'camp_users')->where('camp_users.role_id', '<>', Role::Administrator);
     }
 
     public function participants()
     {
-        return $this->allUsers()->where('camp_users.role_id', config('status.role_Teilnehmer'))->OrderBy('username');
+        return $this->allUsers()->where('camp_users.role_id', Role::Teilnehmer)->OrderBy('username');
     }
 
     public function my_participants()
@@ -74,12 +75,12 @@ class Camp extends Model
 
     public function camp_users()
     {
-        return $this->hasMany(CampUser::class)->where('camp_users.role_id', config('status.role_Teilnehmer'));
+        return $this->hasMany(CampUser::class)->where('camp_users.role_id', Role::Teilnehmer);
     }
 
     public function camp_users_all()
     {
-        return $this->hasMany(CampUser::class)->where('camp_users.role_id', '<>', config('status.role_Administrator'));
+        return $this->hasMany(CampUser::class)->where('camp_users.role_id', '<>', Role::Administrator);
     }
 
     public function camp_type()

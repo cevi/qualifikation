@@ -2,6 +2,7 @@
 
 namespace Tests\Support;
 
+use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use App\Models\Answer;
 use App\Models\Camp;
@@ -68,7 +69,7 @@ final class CampScenario
         CampUser::create([
             'camp_id' => $s->camp->id,
             'user_id' => $s->kursleiter->id,
-            'role_id' => config('status.role_Kursleiter'),
+            'role_id' => Role::Kursleiter,
         ]);
 
         $s->gruppenleiter = User::factory()->gruppenleiter()->inCamp($s->camp)->create(['group_id' => $s->group->id]);

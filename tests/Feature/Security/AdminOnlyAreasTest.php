@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\Security;
 
+use App\Enums\Classification;
 use App\Mail\FeedbackCreated;
 use App\Models\Answer;
-use App\Models\Classification;
+use App\Models\Classification as ClassificationModel;
 use App\Models\Feedback;
 use App\Models\Group;
 use App\Models\Help;
@@ -42,7 +43,7 @@ class AdminOnlyAreasTest extends TestCase
             'Antwort löschen' => ['delete', static fn (CampScenario $s) => route('answers.destroy', 1)],
             'Klassifizierungen ansehen' => ['get', static fn (CampScenario $s) => route('classifications.index')],
             'Klassifizierung ändern' => ['put', static fn (CampScenario $s) => route('classifications.update', 1)],
-            'Klassifizierung löschen' => ['delete', static fn (CampScenario $s) => route('classifications.destroy', config('status.classification_red'))],
+            'Klassifizierung löschen' => ['delete', static fn (CampScenario $s) => route('classifications.destroy', Classification::Rot)],
             'Hilfe ansehen' => ['get', static fn (CampScenario $s) => route('helps.index')],
             'Hilfe ändern' => ['put', static fn (CampScenario $s) => route('helps.update', $s->help)],
             'Hilfe löschen' => ['delete', static fn (CampScenario $s) => route('helps.destroy', $s->help)],
@@ -66,7 +67,7 @@ class AdminOnlyAreasTest extends TestCase
     {
         $s = CampScenario::create();
         $answer = Answer::create(['name' => '?', 'count' => 9, 'description' => 'Unbenutzt']);
-        $classification = Classification::create(['name' => 'Unbenutzt']);
+        $classification = ClassificationModel::create(['name' => 'Unbenutzt']);
 
         $this->actingAs($s->kursleiter);
         $this->put(route('helps.update', $s->help), ['title' => 'Geändert', 'content' => 'Geändert']);

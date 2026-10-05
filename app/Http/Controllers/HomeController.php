@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Helper\Helper;
 use App\Models\CampUser;
 use App\Models\Help;
@@ -32,7 +33,7 @@ class HomeController extends Controller
         $camp = $aktUser->camp()->first();
         $surveys = [];
         if ($aktUser->camp) {
-            if ($aktUser->isCampleader() || $aktUser->role_id == config('status.role_Stabsleiter')) {
+            if ($aktUser->isCampleader() || $aktUser->role_id === Role::Stabsleiter) {
                 $camp_users_id = CampUser::where('camp_id', $aktUser->camp['id'])->pluck('id')->all();
             } else {
                 $camp_users_id = CampUser::where('leader_id', $aktUser['id'])->where('camp_id', $aktUser->camp['id'])->pluck('id')->all();

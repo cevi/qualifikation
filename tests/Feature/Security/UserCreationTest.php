@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Security;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tests\Support\CampScenario;
@@ -23,7 +24,7 @@ class UserCreationTest extends TestCase
         $person = User::where('email', 'neu@example.com')->firstOrFail();
         $this->assertTrue(Hash::check('startpasswort', $person->password));
         $this->assertSame($s->camp->id, $person->camp_id);
-        $this->assertSame(config('status.role_Teilnehmer'), $person->role_id);
+        $this->assertSame(Role::Teilnehmer, $person->role_id);
     }
 
     public function test_kursleiter_cannot_create_admin()
@@ -31,7 +32,7 @@ class UserCreationTest extends TestCase
         $s = CampScenario::create();
 
         $this->actingAs($s->kursleiter)
-            ->post(route('admin.users.store'), $this->formData(['role_id' => config('status.role_Administrator')]));
+            ->post(route('admin.users.store'), $this->formData(['role_id' => Role::Administrator->value]));
 
         $this->assertFalse(User::where('email', 'neu@example.com')->first()?->isAdmin() ?? false);
     }
@@ -52,7 +53,7 @@ class UserCreationTest extends TestCase
         $s = CampScenario::create();
 
         $this->actingAs($s->admin)
-            ->post(route('admin.users.store'), $this->formData(['role_id' => config('status.role_Administrator')]))
+            ->post(route('admin.users.store'), $this->formData(['role_id' => Role::Administrator->value]))
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('users', ['email' => 'neu@example.com']);
@@ -64,7 +65,7 @@ class UserCreationTest extends TestCase
             'username' => 'Neue Person',
             'email' => 'neu@example.com',
             'password' => 'startpasswort',
-            'role_id' => config('status.role_Teilnehmer'),
+            'role_id' => Role::Teilnehmer->value,
         ];
     }
 }

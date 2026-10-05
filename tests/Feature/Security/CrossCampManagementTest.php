@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Security;
 
+use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use App\Models\Camp;
 use App\Models\User;
@@ -100,7 +101,7 @@ class CrossCampManagementTest extends TestCase
             ->put(route('admin.users.update', $a->participant->id), [
                 'username' => $a->participant->username,
                 'email' => $a->participant->email,
-                'role_id' => config('status.role_Administrator'),
+                'role_id' => Role::Administrator->value,
             ]);
 
         $this->assertFalse($a->participant->fresh()->isAdmin());

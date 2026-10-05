@@ -34,24 +34,14 @@
                     </div>
                     <div class="text-center-profile mbl">
                         <div class="ampel" id="ampel">
-                            <a href="javascript:" class="ampel-btn"
-                                data-color="{{config('status.classification_red')}}"
-                                data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_red')])}}'>
-                                <div
-                                    class="circle {{$camp_user->classification_id == config('status.classification_red') ? 'red' : ''}}"></div>
-                            </a>
-                            <a href="javascript:" class="ampel-btn"
-                                data-color="{{config('status.classification_yellow')}}"
-                                data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_yellow')])}}'>
-                                <div
-                                    class="circle {{$camp_user->classification_id == config('status.classification_yellow') ? 'yellow' : ''}}"></div>
-                            </a>
-                            <a href="javascript:" class="ampel-btn"
-                                data-color="{{config('status.classification_green')}}"
-                                data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => config('status.classification_green')])}}'>
-                                <div
-                                    class="circle {{$camp_user->classification_id == config('status.classification_green') ? 'green' : ''}}"></div>
-                            </a>
+                            @foreach (\App\Enums\Classification::cases() as $classification)
+                                <a href="javascript:" class="ampel-btn"
+                                    data-color="{{$classification->value}}"
+                                    data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => $classification->value])}}'>
+                                    <div
+                                        class="circle {{$camp_user->classification_id === $classification ? $classification->cssClass() : ''}}"></div>
+                                </a>
+                            @endforeach
                         </div>
                     </div>
                     @foreach($surveys as $survey)

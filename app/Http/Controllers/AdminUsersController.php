@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Events\UserCreated;
 use App\Helper\Helper;
 use App\Models\Camp;
 use App\Models\CampUser;
 use App\Models\Group;
 use App\Models\Help;
-use App\Models\Role;
+use App\Models\Role as RoleModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -122,7 +123,7 @@ class AdminUsersController extends Controller
         $camp = Auth::user()->camp;
         $allusers = $camp->allusers->pluck('id')->toArray();
 
-        $users = User::where('role_id', '<>', config('status.role_Administrator'))->whereNotIn('id', $allusers)->search($request->get('term'))->get();
+        $users = User::where('role_id', '<>', Role::Administrator)->whereNotIn('id', $allusers)->search($request->get('term'))->get();
 
         // Nur was die Autovervollständigung beim Hinzufügen braucht.
         return $users->map->only(['id', 'username', 'email'])->values();
@@ -137,9 +138,9 @@ class AdminUsersController extends Controller
 
         $aktUser = Auth::user();
         if ($aktUser->isAdmin()) {
-            $roles = Role::pluck('name', 'id')->all();
+            $roles = RoleModel::pluck('name', 'id')->all();
         } else {
-            $roles = Role::where('id', '>', config('status.role_Administrator'))->pluck('name', 'id')->all();
+            $roles = RoleModel::where('id', '>', Role::Administrator->value)->pluck('name', 'id')->all();
         }
         $groups = Group::orderByRaw("CASE WHEN shortname IS NULL OR TRIM(shortname) = '' THEN 1 ELSE 0 END")
             ->orderBy('campgroup', 'DESC')
@@ -154,9 +155,9 @@ class AdminUsersController extends Controller
             ->all();
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
-                $query->where('role_id', config('status.role_Gruppenleiter'))
-                    ->Orwhere('role_id', config('status.role_Kursleiter'))
-                    ->Orwhere('role_id', config('status.role_Stabsleiter'));
+                $query->where('role_id', Role::Gruppenleiter)
+                    ->Orwhere('role_id', Role::Kursleiter)
+                    ->Orwhere('role_id', Role::Stabsleiter);
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
@@ -255,7 +256,7 @@ class AdminUsersController extends Controller
         // Wie im Formular (create()): Administrator vergeben nur Admins.
         $roleRules = ['required'];
         if (! $aktUser->isAdmin()) {
-            $roleRules[] = Rule::notIn([config('status.role_Administrator')]);
+            $roleRules[] = Rule::notIn([Role::Administrator->value]);
         }
         $this->validate($request, [
             'username' => 'required|max:255',
@@ -319,7 +320,7 @@ class AdminUsersController extends Controller
     {
         $this->authorize('manage', $user);
         $aktUser = Auth::user();
-        $roles = Role::where('id', '>', config('status.role_Administrator'))->pluck('name', 'id')->all();
+        $roles = RoleModel::where('id', '>', Role::Administrator->value)->pluck('name', 'id')->all();
         $groups = Group::orderByRaw("CASE WHEN shortname IS NULL OR TRIM(shortname) = '' THEN 1 ELSE 0 END")
             ->orderBy('campgroup', 'DESC')
             ->orderBy('shortname')
@@ -333,9 +334,9 @@ class AdminUsersController extends Controller
             ->all();
         $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
             ->where(function ($query) {
-                $query->where('role_id', config('status.role_Gruppenleiter'))
-                    ->Orwhere('role_id', config('status.role_Kursleiter'))
-                    ->Orwhere('role_id', config('status.role_Stabsleiter'));
+                $query->where('role_id', Role::Gruppenleiter)
+                    ->Orwhere('role_id', Role::Kursleiter)
+                    ->Orwhere('role_id', Role::Stabsleiter);
             })
             ->pluck('user_id')->all();
         $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
@@ -358,7 +359,7 @@ class AdminUsersController extends Controller
             'username' => 'required|max:255',
             'email' => 'required|email|unique:users,email,'.$id,
             // Die Rollenauswahl im Formular bietet Administrator nicht an.
-            'role_id' => ['nullable', Rule::notIn([config('status.role_Administrator')])],
+            'role_id' => ['nullable', Rule::notIn([Role::Administrator->value])],
         ]);
         $aktuser = Auth::user();
         $camp = $aktuser->camp;

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Security;
 
+use App\Enums\Role;
 use App\Models\User;
 use Database\Seeders\DemoCampSeeder;
 use Illuminate\Support\Facades\Hash;
@@ -40,7 +41,7 @@ class AccountUpdateTest extends TestCase
         $s = CampScenario::create();
 
         $this->actingAs($s->participant)
-            ->patch(route('home.update', $s->unassignedParticipant->id), ['role_id' => config('status.role_Administrator')])
+            ->patch(route('home.update', $s->unassignedParticipant->id), ['role_id' => Role::Administrator->value])
             ->assertForbidden();
 
         $this->assertFalse($s->unassignedParticipant->fresh()->isAdmin());
@@ -71,7 +72,7 @@ class AccountUpdateTest extends TestCase
         $this->actingAs($s->participant)
             ->patch(route('home.update', $s->participant->id), [
                 'email' => $s->participant->email,
-                'role_id' => config('status.role_Administrator'),
+                'role_id' => Role::Administrator->value,
                 'camp_id' => 1,
                 'leader_id' => null,
                 'username' => 'Anderer Name',

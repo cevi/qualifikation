@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Smoke;
 
+use App\Enums\Classification;
 use App\Models\User;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Route as Router;
@@ -164,7 +165,7 @@ class AllRoutesSmokeTest extends TestCase
             'chapter' => 1,
             'question' => 1,
             'competence' => 1,
-            'classification' => config('status.classification_green'),
+            'classification' => Classification::Gruen->value,
             'feedback' => $s->feedback->id,
             'group' => $s->group->id,
             'help' => $s->help->id,

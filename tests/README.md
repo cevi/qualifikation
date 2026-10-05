@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 05.10.2026: **250 Testfälle in 29 Dateien**, Laufzeit rund 7 Sekunden.
+Stand 05.10.2026: **259 Testfälle in 33 Dateien**, Laufzeit rund 7 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -98,6 +98,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Bereich | Datei | Fälle | Prüft |
 |---|---|---:|---|
 | Grundlagen | [`TestInfrastructureTest`](Feature/TestInfrastructureTest.php) | 5 | Test-DB, Seeder, Factories |
+| Grundlagen | [`Unit/RoleAndClassificationTest`](Unit/RoleAndClassificationTest.php) | 4 | Enums `Role` und `Classification` passen zur Datenbank |
 | Smoke | [`Smoke/AllRoutesSmokeTest`](Feature/Smoke/AllRoutesSmokeTest.php) | 5 | Jede GET-Route liefert für jede Rolle keinen Serverfehler |
 | Smoke | [`Smoke/PagesRenderTest`](Feature/Smoke/PagesRenderTest.php) | 42 | Alle verlinkten Seiten laden pro Rolle mit 200 |
 | Smoke | [`Smoke/DemoLoginTest`](Feature/Smoke/DemoLoginTest.php) | 6 | Öffentliche Demo-Logins |
@@ -124,7 +125,9 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Exporte | [`ExportsTest`](Feature/ExportsTest.php) | 5 | Excel-Export und Druckansicht (PDF) |
 | Profil | [`ProfileTest`](Feature/ProfileTest.php) | 3 | Profilseite und Vor/Zurück-Navigation |
 | Profil | [`AvatarUploadTest`](Feature/AvatarUploadTest.php) | 1 | Profilbilder |
+| Profil | [`ClassificationTest`](Feature/ClassificationTest.php) | 4 | Ampel rot/gelb/grün auf der Profilseite |
 | Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 1 | Gruppen anlegen |
+| Admin | [`Admin/UserEditTest`](Feature/Admin/UserEditTest.php) | 1 | Person bearbeiten |
 | Beispiel | `Feature/ExampleTest`, `Unit/ExampleTest` | 2 | Laravel-Beispiele (Startseite lädt) |
 
 ### Grundlagen und Smoke-Tests
@@ -138,6 +141,15 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | `test_new_camp_gets_admin_camp_user` | Neuer Kurs trägt den Admin automatisch ein |
 | `test_user_factory_in_camp_creates_camp_user` | `inCamp()` legt `CampUser` mit Rolle und Leitung an |
 | `test_leader_can_open_participant_profile` | Ganzer Stack einmal durch: Profil lädt |
+
+**[`Unit/RoleAndClassificationTest`](Unit/RoleAndClassificationTest.php)**: die Enums [`Role`](../app/Enums/Role.php) und [`Classification`](../app/Enums/Classification.php).
+
+| Test | Prüft |
+|---|---|
+| `test_role_enum_matches_seeded_roles` | Enum-Werte entsprechen den IDs der Tabelle `roles` |
+| `test_role_rights_match_seeded_flags` | Rechte (`is_admin`, `is_campleader`, `is_leader`) passen zu den Rollen |
+| `test_classification_enum_matches_seeded_classifications` | Enum-Werte entsprechen den IDs der Tabelle `classifications` |
+| `test_classification_css_classes` | CSS-Klassen der Kreise: `red`, `yellow`, `green` |
 
 **[`Smoke/AllRoutesSmokeTest`](Feature/Smoke/AllRoutesSmokeTest.php)**: liest **alle GET-Routen** aus dem Router und ruft sie als Gast, Teilnehmende, Gruppenleitung, Kursleitung und Admin auf. Routen mit `{user}` oder `{survey}` laufen zusätzlich mit der Person ohne Leitung. Erwartung: kein Status ≥ 500.
 - Neue Routen werden automatisch mitgetestet. Fehlt ein Wert für einen neuen Routenparameter, schlägt der Test fehl. Dann `routeParameters()` ergänzen.
@@ -403,6 +415,17 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 
 **[`Admin/GroupsTest`](Feature/Admin/GroupsTest.php)**: `test_admin_can_create_group_without_cevi_db_id`. Gruppe ohne Cevi-DB-ID anlegen.
 
+**[`ClassificationTest`](Feature/ClassificationTest.php)**: Ampel auf der Profilseite (`PATCH changeClassifications/{id}/{color}`).
+
+| Test | Prüft |
+|---|---|
+| `test_assigned_leader_changes_classification` | Zuständige Leitung setzt die Farbe |
+| `test_profile_marks_current_classification` | Profilseite markiert die aktuelle Farbe |
+| `test_unknown_color_is_rejected` | Unbekannte Farbe → 404, nichts ändert sich |
+| `test_other_leader_cannot_change_classification` | Andere Leitung kann nichts ändern |
+
+**[`Admin/UserEditTest`](Feature/Admin/UserEditTest.php)**: `test_form_preselects_current_role`. Die Rollenauswahl zeigt die aktuelle Rolle (sonst setzt Speichern still eine andere).
+
 ---
 
 ## Fachliche Regeln, die die Tests festhalten
@@ -446,6 +469,14 @@ Alle Regeln mit der Fähigkeit `manage` in [`app/Policies`](../app/Policies), re
 | Rückmeldungen | Nur wer sie geschrieben hat |
 | Gruppen, Antworten, Klassifizierungen, Hilfe, Feedback | Nur Admin (Middleware `admin`). Feedback einreichen dürfen alle Kursleitenden. |
 
+### Ampel (Klassifizierung)
+
+Aus `ClassificationTest`: Die Farbe einer TN-Person setzen die zuständige Leitung und die Kursleitung. Gültig sind nur die drei Werte des Enums `Classification` (Rot, Gelb, Grün). Neue Personen starten mit Gelb.
+
+### Feste Werte als Enums
+
+Quali-Status, Rollen und Klassifizierungen sind Enums in [`app/Enums`](../app/Enums). Ihre Werte sind die IDs der gleichnamigen Tabellen, dort stehen die Anzeigenamen. In `config/status.php` stehen nur noch die IDs der drei Standard-Kurstypen, weil Kurstypen sonst Daten sind (Kursleitende legen eigene an).
+
 Die App ist auf **genau einen Admin** ausgelegt (User 1). Weitere Admins anzulegen ist kein unterstützter Ablauf.
 
 ---
@@ -466,25 +497,24 @@ Die App ist auf **genau einen Admin** ausgelegt (User 1). Weitere Admins anzuleg
 
 **Rollen:** `actingAs($s->kursleiter)`. Für mehrere Requests mit derselben Person `actingAs($user->fresh())` verwenden, sonst hängen geladene Relationen vom vorherigen Request am Objekt.
 
-**Data Provider:** Sie laufen, bevor Laravel gestartet ist. Enums wie `SurveyStatus` lassen sich direkt verwenden, `config()` dagegen noch nicht (z. B. Rollen aus `config/status.php`). Solche Werte als Schlüssel übergeben und im Test auflösen:
+**Data Provider:** Sie laufen, bevor Laravel gestartet ist. Enums (`SurveyStatus`, `Role`, `Classification`) lassen sich direkt verwenden, `config()` dagegen noch nicht:
 
 ```php
 public static function cases(): array
 {
-    return ['Quali fertig, Teilnehmende' => [SurveyStatus::Fertig, 'role_Teilnehmer']];
+    return ['Quali fertig' => [SurveyStatus::Fertig, false]];
 }
 
 #[DataProvider('cases')]
-public function test_example(SurveyStatus $status, string $role)
+public function test_example(SurveyStatus $status, bool $allowed)
 {
     $s = CampScenario::create();
     $s->survey->update(['survey_status_id' => $status]);
-    $roleId = config('status.'.$role);
     // ...
 }
 ```
 
-**Status in Requests:** Formulardaten sind Zahlen, deshalb dort `SurveyStatus::Fertig->value` statt des Enums übergeben.
+**Enums in Requests und URLs:** Formulardaten und Routenparameter sind Zahlen, deshalb dort `->value` übergeben, z. B. `['role_id' => Role::Teilnehmer->value]`. In Models, Abfragen und Assertions das Enum selbst verwenden.
 
 **Externe Dienste nie wirklich aufrufen:**
 

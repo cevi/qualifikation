@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use App\Events\CampCreated;
 use App\Helper\Helper;
@@ -76,11 +77,11 @@ class CampsController extends Controller
             }
             $camp = Camp::create($input);
             CampCreated::dispatch($camp);
-            $user->update(['camp_id' => $camp->id, 'role_id' => config('status.role_Kursleiter')]);
+            $user->update(['camp_id' => $camp->id, 'role_id' => Role::Kursleiter]);
             CampUser::create([
                 'user_id' => $user->id,
                 'camp_id' => $camp->id,
-                'role_id' => config('status.role_Kursleiter'), ]);
+                'role_id' => Role::Kursleiter, ]);
         }
 
         return redirect('home');

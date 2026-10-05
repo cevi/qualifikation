@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Enums\Role;
 use App\Models\Camp;
 use App\Models\CampUser;
-use App\Models\Role;
+use App\Models\Role as RoleModel;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -21,7 +22,7 @@ class TestInfrastructureTest extends TestCase
 
     public function test_base_data_is_seeded()
     {
-        $this->assertSame(5, Role::count());
+        $this->assertSame(5, RoleModel::count());
         $this->assertTrue(User::find(1)->isAdmin());
         $this->assertTrue(Camp::where('global_camp', true)->exists());
     }
@@ -33,7 +34,7 @@ class TestInfrastructureTest extends TestCase
         $this->assertDatabaseHas('camp_users', [
             'camp_id' => $camp->id,
             'user_id' => 1,
-            'role_id' => config('status.role_Administrator'),
+            'role_id' => Role::Administrator,
         ]);
     }
 
@@ -49,7 +50,7 @@ class TestInfrastructureTest extends TestCase
         $this->assertDatabaseHas('camp_users', [
             'camp_id' => $camp->id,
             'user_id' => $participant->id,
-            'role_id' => config('status.role_Teilnehmer'),
+            'role_id' => Role::Teilnehmer,
             'leader_id' => $leader->id,
         ]);
         $this->assertSame(1, CampUser::where('user_id', $leader->id)->count());

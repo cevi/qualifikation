@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\Role;
 use App\Models\CampUser;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
@@ -48,8 +49,8 @@ class CeviDbImportTest extends TestCase
 
         $anna = User::where('email', 'anna@example.com')->firstOrFail();
         $ben = User::where('email', 'ben@example.com')->firstOrFail();
-        $this->assertSame(['Ameise', 101, config('status.role_Teilnehmer')], [$anna->username, $anna->foreign_id, $anna->role_id]);
-        $this->assertSame(['Ben', 102, config('status.role_Gruppenleiter')], [$ben->username, $ben->foreign_id, $ben->role_id]);
+        $this->assertSame(['Ameise', 101, Role::Teilnehmer], [$anna->username, $anna->foreign_id, $anna->role_id]);
+        $this->assertSame(['Ben', 102, Role::Gruppenleiter], [$ben->username, $ben->foreign_id, $ben->role_id]);
         $this->assertTrue(CampUser::where('camp_id', $this->s->camp->id)->where('user_id', $anna->id)->exists());
     }
 

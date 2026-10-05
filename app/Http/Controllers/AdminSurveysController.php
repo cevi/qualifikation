@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use App\Helper\Helper;
 use App\Models\Answer;
@@ -145,7 +146,7 @@ class AdminSurveysController extends Controller
     {
         $this->authorize('manage', $survey);
         $users = Auth::user()->camp->participants->pluck('username', 'id')->all();
-        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
+        $leaders = User::where('role_id', Role::Gruppenleiter)->pluck('username', 'id')->all();
         $survey_statuses_id = SurveyStatusModel::pluck('name', 'id')->all();
         $user_id = $survey->campUser->user();
         $title = 'Qualifikation bearbeiten';

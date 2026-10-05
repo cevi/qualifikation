@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Security;
 
+use App\Enums\Role;
 use App\Models\Camp;
 use App\Models\CampUser;
 use App\Models\User;
@@ -20,7 +21,7 @@ class CampSwitchTest extends TestCase
         CampUser::create([
             'camp_id' => $otherCamp->id,
             'user_id' => $s->gruppenleiter->id,
-            'role_id' => config('status.role_Kursleiter'),
+            'role_id' => Role::Kursleiter,
         ]);
 
         $this->actingAs($s->gruppenleiter)
@@ -29,7 +30,7 @@ class CampSwitchTest extends TestCase
 
         $gruppenleiter = $s->gruppenleiter->fresh();
         $this->assertSame($otherCamp->id, $gruppenleiter->camp_id);
-        $this->assertSame(config('status.role_Kursleiter'), $gruppenleiter->role_id);
+        $this->assertSame(Role::Kursleiter, $gruppenleiter->role_id);
     }
 
     public function test_kursleiter_cannot_join_a_foreign_camp()

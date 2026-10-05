@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use App\Events\CampCreated;
 use App\Exports\PostsExport;
@@ -157,7 +158,7 @@ class AdminCampsController extends Controller
         $this->authorize('manage', $camp);
         $camptypes = CampType::pluck('name', 'id')->all();
         $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
-        $users = User::where('role_id', config('status.role_Kursleiter'))->pluck('username', 'id')->all();
+        $users = User::where('role_id', Role::Kursleiter)->pluck('username', 'id')->all();
         $title = 'Lager bearbeiten';
         $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Lager';

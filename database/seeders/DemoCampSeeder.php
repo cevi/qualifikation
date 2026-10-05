@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role;
 use App\Models\Camp;
 use App\Models\CampUser;
 use App\Models\Survey;
@@ -28,7 +29,7 @@ class DemoCampSeeder extends Seeder
                 'slug' => 'kursleiter@demo',
                 'password' => Hash::make('kursleiter@demo'),
                 'email_verified_at' => now(),
-                'role_id' => config('status.role_Kursleiter'),
+                'role_id' => Role::Kursleiter,
                 'camp_id' => 1,
                 'demo' => true, ]);
         $camp = Camp::updateOrCreate([
@@ -41,12 +42,12 @@ class DemoCampSeeder extends Seeder
         CampUser::updateOrCreate([
             'camp_id' => $camp['id'],
             'user_id' => $user['id']], [
-                'role_id' => config('status.role_Kursleiter'),
+                'role_id' => Role::Kursleiter,
             ]);
         CampUser::updateOrCreate([
             'camp_id' => 1,
             'user_id' => $user['id']], [
-                'role_id' => config('status.role_Teilnehmer'),
+                'role_id' => Role::Teilnehmer,
             ]);
         if ($camp->participants->count() === 0) {
             for ($i = 0; $i < 4; $i++) {
@@ -57,19 +58,19 @@ class DemoCampSeeder extends Seeder
                         'email' => $name,
                         'slug' => $name,
                         'password' => Hash::make($name),
-                        'role_id' => config('status.role_Gruppenleiter'),
+                        'role_id' => Role::Gruppenleiter,
                         'camp_id' => $camp['id'],
                         'demo' => true,
                     ]);
                 CampUser::updateOrCreate([
                     'camp_id' => $camp['id'],
                     'user_id' => $leader['id']], [
-                        'role_id' => config('status.role_Gruppenleiter'),
+                        'role_id' => Role::Gruppenleiter,
                     ]);
                 CampUser::updateOrCreate([
                     'camp_id' => 1,
                     'user_id' => $leader['id']], [
-                        'role_id' => config('status.role_Teilnehmer'),
+                        'role_id' => Role::Teilnehmer,
                     ]);
                 for ($j = 0; $j < 4; $j++) {
                     $name = 'tn'.($i + 1).($j + 1).'@demo';
@@ -87,12 +88,12 @@ class DemoCampSeeder extends Seeder
                         'camp_id' => $camp['id'],
                         'user_id' => $user['id']], [
                             'leader_id' => $leader['id'],
-                            'role_id' => config('status.role_Teilnehmer'),
+                            'role_id' => Role::Teilnehmer,
                         ]);
                     CampUser::updateOrCreate([
                         'camp_id' => 1,
                         'user_id' => $user['id']], [
-                            'role_id' => config('status.role_Teilnehmer'),
+                            'role_id' => Role::Teilnehmer,
                         ]);
                     $survey = Survey::factory()
                         ->for($camp_user)

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\Classification;
+use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +13,11 @@ class CampUser extends Model
 
     protected $fillable = [
         'camp_id', 'user_id', 'role_id', 'leader_id', 'classification_id', 'avatar',
+    ];
+
+    protected $casts = [
+        'role_id' => Role::class,
+        'classification_id' => Classification::class,
     ];
 
     public function user()

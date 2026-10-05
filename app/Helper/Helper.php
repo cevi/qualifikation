@@ -2,6 +2,8 @@
 
 namespace App\Helper;
 
+use App\Enums\Classification;
+use App\Enums\Role;
 use App\Events\UserCreated;
 use App\Models\Answer;
 use App\Models\Camp;
@@ -37,9 +39,9 @@ class Helper
         $leader_id = $camp['global_camp'] ? null : $user['leader_id'];
         $role_id = $camp_user['role_id'];
         if ($role_id === null) {
-            $role_id = $camp['global_camp'] ? config('status.role_Teilnehmer') : $user['role_id'];
+            $role_id = $camp['global_camp'] ? Role::Teilnehmer : $user['role_id'];
         }
-        $classification_id = $camp_user['classification_id'] ?: config('status.classification_yellow');
+        $classification_id = $camp_user['classification_id'] ?: Classification::Gelb;
         $camp_user->update([
             'role_id' => $role_id,
             'leader_id' => $leader_id,
@@ -157,7 +159,7 @@ class Helper
         $dataset_first = self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers, $dataset_ids);
         $dataset_second = self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers, $dataset_ids);
         $dataset_leader = self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
-        if (Auth::user()->role_id != config('status.role_Teilnehmer')) {
+        if (Auth::user()->role_id !== Role::Teilnehmer) {
             if ($survey->status()->hasReachedSecondRound() && $camp['secondsurveyopen']) {
                 $dataset_add = [
                     $dataset_first,
@@ -337,9 +339,9 @@ class Helper
                     }
                     $username = $attrs['nickname'] ?? $attrs['first_name'];
                     $role_id = match ($roleType) {
-                        'Event::Course::Role::Participant' => config('status.role_Teilnehmer'),
-                        'Event::Role::AssistantLeader' => config('status.role_Gruppenleiter'),
-                        default => config('status.role_Kursleiter'),
+                        'Event::Course::Role::Participant' => Role::Teilnehmer,
+                        'Event::Role::AssistantLeader' => Role::Gruppenleiter,
+                        default => Role::Kursleiter,
                     };
 
                     // Exakter Vergleich: bei LIKE wären "_" und "%" in Adressen Platzhalter.
@@ -352,7 +354,7 @@ class Helper
                             'username' => $username,
                             'email' => $email,
                             'email_verified_at' => now(),
-                            'classification_id' => config('status.classification_yellow'),
+                            'classification_id' => Classification::Gelb,
                         ]);
                         UserCreated::dispatch($user);
                     }
@@ -360,7 +362,7 @@ class Helper
                     $user->update([
                         'role_id' => $role_id,
                         'camp_id' => $camp['id'],
-                        'classification_id' => config('status.classification_yellow'),
+                        'classification_id' => Classification::Gelb,
                     ]);
                 }
 
