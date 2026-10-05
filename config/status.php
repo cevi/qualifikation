@@ -1,12 +1,7 @@
 <?php
 
+// Quali-Status: siehe App\Enums\SurveyStatus.
 return [
-    'survey_neu' => 5,
-    'survey_1offen' => 10,
-    'survey_2offen' => 15,
-    'survey_tnAbgeschlossen' => 20,
-    'survey_fertig' => 50,
-
     'role_Administrator' => 1,
     'role_Kursleiter' => 2,
     'role_Gruppenleiter' => 3,

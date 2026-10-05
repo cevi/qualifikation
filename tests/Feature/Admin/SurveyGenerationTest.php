@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Enums\SurveyStatus;
 use App\Models\Answer;
 use App\Models\Camp;
 use App\Models\CampType;
@@ -30,7 +31,7 @@ class SurveyGenerationTest extends TestCase
             ->assertOk();
 
         $survey = Survey::where('camp_user_id', $s->campUser($newParticipant)->id)->sole();
-        $this->assertSame(config('status.survey_neu'), $survey->survey_status_id);
+        $this->assertSame(SurveyStatus::Neu, $survey->survey_status_id);
         $this->assertNotEmpty($survey->slug);
         $this->assertSame($defaultChapterIds, $survey->chapters->pluck('chapter_id')->sort()->values()->all());
         $this->assertSame(

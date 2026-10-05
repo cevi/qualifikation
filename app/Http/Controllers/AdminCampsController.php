@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SurveyStatus;
 use App\Events\CampCreated;
 use App\Exports\PostsExport;
 use App\Helper\Helper;
@@ -119,7 +120,7 @@ class AdminCampsController extends Controller
             }
             $input['status_control'] = $request->has('status_control');
             if ($input['status_control']) {
-                $input['survey_status_id'] = config('status.survey_neu');
+                $input['survey_status_id'] = SurveyStatus::Neu;
             }
 
             $camp = Camp::create($input);
@@ -177,8 +178,8 @@ class AdminCampsController extends Controller
         if (! Auth::user()->demo) {
             $input = $request->only(['name', 'user_id', 'camp_type_id', 'end_date', 'group_id', 'foreign_id']);
             $input['status_control'] = $request->has('status_control');
-            if ($input['status_control'] && $camp['survey_status_id'] == null) {
-                $input['survey_status_id'] = config('status.survey_neu');
+            if ($input['status_control'] && $camp->survey_status_id === null) {
+                $input['survey_status_id'] = SurveyStatus::Neu;
             }
             $camp->update($input);
         }
@@ -220,18 +221,19 @@ class AdminCampsController extends Controller
     public function opensurvey()
     {
         $camp = Auth::user()->camp;
-        if ($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen')) {
-            $camp->update(['survey_status_id' => config('status.survey_2offen')]);
+        // Erste Runde freigeben: Teilnehmende dürfen ausfüllen, solange ihre Quali vor "2. offen" liegt.
+        if ($camp['status_control'] && ! $camp->survey_status_id?->isAtLeast(SurveyStatus::ErsteRundeOffen)) {
+            $camp->update(['survey_status_id' => SurveyStatus::ZweiteRundeOffen]);
         } else {
             $surveys = $camp->surveys;
             foreach ($surveys as $survey) {
-                if ($survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen')) {
-                    $survey->update(['survey_status_id' => config('status.survey_2offen')]);
+                if ($survey->status()->isClosedByParticipant()) {
+                    $survey->update(['survey_status_id' => SurveyStatus::ZweiteRundeOffen]);
                 }
             }
             $camp->update(['secondsurveyopen' => true]);
-            if ($camp['status_control'] && $camp['survey_status_id'] == config('status.survey_2offen')) {
-                $camp->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+            if ($camp['status_control'] && $camp->survey_status_id === SurveyStatus::ZweiteRundeOffen) {
+                $camp->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
             }
         }
 

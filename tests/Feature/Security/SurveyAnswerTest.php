@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Security;
 
+use App\Enums\SurveyStatus;
 use App\Models\Answer;
 use App\Models\SurveyQuestion;
 use Database\Seeders\DemoCampSeeder;
@@ -79,25 +80,25 @@ class SurveyAnswerTest extends TestCase
     {
         $a = CampScenario::create();
         $b = CampScenario::create();
-        $b->survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+        $b->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
 
         $this->actingAs($a->gruppenleiter)
             ->patch(route('survey.finish', $b->survey->id))
             ->assertForbidden();
 
-        $this->assertSame(config('status.survey_tnAbgeschlossen'), $b->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::TnAbgeschlossen, $b->survey->fresh()->survey_status_id);
     }
 
     public function test_assigned_leader_finishes_quali()
     {
         $s = CampScenario::create();
-        $s->survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
 
         $this->actingAs($s->gruppenleiter)
             ->from(route('survey.compare', $s->survey))
             ->patch(route('survey.finish', $s->survey->id))
             ->assertRedirect(route('survey.compare', $s->survey));
 
-        $this->assertSame(config('status.survey_fertig'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::Fertig, $s->survey->fresh()->survey_status_id);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SurveyStatus;
 use App\Helper\Helper;
 use App\Models\Help;
 use Illuminate\Support\Facades\Auth;
@@ -26,13 +27,13 @@ class AdminController extends Controller
             'chapters.questions.question'])
             ->get()->sortBy('campuser.user.username')->values();
         $surveys_all = $camp->surveys()->count();
-        $surveys_1offen = $camp->surveys()->where('survey_status_id', '>', config('status.survey_1offen'))->count();
+        $surveys_1offen = $camp->surveys()->where('survey_status_id', '>', SurveyStatus::ErsteRundeOffen)->count();
         if ($camp['secondsurveyopen']) {
-            $surveys_2offen = $camp->surveys()->where('survey_status_id', '>', config('status.survey_2offen'))->count();
+            $surveys_2offen = $camp->surveys()->where('survey_status_id', '>', SurveyStatus::ZweiteRundeOffen)->count();
         } else {
             $surveys_2offen = 0;
         }
-        $surveys_fertig = $camp->surveys()->where('survey_status_id', config('status.survey_fertig'))->count();
+        $surveys_fertig = $camp->surveys()->where('survey_status_id', SurveyStatus::Fertig)->count();
 
         $title = 'Dashboard';
         $help = Help::where('title', $title)->first();

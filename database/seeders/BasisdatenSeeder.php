@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\SurveyStatus;
 use App\Models\Answer;
 use App\Models\CampType;
 use App\Models\Chapter;
@@ -9,7 +10,7 @@ use App\Models\Classification;
 use App\Models\Competence;
 use App\Models\Group;
 use App\Models\Question;
-use App\Models\SurveyStatus;
+use App\Models\SurveyStatus as SurveyStatusModel;
 use Illuminate\Database\Seeder;
 
 class BasisdatenSeeder extends Seeder
@@ -232,15 +233,15 @@ class BasisdatenSeeder extends Seeder
                 'camp_type_id' => $camp_type_3['id'],
                 'question_id' => $question_42['id'], ]);
 
-        SurveyStatus::updateOrCreate(['id' => config('status.survey_neu')],
+        SurveyStatusModel::updateOrCreate(['id' => SurveyStatus::Neu->value],
             ['name' => 'Neu']);
-        SurveyStatus::updateOrCreate(['id' => config('status.survey_1offen')],
+        SurveyStatusModel::updateOrCreate(['id' => SurveyStatus::ErsteRundeOffen->value],
             ['name' => '1. Selbsteinschätzung Offen']);
-        SurveyStatus::updateOrCreate(['id' => config('status.survey_2offen')],
+        SurveyStatusModel::updateOrCreate(['id' => SurveyStatus::ZweiteRundeOffen->value],
             ['name' => '2. Selbsteinschätzung Offen']);
-        SurveyStatus::updateOrCreate(['id' => config('status.survey_tnAbgeschlossen')],
+        SurveyStatusModel::updateOrCreate(['id' => SurveyStatus::TnAbgeschlossen->value],
             ['name' => 'TN Selbsteinschätzung Abgeschlossen']);
-        SurveyStatus::updateOrCreate(['id' => config('status.survey_fertig')],
+        SurveyStatusModel::updateOrCreate(['id' => SurveyStatus::Fertig->value],
             ['name' => 'Qualifikationsprozess Abgeschlossen']);
     }
 }

@@ -9,7 +9,7 @@
                 <a href="javascript:;" class="focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 create" role="button">Qualifikationen erstellen</a>
             </div>
             <x-surveys.survey-button text="Druckversion aller Qualifikationen" :has-surveys="$hasSurveys" url="{{ route('surveys.downloadPDF') }}" target="_blank" btn-class="" />
-            @if($camp['status_control'] && $camp['survey_status_id'] < config('status.survey_1offen'))
+            @if($camp['status_control'] && ! $camp->survey_status_id?->isAtLeast(\App\Enums\SurveyStatus::ErsteRundeOffen))
                 <x-surveys.survey-button text="Erste Selbsteinschätzung freigeben" :has-surveys="$hasSurveys" />
             @else
                 @if(!$camp['secondsurveyopen'])

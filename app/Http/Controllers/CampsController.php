@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SurveyStatus;
 use App\Events\CampCreated;
 use App\Helper\Helper;
 use App\Models\Camp;
@@ -71,7 +72,7 @@ class CampsController extends Controller
             $input['global_camp'] = false;
             $input['status_control'] = $request->has('status_control');
             if ($input['status_control']) {
-                $input['survey_status_id'] = config('status.survey_neu');
+                $input['survey_status_id'] = SurveyStatus::Neu;
             }
             $camp = Camp::create($input);
             CampCreated::dispatch($camp);

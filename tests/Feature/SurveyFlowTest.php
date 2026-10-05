@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SurveyStatus;
 use App\Models\Answer;
 use App\Models\SurveyQuestion;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,25 +16,24 @@ class SurveyFlowTest extends TestCase
 {
     /**
      * Darf die TN-Person ihre Selbsteinschätzung ausfüllen? [Kurs-Einstellungen, Status der Quali, erlaubt]
-     * Status als Schlüssel aus config/status.php, weil Data-Provider vor dem Start von Laravel laufen.
      */
     public static function participantAccess(): array
     {
         return [
-            '1. Runde, Status Neu' => [[], 'survey_neu', true],
-            '1. Runde, Status 1. offen' => [[], 'survey_1offen', true],
-            'Status-Steuerung, 1. Runde noch nicht freigegeben' => [['status_control' => true, 'survey_status_id' => 'survey_neu'], 'survey_neu', false],
-            'Status-Steuerung, 1. Runde freigegeben' => [['status_control' => true, 'survey_status_id' => 'survey_2offen'], 'survey_neu', true],
-            'Selbsteinschätzung abgeschlossen' => [[], 'survey_tnAbgeschlossen', false],
-            '2. Runde nicht freigegeben' => [[], 'survey_2offen', false],
-            '2. Runde freigegeben' => [['secondsurveyopen' => true], 'survey_2offen', true],
-            'Status-Steuerung, 2. Runde freigegeben' => [['status_control' => true, 'survey_status_id' => 'survey_tnAbgeschlossen', 'secondsurveyopen' => true], 'survey_2offen', true],
-            'Quali fertig' => [['secondsurveyopen' => true], 'survey_fertig', false],
+            '1. Runde, Status Neu' => [[], SurveyStatus::Neu, true],
+            '1. Runde, Status 1. offen' => [[], SurveyStatus::ErsteRundeOffen, true],
+            'Status-Steuerung, 1. Runde noch nicht freigegeben' => [['status_control' => true, 'survey_status_id' => SurveyStatus::Neu], SurveyStatus::Neu, false],
+            'Status-Steuerung, 1. Runde freigegeben' => [['status_control' => true, 'survey_status_id' => SurveyStatus::ZweiteRundeOffen], SurveyStatus::Neu, true],
+            'Selbsteinschätzung abgeschlossen' => [[], SurveyStatus::TnAbgeschlossen, false],
+            '2. Runde nicht freigegeben' => [[], SurveyStatus::ZweiteRundeOffen, false],
+            '2. Runde freigegeben' => [['secondsurveyopen' => true], SurveyStatus::ZweiteRundeOffen, true],
+            'Status-Steuerung, 2. Runde freigegeben' => [['status_control' => true, 'survey_status_id' => SurveyStatus::TnAbgeschlossen, 'secondsurveyopen' => true], SurveyStatus::ZweiteRundeOffen, true],
+            'Quali fertig' => [['secondsurveyopen' => true], SurveyStatus::Fertig, false],
         ];
     }
 
     #[DataProvider('participantAccess')]
-    public function test_participant_access_to_own_quali(array $campSettings, string $status, bool $allowed)
+    public function test_participant_access_to_own_quali(array $campSettings, SurveyStatus $status, bool $allowed)
     {
         $s = $this->scenarioWith($campSettings, $status);
 
@@ -43,7 +43,7 @@ class SurveyFlowTest extends TestCase
     }
 
     #[DataProvider('participantAccess')]
-    public function test_participant_can_save_only_when_allowed(array $campSettings, string $status, bool $allowed)
+    public function test_participant_can_save_only_when_allowed(array $campSettings, SurveyStatus $status, bool $allowed)
     {
         $s = $this->scenarioWith($campSettings, $status);
 
@@ -57,10 +57,10 @@ class SurveyFlowTest extends TestCase
     {
         $s = CampScenario::create();
 
-        $s->survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
         $this->actingAs($s->gruppenleiter)->get(route('survey.survey', $s->survey))->assertOk();
 
-        $s->survey->update(['survey_status_id' => config('status.survey_fertig')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::Fertig]);
         $this->actingAs($s->gruppenleiter)->get(route('survey.survey', $s->survey))->assertRedirect('/home');
     }
 
@@ -78,7 +78,7 @@ class SurveyFlowTest extends TestCase
         $this->assertSame($this->answer('+'), $question->answer_first_id);
         $this->assertSame('Erste Runde', $question->comment_first);
         $this->assertSame($this->answer('0'), $question->answer_second_id);
-        $this->assertSame(config('status.survey_1offen'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::ErsteRundeOffen, $s->survey->fresh()->survey_status_id);
     }
 
     public function test_closing_first_round_finishes_self_assessment()
@@ -89,7 +89,7 @@ class SurveyFlowTest extends TestCase
             ->patch(route('survey.update', $s->survey), ['action' => 'close'])
             ->assertRedirect('/home');
 
-        $this->assertSame(config('status.survey_tnAbgeschlossen'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::TnAbgeschlossen, $s->survey->fresh()->survey_status_id);
     }
 
     public function test_closing_first_round_moves_on_to_second_round_if_already_released()
@@ -99,14 +99,14 @@ class SurveyFlowTest extends TestCase
 
         $this->actingAs($s->participant->fresh())->patch(route('survey.update', $s->survey), ['action' => 'close']);
 
-        $this->assertSame(config('status.survey_2offen'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::ZweiteRundeOffen, $s->survey->fresh()->survey_status_id);
     }
 
     public function test_second_round_saves_into_second_answers_and_closes()
     {
         $s = CampScenario::create();
         $s->camp->update(['secondsurveyopen' => true]);
-        $s->survey->update(['survey_status_id' => config('status.survey_2offen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::ZweiteRundeOffen]);
         $question = $this->question($s);
 
         $this->actingAs($s->participant->fresh())->patch(route('survey.update', $s->survey), [
@@ -119,13 +119,13 @@ class SurveyFlowTest extends TestCase
         $this->assertSame($this->answer('0'), $question->answer_first_id);
         $this->assertSame($this->answer('++'), $question->answer_second_id);
         $this->assertSame('Zweite Runde', $question->comment_second);
-        $this->assertSame(config('status.survey_tnAbgeschlossen'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::TnAbgeschlossen, $s->survey->fresh()->survey_status_id);
     }
 
     public function test_leader_saves_leader_assessment_without_changing_status()
     {
         $s = CampScenario::create();
-        $s->survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
         $question = $this->question($s);
 
         $this->actingAs($s->gruppenleiter)->patch(route('survey.update', $s->survey), [
@@ -141,13 +141,13 @@ class SurveyFlowTest extends TestCase
         $this->assertSame($this->answer('0'), $question->answer_first_id);
         $survey = $s->survey->fresh();
         $this->assertSame('Gesamteindruck', $survey->comment);
-        $this->assertSame(config('status.survey_tnAbgeschlossen'), $survey->survey_status_id);
+        $this->assertSame(SurveyStatus::TnAbgeschlossen, $survey->survey_status_id);
     }
 
     public function test_releasing_first_round_with_status_control_lets_participants_start()
     {
         $s = CampScenario::create();
-        $s->camp->update(['status_control' => true, 'survey_status_id' => config('status.survey_neu')]);
+        $s->camp->update(['status_control' => true, 'survey_status_id' => SurveyStatus::Neu]);
         $this->actingAs($s->participant->fresh())->get(route('survey.survey', $s->survey))->assertRedirect('/home');
 
         $this->actingAs($s->kursleiter)->post(route('admin.camps.opensurvey'))->assertRedirect('/admin/surveys');
@@ -158,28 +158,28 @@ class SurveyFlowTest extends TestCase
     public function test_releasing_second_round_reopens_closed_self_assessments_only()
     {
         $s = CampScenario::create();
-        $s->survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
-        $s->unassignedSurvey->update(['survey_status_id' => config('status.survey_1offen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
+        $s->unassignedSurvey->update(['survey_status_id' => SurveyStatus::ErsteRundeOffen]);
 
         $this->actingAs($s->kursleiter)->post(route('admin.camps.opensurvey'));
 
         $this->assertTrue($s->camp->fresh()->secondsurveyopen);
-        $this->assertSame(config('status.survey_2offen'), $s->survey->fresh()->survey_status_id);
-        $this->assertSame(config('status.survey_1offen'), $s->unassignedSurvey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::ZweiteRundeOffen, $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::ErsteRundeOffen, $s->unassignedSurvey->fresh()->survey_status_id);
         $this->actingAs($s->participant->fresh())->get(route('survey.survey', $s->survey))->assertOk();
     }
 
     public function test_leader_finishes_only_closed_quali()
     {
         $s = CampScenario::create();
-        $s->survey->update(['survey_status_id' => config('status.survey_1offen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::ErsteRundeOffen]);
 
         $this->actingAs($s->gruppenleiter)->patch(route('survey.finish', $s->survey->id));
-        $this->assertSame(config('status.survey_1offen'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::ErsteRundeOffen, $s->survey->fresh()->survey_status_id);
 
-        $s->survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
         $this->actingAs($s->gruppenleiter)->patch(route('survey.finish', $s->survey->id));
-        $this->assertSame(config('status.survey_fertig'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::Fertig, $s->survey->fresh()->survey_status_id);
     }
 
     public function test_resetting_to_new_clears_both_rounds()
@@ -188,12 +188,12 @@ class SurveyFlowTest extends TestCase
         $question = $this->filledQuestion($s);
 
         $this->actingAs($s->kursleiter)->put(route('surveys.update', $s->survey->id), [
-            'survey_status_id' => config('status.survey_neu'),
+            'survey_status_id' => SurveyStatus::Neu->value,
             'update' => 1,
         ]);
 
         $question->refresh();
-        $this->assertSame(config('status.survey_neu'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::Neu, $s->survey->fresh()->survey_status_id);
         $this->assertSame([$this->answer('0'), $this->answer('0')], [$question->answer_first_id, $question->answer_second_id]);
         $this->assertSame(['', ''], [$question->comment_first, $question->comment_second]);
         $this->assertSame($this->answer('-'), $question->answer_leader_id);
@@ -205,7 +205,7 @@ class SurveyFlowTest extends TestCase
         $question = $this->filledQuestion($s);
 
         $this->actingAs($s->kursleiter)->put(route('surveys.update', $s->survey->id), [
-            'survey_status_id' => config('status.survey_1offen'),
+            'survey_status_id' => SurveyStatus::ErsteRundeOffen->value,
             'update' => 1,
         ]);
 
@@ -220,23 +220,20 @@ class SurveyFlowTest extends TestCase
         $question = $this->filledQuestion($s);
 
         $this->actingAs($s->kursleiter)->put(route('surveys.update', $s->survey->id), [
-            'survey_status_id' => config('status.survey_neu'),
+            'survey_status_id' => SurveyStatus::Neu->value,
         ]);
 
         $question->refresh();
-        $this->assertSame(config('status.survey_neu'), $s->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::Neu, $s->survey->fresh()->survey_status_id);
         $this->assertSame($this->answer('+'), $question->answer_first_id);
         $this->assertSame($this->answer('++'), $question->answer_second_id);
     }
 
-    private function scenarioWith(array $campSettings, string $status): CampScenario
+    private function scenarioWith(array $campSettings, SurveyStatus $status): CampScenario
     {
         $s = CampScenario::create();
-        if (isset($campSettings['survey_status_id'])) {
-            $campSettings['survey_status_id'] = config('status.'.$campSettings['survey_status_id']);
-        }
         $s->camp->forceFill($campSettings)->save();
-        $s->survey->update(['survey_status_id' => config('status.'.$status)]);
+        $s->survey->update(['survey_status_id' => $status]);
 
         return $s;
     }
@@ -248,7 +245,7 @@ class SurveyFlowTest extends TestCase
 
     private function filledQuestion(CampScenario $s): SurveyQuestion
     {
-        $s->survey->update(['survey_status_id' => config('status.survey_tnAbgeschlossen')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
         $question = $this->question($s);
         $question->update([
             'answer_first_id' => $this->answer('+'), 'comment_first' => 'Erste',

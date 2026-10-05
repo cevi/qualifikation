@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SurveyStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,8 @@ class Camp extends Model
         'demo' => 'boolean',
         'finish' => 'boolean',
         'status_control' => 'boolean',
+        // Nur mit Status-Steuerung gesetzt (null = keine Steuerung).
+        'survey_status_id' => SurveyStatus::class,
     ];
 
     public function users()

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SurveyStatus;
 use App\Exports\PostsExport;
 use App\Models\Post;
 use Illuminate\Support\Str;
@@ -52,7 +53,7 @@ class ExportsTest extends TestCase
     {
         // Die Druckansicht enthält die Leiter-Einschätzung; die Vergleichsseite blendet sie für TN aus.
         $s = CampScenario::create();
-        $s->survey->update(['survey_status_id' => config('status.survey_fertig')]);
+        $s->survey->update(['survey_status_id' => SurveyStatus::Fertig]);
 
         $this->actingAs($s->participant)->get(route('survey.downloadPDF', $s->survey))->assertForbidden();
     }

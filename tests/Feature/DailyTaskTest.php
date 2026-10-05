@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SurveyStatus;
 use App\Models\Camp;
 use App\Models\Survey;
 use Database\Seeders\DemoCampSeeder;
@@ -17,8 +18,8 @@ class DailyTaskTest extends TestCase
     {
         $this->seed(DemoCampSeeder::class);
         $demo = Camp::where('demo', true)->firstOrFail();
-        $demo->forceFill(['secondsurveyopen' => true, 'status_control' => true, 'survey_status_id' => config('status.survey_2offen')])->save();
-        $demo->surveys()->update(['survey_status_id' => config('status.survey_fertig'), 'comment' => 'Von Besuchern geändert']);
+        $demo->forceFill(['secondsurveyopen' => true, 'status_control' => true, 'survey_status_id' => SurveyStatus::ZweiteRundeOffen])->save();
+        $demo->surveys()->update(['survey_status_id' => SurveyStatus::Fertig, 'comment' => 'Von Besuchern geändert']);
 
         $this->artisan('task:daily')->assertSuccessful();
 
@@ -27,7 +28,7 @@ class DailyTaskTest extends TestCase
         $this->assertFalse($demo->status_control);
         $this->assertNull($demo->survey_status_id);
         foreach ($demo->surveys()->get() as $survey) {
-            $this->assertSame(config('status.survey_neu'), $survey->survey_status_id);
+            $this->assertSame(SurveyStatus::Neu, $survey->survey_status_id);
             $this->assertNotSame('Von Besuchern geändert', $survey->comment);
         }
     }
@@ -37,7 +38,7 @@ class DailyTaskTest extends TestCase
         $this->seed(DemoCampSeeder::class);
         $s = CampScenario::create();
         $s->camp->update(['secondsurveyopen' => true]);
-        $s->survey->update(['survey_status_id' => config('status.survey_fertig'), 'comment' => 'Echte Einschätzung']);
+        $s->survey->update(['survey_status_id' => SurveyStatus::Fertig, 'comment' => 'Echte Einschätzung']);
         $question = $s->survey->questions()->firstOrFail();
         $question->update(['comment_first' => 'Echter Kommentar']);
         $post = $s->post->comment;
@@ -46,7 +47,7 @@ class DailyTaskTest extends TestCase
 
         $this->assertTrue($s->camp->fresh()->secondsurveyopen);
         $survey = Survey::findOrFail($s->survey->id);
-        $this->assertSame(config('status.survey_fertig'), $survey->survey_status_id);
+        $this->assertSame(SurveyStatus::Fertig, $survey->survey_status_id);
         $this->assertSame('Echte Einschätzung', $survey->comment);
         $this->assertSame('Echter Kommentar', $survey->questions()->findOrFail($question->id)->comment_first);
         $this->assertSame($post, $s->post->fresh()->comment);

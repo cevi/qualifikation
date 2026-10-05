@@ -158,8 +158,7 @@ class Helper
         $dataset_second = self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers, $dataset_ids);
         $dataset_leader = self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
         if (Auth::user()->role_id != config('status.role_Teilnehmer')) {
-            if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
-                ($camp['secondsurveyopen'])) {
+            if ($survey->status()->hasReachedSecondRound() && $camp['secondsurveyopen']) {
                 $dataset_add = [
                     $dataset_first,
                     $dataset_second,
@@ -172,8 +171,7 @@ class Helper
                 ];
             }
         } else {
-            if (($survey['survey_status_id'] >= config('status.survey_2offen')) &&
-                ($camp['secondsurveyopen'])) {
+            if ($survey->status()->hasReachedSecondRound() && $camp['secondsurveyopen']) {
                 $dataset_add = [
                     $dataset_first,
                     $dataset_second,

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\SurveyStatus;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
@@ -34,8 +35,9 @@ class AppServiceProvider extends ServiceProvider
         }
 
         //
-        Blade::if('isFirstSurvey', function ($value) {
-            return $value <= config('status.survey_1offen');
+        // Status der Quali (alte Qualis ohne Status gelten als neu).
+        Blade::if('isFirstSurvey', function (?SurveyStatus $status) {
+            return ($status ?? SurveyStatus::Neu)->isFirstRound();
         });
 
         RateLimiter::for('register', function (Request $request) {

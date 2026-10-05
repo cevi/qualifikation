@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\SurveyStatus;
 use App\Models\Camp;
 use Illuminate\Console\Command;
 
@@ -59,7 +60,7 @@ class dailyTask extends Command
         foreach ($surveys as $survey) {
             $survey->update([
                 'comment' => fake()->sentence(),
-                'survey_status_id' => config('status.survey_neu'),
+                'survey_status_id' => SurveyStatus::Neu,
             ]);
             $questions = $survey->questions()->get();
             foreach ($questions as $question) {

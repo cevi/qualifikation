@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SurveyStatus;
 use App\Helper\Helper;
 use App\Models\Answer;
 use App\Models\Competence;
@@ -77,22 +78,22 @@ class SpiderChartTest extends TestCase
         $leader = 'Leiter Qualifikation';
 
         return [
-            'TN, 1. Runde' => ['participant', false, 'survey_1offen', [$first]],
-            'TN, 2. Runde freigegeben' => ['participant', true, 'survey_2offen', [$first, $second]],
-            'TN, Quali fertig' => ['participant', true, 'survey_fertig', [$first, $second]],
-            'TN, 2. Runde freigegeben, selbst noch in 1. Runde' => ['participant', true, 'survey_1offen', [$first]],
-            'Gruppenleiter, 1. Runde' => ['gruppenleiter', false, 'survey_1offen', [$first, $leader]],
-            'Gruppenleiter, Status 2. offen ohne Freigabe' => ['gruppenleiter', false, 'survey_2offen', [$first, $leader]],
-            'Gruppenleiter, 2. Runde freigegeben' => ['gruppenleiter', true, 'survey_2offen', [$first, $second, $leader]],
-            'Kursleiter, 2. Runde freigegeben' => ['kursleiter', true, 'survey_tnAbgeschlossen', [$first, $second, $leader]],
+            'TN, 1. Runde' => ['participant', false, SurveyStatus::ErsteRundeOffen, [$first]],
+            'TN, 2. Runde freigegeben' => ['participant', true, SurveyStatus::ZweiteRundeOffen, [$first, $second]],
+            'TN, Quali fertig' => ['participant', true, SurveyStatus::Fertig, [$first, $second]],
+            'TN, 2. Runde freigegeben, selbst noch in 1. Runde' => ['participant', true, SurveyStatus::ErsteRundeOffen, [$first]],
+            'Gruppenleiter, 1. Runde' => ['gruppenleiter', false, SurveyStatus::ErsteRundeOffen, [$first, $leader]],
+            'Gruppenleiter, Status 2. offen ohne Freigabe' => ['gruppenleiter', false, SurveyStatus::ZweiteRundeOffen, [$first, $leader]],
+            'Gruppenleiter, 2. Runde freigegeben' => ['gruppenleiter', true, SurveyStatus::ZweiteRundeOffen, [$first, $second, $leader]],
+            'Kursleiter, 2. Runde freigegeben' => ['kursleiter', true, SurveyStatus::TnAbgeschlossen, [$first, $second, $leader]],
         ];
     }
 
     #[DataProvider('visibleDatasets')]
-    public function test_visible_datasets(string $role, bool $secondRoundReleased, string $status, array $expected)
+    public function test_visible_datasets(string $role, bool $secondRoundReleased, SurveyStatus $status, array $expected)
     {
         $this->s->camp->update(['secondsurveyopen' => $secondRoundReleased]);
-        $this->s->survey->update(['survey_status_id' => config('status.'.$status)]);
+        $this->s->survey->update(['survey_status_id' => $status]);
         $this->actingAs($this->s->{$role}->fresh());
 
         $datasets = Helper::GetSurveysDataset(collect([$this->s->survey->fresh()]))[0];
@@ -103,7 +104,7 @@ class SpiderChartTest extends TestCase
     public function test_participant_never_receives_leader_assessment_on_overview()
     {
         $this->s->camp->update(['secondsurveyopen' => true]);
-        $this->s->survey->update(['survey_status_id' => config('status.survey_fertig')]);
+        $this->s->survey->update(['survey_status_id' => SurveyStatus::Fertig]);
 
         $this->actingAs($this->s->participant->fresh())
             ->get('/home')
@@ -122,7 +123,7 @@ class SpiderChartTest extends TestCase
         $empty = Survey::create([
             'camp_user_id' => $this->s->campUser($participant)->id,
             'slug' => (string) Str::uuid(),
-            'survey_status_id' => config('status.survey_neu'),
+            'survey_status_id' => SurveyStatus::Neu,
         ]);
         $this->assertSame(0, SurveyChapter::where('survey_id', $empty->id)->count());
 

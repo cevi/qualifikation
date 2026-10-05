@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Security;
 
+use App\Enums\SurveyStatus;
 use App\Models\Camp;
 use App\Models\User;
 use Closure;
@@ -48,7 +49,7 @@ class CrossCampManagementTest extends TestCase
                 'username' => 'Übernommen',
                 'email' => 'uebernommen@example.com',
                 'title' => 'Übernommen',
-                'survey_status_id' => config('status.survey_fertig'),
+                'survey_status_id' => SurveyStatus::Fertig->value,
             ])
             ->assertForbidden();
     }
@@ -61,7 +62,7 @@ class CrossCampManagementTest extends TestCase
         $this->actingAs($a->kursleiter);
         $this->put(route('admin.camps.update', $b->camp), ['name' => 'Übernommen']);
         $this->put(route('admin.users.update', $b->participant->id), ['username' => 'Übernommen', 'email' => 'uebernommen@example.com']);
-        $this->put(route('surveys.update', $b->survey->id), ['survey_status_id' => config('status.survey_fertig')]);
+        $this->put(route('surveys.update', $b->survey->id), ['survey_status_id' => SurveyStatus::Fertig->value]);
         $this->put(route('admin.standard_texts.update', $b->standardText), ['title' => 'Übernommen', 'content' => 'x']);
         $this->delete(route('surveys.destroy', $b->survey));
         $this->delete(route('admin.camps.destroy', $b->camp));
@@ -70,7 +71,7 @@ class CrossCampManagementTest extends TestCase
         $this->assertFalse($b->camp->fresh()->finish);
         $this->assertNotSame('Übernommen', $b->participant->fresh()->username);
         $this->assertSame($b->camp->id, $b->participant->fresh()->camp_id);
-        $this->assertSame(config('status.survey_neu'), $b->survey->fresh()->survey_status_id);
+        $this->assertSame(SurveyStatus::Neu, $b->survey->fresh()->survey_status_id);
         $this->assertNotSame('Übernommen', $b->standardText->fresh()->title);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SurveyStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,16 @@ class Survey extends Model
 
     protected $casts = [
         'demo' => 'boolean',
+        'survey_status_id' => SurveyStatus::class,
     ];
+
+    /**
+     * Status der Quali. Alte Qualis ohne Status gelten als neu.
+     */
+    public function status(): SurveyStatus
+    {
+        return $this->survey_status_id ?? SurveyStatus::Neu;
+    }
 
     public function campUser()
     {
@@ -36,8 +46,8 @@ class Survey extends Model
     {
         $aktUser = Auth::user();
         $name = 'Qualifikation';
-        if ($aktUser->isTeilnehmer() && $this['survey_status_id'] < config('status.survey_tnAbgeschlossen')) {
-            $name = $this['survey_status_id'] <= config('status.survey_1offen') ? '1. Selbsteinschätzung' : '2. Selbsteinschätzung';
+        if ($aktUser->isTeilnehmer() && ! $this->status()->isClosedByParticipant()) {
+            $name = $this->status()->isFirstRound() ? '1. Selbsteinschätzung' : '2. Selbsteinschätzung';
         }
 
         return $name;
@@ -61,22 +71,24 @@ class Survey extends Model
     public function TNIsAllowed()
     {
         $aktUser = Auth::user();
+        $status = $this->status();
         // Leitende füllen ihre Einschätzung aus, bis die Quali fertig ist.
         $result = $aktUser->isLeader() && ! $aktUser->isCampleader() &&
             $this->SurveyIsAllowed() &&
-            ($this['survey_status_id'] < config('status.survey_fertig'));
+            ! $status->isFinished();
         // Teilnehmende nur in einer freigegebenen Runde, die sie noch nicht abgeschlossen haben.
         if (! $result) {
             $camp = $aktUser->camp;
+            // Mit Status-Steuerung gibt der Kurs-Status vor, bis wohin ausgefüllt werden darf.
             if ($camp['status_control']) {
-                $max_status = $camp['survey_status_id'];
+                $max_status = $camp->survey_status_id;
             } else {
-                $max_status = config('status.survey_tnAbgeschlossen');
+                $max_status = SurveyStatus::TnAbgeschlossen;
             }
 
-            if (($this['survey_status_id'] < $max_status) &&
+            if ($max_status && $status->isBefore($max_status) &&
                 ($aktUser->isTeilnehmer() && $this->campUser->user_id == $aktUser['id'])) {
-                $result = ($this['survey_status_id'] <= config('status.survey_1offen'));
+                $result = $status->isFirstRound();
                 if (! $result) {
                     $result = $camp['secondsurveyopen'];
                 }

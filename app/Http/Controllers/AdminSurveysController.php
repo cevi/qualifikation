@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SurveyStatus;
 use App\Helper\Helper;
 use App\Models\Answer;
 use App\Models\Chapter;
@@ -10,12 +11,13 @@ use App\Models\Question;
 use App\Models\Survey;
 use App\Models\SurveyChapter;
 use App\Models\SurveyQuestion;
-use App\Models\SurveyStatus;
+use App\Models\SurveyStatus as SurveyStatusModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 class AdminSurveysController extends Controller
@@ -66,24 +68,14 @@ class AdminSurveysController extends Controller
             ->addIndexColumn()
             ->addColumn('status', function ($survey) {
                 $camp = $survey->campuser->camp;
-                if (! $camp['secondsurveyopen']) {
-                    $survey_statuses_id = [config('status.survey_neu'),
-                        config('status.survey_1offen'),
-                        config('status.survey_tnAbgeschlossen'),
-                        config('status.survey_fertig'), ];
-                } else {
-                    $survey_statuses_id = [config('status.survey_neu'),
-                        config('status.survey_1offen'),
-                        config('status.survey_2offen'),
-                        config('status.survey_tnAbgeschlossen'),
-                        config('status.survey_fertig'), ];
-                }
+                // Ohne zweite Runde fehlt der Schritt "2. offen".
+                $steps = array_filter(SurveyStatus::cases(), fn (SurveyStatus $status) => $camp['secondsurveyopen'] || $status !== SurveyStatus::ZweiteRundeOffen);
+                $names = SurveyStatusModel::pluck('name', 'id');
                 $result = '<div class="card card-progress">
                 <ul id="progressbar" class="text-center">';
-                foreach ($survey_statuses_id as $status_id) {
-                    $survey_status = SurveyStatus::findOrFail($status_id);
-                    $step = $survey->survey_status_id >= $survey_status['id'] ? 'active' : '';
-                    $result = $result.'<li class="'.$step.' step0" title="'.$survey_status['name'].'"></li>';
+                foreach ($steps as $status) {
+                    $step = $survey->status()->isAtLeast($status) ? 'active' : '';
+                    $result = $result.'<li class="'.$step.' step0" title="'.$names[$status->value].'"></li>';
                 }
 
                 return $result.'</ul></div>';
@@ -121,7 +113,7 @@ class AdminSurveysController extends Controller
                 $input['camp_user_id'] = $camp_user->id;
                 $user = User::find($camp_user['user_id']);
                 $input['slug'] = Str::uuid();
-                $input['survey_status_id'] = config('status.survey_neu');
+                $input['survey_status_id'] = SurveyStatus::Neu;
                 $survey = Survey::create($input);
                 foreach ($chapters as $chapter) {
                     $input['chapter_id'] = $chapter->id;
@@ -154,7 +146,7 @@ class AdminSurveysController extends Controller
         $this->authorize('manage', $survey);
         $users = Auth::user()->camp->participants->pluck('username', 'id')->all();
         $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
-        $survey_statuses_id = SurveyStatus::pluck('name', 'id')->all();
+        $survey_statuses_id = SurveyStatusModel::pluck('name', 'id')->all();
         $user_id = $survey->campUser->user();
         $title = 'Qualifikation bearbeiten';
 
@@ -175,18 +167,19 @@ class AdminSurveysController extends Controller
     {
         $survey = Survey::findOrFail($id);
         $this->authorize('manage', $survey);
+        $request->validate(['survey_status_id' => ['required', Rule::enum(SurveyStatus::class)]]);
         if (! Auth::user()->demo) {
-            $input = $request->only(['survey_status_id', 'update']);
-            $camp = Auth::user()->camp;
-            if (isset($input['update'])) {
-                if ($input['survey_status_id'] == config('status.survey_neu')) {
+            $status = SurveyStatus::from($request->integer('survey_status_id'));
+            // "Antworten zurücksetzen": zurück auf Neu leert beide Runden, zurück auf 1. offen die zweite.
+            if ($request->has('update')) {
+                if ($status === SurveyStatus::Neu) {
                     Helper::clearsurvey($survey, 'first');
                 }
-                if ($input['survey_status_id'] <= config('status.survey_1offen')) {
+                if ($status->isFirstRound()) {
                     Helper::clearsurvey($survey, 'second');
                 }
             }
-            $survey->update($input);
+            $survey->update(['survey_status_id' => $status]);
         }
 
         return redirect('/admin/surveys');

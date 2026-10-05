@@ -2,6 +2,7 @@
 
 namespace Tests\Support;
 
+use App\Enums\SurveyStatus;
 use App\Models\Answer;
 use App\Models\Camp;
 use App\Models\CampUser;
@@ -120,7 +121,7 @@ final class CampScenario
         $survey = Survey::create([
             'camp_user_id' => $campUser->id,
             'slug' => (string) Str::uuid(),
-            'survey_status_id' => config('status.survey_neu'),
+            'survey_status_id' => SurveyStatus::Neu,
         ]);
         $answer = Answer::where('name', '0')->firstOrFail();
 

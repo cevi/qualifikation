@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\SurveyStatus;
 use App\Models\Camp;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -37,7 +38,7 @@ class CampFactory extends Factory
     {
         return $this->state([
             'status_control' => true,
-            'survey_status_id' => config('status.survey_neu'),
+            'survey_status_id' => SurveyStatus::Neu,
         ]);
     }
 }
