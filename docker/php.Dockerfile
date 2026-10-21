@@ -1,8 +1,5 @@
 # custom image based on https://dev.to/jackmiras/laravel-with-php7-4-in-an-alpine-container-3jk6
-# Temporary self-built base image from docker-library/php@e3eaff8 (PHP 8.5.12,
-# fixes CVE-2026-109618 and CVE-2026-109619) until php:8.5.12-fpm-alpine is
-# published on Docker Hub. Switch back to the official image afterwards.
-FROM registry.cevi.tools/cevi/php:8.5.12-fpm-alpine
+FROM php:8.5.12-fpm-alpine
 
 WORKDIR /var/www/html/
 
