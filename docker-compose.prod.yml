@@ -17,6 +17,12 @@ services:
       - .env:/run/secrets/.env
       - profile-picture-storage:/var/www/html/storage/app/public:rw
       - protected-file-storage:/var/www/html/storage/app/files:rw
+    # Hard memory boundary, since PHP-FPM runs with memory_limit=-1
+    # (mitigation for CVE-2026-109618, see docker/php-fpm-security.conf).
+    deploy:
+      resources:
+        limits:
+          memory: 1g
 
   nginx:
     image: registry.cevi.tools/cevi/qualitool_nginx:latest

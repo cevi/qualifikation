@@ -493,7 +493,11 @@ memory_limit = 128M
 ; Development Value: E_ALL
 ; Production Value: E_ALL & ~E_DEPRECATED & ~E_STRICT
 ; https://php.net/error-reporting
-error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+error_reporting = E_ALL & ~E_DEPRECATED
+
+; Disabled as mitigation for CVE-2026-109619 (stale global state RCE).
+; https://php.net/fatal-error-backtraces
+fatal_error_backtraces = Off
 
 ; This directive controls whether or not and where PHP will output errors,
 ; notices and warnings too. Error output is very useful during development, but
@@ -1547,7 +1551,8 @@ session.sid_bits_per_character = 5
 ; Development Value: On
 ; Production Value: On
 ; https://php.net/session.upload-progress.enabled
-;session.upload_progress.enabled = On
+; Disabled as mitigation for CVE-2026-109619 (stale global state RCE).
+session.upload_progress.enabled = Off
 
 ; Cleanup the progress information as soon as all POST data has been read
 ; (i.e. upload completed).

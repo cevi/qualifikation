@@ -27,6 +27,7 @@ RUN curl -sS https://getcomposer.org/installer -o composer-setup.php && \
 RUN mkdir -p /run/php/ && touch /run/php/php8.5-fpm.pid
 
 COPY docker/php.ini-production /usr/local/etc/php/php.ini
+COPY docker/php-fpm-security.conf /usr/local/etc/php-fpm.d/zz-security.conf
 
 # Copy application files
 COPY . .
