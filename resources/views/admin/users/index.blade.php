@@ -14,7 +14,7 @@
             </div>
             @if (config('app.import_db'))
                 <div class="col-lg-4">
-                    <button class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-hidden focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" id="showImport"
+                    <button class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-hidden focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button" id="showImport" data-url="{{ route('users.import') }}"
                             title="{{$has_api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.' }}" {{$has_api_token ? '' : 'disabled'}}>
                         Personen aus Cevi-DB importieren
                     </button>
@@ -140,74 +140,7 @@
                 isPopState = true;
                 table.order(newOrder).draw();
             });
-
-            $('#showImport').on('click', function () {
-                Swal.fire({
-                    title: 'Personen aus Cevi-DB importieren',
-                    html: `<div class="p-4 md:p-5 space-y-4">
-                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        Vorraussetzungen für DB-Import:
-                    </p>
-                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        <ul>
-                            <li>Zugewiesene Gruppe für den Kurs.</li>
-                            <li>Zugewiesene Kurs-ID für den Kurs.</li>
-                        </ul>
-                    </p>
-                    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">Erstellte Personen können sich über die Cevi-DB anmelden.</p>
-                </div>`,
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Importieren',
-                    cancelButtonText: 'Abbrechen',
-                    confirmButtonColor: 'blue',
-                    cancelButtonColor: 'red',
-                    showLoaderOnConfirm: true,
-                    preConfirm: async (login) => {
-                        try {
-                            const url=  "{!! route('users.import') !!}";
-                            const response = await fetch(url,{
-                                method: "POST",
-                                headers: { 'Content-Type': 'application/json',  
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                            });
-                            
-                            if (!response.ok) {
-                                const responseJSON =  await response.json();
-                                return Swal.showValidationMessage(responseJSON.error);
-                            }
-                            return response.json();
-                        }
-                        catch (error) {
-                            Swal.showValidationMessage(`
-                                Request failed: ${error}
-                            `);
-                        }
-
-                    },
-                    allowOutsideClick: () => !Swal.isLoading()
-                }).then((result) => {
-                    const skipped = result.value?.skipped;
-                    if (!skipped || skipped.length === 0) {
-                        location.reload();
-                        return;
-                    }
-                    // Personen ohne E-Mail-Adresse in der Cevi-DB koennen nicht angelegt werden.
-                    // Namen kommen aus der Cevi-DB und werden als Text eingesetzt, nicht als HTML.
-                    const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]);
-                    Swal.fire({
-                        title: 'Import abgeschlossen',
-                        icon: 'warning',
-                        html: `<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                ${skipped.length} Person(en) wurden übersprungen, weil sie in der
-                                Cevi-DB keine E-Mail-Adresse haben:
-                            </p>
-                            <ul class="mt-2 text-left">${skipped.map(n => `<li>${escapeHtml(n)}</li>`).join('')}</ul>`,
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: 'blue',
-                    }).then(() => location.reload());
-                });
-            });
         });
     </script>
+    @vite('resources/js/pages/users-import.js')
 @endpush

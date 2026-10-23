@@ -1,4 +1,8 @@
 {
+  "_sweetalert2.esm.all-0Z_61IYw.js": {
+    "file": "assets/sweetalert2.esm.all-0Z_61IYw.js",
+    "name": "sweetalert2.esm.all"
+  },
   "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
     "file": "assets/bootstrap-icons-BeopsB42.woff",
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
@@ -13,9 +17,33 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Bxtw04xP.js",
+    "file": "assets/app-BOUkTlAk.js",
     "name": "app",
     "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_sweetalert2.esm.all-0Z_61IYw.js"
+    ]
+  },
+  "resources/js/pages/standard-texts.js": {
+    "file": "assets/standard-texts-CN6rQynV.js",
+    "name": "standard-texts",
+    "src": "resources/js/pages/standard-texts.js",
     "isEntry": true
+  },
+  "resources/js/pages/survey-autosave.js": {
+    "file": "assets/survey-autosave-CO7ufMdB.js",
+    "name": "survey-autosave",
+    "src": "resources/js/pages/survey-autosave.js",
+    "isEntry": true
+  },
+  "resources/js/pages/users-import.js": {
+    "file": "assets/users-import-CMiMc--a.js",
+    "name": "users-import",
+    "src": "resources/js/pages/users-import.js",
+    "isEntry": true,
+    "imports": [
+      "_sweetalert2.esm.all-0Z_61IYw.js"
+    ]
   }
 }

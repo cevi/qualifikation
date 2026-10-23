@@ -12,6 +12,7 @@ Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 - [Tests ausführen](#tests-ausführen)
 - [Aufbau](#aufbau)
 - [Übersicht aller Tests](#übersicht-aller-tests)
+- [JS-Tests (Vitest)](#js-tests-vitest)
 - [Browser-Tests (Dusk)](#browser-tests-dusk)
 - [Fachliche Regeln, die die Tests festhalten](#fachliche-regeln-die-die-tests-festhalten)
 - [Neuen Test schreiben](#neuen-test-schreiben)
@@ -31,13 +32,17 @@ vendor/bin/phpunit
 vendor/bin/phpunit tests/Feature/SurveyFlowTest.php
 vendor/bin/phpunit --filter test_closing_first_round
 
+# JS-Tests (Vitest), siehe "JS-Tests (Vitest)"
+npm test
+npm run test:watch
+
 # Code-Stil prüfen bzw. korrigieren
 vendor/bin/pint --test
 vendor/bin/pint
 ```
 
 - **Datenbank:** Die Tests laufen immer gegen SQLite im Arbeitsspeicher. Die Datenbank aus der `.env` wird nie verwendet, `tests/TestCase.php` bricht sonst ab. Das schützt zum Beispiel bei aktivem Config-Cache (`php artisan config:clear`).
-- **CI:** [`.github/workflows/tests.yml`](../.github/workflows/tests.yml) führt die Jobs `pint` und `phpunit` bei jedem Push auf `develop` und bei jedem Pull Request aus. Der Prod-Build ([`prod_build.yml`](../.github/workflows/prod_build.yml)) startet nur, wenn beide grün sind.
+- **CI:** [`.github/workflows/tests.yml`](../.github/workflows/tests.yml) führt die Jobs `pint`, `phpunit` und `vitest` bei jedem Push auf `develop` und bei jedem Pull Request aus. Der Prod-Build ([`prod_build.yml`](../.github/workflows/prod_build.yml)) startet nur, wenn alle grün sind.
 - **Browser-Tests (Dusk):** siehe [Browser-Tests](#browser-tests-dusk). Laufen nicht in der CI und nicht mit `vendor/bin/phpunit`.
 - **Code-Stil:** Laravel Pint mit den Regeln aus [`pint.json`](../pint.json).
   - Der Git-Hook [`.githooks/pre-commit`](../.githooks/pre-commit) formatiert gestagte PHP-Dateien automatisch. Aktiviert wird er durch `composer install` oder manuell mit `git config core.hooksPath .githooks`.
@@ -443,6 +448,21 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 
 ---
 
+## JS-Tests (Vitest)
+
+Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../resources/js/pages) und werden in der jeweiligen Ansicht mit `@vite(...)` eingebunden (Einstiegspunkte in [`vite.config.js`](../vite.config.js)). Die Tests in [`js/`](js) laufen mit Vitest und happy-dom (ein simuliertes DOM, kein Browser) in unter einer Sekunde, Konfiguration in [`vitest.config.js`](../vitest.config.js).
+
+- **Muster:** Pro Test das Markup der Blade-Ansicht nachbauen (`document.body.innerHTML`), dann `vi.resetModules()` und das Modul mit `await import(...)` laden; es startet sich beim Import selbst. `fetch` per `vi.stubGlobal`, SweetAlert2 per `vi.mock('sweetalert2')`, Zeit per `vi.useFakeTimers()`.
+- **Grenzen:** Ob Modul, Server und Seite zusammenspielen, prüfen die Browser-Tests (z. B. `SurveyAutosaveTest`, `StandardTextsTest`).
+- **Node:** Vitest 4, weil der Sail-Container und der Prod-Build Node 20 verwenden (Vitest 5 braucht Node 22).
+
+| Datei | Fälle | Prüft |
+|---|---:|---|
+| [`survey-autosave.test.js`](js/survey-autosave.test.js) | 6 | Quali speichert sich 1 s nach der letzten Änderung selbst (einmal, ganzes Formular mit `action=save`), Zustand im Speichern-Knopf, Fehler bei abgelehnter Anfrage und ohne Verbindung, mehrere Formulare getrennt |
+| [`standard-texts.test.js`](js/standard-texts.test.js) | 11 | `//` öffnet die Textbausteine (nur zwei schnelle `/` direkt vor dem Cursor), Pfeiltasten mit Umspringen, Enter und Klick fügen an der Stelle der `//` ein (auch mitten im Text), ein weiteres `/` danach öffnet nicht erneut, Escape und Kreuz schliessen, Tasten bei geschlossener Auswahl unberührt |
+| [`users-import.test.js`](js/users-import.test.js) | 3 | Import aus der Cevi-DB: Adresse aus `data-url` und CSRF-Token, übersprungene Namen als Text, Fehlermeldung des Servers im Dialog |
+| [`escape-html.test.js`](js/escape-html.test.js) | 2 | `escapeHtml()` für HTML-Vorlagen |
+
 ## Browser-Tests (Dusk)
 
 Die PHP-Tests sehen nur das ausgelieferte HTML. Die Browser-Tests in [`Browser/`](Browser) laufen in einem echten Chrome (Selenium-Container) gegen den Webserver von Sail und prüfen, was die Skripte daraus machen.
@@ -465,6 +485,8 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 |---|---:|---|
 | [`PagesInBrowserTest`](Browser/PagesInBrowserTest.php) | 2 | Alle Seiten aus `PagesRenderTest` pro Rolle plus Gast-Seiten: keine Fehler in der Browser-Konsole, jede `id` nur einmal |
 | [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 4 | Person, Kurs, Gruppe, Rückmeldung: "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag |
+| [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung wählt Antwort und schreibt Kommentar, ohne zu speichern: nach "Gespeichert ✓" in der DB und nach dem Neuladen noch da |
+| [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
 
 ## Fachliche Regeln, die die Tests festhalten
 

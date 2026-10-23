@@ -15,6 +15,10 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                // Seitenskripte, eingebunden per @vite in der jeweiligen Ansicht (Tests: tests/js)
+                'resources/js/pages/survey-autosave.js',
+                'resources/js/pages/standard-texts.js',
+                'resources/js/pages/users-import.js',
             ],
             refresh: true
         }),
