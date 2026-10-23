@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 05.10.2026: **259 Testfälle in 33 Dateien**, Laufzeit rund 7 Sekunden.
+Stand 23.10.2026: **263 Testfälle in 34 Dateien**, Laufzeit rund 10 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -109,6 +109,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Sicherheit | [`Security/CampTypeContentTest`](Feature/Security/CampTypeContentTest.php) | 6 | Kurstypen, Kapitel, Fragen, Kompetenzen |
 | Sicherheit | [`Security/UserCreationTest`](Feature/Security/UserCreationTest.php) | 4 | Personen anlegen |
 | Sicherheit | [`Security/UserDataExposureTest`](Feature/Security/UserDataExposureTest.php) | 6 | Keine Passwort-Hashes oder fremden Daten in JSON |
+| Sicherheit | [`Security/AdminTableEscapingTest`](Feature/Security/AdminTableEscapingTest.php) | 4 | Namen in Admin-Tabellen als Text, kein eingeschleuster Code |
 | Sicherheit | [`Security/SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php) | 6 | Antworten speichern, Quali abschliessen |
 | Sicherheit | [`Security/PostAccessTest`](Feature/Security/PostAccessTest.php) | 5 | Rückmeldungen nur durch Autor*in |
 | Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 4 | Wartungs-URLs nur für Admin |
@@ -243,6 +244,15 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_user_search_excludes_admins_and_members_of_own_camp` | Admin und eigene Mitglieder nicht in der Suche |
 | `test_user_list_does_not_expose_password_hashes` | Personenliste ohne Passwort-Hashes |
 | `test_serialized_user_hides_secrets` | `password`, `remember_token`, `last_login_ip` sind `$hidden` |
+
+**[`AdminTableEscapingTest`](Feature/Security/AdminTableEscapingTest.php)**: Personen-, Quali- und Kursliste (DataTables). Die Zellen werden im Browser als HTML eingesetzt. Namen kommen aus der öffentlichen Registrierung, dem Spitznamen in der Cevi-DB oder vom Kursleiter (Kursname). Geprüft wird mit einem Namen, der Text, unquotierte und quotierte Attribute angreift: Die Zelle darf nur Text und einen Link ohne Event-Attribute enthalten.
+
+| Test | Prüft |
+|---|---|
+| `test_user_list_shows_names_as_text` | Personenliste: Spalten Person und Leitung |
+| `test_user_list_keeps_avatar_url_inside_src` | Profilbild-URL bleibt im `src`-Attribut |
+| `test_survey_list_shows_names_as_text` | Quali-Liste: Spalten Person und Verantwortlich |
+| `test_camp_list_shows_camp_name_as_text` | Kursliste (Admin): Kursname und Kursleitung |
 
 **[`SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php)**: `PATCH survey/{survey}` und `PATCH compare/{id}`.
 

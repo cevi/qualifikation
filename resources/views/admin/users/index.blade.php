@@ -193,6 +193,8 @@
                         return;
                     }
                     // Personen ohne E-Mail-Adresse in der Cevi-DB koennen nicht angelegt werden.
+                    // Namen kommen aus der Cevi-DB und werden als Text eingesetzt, nicht als HTML.
+                    const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]);
                     Swal.fire({
                         title: 'Import abgeschlossen',
                         icon: 'warning',
@@ -200,7 +202,7 @@
                                 ${skipped.length} Person(en) wurden übersprungen, weil sie in der
                                 Cevi-DB keine E-Mail-Adresse haben:
                             </p>
-                            <ul class="mt-2 text-left">${skipped.map(n => `<li>${n}</li>`).join('')}</ul>`,
+                            <ul class="mt-2 text-left">${skipped.map(n => `<li>${escapeHtml(n)}</li>`).join('')}</ul>`,
                         confirmButtonText: 'OK',
                         confirmButtonColor: 'blue',
                     }).then(() => location.reload());

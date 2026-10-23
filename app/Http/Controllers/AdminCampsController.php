@@ -60,7 +60,7 @@ class AdminCampsController extends Controller
 
         return DataTables::of($camps)
             ->addColumn('camp', function ($camp) {
-                return '<a href="'.\URL::route('admin.camps.edit', $camp).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$camp['name'].'</a>';
+                return '<a href="'.e(\URL::route('admin.camps.edit', $camp)).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($camp['name']).'</a>';
             })
             ->addColumn('username', function ($camp) {
                 return $camp->user ? $camp->user['username'] : '';

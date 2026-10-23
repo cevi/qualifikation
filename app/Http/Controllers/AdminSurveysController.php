@@ -55,7 +55,7 @@ class AdminSurveysController extends Controller
             ->addColumn('user', function ($survey) {
                 $username = $survey->campuser ? $survey->campuser->user['username'] : '';
 
-                return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$username.'</a>';
+                return '<a href="'.e(\URL::route('home.profile', $survey->campuser->user['slug'])).'" title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($username).'</a>';
             })
             ->addColumn('group', function (Survey $survey) {
                 return $survey->campuser->user->group ? $survey->campuser->user->group['shortname'] : '';

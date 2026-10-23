@@ -77,10 +77,10 @@ class AdminUsersController extends Controller
 
         return DataTables::of($users)
             ->addColumn('picture', function ($user) {
-                return '<a href='.\URL::route('home.profile', $user->slug).' title="Zum Profil"><img class="img-user rounded-full" alt="" src="'.$user->getAvatar().'"></a>';
+                return '<a href="'.e(\URL::route('home.profile', $user->slug)).'" title="Zum Profil"><img class="img-user rounded-full" alt="" src="'.e($user->getAvatar()).'"></a>';
             })
             ->addColumn('user', function ($user) {
-                return '<a name='.$user['username'].' title="Person bearbeiten" href='.\URL::route('admin.users.edit', $user['slug']).'>'.$user['username'].'</a>';
+                return '<a name="'.e($user['username']).'" title="Person bearbeiten" href="'.e(\URL::route('admin.users.edit', $user['slug'])).'">'.e($user['username']).'</a>';
             })
             ->addColumn('role', function (User $user) {
                 $camp = Auth::user()->camp;
