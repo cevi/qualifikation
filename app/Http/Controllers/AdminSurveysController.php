@@ -73,7 +73,7 @@ class AdminSurveysController extends Controller
                 $steps = array_filter(SurveyStatus::cases(), fn (SurveyStatus $status) => $camp['secondsurveyopen'] || $status !== SurveyStatus::ZweiteRundeOffen);
                 $names = SurveyStatusModel::pluck('name', 'id');
                 $result = '<div class="card card-progress">
-                <ul id="progressbar" class="text-center">';
+                <ul class="progressbar text-center">';
                 foreach ($steps as $status) {
                     $step = $survey->status()->isAtLeast($status) ? 'active' : '';
                     $result = $result.'<li class="'.$step.' step0" title="'.$names[$status->value].'"></li>';

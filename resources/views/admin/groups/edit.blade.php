@@ -45,13 +45,17 @@
             $('.confirm').on('click', function(e){
                 e.preventDefault(); //cancel default action
 
-                swal({
+                Swal.fire({
                     title: 'Kurs löschen?',
                     text: 'Beim Kurs löschen werden alle Leiter, Teilnehmer und Qualifikationen gelöscht.',
                     icon: 'warning',
-                    buttons: ["Abbrechen", "Ja!"],
-                }).then((willDelete) => {
-                    if (willDelete) {
+                    showCancelButton: true,
+                    confirmButtonText: 'Ja',
+                    cancelButtonText: 'Abbrechen',
+                    confirmButtonColor: 'blue',
+                    cancelButtonColor: 'red',
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         document.getElementById("DeleteForm").submit();
                     }
                 });

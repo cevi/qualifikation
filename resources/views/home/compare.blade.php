@@ -89,7 +89,7 @@
             <br>
             <div>
                 <h3>Bemerkung:</h3>
-                {!! nl2br($survey['comment']) !!}
+                {!! nl2br(e($survey['comment'])) !!}
             </div>
             <br>
         @endif

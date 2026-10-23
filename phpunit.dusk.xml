@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Browser-Tests (php artisan dusk). Eigene Datei, weil phpunit.xml SQLite im Arbeitsspeicher erzwingt:
+    Der Webserver liest seine Werte aus .env.dusk.local und muss dieselbe Datenbank sehen wie der Test.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

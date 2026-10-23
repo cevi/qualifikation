@@ -89,7 +89,7 @@
             @endforeach
             <div>
                 <h2 class="display">Bemerkung:</h2>
-                {!! nl2br($survey['comment']) !!}
+                {!! nl2br(e($survey['comment'])) !!}
             </div>
             <br>
             <div class="pagebreak">

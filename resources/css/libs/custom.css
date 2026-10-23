@@ -58,11 +58,11 @@ body {
     -webkit-box-shadow: none;
 }
 
-#progressbar {
+.progressbar {
     padding-left: 0px;
 }
 
-#progressbar li {
+.progressbar li {
     list-style-type: none;
     font-size: 13px;
     width: 20%;
@@ -71,13 +71,13 @@ body {
     font-weight: 400;
 }
 
-#progressbar .step0:before {
+.progressbar .step0:before {
     font-family: FontAwesome;
     content: "\f10c";
     color: #fff;
 }
 
-#progressbar li:before {
+.progressbar li:before {
     width: 40px;
     height: 40px;
     line-height: 45px;
@@ -89,7 +89,7 @@ body {
     padding: 0px;
 }
 
-#progressbar li:after {
+.progressbar li:after {
     content: "";
     width: 100%;
     height: 12px;
@@ -100,41 +100,41 @@ body {
     z-index: -1;
 }
 
-#progressbar li:last-child:after {
+.progressbar li:last-child:after {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     position: absolute;
     left: -50%;
 }
 
-#progressbar li:not(:first-child):after,
-#progressbar li:not(:last-child):after {
+.progressbar li:not(:first-child):after,
+.progressbar li:not(:last-child):after {
     left: -50%;
 }
 
-#progressbar li:first-child:after {
+.progressbar li:first-child:after {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     position: absolute;
     left: 50%;
 }
 
-#progressbar li:last-child:after {
+.progressbar li:last-child:after {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-#progressbar li:first-child:after {
+.progressbar li:first-child:after {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
 
-#progressbar li.active:before,
-#progressbar li.active:after {
+.progressbar li.active:before,
+.progressbar li.active:after {
     background: var(--blue);
 }
 
-#progressbar li.active:before {
+.progressbar li.active:before {
     font-family: FontAwesome;
     content: "\f00c";
 }

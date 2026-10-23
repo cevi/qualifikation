@@ -21,6 +21,9 @@
             </h3>
         </header>
 
-        <x-layouts.drawer-content :help="$help"/>
+        {{-- Nur mit Hilfe-Knopf: ohne ihn initialisiert Flowbite die Leiste nicht und meldet einen Fehler. --}}
+        @if(isset($help['content']))
+            <x-layouts.drawer-content :help="$help"/>
+        @endif
     </div>
 </section>

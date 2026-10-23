@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 23.10.2026: **263 Testfälle in 34 Dateien**, Laufzeit rund 10 Sekunden.
+Stand 23.10.2026: **268 Testfälle in 35 Dateien**, Laufzeit rund 10 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -12,6 +12,7 @@ Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 - [Tests ausführen](#tests-ausführen)
 - [Aufbau](#aufbau)
 - [Übersicht aller Tests](#übersicht-aller-tests)
+- [Browser-Tests (Dusk)](#browser-tests-dusk)
 - [Fachliche Regeln, die die Tests festhalten](#fachliche-regeln-die-die-tests-festhalten)
 - [Neuen Test schreiben](#neuen-test-schreiben)
 
@@ -37,6 +38,7 @@ vendor/bin/pint
 
 - **Datenbank:** Die Tests laufen immer gegen SQLite im Arbeitsspeicher. Die Datenbank aus der `.env` wird nie verwendet, `tests/TestCase.php` bricht sonst ab. Das schützt zum Beispiel bei aktivem Config-Cache (`php artisan config:clear`).
 - **CI:** [`.github/workflows/tests.yml`](../.github/workflows/tests.yml) führt die Jobs `pint` und `phpunit` bei jedem Push auf `develop` und bei jedem Pull Request aus. Der Prod-Build ([`prod_build.yml`](../.github/workflows/prod_build.yml)) startet nur, wenn beide grün sind.
+- **Browser-Tests (Dusk):** siehe [Browser-Tests](#browser-tests-dusk). Laufen nicht in der CI und nicht mit `vendor/bin/phpunit`.
 - **Code-Stil:** Laravel Pint mit den Regeln aus [`pint.json`](../pint.json).
   - Der Git-Hook [`.githooks/pre-commit`](../.githooks/pre-commit) formatiert gestagte PHP-Dateien automatisch. Aktiviert wird er durch `composer install` oder manuell mit `git config core.hooksPath .githooks`.
   - VS Code formatiert PHP-Dateien beim Speichern, wenn die empfohlene Erweiterung „Laravel Pint“ installiert ist.
@@ -110,6 +112,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Sicherheit | [`Security/UserCreationTest`](Feature/Security/UserCreationTest.php) | 4 | Personen anlegen |
 | Sicherheit | [`Security/UserDataExposureTest`](Feature/Security/UserDataExposureTest.php) | 6 | Keine Passwort-Hashes oder fremden Daten in JSON |
 | Sicherheit | [`Security/AdminTableEscapingTest`](Feature/Security/AdminTableEscapingTest.php) | 4 | Namen in Admin-Tabellen als Text, kein eingeschleuster Code |
+| Sicherheit | [`Security/CommentEscapingTest`](Feature/Security/CommentEscapingTest.php) | 5 | Rückmeldungen und Bemerkungen als Text mit Zeilenumbrüchen |
 | Sicherheit | [`Security/SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php) | 6 | Antworten speichern, Quali abschliessen |
 | Sicherheit | [`Security/PostAccessTest`](Feature/Security/PostAccessTest.php) | 5 | Rückmeldungen nur durch Autor*in |
 | Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 4 | Wartungs-URLs nur für Admin |
@@ -253,6 +256,8 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_user_list_keeps_avatar_url_inside_src` | Profilbild-URL bleibt im `src`-Attribut |
 | `test_survey_list_shows_names_as_text` | Quali-Liste: Spalten Person und Verantwortlich |
 | `test_camp_list_shows_camp_name_as_text` | Kursliste (Admin): Kursname und Kursleitung |
+
+**[`CommentEscapingTest`](Feature/Security/CommentEscapingTest.php)**: Texte von Rückmeldungen und Bemerkungen zur Quali. Leitende schreiben sie (auch über den Demo-Login `/loginLeiter`), die Kursleitung liest sie. Ein Kommentar mit Zeilenumbruch und `<img onerror>` muss als `Gut gemacht<br />` plus maskiertem Text erscheinen, auf Profil, Vergleich (nur Rückmeldungen "Auf Quali") und in beiden Druckansichten (5 Fälle).
 
 **[`SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php)**: `PATCH survey/{survey}` und `PATCH compare/{id}`.
 
@@ -437,6 +442,29 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 **[`Admin/UserEditTest`](Feature/Admin/UserEditTest.php)**: `test_form_preselects_current_role`. Die Rollenauswahl zeigt die aktuelle Rolle (sonst setzt Speichern still eine andere).
 
 ---
+
+## Browser-Tests (Dusk)
+
+Die PHP-Tests sehen nur das ausgelieferte HTML. Die Browser-Tests in [`Browser/`](Browser) laufen in einem echten Chrome (Selenium-Container) gegen den Webserver von Sail und prüfen, was die Skripte daraus machen.
+
+```bash
+# Einmal vom Host aus: Selenium starten (nur diesen Dienst, der App-Container bleibt unverändert)
+./vendor/bin/sail up -d selenium
+
+# Im Container: Frontend bauen (Dusk testet public/build), dann die Tests
+npm run build
+php artisan dusk
+php artisan dusk tests/Browser/DeleteConfirmationTest.php
+```
+
+- **Umgebung:** Dusk ersetzt während des Laufs die `.env` durch [`.env.dusk.local`](../.env.dusk.local): SQLite-Datei `database/dusk.sqlite` (Testprozess und Webserver brauchen dieselbe Datenbank), Mail ins Log, externe Dienste ins Leere. [`phpunit.dusk.xml`](../phpunit.dusk.xml) statt `phpunit.xml`, weil dieses SQLite im Arbeitsspeicher erzwingt.
+- **Datenbank:** [`DuskTestCase`](DuskTestCase.php) migriert einmal pro Lauf und leert vor jedem Test alle Tabellen (`DatabaseTruncation`), danach `TestingSeeder`. Es bricht ab, wenn nicht `dusk.sqlite` konfiguriert ist. `DatabaseMigrations` geht nicht: Sein `migrate:rollback` scheitert am `down()` von `fix_implicit_mysql_defaults`.
+- **Bei Fehlern:** Screenshot, Browser-Konsole und HTML liegen in `Browser/screenshots`, `Browser/console` und `Browser/source` (nicht im Repo).
+
+| Datei | Fälle | Prüft |
+|---|---:|---|
+| [`PagesInBrowserTest`](Browser/PagesInBrowserTest.php) | 2 | Alle Seiten aus `PagesRenderTest` pro Rolle plus Gast-Seiten: keine Fehler in der Browser-Konsole, jede `id` nur einmal |
+| [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 4 | Person, Kurs, Gruppe, Rückmeldung: "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag |
 
 ## Fachliche Regeln, die die Tests festhalten
 
