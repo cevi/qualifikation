@@ -30,6 +30,7 @@
     <!-- Styles -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     @vite([
+        'resources/css/legacy.css',
         'resources/css/app.css',
         'resources/js/app.js'])
     <script>

@@ -1,21 +1,48 @@
-@import './libs/welcome.css';
-@import './libs/bootstrap.css';
-@import 'bootstrap-icons/font/bootstrap-icons.css';
-@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-/*@import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";*/
-@import 'datatables.net-select-bs5/css/select.bootstrap5.css';
+/*
+ * Tailwind 4, ohne Preflight (in Tailwind 3: corePlugins.preflight = false).
+ * Die Utilities stehen bewusst in keiner CSS-Ebene: Wie in Tailwind 3 sind sie gleichrangig mit dem alten CSS
+ * (legacy.css, davor eingebunden) und dem Flowbite-CSS vom CDN, es entscheiden Spezifität und Reihenfolge.
+ * In @layer utilities würde jede Regel ohne Ebene gewinnen, auch .hidden aus dem CDN gegen md:flex.
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css';
 
-@import './libs/jquery-ui.css';
-@import './libs/jquery.mCustomScrollbar.css';
-@import './libs/style.default.premium.css';
-@import './libs/dropify.min.css';
-@import './libs/custom.css';
+@plugin 'flowbite/plugin';
+@source '../../node_modules/flowbite';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* darkMode: "class" aus Tailwind 3, mit derselben Spezifität wie dort (.dark .dark\:…) */
+@custom-variant dark (&:is(.dark *));
 
-/* @import "tailwindcss"; */
+@theme {
+    /* Eigene Breakpoints aus Tailwind 3 (480 und 976 px statt 640 und 1024); md, xl, 2xl wie der Standard */
+    --breakpoint-sm: 30rem;
+    --breakpoint-lg: 61rem;
+
+    /*
+     * Zeilenhöhen der Schriftgrössen absolut wie in Tailwind 3. Tailwind 4 rechnet sie relativ zur Schriftgrösse
+     * (text-sm: 1.43), die hier oft aus Bootstrap oder dem Theme kommt (0.9rem): 20.6 statt 20 px pro Zeile.
+     */
+    --text-xs--line-height: 1rem;
+    --text-sm--line-height: 1.25rem;
+    --text-base--line-height: 1.5rem;
+    --text-lg--line-height: 1.75rem;
+    --text-xl--line-height: 1.75rem;
+    --text-2xl--line-height: 2rem;
+    --text-3xl--line-height: 2.25rem;
+    --text-4xl--line-height: 2.5rem;
+
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
+}
 
 :root {
     --color-bg-primary: #F4F7FA;
@@ -35,12 +62,12 @@
     --color-border: #dee2e6;
     --color-logo: #1c2128;
     --radius-base: 12px;
-    --color-gray-50: oklch(98.5% .002 247.839);
-    --color-gray-400: oklch(70.7% .022 261.325);
-    --color-gray-600: oklch(44.6% .03 256.802);
-    --color-gray-800: oklch(27.8% .033 256.848);
-    --color-body: var(--color-gray-600);
-    --color-neutral-secondary-medium: var(--color-gray-50);
+    --app-gray-50: oklch(98.5% .002 247.839);
+    --app-gray-400: oklch(70.7% .022 261.325);
+    --app-gray-600: oklch(44.6% .03 256.802);
+    --app-gray-800: oklch(27.8% .033 256.848);
+    --color-body: var(--app-gray-600);
+    --color-neutral-secondary-medium: var(--app-gray-50);
 }
 
 .dark {
@@ -60,8 +87,8 @@
     --color-accent-fg: #539bf5;
     --color-border: #fafafa;
     --color-logo:  #F4F7FA;
-    --color-body: var(--color-gray-400);
-    --color-neutral-secondary-medium: var(--color-gray-800);
+    --color-body: var(--app-gray-400);
+    --color-neutral-secondary-medium: var(--app-gray-800);
 }
 
 .text-dark__white {
@@ -114,4 +141,17 @@ input[type="button"].btn.btn-primary:hover {
 
 .bg-neutral-secondary-medium {
     background-color: var(--color-neutral-secondary-medium);
+}
+/*
+ * Das Flowbite-CSS vom CDN (Tailwind 3) setzt für rotate-* und translate-* die Eigenschaft transform, Tailwind 4
+ * dagegen rotate und translate. Zusammen dreht rotate-180 um 360° (Pfeil im Akkordeon zeigt falsch herum) und
+ * translate-*-full verschiebt doppelt. transform für die verwendeten Klassen aufheben, Tailwind 4 übernimmt allein.
+ */
+.rotate-180,
+.translate-x-0,
+.translate-x-full,
+.-translate-x-full,
+.translate-y-full,
+.-translate-y-full {
+    transform: none;
 }

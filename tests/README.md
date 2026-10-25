@@ -487,6 +487,21 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 4 | Person, Kurs, Gruppe, Rückmeldung: "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag |
 | [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung wählt Antwort und schreibt Kommentar, ohne zu speichern: nach "Gespeichert ✓" in der DB und nach dem Neuladen noch da |
 | [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
+| [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
+
+### Pixelvergleich (vor und nach einem CSS-Umbau)
+
+```bash
+SNAPSHOT_SET=before php artisan dusk --filter=VisualSnapshotTest     # vor der Änderung (~6 min)
+# ändern, npm run build
+SNAPSHOT_SET=after php artisan dusk --filter=VisualSnapshotTest
+php tests/Browser/compare-snapshots.php tests/Browser/screenshots/before tests/Browser/screenshots/after tests/Browser/screenshots/diff
+```
+
+- **Zuerst ein Kontrolllauf:** zweimal `before` mit demselben Stand, die beiden müssen pixelgleich sein. Der Test hält dafür fest, was der Server sonst je Lauf anders zeigt: Zeitstempel ("vor X Minuten"), "Letztes Login" und die Slugs der Personen (die Quali-Liste sortiert nach dem Link mit dem Slug).
+- **Unterschiede:** `compare-snapshots.php` meldet Fotos mit anderer Grösse und abweichende Pixel, im Ordner `diff` sind sie rot markiert.
+- **Nicht abbrechen:** Dusk ersetzt während des Laufs `.env` durch `.env.dusk.local`. Wird der Lauf abgebrochen, liegt das Original in `.env.backup`, und die App läuft mit der Dusk-Umgebung, bis `.env.backup` zurück nach `.env` kopiert ist (das macht auch der nächste vollständige Dusk-Lauf).
+- **Grenzen:** Geschlossene Fenster und Menüs sind auf den Fotos nicht zu sehen, ebenso Fokus- und Hover-Zustände.
 
 ## Fachliche Regeln, die die Tests festhalten
 

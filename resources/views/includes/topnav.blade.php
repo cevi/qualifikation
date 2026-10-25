@@ -20,7 +20,7 @@
 
         <!-- Desktop Navigation Menu (visible only on desktop screen widths) -->
         <div class="hidden xl:flex xl:items-center xl:w-auto xl:order-1">
-            <ul class="flex flex-row xl:space-x-4 2xl:space-x-8 font-medium items-center m-0 p-0">
+            <ul class="flex flex-row xl:gap-4 2xl:gap-8 font-medium items-center m-0 p-0">
                 @auth
                     <!-- Home -->
                     <li>
@@ -262,7 +262,7 @@
 
         <!-- Mobile Navigation Menu Sheet (visible only on mobile/tablet screens, toggleable) -->
         <div class="hidden w-full xl:hidden" id="mobile-menu-2">
-            <ul class="flex flex-col font-medium space-y-4 mt-6 w-full px-2">
+            <ul class="flex flex-col font-medium gap-4 mt-6 w-full px-2">
                 @auth
                     <!-- Kurs Auswahl (Camp Selector) -->
                     <li>

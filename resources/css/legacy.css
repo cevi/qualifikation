@@ -1,0 +1,18 @@
+/*
+ * Altes CSS (Bootstrap 4, gekauftes Theme, Bibliotheken, eigene Regeln) als eigene Datei, eingebunden vor app.css.
+ * Nicht in app.css importieren: Tailwind 4 optimiert mit Lightning CSS und löscht dabei Bootstrap-Regeln mit
+ * !important, wenn eine Tailwind-Klasse denselben Namen hat (w-100, h-100, p-5, mb-3, border ...).
+ */
+@import './libs/welcome.css';
+@import './libs/bootstrap.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
+/*@import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";*/
+@import 'datatables.net-select-bs5/css/select.bootstrap5.css';
+
+@import './libs/jquery-ui.css';
+@import './libs/jquery.mCustomScrollbar.css';
+@import './libs/style.default.premium.css';
+@import './libs/dropify.min.css';
+@import './libs/custom.css';
+@import './libs/flowbite-base.css';

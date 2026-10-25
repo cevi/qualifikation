@@ -2,7 +2,7 @@
 <!-- Feedback Modal -->
 <div id="feedback-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title">
     <!-- Backdrop -->
-    <div id="feedback-modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50"></div>
+    <div id="feedback-modal-backdrop" class="fixed inset-0 bg-black/50"></div>
     <!-- Modal content -->
     <div class="relative bg-white dark:bg-gray-700 rounded-lg shadow max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <!-- Header -->
