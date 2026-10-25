@@ -57,6 +57,10 @@ class AdminSurveysController extends Controller
 
                 return '<a href="'.e(\URL::route('home.profile', $survey->campuser->user['slug'])).'" title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($username).'</a>';
             })
+            // Sortier- und Suchschlüssel der Spalte "user" (name: 'user_name' in der Ansicht); sonst sortiert Yajra nach dem Link-HTML
+            ->addColumn('user_name', function (Survey $survey) {
+                return $survey->campuser ? $survey->campuser->user['username'] : '';
+            })
             ->addColumn('group', function (Survey $survey) {
                 return $survey->campuser->user->group ? $survey->campuser->user->group['shortname'] : '';
             })

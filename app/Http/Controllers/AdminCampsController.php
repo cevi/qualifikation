@@ -62,6 +62,10 @@ class AdminCampsController extends Controller
             ->addColumn('camp', function ($camp) {
                 return '<a href="'.e(\URL::route('admin.camps.edit', $camp)).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($camp['name']).'</a>';
             })
+            // Sortier- und Suchschlüssel der Spalte "camp" (name: 'camp_name' in der Ansicht); sonst sortiert Yajra nach dem Link-HTML
+            ->addColumn('camp_name', function ($camp) {
+                return $camp['name'];
+            })
             ->addColumn('username', function ($camp) {
                 return $camp->user ? $camp->user['username'] : '';
             })

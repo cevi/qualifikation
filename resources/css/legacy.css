@@ -3,6 +3,7 @@
  * Nicht in app.css importieren: Tailwind 4 optimiert mit Lightning CSS und löscht dabei Bootstrap-Regeln mit
  * !important, wenn eine Tailwind-Klasse denselben Namen hat (w-100, h-100, p-5, mb-3, border ...).
  */
+@import './libs/tailwind3-preflight.css';
 @import './libs/welcome.css';
 @import './libs/bootstrap.css';
 @import 'bootstrap-icons/font/bootstrap-icons.css';

@@ -104,7 +104,7 @@
                     },
                     ajax: "{!! route('surveys.CreateDataTables') !!}",
                     columns: [
-                        { data: 'user', name: 'user' },
+                        { data: 'user', name: 'user_name' },
                         { data: 'responsible', name: 'responsible' },
                         { data: 'camp', name: 'camp' },
                         { data: 'group', name: 'group' },

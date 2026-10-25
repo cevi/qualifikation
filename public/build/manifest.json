@@ -12,17 +12,17 @@
     "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-B39dj1V3.css",
+    "file": "assets/app-DobwQrMH.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-CbSceuFU.css",
+    "file": "assets/legacy-Cb88ue_i.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-BOUkTlAk.js",
+    "file": "assets/app-Bc33-q2c.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

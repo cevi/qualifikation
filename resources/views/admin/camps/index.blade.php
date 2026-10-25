@@ -70,7 +70,7 @@
                 ajax: "{!! route('camps.CreateDataTables') !!}",
                 order: [[3, "asc"], [4, "asc"], [0, "asc"]],
                 columns: [
-                    {data: 'camp', name: 'camp'},
+                    {data: 'camp', name: 'camp_name'},
                     {data: 'username', name: 'username'},
                     {data: 'email', name: 'email'},
                     {data: 'camp_type', name: 'camp_type'},

@@ -67,7 +67,7 @@ class VisualSnapshotTest extends DuskTestCase
 
     /**
      * Was der Server sonst je Lauf anders zeigt: "vor X Minuten" (echte Uhrzeit des Servers, Seeder läuft vor travelTo)
-     * und Tabellen, die nach dem Link-HTML sortieren, in dem der zufällige Slug steckt.
+     * und zufällige Slugs in Links (bis Oktober 2026 sortierte die Quali-Liste nach dem Link-HTML).
      */
     private function freezeData(CampScenario $s): void
     {

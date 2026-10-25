@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 23.10.2026: **268 Testfälle in 35 Dateien**, Laufzeit rund 10 Sekunden.
+Stand 25.10.2026: **270 Testfälle in 36 Dateien**, Laufzeit rund 10 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -137,6 +137,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Profil | [`ClassificationTest`](Feature/ClassificationTest.php) | 4 | Ampel rot/gelb/grün auf der Profilseite |
 | Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 1 | Gruppen anlegen |
 | Admin | [`Admin/UserEditTest`](Feature/Admin/UserEditTest.php) | 1 | Person bearbeiten |
+| Admin | [`Admin/DataTablesSortingTest`](Feature/Admin/DataTablesSortingTest.php) | 2 | Quali- und Kursliste sortieren nach dem Namen, nicht nach dem Link |
 | Beispiel | `Feature/ExampleTest`, `Unit/ExampleTest` | 2 | Laravel-Beispiele (Startseite lädt) |
 
 ### Grundlagen und Smoke-Tests
@@ -454,7 +455,7 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 
 - **Muster:** Pro Test das Markup der Blade-Ansicht nachbauen (`document.body.innerHTML`), dann `vi.resetModules()` und das Modul mit `await import(...)` laden; es startet sich beim Import selbst. `fetch` per `vi.stubGlobal`, SweetAlert2 per `vi.mock('sweetalert2')`, Zeit per `vi.useFakeTimers()`.
 - **Grenzen:** Ob Modul, Server und Seite zusammenspielen, prüfen die Browser-Tests (z. B. `SurveyAutosaveTest`, `StandardTextsTest`).
-- **Node:** Vitest 4, weil der Sail-Container und der Prod-Build Node 20 verwenden (Vitest 5 braucht Node 22).
+- **Node:** Vitest 4 läuft mit Node 20 und 22. Container (`docker/8.5/Dockerfile`), CI und Prod-Build stehen auf Node 22; nach dem Neubau des Containers ist auch Vitest 5 möglich (braucht Node ≥ 22.12).
 
 | Datei | Fälle | Prüft |
 |---|---:|---|
@@ -498,7 +499,7 @@ SNAPSHOT_SET=after php artisan dusk --filter=VisualSnapshotTest
 php tests/Browser/compare-snapshots.php tests/Browser/screenshots/before tests/Browser/screenshots/after tests/Browser/screenshots/diff
 ```
 
-- **Zuerst ein Kontrolllauf:** zweimal `before` mit demselben Stand, die beiden müssen pixelgleich sein. Der Test hält dafür fest, was der Server sonst je Lauf anders zeigt: Zeitstempel ("vor X Minuten"), "Letztes Login" und die Slugs der Personen (die Quali-Liste sortiert nach dem Link mit dem Slug).
+- **Zuerst ein Kontrolllauf:** zweimal `before` mit demselben Stand, die beiden müssen pixelgleich sein. Der Test hält dafür fest, was der Server sonst je Lauf anders zeigt: Zeitstempel ("vor X Minuten"), "Letztes Login" und die Slugs der Personen (stecken in Links; bis Oktober 2026 sortierte die Quali-Liste danach).
 - **Unterschiede:** `compare-snapshots.php` meldet Fotos mit anderer Grösse und abweichende Pixel, im Ordner `diff` sind sie rot markiert.
 - **Nicht abbrechen:** Dusk ersetzt während des Laufs `.env` durch `.env.dusk.local`. Wird der Lauf abgebrochen, liegt das Original in `.env.backup`, und die App läuft mit der Dusk-Umgebung, bis `.env.backup` zurück nach `.env` kopiert ist (das macht auch der nächste vollständige Dusk-Lauf).
 - **Grenzen:** Geschlossene Fenster und Menüs sind auf den Fotos nicht zu sehen, ebenso Fokus- und Hover-Zustände.

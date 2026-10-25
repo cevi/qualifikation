@@ -76,11 +76,11 @@ jobs:
       - name: 🛎️ Checkout
         uses: actions/checkout@v4
 
-      # Wie im Sail-Container und im Prod-Build
+      # Wie im Sail-Container (docker/8.5/Dockerfile) und im Prod-Build
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📦 Install NPM dependencies
