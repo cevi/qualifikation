@@ -44,28 +44,4 @@
     </div>
 </div>
 
-<script type="module">
-    $(document).ready(function(){
-        $('.confirm').on('click', function(e){
-            e.preventDefault(); //cancel default action
-            // Jede Rückmeldung hat ihr eigenes Formular: das abschicken, in dem der Knopf steht.
-            const form = this.closest('form');
-
-            Swal.fire({
-                title: 'Rückmeldung löschen?',
-                text: 'Willst du die Rückmeldung wirklich löschen?',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonText: 'Ja',
-                cancelButtonText: 'Abbrechen',
-                confirmButtonColor: 'blue',
-                cancelButtonColor: 'red',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
-    });
-</script>
 @vite('resources/js/pages/standard-texts.js')

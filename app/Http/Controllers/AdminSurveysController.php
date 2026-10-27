@@ -19,7 +19,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Yajra\DataTables\Facades\DataTables;
 
 class AdminSurveysController extends Controller
 {
@@ -40,57 +39,41 @@ class AdminSurveysController extends Controller
         return view('admin.surveys.index', compact('camp', 'title', 'help', 'hasSurveys'));
     }
 
-    public function createDataTables()
+    /**
+     * Zeilen der Quali-Liste (admin/surveys/index, Vue-Tabelle): nur Text und URLs, Links und Status baut die Tabelle.
+     */
+    public function tableData()
     {
-        //
-
         if (! Auth::user()->isAdmin()) {
-            $camp = Auth::user()->camp;
-            $surveys = $camp->surveys;
+            $surveys = Auth::user()->camp->surveys;
         } else {
             $surveys = Survey::all();
         }
+        $surveys->load(['campuser.user.group', 'campuser.leader', 'campuser.camp']);
+        $names = SurveyStatusModel::pluck('name', 'id');
 
-        return DataTables::of($surveys)
-            ->addColumn('user', function ($survey) {
-                $username = $survey->campuser ? $survey->campuser->user['username'] : '';
+        return response()->json(['data' => $surveys->map(function (Survey $survey) use ($names) {
+            $campUser = $survey->campuser;
+            // Ohne zweite Runde fehlt der Schritt "2. offen".
+            $steps = array_filter(SurveyStatus::cases(), fn (SurveyStatus $status) => $campUser->camp['secondsurveyopen'] || $status !== SurveyStatus::ZweiteRundeOffen);
 
-                return '<a href="'.e(\URL::route('home.profile', $survey->campuser->user['slug'])).'" title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($username).'</a>';
-            })
-            // Sortier- und Suchschlüssel der Spalte "user" (name: 'user_name' in der Ansicht); sonst sortiert Yajra nach dem Link-HTML
-            ->addColumn('user_name', function (Survey $survey) {
-                return $survey->campuser ? $survey->campuser->user['username'] : '';
-            })
-            ->addColumn('group', function (Survey $survey) {
-                return $survey->campuser->user->group ? $survey->campuser->user->group['shortname'] : '';
-            })
-            ->addColumn('responsible', function (Survey $survey) {
-                return $survey->campuser->leader ? $survey->campuser->leader['username'] : '';
-            })
-            ->addColumn('camp', function (Survey $survey) {
-                return $survey->campuser->camp['name'];
-            })
-            ->addIndexColumn()
-            ->addColumn('status', function ($survey) {
-                $camp = $survey->campuser->camp;
-                // Ohne zweite Runde fehlt der Schritt "2. offen".
-                $steps = array_filter(SurveyStatus::cases(), fn (SurveyStatus $status) => $camp['secondsurveyopen'] || $status !== SurveyStatus::ZweiteRundeOffen);
-                $names = SurveyStatusModel::pluck('name', 'id');
-                $result = '<div class="card card-progress">
-                <ul class="progressbar text-center">';
-                foreach ($steps as $status) {
-                    $step = $survey->status()->isAtLeast($status) ? 'active' : '';
-                    $result = $result.'<li class="'.$step.' step0" title="'.$names[$status->value].'"></li>';
-                }
-
-                return $result.'</ul></div>';
-            })
-            ->addColumn('Actions', function ($survey) {
-                return '<a href='.\URL::route('survey.compare', $survey['slug']).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Zur Qualifikationen</a><br><br>
-                <a href='.\URL::route('surveys.edit', $survey->slug).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Bearbeiten</a>';
-            })
-            ->rawColumns(['user', 'Actions', 'status'])
-            ->make(true);
+            return [
+                'id' => $survey->id,
+                'name' => $campUser->user->username,
+                'profile_url' => route('home.profile', $campUser->user->slug),
+                'leader' => $campUser->leader?->username ?? '',
+                'camp' => $campUser->camp->name,
+                'group' => $campUser->user->group?->shortname ?? '',
+                'steps' => array_map(fn (SurveyStatus $status) => [
+                    'name' => $names[$status->value],
+                    'done' => $survey->status()->isAtLeast($status),
+                ], array_values($steps)),
+                'actions' => [
+                    ['label' => 'Zur Qualifikationen', 'url' => route('survey.compare', $survey->slug)],
+                    ['label' => 'Bearbeiten', 'url' => route('surveys.edit', $survey->slug)],
+                ],
+            ];
+        })->values()]);
     }
 
     /**

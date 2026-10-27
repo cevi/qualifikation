@@ -31,22 +31,30 @@
 
         </div>
         <br>
-        <table class="table table-striped table-bordered" style="width:100%" id="datatable">
-            <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Bild</th>
-                <th scope="col">E-Mail</th>
-                <th scope="col">Rolle</th>
-                <th scope="col">Leiter</th>
-                <th scope="col">Klassifizierung</th>
-                <th scope="col">Kurs</th>
-                <th scope="col">Abteilung</th>
-                <th scope="col">Passwortänderung</th>
-                <th scope="col">Letztes Login</th>
-            </tr>
-            </thead>
-        </table>
+        @php
+            $table = [
+                'url' => route('users.table'),
+                'label' => 'Personen',
+                'columns' => [
+                    ['key' => 'name', 'label' => 'Name', 'link' => 'edit_url', 'linkTitle' => 'Person bearbeiten'],
+                    ['key' => 'avatar', 'label' => 'Bild', 'type' => 'image', 'link' => 'profile_url', 'linkTitle' => 'Zum Profil'],
+                    ['key' => 'email', 'label' => 'E-Mail'],
+                    ['key' => 'role', 'label' => 'Rolle'],
+                    ['key' => 'leader', 'label' => 'Leiter'],
+                    ['key' => 'classification', 'label' => 'Klassifizierung'],
+                    ['key' => 'camp', 'label' => 'Kurs'],
+                    ['key' => 'group', 'label' => 'Abteilung'],
+                    ['key' => 'password_changed', 'label' => 'Passwortänderung'],
+                    ['key' => 'last_login', 'label' => 'Letztes Login'],
+                ],
+                'defaultSort' => [['id' => 'role', 'desc' => false], ['id' => 'leader', 'desc' => false], ['id' => 'name', 'desc' => false]],
+                'sortParam' => 'order',
+                'mobile' => ['title' => 'name', 'image' => 'avatar', 'kicker' => 'role', 'lines' => ['leader', 'group']],
+            ];
+        @endphp
+        <div class="my-4" data-vue-component="data-table" data-props="{{ json_encode($table) }}">
+            <noscript>Die Liste braucht JavaScript.</noscript>
+        </div>
         <div class="row">
             <div class="col-lg-4">
                 <a href="{{route('admin.users.create')}}" class="focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" role="button">Person manuell
@@ -57,90 +65,6 @@
 
 @endsection
 @push('scripts')
-    <script type="module">
-        $(document).ready(function () {
-            var table = $('#datatable').DataTable({
-                responsive: true,
-                processing: true,
-                serverSide: true,
-                pageLength: 25,
-                buttons: [],
-                language: {
-                    "url": "/lang/Datatables.json"
-                },
-                ajax: "{!! route('users.CreateDataTables') !!}",
-                order: @json($initialOrder),
-                columns: [
-                    {data: 'user', name: 'user'},
-                    {data: 'picture', name: 'picture', orderable: false, serachable: false},
-                    {data: 'email', name: 'email'},
-                    {data: 'role', name: 'role'},
-                    {data: 'leader', name: 'leader'},
-                    {data: 'classification', name: 'classification'},
-                    {data: 'camp', name: 'camp'},
-                    {data: 'group', name: 'group'},
-                    {data: 'password_changed', name: 'password_changed'},
-                    {data: 'last_login_at', name: 'last_login_at'},
-
-                ]
-            });
-
-            var defaultOrder = @json($defaultOrder);
-            var isPopState = false;
-            var isInitial = true;
-
-            table.on('order.dt', function () {
-                if (isInitial) {
-                    isInitial = false;
-                    return;
-                }
-                if (isPopState) {
-                    isPopState = false;
-                    return;
-                }
-                var order = table.order();
-                var orderStr = order.map(o => `${o[0]}:${o[1]}`).join(',');
-                var url = new URL(window.location.href);
-                var currentOrder = url.searchParams.get('order');
-                if (currentOrder !== orderStr) {
-                    url.searchParams.set('order', orderStr);
-                    window.history.pushState({ order: order }, '', url.toString());
-                }
-            });
-
-            $(window).on('popstate', function () {
-                var orderParam = new URLSearchParams(window.location.search).get('order');
-                var newOrder = defaultOrder;
-                if (orderParam) {
-                    var parsed = [];
-                    var isValid = true;
-                    var items = orderParam.split(',');
-                    for (var i = 0; i < items.length; i++) {
-                        var parts = items[i].split(':');
-                        if (parts.length === 2) {
-                            var colIndex = parseInt(parts[0], 10);
-                            var dir = parts[1];
-                            if (!isNaN(colIndex) && colIndex >= 0 && colIndex <= 9 && (dir === 'asc' || dir === 'desc')) {
-                                parsed.push([colIndex, dir]);
-                            } else {
-                                isValid = false;
-                                break;
-                            }
-                        } else {
-                            isValid = false;
-                            break;
-                        }
-                    }
-                    if (isValid && parsed.length > 0) {
-                        newOrder = parsed;
-                    } else {
-                        console.warn('Malformed or invalid order URL parameter:', orderParam);
-                    }
-                }
-                isPopState = true;
-                table.order(newOrder).draw();
-            });
-        });
-    </script>
+    @vite('resources/js/islands.js')
     @vite('resources/js/pages/users-import.js')
 @endpush

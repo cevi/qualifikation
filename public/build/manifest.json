@@ -20,17 +20,17 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BRgiLoWa.css",
+    "file": "assets/app-DArFNePo.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-vOxdIemk.css",
+    "file": "assets/legacy-CDaGcFJx.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Cgo7lJR7.js",
+    "file": "assets/app-DjdIhHzn.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -44,19 +44,31 @@
     "src": "resources/js/charts.js",
     "isEntry": true
   },
-  "resources/js/cropper.js": {
-    "file": "assets/cropper-Da2JrCEP.js",
-    "name": "cropper",
-    "src": "resources/js/cropper.js",
-    "isEntry": true,
-    "css": [
-      "assets/cropper-BluxOekZ.css"
-    ]
+  "resources/js/islands.js": {
+    "file": "assets/islands-CBNXxTfy.js",
+    "name": "islands",
+    "src": "resources/js/islands.js",
+    "isEntry": true
   },
   "resources/js/pages/counter-up.js": {
     "file": "assets/counter-up-z7Q173Nq.js",
     "name": "counter-up",
     "src": "resources/js/pages/counter-up.js",
+    "isEntry": true
+  },
+  "resources/js/pages/photo-cropper.js": {
+    "file": "assets/photo-cropper-Dm4UiVwo.js",
+    "name": "photo-cropper",
+    "src": "resources/js/pages/photo-cropper.js",
+    "isEntry": true,
+    "css": [
+      "assets/photo-cropper-BluxOekZ.css"
+    ]
+  },
+  "resources/js/pages/profile-ampel.js": {
+    "file": "assets/profile-ampel-BPWs2e5v.js",
+    "name": "profile-ampel",
+    "src": "resources/js/pages/profile-ampel.js",
     "isEntry": true
   },
   "resources/js/pages/standard-texts.js": {
@@ -70,6 +82,15 @@
     "name": "survey-autosave",
     "src": "resources/js/pages/survey-autosave.js",
     "isEntry": true
+  },
+  "resources/js/pages/surveys-index.js": {
+    "file": "assets/surveys-index-CjcsUs0x.js",
+    "name": "surveys-index",
+    "src": "resources/js/pages/surveys-index.js",
+    "isEntry": true,
+    "imports": [
+      "_sweetalert2.esm.all-0Z_61IYw.js"
+    ]
   },
   "resources/js/pages/user-search.js": {
     "file": "assets/user-search-DXGjT6rh.js",

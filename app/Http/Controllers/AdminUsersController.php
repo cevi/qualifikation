@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Str;
-use Yajra\DataTables\Facades\DataTables;
 
 class AdminUsersController extends Controller
 {
@@ -43,79 +42,40 @@ class AdminUsersController extends Controller
         $title = 'Personen';
         $help = Help::where('title', $title)->first();
 
-        // Server-side parsing of the sorting order query parameter
-        $defaultOrder = [[3, 'asc'], [4, 'asc'], [0, 'asc']];
-        $initialOrder = $defaultOrder;
-        if ($orderParam = request('order')) {
-            if (is_string($orderParam) && strlen($orderParam) <= 100) {
-                $parsed = [];
-                $items = explode(',', $orderParam);
-                $items = array_slice($items, 0, 10);
-                foreach ($items as $item) {
-                    $parts = explode(':', $item);
-                    if (count($parts) === 2 && is_numeric($parts[0]) && in_array($parts[1], ['asc', 'desc'])) {
-                        $colIndex = (int) $parts[0];
-                        if ($colIndex >= 0 && $colIndex <= 9) {
-                            $parsed[] = [$colIndex, $parts[1]];
-                        }
-                    }
-                }
-                if (count($parsed) > 0) {
-                    $initialOrder = $parsed;
-                }
-            }
-        }
-
-        return view('admin.users.index', compact('has_api_token', 'title', 'help', 'initialOrder', 'defaultOrder'));
+        return view('admin.users.index', compact('has_api_token', 'title', 'help'));
     }
 
-    public function createDataTables()
+    /**
+     * Zeilen der Personenliste (admin/users/index, Vue-Tabelle): nur Text und URLs, Links und Bild baut die Tabelle.
+     */
+    public function tableData()
     {
-        //
         $camp = Auth::user()->camp;
-        $users = $camp->allusers;
+        $campUsers = CampUser::with(['role', 'classification'])->where('camp_id', $camp->id)->get()->keyBy('user_id');
+        $users = $camp->allusers()->with(['leader', 'group', 'camp'])->get();
 
-        return DataTables::of($users)
-            ->addColumn('picture', function ($user) {
-                return '<a href="'.e(\URL::route('home.profile', $user->slug)).'" title="Zum Profil"><img class="img-user rounded-full" alt="" src="'.e($user->getAvatar()).'"></a>';
-            })
-            ->addColumn('user', function ($user) {
-                return '<a name="'.e($user['username']).'" title="Person bearbeiten" href="'.e(\URL::route('admin.users.edit', $user['slug'])).'">'.e($user['username']).'</a>';
-            })
-            ->addColumn('role', function (User $user) {
-                $camp = Auth::user()->camp;
-                if ($camp) {
-                    $camp_user = CampUser::where('camp_id', '=', $camp['id'])->where('user_id', '=', $user['id'])->first();
+        return response()->json(['data' => $users->map(function (User $user) use ($campUsers) {
+            $campUser = $campUsers->get($user->id);
 
-                    return $camp_user && $camp_user->role ? $camp_user->role['name'] : '';
-                }
-
-                return $user->role ? $user->role['name'] : '';
-            })
-            ->addColumn('leader', function (User $user) {
-                return $user->leader ? $user->leader['username'] : '';
-            })
-            ->addColumn('group', function (User $user) {
-                return $user->group ? $user->group['shortname'] : '';
-            })
-            ->addColumn('classification', function (User $user) {
-                $camp = Auth::user()->camp;
-                $camp_user = CampUser::where('user_id', '=', $user['id'])->where('camp_id', '=', $camp['id'])->first();
-
-                return $camp_user && $camp_user->classification ? $camp_user->classification['name'] : '';
-            })
-            ->addColumn('camp', function (User $user) {
-                return $user->camp ? $user->camp['name'] : '';
-            })
-            ->addColumn('password_changed', function (User $user) {
-                if (isset($user->password_change_at)) {
-                    return 'Ja';
-                } else {
-                    return 'Nein';
-                }
-            })
-            ->rawColumns(['picture', 'user'])
-            ->make(true);
+            return [
+                'id' => $user->id,
+                'name' => $user->username,
+                'edit_url' => route('admin.users.edit', $user->slug),
+                'profile_url' => route('home.profile', $user->slug),
+                'avatar' => $user->getAvatar(),
+                'email' => $user->email,
+                'role' => $campUser?->role?->name ?? '',
+                'leader' => $user->leader?->username ?? '',
+                'classification' => $campUser?->classification?->name ?? '',
+                'camp' => $user->camp?->name ?? '',
+                'group' => $user->group?->shortname ?? '',
+                'password_changed' => isset($user->password_change_at) ? 'Ja' : 'Nein',
+                'last_login' => [
+                    'display' => $user->last_login_at ? date('d.m.Y H:i', strtotime($user->last_login_at)) : '',
+                    'sort' => $user->last_login_at ?? '',
+                ],
+            ];
+        })->values()]);
     }
 
     public function searchResponseUser(Request $request)

@@ -23,8 +23,7 @@
         "maatwebsite/excel": "^4.0",
         "nicolaslopezj/searchable": "^1.13",
         "rdx/laravelcollective-html": "^6.10",
-        "spatie/laravel-honeypot": "^4.7",
-        "yajra/laravel-datatables": "^13.0"
+        "spatie/laravel-honeypot": "^4.7"
     },
     "require-dev": {
         "laravel/dusk": "^8.7",

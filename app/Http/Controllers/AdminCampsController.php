@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Str;
-use Yajra\DataTables\Facades\DataTables;
 
 class AdminCampsController extends Controller
 {
@@ -44,57 +43,44 @@ class AdminCampsController extends Controller
         return view('admin.camps.index', compact('camptypes', 'groups', 'title', 'help'));
     }
 
-    public function createDataTables()
+    /**
+     * Zeilen der Kursliste (admin/camps/index, Vue-Tabelle): nur Text und URLs, Links und Knöpfe baut die Tabelle.
+     */
+    public function tableData()
     {
-        //
         $aktUser = Auth::user();
         if (! $aktUser->isAdmin()) {
-            if (isset($aktUser->camp)) {
-                $camps = [$aktUser->camp];
-            } else {
-                $camps = null;
-            }
+            $camps = collect($aktUser->camp ? [$aktUser->camp] : []);
         } else {
             $camps = Camp::all();
         }
 
-        return DataTables::of($camps)
-            ->addColumn('camp', function ($camp) {
-                return '<a href="'.e(\URL::route('admin.camps.edit', $camp)).'" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.e($camp['name']).'</a>';
-            })
-            // Sortier- und Suchschlüssel der Spalte "camp" (name: 'camp_name' in der Ansicht); sonst sortiert Yajra nach dem Link-HTML
-            ->addColumn('camp_name', function ($camp) {
-                return $camp['name'];
-            })
-            ->addColumn('username', function ($camp) {
-                return $camp->user ? $camp->user['username'] : '';
-            })
-            ->addColumn('email', function ($camp) {
-                return $camp->user ? $camp->user['email'] : '';
-            })
-            ->addColumn('camp_type', function ($camp) {
-                return $camp->camp_type ? $camp->camp_type['name'] : '';
-            })
-            ->addColumn('group', function ($camp) {
-                return $camp->group ? $camp->group['name'] : '';
-            })
-            ->addColumn('end_date', function ($camp) {
-                return $camp->end_date > 1 ? date('d.m.Y', strtotime($camp->end_date)) : '';
-            })
-            ->addColumn('finish', function ($camp) {
-                return $camp->finish ? 'Ja' : 'Nein';
-            })
-            ->addColumn('counter', function ($camp) {
-                return $camp->counter ?: count($camp->surveys);
-            })
-            ->addColumn('actions', function ($camp) {
-                if (! $camp->finish && (Auth::user()->camp['id'] === $camp['id']) || Auth::user()->isAdmin()) {
-                    return '<a href="'.\URL::route('admin.camps.export').'" class="focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" role="button">Export der Rückmeldungen</a>
-                    <a href="'.\URL::route('surveys.downloadPDF').'" target="_blank" class="focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900" role="button">Druckversion aller Qualifikationen</a>';
-                }
-            })
-            ->rawColumns(['camp', 'actions'])
-            ->make(true);
+        return response()->json(['data' => $camps->map(function (Camp $camp) use ($aktUser) {
+            $actions = [];
+            if (! $camp->finish && ($aktUser->camp['id'] === $camp['id']) || $aktUser->isAdmin()) {
+                $actions = [
+                    ['label' => 'Export der Rückmeldungen', 'url' => route('admin.camps.export'), 'button' => true],
+                    ['label' => 'Druckversion aller Qualifikationen', 'url' => route('surveys.downloadPDF'), 'button' => true, 'newTab' => true],
+                ];
+            }
+
+            return [
+                'id' => $camp->id,
+                'name' => $camp->name,
+                'edit_url' => route('admin.camps.edit', $camp),
+                'username' => $camp->user?->username ?? '',
+                'email' => $camp->user?->email ?? '',
+                'camp_type' => $camp->camp_type?->name ?? '',
+                'group' => $camp->group?->name ?? '',
+                'end_date' => [
+                    'display' => $camp->end_date > 1 ? date('d.m.Y', strtotime($camp->end_date)) : '',
+                    'sort' => $camp->end_date > 1 ? date('Y-m-d', strtotime($camp->end_date)) : '',
+                ],
+                'finish' => $camp->finish ? 'Ja' : 'Nein',
+                'counter' => $camp->counter ?: count($camp->surveys),
+                'actions' => $actions,
+            ];
+        })->values()]);
     }
 
     /**

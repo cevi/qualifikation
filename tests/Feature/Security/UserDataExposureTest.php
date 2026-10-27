@@ -8,7 +8,7 @@ use Tests\Support\CampScenario;
 use Tests\TestCase;
 
 /**
- * JSON-Endpunkte, die User ausliefern: die Personensuche beim Hinzufügen und die Personenliste (DataTables).
+ * JSON-Endpunkte, die User ausliefern: die Personensuche beim Hinzufügen und die Personenliste (Tabelle).
  */
 class UserDataExposureTest extends TestCase
 {
@@ -59,7 +59,7 @@ class UserDataExposureTest extends TestCase
         $s = CampScenario::create();
 
         $response = $this->actingAs($s->kursleiter)
-            ->getJson(route('users.CreateDataTables'))
+            ->getJson(route('users.table'))
             ->assertOk();
 
         $this->assertStringNotContainsString('"password"', $response->getContent());

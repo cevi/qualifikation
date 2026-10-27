@@ -73,7 +73,7 @@
             </div>
         </section>
         <section class="col-lg-2 dashboard-header section-padding">
-            <div class="container-fluid" id="Sidepanel">
+            <div class="container-fluid lg:sticky lg:top-24" id="Sidepanel">
                 <div class="row d-flex align-items-md-stretch">
                     <ul class="list-unstyled">
                         @foreach ($surveys as $survey)
@@ -90,22 +90,5 @@
 
 @push('scripts')
     @include('home.radar')
-    <script type="module">
-        var $sidebar = $("#Sidepanel"),
-            $window = $(window),
-            offset = $sidebar.offset(),
-            topPadding = 20;
-        $window.scroll(function () {
-            if ($window.scrollTop() > offset.top) {
-                $sidebar.stop().animate({
-                    marginTop: $window.scrollTop() - offset.top + topPadding
-                });
-            } else {
-                $sidebar.stop().animate({
-                    marginTop: 0
-                });
-            }
-        });
-    </script>
 @endpush
 

@@ -135,9 +135,9 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Profil | [`ProfileTest`](Feature/ProfileTest.php) | 3 | Profilseite und Vor/Zurück-Navigation |
 | Profil | [`AvatarUploadTest`](Feature/AvatarUploadTest.php) | 1 | Profilbilder |
 | Profil | [`ClassificationTest`](Feature/ClassificationTest.php) | 4 | Ampel rot/gelb/grün auf der Profilseite |
-| Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 1 | Gruppen anlegen |
+| Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 3 | Gruppen anlegen; löschen nur, wenn keine Personen und Kurse mehr daran hängen (sonst Meldung statt Datenbankfehler) |
 | Admin | [`Admin/UserEditTest`](Feature/Admin/UserEditTest.php) | 1 | Person bearbeiten |
-| Admin | [`Admin/DataTablesSortingTest`](Feature/Admin/DataTablesSortingTest.php) | 2 | Quali- und Kursliste sortieren nach dem Namen, nicht nach dem Link |
+| Admin | [`Admin/AdminTablesTest`](Feature/Admin/AdminTablesTest.php) | 7 | Zeilen der Personen-, Quali- und Kursliste als JSON (Rolle und Klassifizierung im aktuellen Kurs, Status-Schritte mit/ohne 2. Runde, Aktionen nur für den eigenen Kurs bzw. Admin), Seiten binden die Tabelle mit ihrer Daten-Adresse ein |
 | Beispiel | `Feature/ExampleTest`, `Unit/ExampleTest` | 2 | Laravel-Beispiele (Startseite lädt) |
 
 ### Grundlagen und Smoke-Tests
@@ -254,14 +254,15 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_user_list_does_not_expose_password_hashes` | Personenliste ohne Passwort-Hashes |
 | `test_serialized_user_hides_secrets` | `password`, `remember_token`, `last_login_ip` sind `$hidden` |
 
-**[`AdminTableEscapingTest`](Feature/Security/AdminTableEscapingTest.php)**: Personen-, Quali- und Kursliste (DataTables). Die Zellen werden im Browser als HTML eingesetzt. Namen kommen aus der öffentlichen Registrierung, dem Spitznamen in der Cevi-DB oder vom Kursleiter (Kursname). Geprüft wird mit einem Namen, der Text, unquotierte und quotierte Attribute angreift: Die Zelle darf nur Text und einen Link ohne Event-Attribute enthalten.
+**[`AdminTableEscapingTest`](Feature/Security/AdminTableEscapingTest.php)**: Personen-, Quali- und Kursliste (Vue-Tabelle, `components/DataTable.vue`). Die Endpunkte liefern nur Text und URLs; Links, Bilder und Knöpfe baut die Tabelle mit Vue-Render-Funktionen, Text und Attribute werden dabei maskiert. Namen kommen aus der öffentlichen Registrierung, dem Spitznamen in der Cevi-DB oder vom Kursleiter (Kursname). Geprüft wird mit einem Namen, der Text, unquotierte und quotierte Attribute angreift.
 
 | Test | Prüft |
 |---|---|
-| `test_user_list_shows_names_as_text` | Personenliste: Spalten Person und Leitung |
-| `test_user_list_keeps_avatar_url_inside_src` | Profilbild-URL bleibt im `src`-Attribut |
-| `test_survey_list_shows_names_as_text` | Quali-Liste: Spalten Person und Verantwortlich |
-| `test_camp_list_shows_camp_name_as_text` | Kursliste (Admin): Kursname und Kursleitung |
+| `test_user_list_returns_names_unchanged_as_text` | Personenliste: Name und Leitung kommen unverändert als Text |
+| `test_user_list_returns_avatar_url_unchanged` | Profilbild-URL unverändert (die Tabelle setzt sie als `src`) |
+| `test_survey_list_returns_names_unchanged_as_text` | Quali-Liste: Person und Leitung |
+| `test_camp_list_returns_names_unchanged_as_text` | Kursliste (Admin): Kursname und Kursleitung |
+| `test_table_components_never_insert_html` | Kein `v-html`, `innerHTML`, `outerHTML`, `insertAdjacentHTML` in Tabelle, Zelle, Hilfsfunktionen und Einstieg; im Browser prüft `data-table.test.js` den Namen `<img …>` als Text |
 
 **[`CommentEscapingTest`](Feature/Security/CommentEscapingTest.php)**: Texte von Rückmeldungen und Bemerkungen zur Quali. Leitende schreiben sie (auch über den Demo-Login `/loginLeiter`), die Kursleitung liest sie. Ein Kommentar mit Zeilenumbruch und `<img onerror>` muss als `Gut gemacht<br />` plus maskiertem Text erscheinen, auf Profil, Vergleich (nur Rückmeldungen "Auf Quali") und in beiden Druckansichten (5 Fälle).
 
@@ -453,6 +454,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 
 Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../resources/js/pages) und werden in der jeweiligen Ansicht mit `@vite(...)` eingebunden (Einstiegspunkte in [`vite.config.js`](../vite.config.js)). Die Tests in [`js/`](js) laufen mit Vitest und happy-dom (ein simuliertes DOM, kein Browser) in unter einer Sekunde, Konfiguration in [`vitest.config.js`](../vitest.config.js).
 
+- **Vue-Komponenten** (`resources/js/components/`) mit `mount()` aus `@vue/test-utils`, `flushPromises()` nach dem Laden. Die Vue-Inseln werden über `resources/js/islands.js` in Blade eingebunden (`data-vue-component`, Props in `data-props`).
 - **Muster:** Pro Test das Markup der Blade-Ansicht nachbauen (`document.body.innerHTML`), dann `vi.resetModules()` und das Modul mit `await import(...)` laden; es startet sich beim Import selbst. `fetch` per `vi.stubGlobal`, SweetAlert2 per `vi.mock('sweetalert2')`, Zeit per `vi.useFakeTimers()`.
 - **Grenzen:** Ob Modul, Server und Seite zusammenspielen, prüfen die Browser-Tests (z. B. `SurveyAutosaveTest`, `StandardTextsTest`).
 - **Node:** Vitest 5 braucht Node ≥ 22.12 (und Vite ≥ 6.4). Container (`docker/8.5/Dockerfile`), CI und Prod-Build stehen auf Node 22.
@@ -466,6 +468,10 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 | [`user-search.test.js`](js/user-search.test.js) | 6 | Person hinzufügen: Suche ab drei Zeichen und nach kurzer Pause, Vorschlag übernimmt Name und `user_id`, Ändern löscht die ID, keine veralteten oder späten Antworten, Netzwerkfehler |
 | [`counter-up.test.js`](js/counter-up.test.js) | 3 | Startseite: Zähler zählen erst hoch, wenn sie ins Bild kommen (`IntersectionObserver` simuliert), in Schritten bis zum Zielwert |
 | [`theme-toggle.test.js`](js/theme-toggle.test.js) | 4 | Hell/Dunkel-Umschalter: Klasse `dark`, gespeicherte Wahl und Symbol, auch ohne gespeicherte Wahl (Systemeinstellung) |
+| [`table-data.test.js`](js/table-data.test.js) | 10 | Hilfsfunktionen der Admin-Tabellen: Anzeige- und Sortierwert (`{ display, sort }`), Vergleich (Zahlen, natürlich, Umlaute, ISO-Daten), Suche über Textspalten, Sortierung in der Adresse (`?order=role:asc,name:desc`, alte Spaltennummern verworfen) |
+| [`data-table.test.js`](js/data-table.test.js) | 14 | `DataTable.vue` mit `@vue/test-utils`: Laden mit Platzhaltern, Link/Bild/Status/Aktionen aus Daten, Namen mit `<` als Text, Sortieren per Klick und Shift-Klick, Suche mit Zähler, Blättern, Ladefehler mit "Erneut laden", Sortierung in Adresse und Verlauf, Karten auf dem Handy (`matchMedia` gestubbt) mit Sortier-Auswahl |
+| [`surveys-index.test.js`](js/surveys-index.test.js) | 4 | Quali-Liste: "Qualifikationen erstellen" nach Rückfrage, Freigeben ohne Rückfrage, POST mit CSRF-Token, Fehlermeldung statt Neuladen |
+| [`profile-ampel.test.js`](js/profile-ampel.test.js) | 2 | Ampel auf dem Profil: PATCH an `data-remote`, Neuladen nur bei Erfolg |
 
 ## Browser-Tests (Dusk)
 
@@ -488,10 +494,12 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | Datei | Fälle | Prüft |
 |---|---:|---|
 | [`PagesInBrowserTest`](Browser/PagesInBrowserTest.php) | 2 | Alle Seiten aus `PagesRenderTest` pro Rolle plus Gast-Seiten: keine Fehler in der Browser-Konsole, jede `id` nur einmal |
-| [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 4 | Person, Kurs, Gruppe, Rückmeldung: "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag |
+| [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 4 | Person, Kurs, Gruppe, Rückmeldung (gemeinsames Modul `confirm-submit.js`, Knöpfe mit `data-confirm`): "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag |
 | [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung wählt Antwort und schreibt Kommentar, ohne zu speichern: nach "Gespeichert ✓" in der DB und nach dem Neuladen noch da |
 | [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
 | [`UserSearchTest`](Browser/UserSearchTest.php) | 1 | Person hinzufügen: Vorschlag aus der Personensuche erscheint, die Wahl setzt Name und `user_id`, die Person ist danach im Kurs |
+| [`AdminTablesTest`](Browser/AdminTablesTest.php) | 2 | Personenliste lädt, sucht, sortiert per Klick und merkt sich die Sortierung in Adresse und Verlauf (Neuladen, Zurück); Quali- und Kursliste zeigen Zeilen mit Status bzw. Knöpfen |
+| [`PhotoCropperTest`](Browser/PhotoCropperTest.php) | 1 | Profilbild: Datei wählen öffnet den Dialog, "Abbrechen" lässt das Feld leer, "Zuschneiden" legt ein PNG als data-URL ab |
 | [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
 
 ### Pixelvergleich (vor und nach einem CSS-Umbau)

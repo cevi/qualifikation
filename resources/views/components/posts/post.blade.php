@@ -44,7 +44,7 @@
                                 class="col-lg-12 col-md-6 col-sm-6 col-xs-6 text-right">
                                 {!! Form::model($post, ['method' => 'DELETE', 'action'=>['PostController@destroy',$post]]) !!}
                                 <div class="form-group">
-                                    {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-sm confirm'])!!}
+                                    {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-sm confirm', 'title' => 'Rückmeldung löschen', 'data-confirm' => 'Rückmeldung löschen?', 'data-confirm-text' => 'Willst du die Rückmeldung wirklich löschen?', 'data-confirm-icon' => 'info'])!!}
                                 </div>
                                 {!! Form::close()!!}
                             </div>

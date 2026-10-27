@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Camp;
 use App\Models\Group;
 use App\Models\Help;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
@@ -104,12 +106,16 @@ class AdminGroupsController extends Controller
      */
     public function destroy(Group $group)
     {
-        //
-        // $surveys = $camp->surveys();
-        // foreach($surveys as $survey)
-        // {
-        //     $survey->delete();
-        // }
+        // users.group_id und camps.group_id verweisen ohne cascade auf die Gruppe; die Datenbank würde das Löschen
+        // mit einem Fehler ablehnen.
+        $users = User::where('group_id', $group->id)->count();
+        $camps = Camp::where('group_id', $group->id)->count();
+        if ($users > 0 || $camps > 0) {
+            return back()->withErrors([
+                'group' => "Die Gruppe wird noch von {$users} Person(en) und {$camps} Kurs(en) verwendet und kann nicht gelöscht werden.",
+            ]);
+        }
+
         $group->delete();
 
         return redirect('/admin/groups');

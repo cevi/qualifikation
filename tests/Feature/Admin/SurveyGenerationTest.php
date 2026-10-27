@@ -147,9 +147,12 @@ class SurveyGenerationTest extends TestCase
     {
         $s = CampScenario::create();
 
-        $this->actingAs($s->kursleiter)
-            ->get(route('surveys.index'))
-            ->assertOk()
-            ->assertSeeInOrder(['url : "'.route('surveys.store').'"', "type: 'POST'"], false);
+        $html = $this->actingAs($s->kursleiter)->get(route('surveys.index'))->assertOk()->getContent();
+
+        // Das Modul resources/js/pages/surveys-index.js schickt den POST an createUrl (tests/js/surveys-index.test.js).
+        preg_match('#<script type="application/json" id="surveys-index-config">(.*?)</script>#s', $html, $match);
+        $config = json_decode($match[1] ?? '', true);
+        $this->assertSame(route('surveys.store'), $config['createUrl']);
+        $this->assertSame(route('admin.camps.opensurvey'), $config['openSurveyUrl']);
     }
 }

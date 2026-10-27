@@ -1,8 +1,7 @@
 @vite('resources/js/charts.js')
 <script type="module">
-    $(document).ready(function () {
-
-        'use strict';
+    // Modul-Skripte laufen nach dem Aufbau der Seite und nach charts.js (setzt window.Chart).
+    {
 
         var labelstring = @json($labels);
         var datasets_array = @json($datasets);
@@ -12,7 +11,7 @@
         var textColor = rs.getPropertyValue('--color-text-primary').trim();
         var gridColor = rs.getPropertyValue('--color-chart-grid').trim();
 
-        $('input[type=radio]').change(function () {
+        document.querySelectorAll('input[type=radio]').forEach((radio) => radio.addEventListener('change', function () {
             let id = this.id;
             let question_id = Number(id.substring(0, id.indexOf('.')));
             let count = id.slice(-1);
@@ -22,11 +21,11 @@
             const position = datasets_array[0][survey_number_abs].dataset_ids.indexOf(question_id);
             datasets_array[0][survey_number_abs].data[position] = count - 2;
             chart.update();
-        });
+        }));
 
 
         for (var [i, dataset] of Object.entries(datasets_array)) {
-            var RADARCHART = $('#radarChart-' + (parseInt(i) + 1));
+            var RADARCHART = document.getElementById('radarChart-' + (parseInt(i) + 1));
 
             Chart.defaults.color = textColor;
 
@@ -94,6 +93,5 @@
                 }
             );
         }
-    })
-    ;
+    }
 </script>

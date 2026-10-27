@@ -80,25 +80,6 @@
 @push('scripts')
     @include('home.radar')
     @include('home.post_delete')
-    <script type="module">
-        $('.ampel-btn').on('click', function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            });
-            var url = $(this).data('remote');
-            var color = $(this).data('color');
-            $.ajax({
-                url: url,
-                type: 'PATCH',
-                data: {},
-                success: function (res) {
-                    location.reload();
-                }
-            });
-        });
-
-    </script>
+    @vite('resources/js/pages/profile-ampel.js')
 @endpush
 

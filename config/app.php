@@ -60,8 +60,6 @@ use Illuminate\Support\Str;
 use Illuminate\Translation\TranslationServiceProvider;
 use Illuminate\Validation\ValidationServiceProvider;
 use Illuminate\View\ViewServiceProvider;
-use Yajra\DataTables\DataTablesServiceProvider;
-use Yajra\DataTables\Facades\DataTables;
 
 return [
 
@@ -228,7 +226,6 @@ return [
         TranslationServiceProvider::class,
         ValidationServiceProvider::class,
         ViewServiceProvider::class,
-        DataTablesServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -292,7 +289,6 @@ return [
         'URL' => URL::class,
         'Validator' => Validator::class,
         'View' => View::class,
-        'DataTables' => DataTables::class,
         'PDF' => Facade::class,
 
     ],

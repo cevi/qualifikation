@@ -18,18 +18,25 @@
             @endif
         </div>
         @if($hasSurveys)
-            <table class="table table-striped table-bordered" style="width:100%" id="datatable">
-                <thead>
-                    <tr>
-                        <th scope="col">Teilnehmer</th>
-                        <th scope="col">Leiter</th>
-                        <th scope="col">Kurs</th>
-                        <th scope="col">Abteilung</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">TN Qualifikation</th>
-                    </tr>
-                </thead>
-            </table>
+            @php
+                $table = [
+                    'url' => route('surveys.table'),
+                    'label' => 'Qualifikationen',
+                    'columns' => [
+                        ['key' => 'name', 'label' => 'Teilnehmer', 'link' => 'profile_url', 'linkTitle' => 'Zum Profil'],
+                        ['key' => 'leader', 'label' => 'Leiter'],
+                        ['key' => 'camp', 'label' => 'Kurs'],
+                        ['key' => 'group', 'label' => 'Abteilung'],
+                        ['key' => 'steps', 'label' => 'Status', 'type' => 'steps'],
+                        ['key' => 'actions', 'label' => 'TN Qualifikation', 'type' => 'actions'],
+                    ],
+                    'defaultSort' => [['id' => 'name', 'desc' => false]],
+                    'mobile' => ['title' => 'name', 'kicker' => 'group', 'lines' => ['leader', 'steps'], 'details' => ['camp']],
+                ];
+            @endphp
+            <div class="my-4" data-vue-component="data-table" data-props="{{ json_encode($table) }}">
+                <noscript>Die Liste braucht JavaScript.</noscript>
+            </div>
         @else
             <div class="flex flex-col items-center justify-center text-center bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs" style="padding: 3rem; margin-top: 1rem;">
                 <svg class="text-purple-400" style="width: 4rem; height: 4rem; margin-bottom: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -46,73 +53,9 @@
 
 
 @push('scripts')
-    <script type="module">
-        $(document).ready(function(){
-            $('.create').on('click', function(e){
-                e.preventDefault(); //cancel default action
-                Swal.fire({
-                    title: 'Qualifikationen erstellen?',
-                    text: 'Dies erstellt den Qualifikationsprozess für alle Teilnehmer deines Kurses, welche ihn noch nicht haben.',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ja',
-                    cancelButtonText: 'Abbrechen',
-                    confirmButtonColor: 'blue',
-                    cancelButtonColor: 'red',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajaxSetup({
-                            headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                }
-                        });
-                        $.ajax({
-                            url : "{!! route('surveys.store') !!}",
-                            type: 'POST',
-                            success: function(res) {
-                                location.reload();
-                            }
-                        });
-                    }
-                });
-            });
-            $('.opensurvey').on('click', function(e){
-                e.preventDefault(); //cancel default action
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                });
-                $.ajax({
-                    url : "{!! route('admin.camps.opensurvey') !!}",
-                    type: 'POST',
-                    data: {},
-                    success: function(res) {
-                        location.reload();
-                    }
-                });
-            });
-            if ($('#datatable').length) {
-                $('#datatable').DataTable({
-                    responsive: true,
-                    processing: true,
-                    serverSide: true,
-                    pageLength: 25,
-                    buttons: [],
-                    language: {
-                        "url": "/lang/Datatables.json"
-                    },
-                    ajax: "{!! route('surveys.CreateDataTables') !!}",
-                    columns: [
-                        { data: 'user', name: 'user_name' },
-                        { data: 'responsible', name: 'responsible' },
-                        { data: 'camp', name: 'camp' },
-                        { data: 'group', name: 'group' },
-                        { data: 'status', name: 'status', orderable:false,searchable:false},
-                        { data: 'Actions', name: 'Actions', orderable:false,searchable:false},
-                    ]
-                });
-            }
-        });
-    </script>
+    <script type="application/json" id="surveys-index-config">@json(['createUrl' => route('surveys.store'), 'openSurveyUrl' => route('admin.camps.opensurvey')])</script>
+    @vite('resources/js/pages/surveys-index.js')
+    @if($hasSurveys)
+        @vite('resources/js/islands.js')
+    @endif
 @endpush

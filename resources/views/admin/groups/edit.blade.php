@@ -28,38 +28,15 @@
                     </div>
                 {!! Form::close()!!}
 
+                @error('group')
+                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">{{ $message }}</div>
+                @enderror
                 {!! Form::model($group, ['method' => 'DELETE', 'action'=>['AdminGroupsController@destroy',$group->id], 'id'=> "DeleteForm"]) !!}
                 <div class="form-group">
-                    {!! Form::submit('Gruppe löschen', ['class' => 'btn btn-danger confirm'])!!}
+                    {!! Form::submit('Gruppe löschen', ['class' => 'btn btn-danger confirm', 'data-confirm' => 'Gruppe löschen?', 'data-confirm-text' => 'Willst du die Gruppe wirklich löschen?'])!!}
                 </div>
                 {!! Form::close()!!}
                 </div>
         </div>
     </div>
 @endsection
-
-
-@push('scripts')
-    <script type="module">
-        $(document).ready(function(){
-            $('.confirm').on('click', function(e){
-                e.preventDefault(); //cancel default action
-
-                Swal.fire({
-                    title: 'Kurs löschen?',
-                    text: 'Beim Kurs löschen werden alle Leiter, Teilnehmer und Qualifikationen gelöscht.',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ja',
-                    cancelButtonText: 'Abbrechen',
-                    confirmButtonColor: 'blue',
-                    cancelButtonColor: 'red',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById("DeleteForm").submit();
-                    }
-                });
-            });
-        });
-    </script>
-@endpush

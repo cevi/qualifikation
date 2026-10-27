@@ -103,7 +103,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
         Route::resource('admin/users', 'AdminUsersController', ['as' => 'admin']);
-        Route::get('users/createDataTables', ['as' => 'users.CreateDataTables', 'uses' => 'AdminUsersController@createDataTables']);
+        Route::get('users/table', ['as' => 'users.table', 'uses' => 'AdminUsersController@tableData']);
         Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
         Route::post('admin/users/import', ['as' => 'users.import', 'uses' => 'AdminUsersController@import']);
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
@@ -111,7 +111,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::get('admin/camps/export/', ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
-        Route::get('camps/createDataTables', ['as' => 'camps.CreateDataTables', 'uses' => 'AdminCampsController@createDataTables']);
+        Route::get('camps/table', ['as' => 'camps.table', 'uses' => 'AdminCampsController@tableData']);
 
         Route::resource('admin/camp_types', 'CampTypesController', ['as' => 'admin']);
 
@@ -121,7 +121,7 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
 
         Route::resource('admin/surveys', 'AdminSurveysController')->except(['create', 'show']);
-        Route::get('surveys/createDataTables', ['as' => 'surveys.CreateDataTables', 'uses' => 'AdminSurveysController@createDataTables']);
+        Route::get('surveys/table', ['as' => 'surveys.table', 'uses' => 'AdminSurveysController@tableData']);
         Route::get('surveys/downloadPDF', ['as' => 'surveys.downloadPDF', 'uses' => 'AdminSurveysController@downloadPDF']);
 
         Route::resource('admin/chapters', 'AdminChaptersController')->except(['create', 'show']);
