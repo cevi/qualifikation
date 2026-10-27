@@ -455,7 +455,7 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 
 - **Muster:** Pro Test das Markup der Blade-Ansicht nachbauen (`document.body.innerHTML`), dann `vi.resetModules()` und das Modul mit `await import(...)` laden; es startet sich beim Import selbst. `fetch` per `vi.stubGlobal`, SweetAlert2 per `vi.mock('sweetalert2')`, Zeit per `vi.useFakeTimers()`.
 - **Grenzen:** Ob Modul, Server und Seite zusammenspielen, prüfen die Browser-Tests (z. B. `SurveyAutosaveTest`, `StandardTextsTest`).
-- **Node:** Vitest 4 läuft mit Node 20 und 22. Container (`docker/8.5/Dockerfile`), CI und Prod-Build stehen auf Node 22; nach dem Neubau des Containers ist auch Vitest 5 möglich (braucht Node ≥ 22.12).
+- **Node:** Vitest 5 braucht Node ≥ 22.12 (und Vite ≥ 6.4). Container (`docker/8.5/Dockerfile`), CI und Prod-Build stehen auf Node 22.
 
 | Datei | Fälle | Prüft |
 |---|---:|---|

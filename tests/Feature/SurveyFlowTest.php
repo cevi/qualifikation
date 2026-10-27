@@ -144,6 +144,57 @@ class SurveyFlowTest extends TestCase
         $this->assertSame(SurveyStatus::TnAbgeschlossen, $survey->survey_status_id);
     }
 
+    public static function leaderAssessesBeforeRelease(): array
+    {
+        return ['vor Freigabe 2. Runde' => [true], 'während 2. Runde' => [false]];
+    }
+
+    /**
+     * Rückmeldung: Der Gruppenleiter bewertet, bevor die TN-Person die 2. Selbsteinschätzung gemacht hat,
+     * und sie sieht dann seine Bewertung als ihre 2. Einschätzung. Leitung bewertet vor oder nach der Freigabe der 2. Runde.
+     */
+    #[DataProvider('leaderAssessesBeforeRelease')]
+    public function test_leader_assessment_does_not_show_up_as_second_self_assessment(bool $beforeRelease)
+    {
+        $s = CampScenario::create();
+        $question = $this->question($s);
+
+        $this->actingAs($s->participant)->patch(route('survey.update', $s->survey), [
+            'answers' => [$question->id => $this->answer('+')],
+            'comments' => [$question->id => 'Erste Runde'],
+            'action' => 'close',
+        ]);
+        $leaderAssesses = fn () => $this->actingAs($s->gruppenleiter)->patch(route('survey.update', $s->survey), [
+            'answers' => [$question->id => $this->answer('-')],
+            'comments' => [$question->id => 'Sicht der Leitung'],
+            'comment' => 'Gesamteindruck',
+        ])->assertRedirect();
+        if ($beforeRelease) {
+            $leaderAssesses();
+        }
+        $this->actingAs($s->kursleiter)->post(route('admin.camps.opensurvey'));
+        if (! $beforeRelease) {
+            $leaderAssesses();
+        }
+
+        $question->refresh();
+        $this->assertSame(SurveyStatus::ZweiteRundeOffen, $s->survey->fresh()->survey_status_id);
+        $this->assertSame($this->answer('-'), $question->answer_leader_id);
+        $this->assertSame($this->answer('0'), $question->answer_second_id);
+        $this->assertNotSame('Sicht der Leitung', $question->comment_second);
+
+        // 2. Selbsteinschätzung ausfüllen: vorausgewählt ist "0", nicht die Bewertung der Leitung.
+        $response = $this->actingAs($s->participant->fresh())->get(route('survey.survey', $s->survey))->assertOk();
+        $this->assertSame([$this->answer('0')], $this->checkedAnswers($response->getContent(), $question));
+        $response->assertDontSee('Sicht der Leitung')->assertDontSee('Gesamteindruck');
+        $this->assertChartWithoutLeader($response->viewData('datasets'));
+
+        // Vergleich: nur die eigenen beiden Runden.
+        $response = $this->actingAs($s->participant->fresh())->get(route('survey.compare', $s->survey))->assertOk();
+        $response->assertSee('Erste Runde')->assertDontSee('Sicht der Leitung')->assertDontSee('Gesamteindruck');
+        $this->assertChartWithoutLeader($response->viewData('datasets'));
+    }
+
     public function test_releasing_first_round_with_status_control_lets_participants_start()
     {
         $s = CampScenario::create();
@@ -254,6 +305,22 @@ class SurveyFlowTest extends TestCase
         ]);
 
         return $question;
+    }
+
+    /** IDs der vorausgewählten Antworten einer Frage im Formular. */
+    private function checkedAnswers(string $html, SurveyQuestion $question): array
+    {
+        preg_match_all('/<input[^>]*name="answers\['.$question->id.'\]"[^>]*>/', $html, $inputs);
+        $checked = array_filter($inputs[0], fn ($input) => str_contains($input, 'checked'));
+
+        return array_values(array_map(fn ($input) => (int) preg_replace('/.*value="(\d+)".*/s', '$1', $input), $checked));
+    }
+
+    /** Diagramm der TN-Person: 1. und 2. Selbsteinschätzung, die 2. noch leer (alles 0). */
+    private function assertChartWithoutLeader(array $datasets): void
+    {
+        $this->assertSame(['1. Selbsteinschätzung', '2. Selbsteinschätzung'], array_column($datasets[0], 'label'));
+        $this->assertSame([0], array_values(array_unique($datasets[0][1]['data'])));
     }
 
     private function answer(string $name): int

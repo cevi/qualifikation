@@ -16,8 +16,8 @@
         "laravel-datatables-vite": "^0.5.2",
         "laravel-vite-plugin": "^1.2.0",
         "tailwindcss": "^4.3.3",
-        "vite": "^6.3.5",
-        "vitest": "^4.1.12"
+        "vite": "^6.4.5",
+        "vitest": "^5.0.5"
     },
     "dependencies": {
         "bootstrap-icons": "^1.13.1",
