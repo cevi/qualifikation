@@ -463,6 +463,9 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 | [`standard-texts.test.js`](js/standard-texts.test.js) | 11 | `//` öffnet die Textbausteine (nur zwei schnelle `/` direkt vor dem Cursor), Pfeiltasten mit Umspringen, Enter und Klick fügen an der Stelle der `//` ein (auch mitten im Text), ein weiteres `/` danach öffnet nicht erneut, Escape und Kreuz schliessen, Tasten bei geschlossener Auswahl unberührt |
 | [`users-import.test.js`](js/users-import.test.js) | 3 | Import aus der Cevi-DB: Adresse aus `data-url` und CSRF-Token, übersprungene Namen als Text, Fehlermeldung des Servers im Dialog |
 | [`escape-html.test.js`](js/escape-html.test.js) | 2 | `escapeHtml()` für HTML-Vorlagen |
+| [`user-search.test.js`](js/user-search.test.js) | 6 | Person hinzufügen: Suche ab drei Zeichen und nach kurzer Pause, Vorschlag übernimmt Name und `user_id`, Ändern löscht die ID, keine veralteten oder späten Antworten, Netzwerkfehler |
+| [`counter-up.test.js`](js/counter-up.test.js) | 3 | Startseite: Zähler zählen erst hoch, wenn sie ins Bild kommen (`IntersectionObserver` simuliert), in Schritten bis zum Zielwert |
+| [`theme-toggle.test.js`](js/theme-toggle.test.js) | 4 | Hell/Dunkel-Umschalter: Klasse `dark`, gespeicherte Wahl und Symbol, auch ohne gespeicherte Wahl (Systemeinstellung) |
 
 ## Browser-Tests (Dusk)
 
@@ -488,6 +491,7 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 4 | Person, Kurs, Gruppe, Rückmeldung: "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag |
 | [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung wählt Antwort und schreibt Kommentar, ohne zu speichern: nach "Gespeichert ✓" in der DB und nach dem Neuladen noch da |
 | [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
+| [`UserSearchTest`](Browser/UserSearchTest.php) | 1 | Person hinzufügen: Vorschlag aus der Personensuche erscheint, die Wahl setzt Name und `user_id`, die Person ist danach im Kurs |
 | [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
 
 ### Pixelvergleich (vor und nach einem CSS-Umbau)

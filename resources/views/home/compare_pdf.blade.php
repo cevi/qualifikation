@@ -22,12 +22,6 @@
 
     <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <!-- Styles -->
     @vite([
         'resources/css/legacy.css',
@@ -104,8 +98,6 @@
 </section>
 
 
-<!-- jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
     @include('home.radar')
 
 </body>

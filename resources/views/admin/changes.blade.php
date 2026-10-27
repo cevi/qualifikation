@@ -7,8 +7,8 @@
         class="section-features block p-6 bg-gray-100 border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Rückmeldungen</h5>
         @if (session()->has('success'))
-            <div class="alert alert-dismissable alert-success">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <div id="alert-success" class="alert alert-dismissable alert-success">
+                <button type="button" class="close" data-dismiss-target="#alert-success" aria-label="Schliessen">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <strong>

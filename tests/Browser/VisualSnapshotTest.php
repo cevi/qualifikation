@@ -89,7 +89,7 @@ class VisualSnapshotTest extends DuskTestCase
 
     private function snapshot(Browser $browser, string $set, string $url, int $width, string $label, bool $dark): void
     {
-        // Farbschema wie der Umschalter im Menü (header.blade.php und custom.js lesen localStorage)
+        // Farbschema wie der Umschalter im Menü (header.blade.php und toggle-switch.blade.php lesen localStorage)
         if ($dark !== $this->dark) {
             $browser->visit($url)->script('localStorage.setItem("color-theme", "'.($dark ? 'dark' : 'light').'")');
             $this->dark = $dark;

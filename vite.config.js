@@ -18,10 +18,15 @@ export default defineConfig({
                 'resources/css/legacy.css',
                 'resources/css/app.css',
                 'resources/js/app.js',
+                // Schwere Bibliotheken, nur auf ihren Seiten
+                'resources/js/charts.js',
+                'resources/js/cropper.js',
                 // Seitenskripte, eingebunden per @vite in der jeweiligen Ansicht (Tests: tests/js)
                 'resources/js/pages/survey-autosave.js',
                 'resources/js/pages/standard-texts.js',
                 'resources/js/pages/users-import.js',
+                'resources/js/pages/user-search.js',
+                'resources/js/pages/counter-up.js',
             ],
             refresh: true
         }),

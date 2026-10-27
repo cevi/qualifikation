@@ -3,9 +3,9 @@
 @section('content')
     <div class="container-fluid">
         @if(Session::has('message'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div id="alert-message" class="alert alert-success alert-dismissible fade show" role="alert">
                 <p>{{ Session::get('message') }}</p>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <button type="button" class="close" data-dismiss-target="#alert-message" aria-label="Schliessen">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

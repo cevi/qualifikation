@@ -1,3 +1,4 @@
+@vite('resources/js/charts.js')
 <script type="module">
     $(document).ready(function () {
 

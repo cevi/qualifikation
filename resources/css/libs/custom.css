@@ -71,9 +71,11 @@ body {
     font-weight: 400;
 }
 
+/* Font Awesome 6: Kreis (regular) und Häkchen (solid); früher die Font-Awesome-4-Schrift aus dem Kit */
 .progressbar .step0:before {
-    font-family: FontAwesome;
-    content: "\f10c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 400;
+    content: "\f111";
     color: #fff;
 }
 
@@ -135,7 +137,8 @@ body {
 }
 
 .progressbar li.active:before {
-    font-family: FontAwesome;
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
     content: "\f00c";
 }
 

@@ -7,8 +7,8 @@
         <div class="row">
             <div class="col-sm-3">
                 @if (session()->has('success'))
-                    <div class="alert alert-dismissable alert-success">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <div id="alert-success" class="alert alert-dismissable alert-success">
+                        <button type="button" class="close" data-dismiss-target="#alert-success" aria-label="Schliessen">
                             <span aria-hidden="true">&times;</span>
                         </button>
                         <strong>

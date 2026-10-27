@@ -3,32 +3,61 @@
     "file": "assets/sweetalert2.esm.all-0Z_61IYw.js",
     "name": "sweetalert2.esm.all"
   },
-  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
-    "file": "assets/bootstrap-icons-BeopsB42.woff",
-    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.ttf": {
+    "file": "assets/fa-regular-400-DZaxPHgR.ttf",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.ttf"
   },
-  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
-    "file": "assets/bootstrap-icons-mSm7cUeB.woff2",
-    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-BjRzuEpd.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf": {
+    "file": "assets/fa-solid-900-D0aA9rwL.ttf",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf"
+  },
+  "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-CTAAxXor.woff2",
+    "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-DobwQrMH.css",
+    "file": "assets/app-BRgiLoWa.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-Cb88ue_i.css",
+    "file": "assets/legacy-vOxdIemk.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Bc33-q2c.js",
+    "file": "assets/app-Cgo7lJR7.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
       "_sweetalert2.esm.all-0Z_61IYw.js"
     ]
+  },
+  "resources/js/charts.js": {
+    "file": "assets/charts-CrjkCxT0.js",
+    "name": "charts",
+    "src": "resources/js/charts.js",
+    "isEntry": true
+  },
+  "resources/js/cropper.js": {
+    "file": "assets/cropper-Da2JrCEP.js",
+    "name": "cropper",
+    "src": "resources/js/cropper.js",
+    "isEntry": true,
+    "css": [
+      "assets/cropper-BluxOekZ.css"
+    ]
+  },
+  "resources/js/pages/counter-up.js": {
+    "file": "assets/counter-up-z7Q173Nq.js",
+    "name": "counter-up",
+    "src": "resources/js/pages/counter-up.js",
+    "isEntry": true
   },
   "resources/js/pages/standard-texts.js": {
     "file": "assets/standard-texts-CN6rQynV.js",
@@ -40,6 +69,12 @@
     "file": "assets/survey-autosave-CO7ufMdB.js",
     "name": "survey-autosave",
     "src": "resources/js/pages/survey-autosave.js",
+    "isEntry": true
+  },
+  "resources/js/pages/user-search.js": {
+    "file": "assets/user-search-DXGjT6rh.js",
+    "name": "user-search",
+    "src": "resources/js/pages/user-search.js",
     "isEntry": true
   },
   "resources/js/pages/users-import.js": {

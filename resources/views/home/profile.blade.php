@@ -1,6 +1,5 @@
 @extends('layouts.layout')
 @section('survey_content')
-    {{--@include('includes.tinyeditor')--}}
     <x-layouts.page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
     <div class="card border-primary">
         <div class="card-body cardbody-navtabs">

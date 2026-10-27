@@ -183,3 +183,6 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    @vite('resources/js/pages/counter-up.js')
+@endpush

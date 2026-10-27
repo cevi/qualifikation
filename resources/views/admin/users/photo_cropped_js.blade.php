@@ -1,3 +1,4 @@
+@vite('resources/js/cropper.js')
 <script type="module">
     var $modal = $('#modal');
     var image = document.getElementById('image');

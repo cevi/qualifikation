@@ -1,9 +1,4 @@
 @extends('layouts.admin')
-@section('styles')
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js"></script>
-@endsection
 @section('content')
     <div class="container-fluid">
         <!-- Page Header-->
@@ -15,13 +10,14 @@
                 {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add']) !!}
                 <div class="form-group">
                         {!! Form::label('username', 'Name:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                        {!! Form::text('username', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 autocomplete_txt', 'placeholder' => 'name@abt', 'required']) !!}
+                        {!! Form::text('username', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'placeholder' => 'name@abt', 'required', 'list' => 'user-suggestions', 'autocomplete' => 'off', 'data-search-url' => route('searchajaxuser')]) !!}
+                        <datalist id="user-suggestions"></datalist>
                 </div>
                 <div class="form-group">
                     {!! Form::label('role_id', 'Rolle:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
                     {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required']) !!}
                 </div>
-                {!! Form::hidden('user_id', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 autocomplete_txt']) !!}
+                {!! Form::hidden('user_id') !!}
                 <div class="form-group">
                     {!! Form::submit('Person Hinzufügen', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800'])!!}
                 </div>
@@ -94,7 +90,7 @@
                     <div class="img-container">
                         <div class="row">
                             <div class="col-md-8">
-                                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+                                <img id="image" alt="Gewähltes Bild">
                             </div>
                             <div class="col-md-4">
                                 <div class="preview"></div>
@@ -111,44 +107,6 @@
     </div>
 @endsection
 @push('scripts')
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script> --}}
     @include('admin/users/photo_cropped_js')
-    <script type="module">
-        //autocomplete script
-        $(document).on('focus','.autocomplete_txt',function(){
-            var type = $(this).attr('name');
-
-            if(type =='username') var autoType='username';
-
-            $(this).autocomplete({
-                minLength: 3,
-                highlight: true,
-                source: function( request, response ) {
-                    $.ajax({
-                        url: "{{ route('searchajaxuser') }}",
-                        dataType: "json",
-                        data: {
-                            term : request.term,
-                            type : type,
-                        },
-                        success: function(data) {
-                            var array = $.map(data, function (item) {
-                            return {
-                                label: item['username'] + ' - ' +  item['email'],
-                                value: item[autoType],
-                                data : item
-                            }
-                        });
-                            response(array)
-                        }
-                    });
-                },
-                select: function( event, ui ) {
-                    var data = ui.item.data;
-                    $("[name='username']").val(data.username);
-                    $("[name='user_id']").val(data.id);
-                }
-            });
-        });
-    </script>
+    @vite('resources/js/pages/user-search.js')
 @endpush
