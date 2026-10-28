@@ -98,7 +98,7 @@
 
                 @foreach($surveys as $survey)
                     <figure
-                        class="flex flex-col items-center justify-center p-8 text-center border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
+                        class="flex flex-col items-center justify-center p-4 sm:p-8 text-center border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
                         id="Chart-{{$loop->iteration}}">
                         <!-- Recent Activities Widget      -->
                         <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">

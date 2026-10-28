@@ -193,7 +193,7 @@
     --color-primer-shadow-inset: 0 0 transparent;
     --color-fg-default: #adbac7;
     --color-accent-fg: #539bf5;
-    --color-border: #fafafa;
+    --color-border: #444c56;
     --color-logo:  #F4F7FA;
     --color-body: var(--app-gray-400);
     --color-neutral-secondary-medium: var(--app-gray-800);

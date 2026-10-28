@@ -1,7 +1,6 @@
 @extends('layouts.layout')
 
 @section('survey_content')
-    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     @foreach ($surveys as $survey)
         <x-layouts.page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         <p>

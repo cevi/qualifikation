@@ -20,12 +20,12 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CL6Io4oj.css",
+    "file": "assets/app-BlUtCasu.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-C9B64lrh.css",
+    "file": "assets/legacy-DUzyrmwf.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },

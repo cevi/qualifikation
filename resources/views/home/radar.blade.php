@@ -26,6 +26,9 @@
 
         for (var [i, dataset] of Object.entries(datasets_array)) {
             var RADARCHART = document.getElementById('radarChart-' + (parseInt(i) + 1));
+            // Schmal (Handy, Dashboard-Kachel): nur die Nummern am Rand, der ganze Name steht im Tooltip.
+            // Breit: flacher, damit oben und unten kein leerer Rand bleibt.
+            var compact = RADARCHART.parentElement.clientWidth < 560;
 
             Chart.defaults.color = textColor;
 
@@ -36,6 +39,7 @@
                         datasets: dataset
                     },
                     options: {
+                        aspectRatio: compact ? 1 : 1.4,
                         scales: {
                             r: {
                                 startAngle: 15,
@@ -48,9 +52,9 @@
                                     z: 5,
                                 },
                                 pointLabels: {
-                                    // callback: function (pointLabel, index, labels) {
-                                    // return window.innerWidth > 1600 ? pointLabel : ' ';
-                                    // },
+                                    callback: function (label) {
+                                        return compact ? String(label).split(' ')[0] : label;
+                                    },
                                     font: {
                                         size: window.innerWidth > 1600 ? 16 : 12,
                                         weight: function (pointLabel, index, labels) {
@@ -70,15 +74,6 @@
 
                             },
                         },
-                        tooltips: {
-                            enabled: true,
-                            callbacks:
-                                {
-                                    label: function (tooltipItem, data) {
-                                        return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                                    }
-                                }
-                        },
                     },
                     plugins: [{
                         beforeInit: function (chart) {
@@ -89,7 +84,6 @@
                             })
                         },
                     }],
-                    responsive: true
                 }
             );
         }
