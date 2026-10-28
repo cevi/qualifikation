@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-4 md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
                 <x-forms.form :action="route('admin.camps.store')" accept-charset="UTF-8" method="POST">
                     <x-forms.container> 
                         <x-forms.text label="Name:" name="name" required=true/>
@@ -34,7 +34,7 @@
                     </x-forms.container> 
                 </x-forms.form>
             </div>
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @php
                     $table = [
                         'url' => route('camps.table'),

@@ -1,13 +1,14 @@
 @extends('layouts.admin')
 
 @section('content')
-        <div class="container-fluid">
+        <div class="px-4 md:px-12">
             <!-- Page Header-->
             <x-layouts.page-title :title="$title" :help="$help"/>
-            <div class="row">
-                <div class="col-sm-9">
+            <div class="grid grid-cols-12 sm:gap-x-8">
+                <div class="min-w-0 col-span-12 sm:col-span-9">
                     @if ($camp_types)
-                        <table class="table">
+                        <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                        <table class="list-table">
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
@@ -23,6 +24,7 @@
                             </tbody>
                         @endforeach
                         </table>
+                        </div>
                     @endif
                 </div>
             </div>

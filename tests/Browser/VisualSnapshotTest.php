@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 use Tests\Feature\Smoke\PagesRenderTest;
@@ -46,6 +47,10 @@ class VisualSnapshotTest extends DuskTestCase
         $pages = collect(self::GUEST_PAGES)->map(fn ($url) => ['gast', $url, "gast $url"]);
         foreach (PagesRenderTest::pages() as $label => [$role, $url]) {
             $pages->push([$role, $url($s), $label]);
+        }
+        // Nur einzelne Seiten, z. B. SNAPSHOT_ONLY=admin (Teil des Namens, mehrere mit Komma)
+        if ($only = getenv('SNAPSHOT_ONLY')) {
+            $pages = $pages->filter(fn ($page) => Str::contains($page[2], explode(',', $only)))->values();
         }
 
         $this->browse(function (Browser $browser) use ($s, $set, $pages) {

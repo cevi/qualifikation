@@ -1,12 +1,9 @@
 @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <ul>
+    <x-layouts.alert type="danger">
+        <ul class="list-disc ps-4">
             @foreach ($errors->all() as $error)
-                <li>
-                    {{$error}}
-                </li>
+                <li>{{ $error }}</li>
             @endforeach
-        </ul>    
-    </div>
-        
-    @endif
+        </ul>
+    </x-layouts.alert>
+@endif

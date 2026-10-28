@@ -1,32 +1,33 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-4 md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
                 {!! Form::open(['action'=>'AdminAnswersController@store']) !!}
-                    <div class="form-group">
-                        {!! Form::label('name', 'Antwort:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('name', 'Antwort:', ['class' => 'field-label']) !!}
+                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('count', 'Wertung:') !!}
-                        {!! Form::text('count', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('count', 'Wertung:', ['class' => 'field-label']) !!}
+                        {!! Form::text('count', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('description', 'Beschreibung:') !!}
-                        {!! Form::text('description', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('description', 'Beschreibung:', ['class' => 'field-label']) !!}
+                        {!! Form::text('description', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Antwort erstellen', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        {!! Form::submit('Antwort erstellen', ['class' => 'button-primary'])!!}
                     </div>
                 {!! Form::close()!!}
             </div>    
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($answers)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Wertung</th>
@@ -48,6 +49,7 @@
                         </tbody>
                     @endforeach
                     </table>
+                    </div>
                 
                 @endif
 

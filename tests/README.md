@@ -130,6 +130,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 12 | Beschriftungen, Werte und Sichtbarkeit der Spider-Graphen |
 | Import & Login | [`CeviDbImportTest`](Feature/CeviDbImportTest.php) | 12 | Import aus der Cevi-DB (API und JSON-Datei) |
 | Import & Login | [`HitobitoLoginTest`](Feature/HitobitoLoginTest.php) | 11 | Login über Cevi-DB und JEMK-DB |
+| Import & Login | [`AuthPagesTest`](Feature/AuthPagesTest.php) | 3 | Login und Registrieren zeigen Fehler unter dem Feld (falsches Passwort, Cevi-DB, doppelte E-Mail), behalten Eingaben, aber nie das Passwort |
 | Rückmeldungen | [`PostFilesTest`](Feature/PostFilesTest.php) | 9 | Dateianhänge |
 | Exporte | [`ExportsTest`](Feature/ExportsTest.php) | 5 | Excel-Export und Druckansicht (PDF) |
 | Profil | [`ProfileTest`](Feature/ProfileTest.php) | 3 | Profilseite und Vor/Zurück-Navigation |
@@ -512,6 +513,7 @@ php tests/Browser/compare-snapshots.php tests/Browser/screenshots/before tests/B
 ```
 
 - **Zuerst ein Kontrolllauf:** zweimal `before` mit demselben Stand, die beiden müssen pixelgleich sein. Der Test hält dafür fest, was der Server sonst je Lauf anders zeigt: Zeitstempel ("vor X Minuten"), "Letztes Login" und die Slugs der Personen (stecken in Links; bis Oktober 2026 sortierte die Quali-Liste danach).
+- **Nur einzelne Seiten:** `SNAPSHOT_ONLY="admin: Gruppen,Kurs erstellen"` (Teile der Namen aus `PagesRenderTest`, Komma als Trenner), z. B. mit `SNAPSHOT_SET=check` für einen schnellen Blick nach einer Änderung.
 - **Unterschiede:** `compare-snapshots.php` meldet Fotos mit anderer Grösse und abweichende Pixel, im Ordner `diff` sind sie rot markiert.
 - **Nicht abbrechen:** Dusk ersetzt während des Laufs `.env` durch `.env.dusk.local`. Wird der Lauf abgebrochen, liegt das Original in `.env.backup`, und die App läuft mit der Dusk-Umgebung, bis `.env.backup` zurück nach `.env` kopiert ist (das macht auch der nächste vollständige Dusk-Lauf).
 - **Grenzen:** Geschlossene Fenster und Menüs sind auf den Fotos nicht zu sehen, ebenso Fokus- und Hover-Zustände.

@@ -1,42 +1,36 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-4 md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
                 @if (session()->has('success'))
-                    <div id="alert-success" class="alert alert-dismissable alert-success">
-                        <button type="button" class="close" data-dismiss-target="#alert-success" aria-label="Schliessen">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <strong>
-                            {!! session()->get('success') !!}
-                        </strong>
-                    </div>
+                    <x-layouts.alert id="alert-success"><strong>{!! session()->get('success') !!}</strong></x-layouts.alert>
                 @endif
                 {!! Form::open(['action'=>'FeedbackController@send']) !!}
-                    <div class="form-group">
-                        {!! Form::label('title', 'Titel:') !!}
-                        {!! Form::text('title', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('title', 'Titel:', ['class' => 'field-label']) !!}
+                        {!! Form::text('title', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('description', 'Beschreibung:') !!}
-                        {!! Form::textarea('description', null, ['class' => 'form-control', 'required', 'rows' => 3]) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('description', 'Beschreibung:', ['class' => 'field-label']) !!}
+                        {!! Form::textarea('description', null, ['class' => 'field-input', 'required', 'rows' => 3]) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('bug', 'Bug:') !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('bug', 'Bug:', ['class' => 'field-label']) !!}
                         {!! Form::checkbox('bug', '1', false) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Issue auf Github erstellen', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        {!! Form::submit('Issue auf Github erstellen', ['class' => 'button-primary'])!!}
                     </div>
                 {!! Form::close()!!}
             </div>
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($feedbacks)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Feedback</th>
@@ -52,6 +46,7 @@
                             </tbody>
                         @endforeach
                     </table>
+                    </div>
                 @endif
             </div>
         </div>

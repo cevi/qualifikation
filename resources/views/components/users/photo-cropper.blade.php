@@ -12,7 +12,7 @@
         </button>
     </div>
     <div class="grid gap-4 p-4 md:grid-cols-3 md:p-5">
-        <div class="md:col-span-2">
+        <div class="min-w-0 md:col-span-2">
             <img alt="Gewähltes Bild" class="max-h-[60vh]">
         </div>
         <div class="preview"></div>

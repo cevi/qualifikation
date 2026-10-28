@@ -1,24 +1,24 @@
 @extends('layouts.admin')
 @section('content')
-    <div class="container-fluid">
+    <div class="px-4 md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-6">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-6">
                 {!! Form::model($survey, ['method' => 'PATCH', 'action'=>['AdminSurveysController@update', $survey->id]]) !!}
 
-                <div class="form-group">
-                    {!! Form::label('survey_status_id', 'Status:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::select('survey_status_id', [''=>'Wähle Status'] + $survey_statuses_id, $survey->survey_status_id?->value,  ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <div class="mb-2.5">
+                    {!! Form::label('survey_status_id', 'Status:', ['class' => 'field-label']) !!}
+                    {!! Form::select('survey_status_id', [''=>'Wähle Status'] + $survey_statuses_id, $survey->survey_status_id?->value,  ['class' => 'field-input']) !!}
                 </div>
 
-                <div class="form-group">
+                <div class="mb-2.5">
                     {!! Form::checkbox('update', '1', false, ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-xs focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600']) !!}
                     {!! Form::label('update', 'Allfällige Einträge löschen',  ['class' => 'ms-2 text-sm font-medium text-gray-900 dark:text-gray-300']) !!}
                 </div>
 
-                <div class="form-group">
-                    {!! Form::submit('Änderungen speichern', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800'])!!}
+                <div class="mb-2.5">
+                    {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
                 </div>
                 {!! Form::close()!!}
 
@@ -26,8 +26,8 @@
 
                 
                 {!! Form::open(['method' => 'DELETE', 'action'=>['AdminSurveysController@destroy',$survey]]) !!}
-                <div class="form-group">
-                    {!! Form::submit('Lösche Qualifikation', ['class' => 'focus:outline-hidden text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'])!!}
+                <div class="mb-2.5">
+                    {!! Form::submit('Lösche Qualifikation', ['class' => 'button-danger'])!!}
                 </div>
                 {!! Form::close()!!}
             </div>

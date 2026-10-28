@@ -247,3 +247,63 @@ input[type="button"].btn.btn-primary:hover {
 .bg-neutral-secondary-medium {
     background-color: var(--color-neutral-secondary-medium);
 }
+/*
+ * Bausteine für Formulare, Knöpfe und einfache Listen (Flowbite-Stil), statt Bootstrap form-group/form-control/btn
+ * und table. Ohne CSS-Ebene wie die Utilities. Genutzt in den Admin-Ansichten (Form::…) und in components/forms.
+ */
+.field-label {
+    @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white;
+}
+
+.field-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+}
+
+.field-file {
+    @apply block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 disabled:opacity-25 disabled:cursor-not-allowed;
+}
+
+.field-check {
+    @apply w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600;
+}
+
+.button-primary {
+    @apply inline-block text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800;
+}
+
+.button-danger {
+    @apply inline-block text-center focus:outline-hidden text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900;
+}
+
+.button-purple {
+    @apply inline-block text-center focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900;
+}
+
+.field-error {
+    @apply mt-2 text-sm text-red-600 dark:text-red-500;
+}
+
+.button-secondary {
+    @apply inline-block text-center text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 focus:outline-hidden;
+}
+
+.list-table {
+    @apply w-full text-sm text-left text-gray-600 dark:text-gray-300;
+}
+
+.list-table thead {
+    @apply text-xs uppercase text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300;
+}
+
+.list-table th,
+.list-table td {
+    @apply px-4 py-3 align-top;
+}
+
+.list-table tbody tr {
+    @apply border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+}
+
+.list-table a {
+    @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
+}

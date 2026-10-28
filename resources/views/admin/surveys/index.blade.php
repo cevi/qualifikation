@@ -1,11 +1,11 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container mx-auto">
+    <div>
         <x-layouts.page-title :title="$title" :help="$help"/>
         <!-- Page Header-->
-        <div class="row">
-            <div class="col-sm-4" style="margin-bottom: 10px;">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-4" style="margin-bottom: 10px;">
                 <a href="javascript:;" class="focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 create" role="button">Qualifikationen erstellen</a>
             </div>
             <x-surveys.survey-button text="Druckversion aller Qualifikationen" :has-surveys="$hasSurveys" url="{{ route('surveys.downloadPDF') }}" target="_blank" btn-class="" />

@@ -1,29 +1,30 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-4 md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
                 {!! Form::open(['action'=>'AdminChaptersController@store']) !!}
-                    <div class="form-group">
-                        {!! Form::label('number', 'Nummer:') !!}
-                        {!! Form::text('number', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('number', 'Nummer:', ['class' => 'field-label']) !!}
+                        {!! Form::text('number', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('name', 'Kapitel:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('name', 'Kapitel:', ['class' => 'field-label']) !!}
+                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Kapitel erstellen', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        {!! Form::submit('Kapitel erstellen', ['class' => 'button-primary'])!!}
                     </div>
                 {!! Form::close()!!}
                 @include('includes.form_error')
             </div>
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($chapters)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Nummer</th>
@@ -41,6 +42,7 @@
                             </tbody>
                         @endforeach
                     </table>
+                    </div>
                 @endif
             </div>
         </div>
