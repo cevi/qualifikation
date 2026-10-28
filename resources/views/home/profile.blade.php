@@ -1,8 +1,8 @@
 @extends('layouts.layout')
 @section('survey_content')
     <x-layouts.page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
-    <div class="card border-primary">
-        <div class="card-body cardbody-navtabs">
+    <div class="panel">
+        <div class="panel-body">
             @if($previousUser && $nextUser)
             <div class="flex items-center justify-between w-full mt-4 mb-4">
                 <!-- Previous Button -->
@@ -25,7 +25,7 @@
                 <div>
                     <div class="text-center-profile mbl">
                         <img src="{{$user->getAvatar()}}" alt="img"
-                                class="img-circle img-bor">
+                                class="img-bor">
                     </div>
                     <div class="profile_user">
                         <h3 class="user_name_max">{{$user->username}} {{$user->group['shortname'] ?? ''}}</h3>
@@ -50,7 +50,7 @@
                 </div>
                 <div>
                     <x-posts.post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'" :user="$user"/>
-                    <button type="button" id="new-feedback-btn" class="btn btn-primary mt-3">
+                    <button type="button" id="new-feedback-btn" class="button-primary mt-3">
                         Neue Rückmeldung
                     </button>
                 </div>

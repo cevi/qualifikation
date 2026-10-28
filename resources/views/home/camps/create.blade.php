@@ -1,35 +1,31 @@
 @extends('layouts.layout')
 @section('survey_content')
-    <div class="container-fluid">
+    <div class="px-4 md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help" :header=false/>
         @if ($errors->camps->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->camps->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+            <x-layouts.alert type="danger">
+            <ul class="list-disc ps-4">
+                @foreach ($errors->camps->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </x-layouts.alert>
         @endif
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
                  <x-forms.form :action="route('home.camps.store')" accept-charset="UTF-8" method="POST">
                     <x-forms.container> 
                         <x-forms.text label="Name:" name="name" required=true/>
                     </x-forms.container> 
                     <x-forms.container>                    
-                        <div class="row">
-                            <div class="col">
-                                <label for="camp_type_id" class="col block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kurstyp:</label>
-                            </div>
-                            <div class="col-auto">
-                                <a tabindex="-1" class="form-text small text-muted"
-                                    href="{{ route('camp_types.create') }}">
-                                    Eigenen Kurstyp erstellen?
-                                </a>
-                            </div>
-                            </div>
+                        <div class="flex items-baseline justify-between gap-2">
+                            <label for="camp_type_id" class="field-label">Kurstyp:</label>
+                            <a tabindex="-1" class="text-xs text-gray-500 hover:underline dark:text-gray-400"
+                                href="{{ route('camp_types.create') }}">
+                                Eigenen Kurstyp erstellen?
+                            </a>
+                        </div>
                         <x-forms.select label="Kurstyp:" name="camp_type_id" :collection="$camptypes" :withEmptyOption="true" :withoutLabel="true"  required=true/>
                     </x-forms.container>
                     <x-forms.container>

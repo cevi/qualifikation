@@ -307,3 +307,25 @@ input[type="button"].btn.btn-primary:hover {
 .list-table a {
     @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
 }
+
+/* Kasten mit Kopf, Inhalt und Fuss (statt Bootstrap card / card-header / card-body / card-footer) */
+.panel {
+    @apply relative mb-8 rounded-lg border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800;
+}
+
+.panel-header {
+    @apply flex items-center border-b border-gray-200 px-5 py-3 dark:border-gray-700;
+}
+
+.panel-body {
+    @apply p-5;
+}
+
+.panel-footer {
+    @apply border-t border-gray-200 px-5 py-3 text-right dark:border-gray-700;
+}
+
+/* Kleiner Knopf nur mit Symbol (Rückmeldung löschen/bearbeiten) */
+.button-icon {
+    @apply inline-flex items-center justify-center rounded-lg px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-700;
+}

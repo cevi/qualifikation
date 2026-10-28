@@ -3,7 +3,7 @@
 @section('survey_content')
     <x-layouts.page-title :title="$title" :help="$help" :header=false/>
     @if ($surveys)
-        <div class="card table-responsive">
+        <div class="relative mb-8 overflow-x-auto rounded-lg border border-gray-200 shadow-xs dark:border-gray-700">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>

@@ -1,9 +1,9 @@
-<div class="card radar-chart-example">
-    <div class="card-header d-flex align-items-center">
-        <h4 class="text-2xl font-bold dark:text-white">Kompetenzendarstellung {{$name}}</h4>
+<div class="panel">
+    <div class="panel-header">
+        <h4 class="min-w-0 text-xl font-bold sm:text-2xl dark:text-white">Kompetenzendarstellung {{$name}}</h4>
     </div>
-    <div class="card-body">
-        <div class="chart-container">
+    <div class="panel-body">
+        <div class="mx-auto my-5 w-[1000px] max-w-full">
             <canvas id="radarChart-{{$id}}" width="100%" height="100%"></canvas>
         </div>
     </div>
