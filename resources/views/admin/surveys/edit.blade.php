@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-    <div class="px-4 md:px-12">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">

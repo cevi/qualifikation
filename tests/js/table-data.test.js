@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
     compareValues,
     displayValue,
+    filterByValue,
     filterRows,
     isSortable,
     parseSorting,
@@ -69,6 +70,20 @@ describe('Suche', () => {
 
     it('durchsucht keine Bild-Adressen', () => {
         expect(filterRows(rows, columns, 'png')).toEqual([]);
+    });
+});
+
+describe('Filter nach Wert', () => {
+    const rows = [
+        { id: 1, finish: 'Ja', end_date: { display: '05.03.2026', sort: '2026-03-05' } },
+        { id: 2, finish: 'Nein', end_date: '' },
+    ];
+
+    it('behält nur Zeilen mit genau diesem Anzeigewert, ohne Wert alle', () => {
+        expect(filterByValue(rows, 'finish', 'Nein').map((row) => row.id)).toEqual([2]);
+        expect(filterByValue(rows, 'end_date', '05.03.2026').map((row) => row.id)).toEqual([1]);
+        expect(filterByValue(rows, 'finish', null)).toBe(rows);
+        expect(filterByValue(rows, undefined, 'Ja')).toBe(rows);
     });
 });
 

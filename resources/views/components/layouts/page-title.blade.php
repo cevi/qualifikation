@@ -1,7 +1,7 @@
 <section>
     @if($header)
         <div class="breadcrumb-holder">
-            <div class="container-fluid">
+            <div class="px-[15px] md:px-12">
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
                     @if(isset($help['main_title']))
@@ -12,7 +12,7 @@
             </div>
         </div>
     @endif
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <header>
             <h3 class="text-3xl font-bold dark:text-white">{{$title}} {{$subtitle}}
                 @if(isset($help['content']))

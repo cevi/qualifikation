@@ -18,6 +18,9 @@
     --breakpoint-sm: 30rem;
     --breakpoint-lg: 61rem;
 
+    /* Ecken wie bisher: Bootstraps .rounded-lg (0.3rem, !important) hat Tailwinds 0.5rem überall überschrieben */
+    --radius-lg: 0.3rem;
+
     /*
      * Zeilenhöhen der Schriftgrössen absolut wie in Tailwind 3. Tailwind 4 rechnet sie relativ zur Schriftgrösse
      * (text-sm: 1.43), die hier oft aus Bootstrap oder dem Theme kommt (0.9rem): 20.6 statt 20 px pro Zeile.
@@ -323,6 +326,15 @@ input[type="button"].btn.btn-primary:hover {
 
 .panel-footer {
     @apply border-t border-gray-200 px-5 py-3 text-right dark:border-gray-700;
+}
+
+/* Rückmeldung (x-posts.post): auf dem Handy als Karte, Angaben als graue Fusszeile mit Symbolen */
+.post-card {
+    @apply max-sm:mb-3 max-sm:rounded-lg max-sm:border max-sm:border-gray-200 max-sm:bg-white max-sm:p-3 max-sm:shadow-xs dark:max-sm:border-gray-700 dark:max-sm:bg-gray-800;
+}
+
+.post-meta {
+    @apply max-sm:flex max-sm:flex-wrap max-sm:gap-x-3 max-sm:pt-2 max-sm:text-left max-sm:text-gray-500 dark:max-sm:text-gray-400;
 }
 
 /* Kleiner Knopf nur mit Symbol (Rückmeldung löschen/bearbeiten) */

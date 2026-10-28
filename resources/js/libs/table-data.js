@@ -49,6 +49,14 @@ export function filterRows(rows, columns, term) {
     });
 }
 
+/** Zeilen, deren Spalte key genau diesen Anzeigewert hat; ohne Wert (null) alle. */
+export function filterByValue(rows, key, value) {
+    if (!key || value === null || value === undefined) {
+        return rows;
+    }
+    return rows.filter((row) => displayValue(row[key]) === value);
+}
+
 /** "role:asc,name:desc" → [{ id: 'role', desc: false }, …]; null, wenn leer oder ungültig. */
 export function parseSorting(param, columns) {
     if (!param) {

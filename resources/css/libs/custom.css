@@ -13,15 +13,6 @@ body {
     background-color: #f8fafc;
 }
 
-@media (min-width: 1200px) {
-    .container,
-    .container-sm,
-    .container-md,
-    .container-lg,
-    .container-xl {
-        max-width: 80%;
-    }
-}
 
 #myBtn {
     display: none; /* Hidden by default */
@@ -225,11 +216,6 @@ img {
     box-shadow: 0 0 20px 5px #2ecc71;
 }
 
-@media (min-width: 768px) {
-    .col-md-5 {
-        padding-left: 3rem !important;
-    }
-}
 
 .section-features {
     margin: 2rem;

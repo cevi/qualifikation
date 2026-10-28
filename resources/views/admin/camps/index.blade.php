@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="px-4 md:px-12">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
@@ -52,6 +52,15 @@
                         ],
                         'defaultSort' => [['id' => 'camp_type', 'desc' => false], ['id' => 'group', 'desc' => false], ['id' => 'name', 'desc' => false]],
                         'mobile' => ['title' => 'name', 'kicker' => 'camp_type', 'lines' => ['username', 'end_date']],
+                        'filter' => [
+                            'key' => 'finish',
+                            'label' => 'Kurse anzeigen',
+                            'options' => [
+                                ['label' => 'Alle', 'value' => null],
+                                ['label' => 'Offene', 'value' => 'Nein'],
+                                ['label' => 'Abgeschlossene', 'value' => 'Ja'],
+                            ],
+                        ],
                     ];
                 @endphp
                 <div data-vue-component="data-table" data-props="{{ json_encode($table) }}">

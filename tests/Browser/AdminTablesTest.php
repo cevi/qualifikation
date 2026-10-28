@@ -2,13 +2,15 @@
 
 namespace Tests\Browser;
 
+use App\Models\Camp;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 use Tests\Support\CampScenario;
 
 /**
  * Admin-Tabellen (components/DataTable.vue) mit den echten Endpunkten: Zeilen erscheinen, Suche und Sortierung
- * wirken, die Personenliste merkt sich die Sortierung in der Adresse. Logik: tests/js/data-table.test.js.
+ * wirken, die Kursliste filtert nach offen/abgeschlossen, die Personenliste merkt sich die Sortierung in der
+ * Adresse. Logik: tests/js/data-table.test.js.
  */
 class AdminTablesTest extends DuskTestCase
 {
@@ -61,6 +63,27 @@ class AdminTablesTest extends DuskTestCase
             $browser->loginAs($s->admin)->visit(route('admin.camps.index'))
                 ->waitForText($s->camp->name)
                 ->assertSeeLink('Export der Rückmeldungen');
+        });
+    }
+
+    public function test_camp_list_filters_open_and_finished_camps(): void
+    {
+        $s = CampScenario::create();
+        $finished = Camp::factory()->finished()->create(['name' => 'Abgeschlossener Kurs']);
+
+        $this->browse(function (Browser $browser) use ($s, $finished) {
+            $browser->loginAs($s->admin)->visit(route('admin.camps.index'))
+                ->waitForText($s->camp->name)
+                ->assertSee($finished->name)
+                ->press('Offene')
+                ->waitUntilMissingText($finished->name)
+                ->assertSee($s->camp->name)
+                ->press('Abgeschlossene')
+                ->waitForText($finished->name)
+                ->assertDontSee($s->camp->name)
+                ->press('Alle')
+                ->waitForText($s->camp->name)
+                ->assertSee($finished->name);
         });
     }
 

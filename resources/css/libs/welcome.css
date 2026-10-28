@@ -132,9 +132,8 @@
     RESPONSIVE BORDERS - BORDER-[BREAKPOINT]
    ------------------------
 */
-.border {
-    border: 1px solid #e7e7e7 !important;
-}
+/* .border { border: 1px solid #e7e7e7 !important } entfernt (Oktober 2026): überstimmte auf allen Seiten Tailwinds
+   Rahmenfarben, auch dark:border-*, und ergab helle Rahmen im Dunkelmodus. */
 
 @media (min-width: 576px) {
     .border-sm {

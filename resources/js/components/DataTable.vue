@@ -5,6 +5,8 @@
  *
  * Props aus Blade (data-props), Spalten siehe DataTableCell.js. mobile: { title, image, kicker, lines, details }
  * mit Spaltenschlüsseln; ohne Angabe erste Textspalte als Titel, die nächsten zwei als Zeilen, Rest unter "Mehr".
+ * filter: { key, label, options: [{ label, value }], default } zeigt Knöpfe, die nach dem Anzeigewert einer Spalte
+ * filtern (value null = alle).
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { getCoreRowModel, getPaginationRowModel, getSortedRowModel, useVueTable } from '@tanstack/vue-table';
@@ -12,6 +14,7 @@ import DataTableCell from './DataTableCell.js';
 import {
     compareValues,
     displayValue,
+    filterByValue,
     filterRows,
     isSortable,
     isTextColumn,
@@ -30,12 +33,16 @@ const props = defineProps({
     pageSize: { type: Number, default: 25 },
     mobile: { type: Object, default: null },
     label: { type: String, default: 'Tabelle' },
+    filter: { type: Object, default: null },
 });
 
 const rows = ref([]);
 const status = ref('loading');
 const search = ref('');
-const filteredRows = computed(() => filterRows(rows.value, props.columns, search.value));
+const filterValue = ref(props.filter?.default ?? null);
+const filteredRows = computed(() =>
+    filterRows(filterByValue(rows.value, props.filter?.key, filterValue.value), props.columns, search.value),
+);
 
 function sortingFromUrl() {
     if (!props.sortParam) {
@@ -79,7 +86,7 @@ const table = useVueTable({
     getPaginationRowModel: getPaginationRowModel(),
 });
 
-watch(search, () => {
+watch([search, filterValue], () => {
     pagination.value = { ...pagination.value, pageIndex: 0 };
 });
 
@@ -224,6 +231,25 @@ const mobileSort = computed({
                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 />
             </label>
+            <div v-if="filter" class="flex md:inline-flex" role="group" :aria-label="filter.label">
+                <button
+                    v-for="(option, index) in filter.options"
+                    :key="option.label"
+                    type="button"
+                    class="flex-1 border px-4 py-2.5 text-sm font-medium focus:z-10 focus:ring-2 focus:ring-blue-300 focus:outline-hidden dark:focus:ring-blue-800"
+                    :class="[
+                        index === 0 ? 'rounded-s-lg' : '-ms-px',
+                        index === filter.options.length - 1 ? 'rounded-e-lg' : '',
+                        (option.value ?? null) === filterValue
+                            ? 'z-10 border-blue-700 bg-blue-700 text-white dark:border-blue-600 dark:bg-blue-600'
+                            : 'border-gray-300 bg-white text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600',
+                    ]"
+                    :aria-pressed="(option.value ?? null) === filterValue"
+                    @click="filterValue = option.value ?? null"
+                >
+                    {{ option.label }}
+                </button>
+            </div>
             <label v-if="!isDesktop" class="block">
                 <span class="sr-only">Sortieren nach</span>
                 <select

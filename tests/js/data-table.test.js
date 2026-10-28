@@ -149,6 +149,35 @@ describe('Admin-Tabelle', () => {
         expect(wrapper.find('tbody').text()).toBe('Keine Einträge gefunden.');
     });
 
+    it('filtert über die Knöpfe nach dem Wert einer Spalte und kombiniert das mit der Suche', async () => {
+        const filter = {
+            key: 'role',
+            label: 'Rollen anzeigen',
+            options: [
+                { label: 'Alle', value: null },
+                { label: 'TN', value: 'Teilnehmer' },
+                { label: 'Leitende', value: 'Gruppenleiter' },
+            ],
+            default: 'Teilnehmer',
+        };
+        const wrapper = await render({ filter });
+        const button = (label) => wrapper.findAll('[role="group"] button').find((b) => b.text() === label);
+
+        expect(wrapper.find('[role="group"]').attributes('aria-label')).toBe('Rollen anzeigen');
+        expect(button('TN').attributes('aria-pressed')).toBe('true');
+        expect(names(wrapper)).toEqual(['Zora', 'Ben']);
+
+        await button('Leitende').trigger('click');
+        expect(button('Leitende').attributes('aria-pressed')).toBe('true');
+        expect(button('TN').attributes('aria-pressed')).toBe('false');
+        expect(names(wrapper)).toEqual(['anna']);
+        expect(wrapper.find('nav').text()).toContain('1–1 von 1 (gefiltert aus 3)');
+
+        await button('Alle').trigger('click');
+        await wrapper.find('input[type="search"]').setValue('ben');
+        expect(names(wrapper)).toEqual(['Ben']);
+    });
+
     it('blättert und springt bei einer neuen Suche zurück auf die erste Seite', async () => {
         const wrapper = await render({ pageSize: 2 });
         const next = () => wrapper.find('button[aria-label="Nächste Seite"]');

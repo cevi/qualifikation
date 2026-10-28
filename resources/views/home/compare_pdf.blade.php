@@ -32,7 +32,7 @@
 <body>
 <section>
     @foreach($surveys as $survey)
-        <div class="container-fluid" style="page-break-inside:avoid; page-break-after:always;">
+        <div class="px-[15px] md:px-12" style="page-break-inside:avoid; page-break-after:always;">
             <!-- Page Header-->
             <header>
                 <h2>Teilnehmer: {{$survey->campuser->user['username']}}</h2>
@@ -44,7 +44,7 @@
                     {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
                 </h2>
 
-                <table class="table">
+                <table class="list-table">
                     <thead>
                     <tr>
                         <th rowspan="2" width="50px">Nr.</th>
