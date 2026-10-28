@@ -12,6 +12,7 @@ use Tests\Support\CampScenario;
 
 /**
  * Löschen-Knöpfe fragen mit SweetAlert2 nach. "Abbrechen" darf nichts löschen, "Ja" löscht genau den gewählten Eintrag.
+ * Ebenso das Abschliessen der Selbsteinschätzung.
  */
 class DeleteConfirmationTest extends DuskTestCase
 {
@@ -93,6 +94,23 @@ class DeleteConfirmationTest extends DuskTestCase
 
         $this->assertModelMissing($second);
         $this->assertModelExists($first);
+    }
+
+    /** Auch das Abschliessen der Selbsteinschätzung fragt nach und schickt dann action=close mit. */
+    public function test_self_assessment_is_closed_only_after_confirming(): void
+    {
+        $s = CampScenario::create();
+        $button = 'button[name="action"][value="close"]';
+
+        $this->browse(function (Browser $browser) use ($s, $button) {
+            $browser->loginAs($s->participant)->visit(route('survey.survey', $s->survey->slug));
+
+            $this->cancelDialog($browser, $button);
+            $this->assertFalse($s->survey->fresh()->status()->isClosedByParticipant());
+
+            $this->confirmDialog($browser, $button);
+            $browser->waitUsing(10, 100, fn () => $s->survey->fresh()->status()->isClosedByParticipant());
+        });
     }
 
     private function cancelDialog(Browser $browser, string $button): void

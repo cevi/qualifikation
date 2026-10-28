@@ -69,7 +69,7 @@ class AdminSurveysController extends Controller
                     'done' => $survey->status()->isAtLeast($status),
                 ], array_values($steps)),
                 'actions' => [
-                    ['label' => 'Zur Qualifikationen', 'url' => route('survey.compare', $survey->slug)],
+                    ['label' => 'Zur Qualifikation', 'url' => route('survey.compare', $survey->slug)],
                     ['label' => 'Bearbeiten', 'url' => route('surveys.edit', $survey->slug)],
                 ],
             ];

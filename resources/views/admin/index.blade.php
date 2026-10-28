@@ -2,7 +2,9 @@
 
 @section('content')
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
-    <x-layouts.page-title :title="$title" :help="$help" :header=false/>
+    <div class="px-[15px] md:px-12">
+        <x-layouts.page-title :title="$title" :help="$help" :header=false/>
+    </div>
     <!-- Counts Section -->
     <section class="dashboard-counts section-padding">
         <div class="px-[15px] md:px-12">
@@ -10,8 +12,7 @@
                 <!-- Count item widget-->
                 <div class="px-[15px] md:w-1/4 w-1/2 max-[992px]:mb-5">
                     <div class="wrapper count-title flex">
-                        <div class="icon"><i class="icon-padnote"></i></div>
-                        <div class="name"><strong class="text-uppercase">Total Qualifikationsprozesse</strong>
+                        <div class="name min-w-0"><strong class="text-uppercase hyphens-auto wrap-break-word">Total Qualifikations&shy;prozesse</strong>
                             <div class="count-number">{{$surveys_all ?? ''}}</div>
                         </div>
                     </div>
@@ -19,8 +20,7 @@
                 <!-- Count item widget-->
                 <div class="px-[15px] md:w-1/4 w-1/2 max-[992px]:mb-5">
                     <div class="wrapper count-title flex">
-                        <div class="icon"><i class="icon-padnote"></i></div>
-                        <div class="name"><strong class="text-uppercase">1. Einschätzung ausgefüllt</strong>
+                        <div class="name min-w-0"><strong class="text-uppercase hyphens-auto wrap-break-word">1. Einschätzung ausgefüllt</strong>
                             <div class="count-number">{{$surveys_1offen ?? ''}}</div>
                         </div>
                     </div>
@@ -28,8 +28,7 @@
                 <!-- Count item widget-->
                 <div class="px-[15px] md:w-1/4 w-1/2 max-[992px]:mb-5">
                     <div class="wrapper count-title flex">
-                        <div class="icon"><i class="icon-padnote"></i></div>
-                        <div class="name"><strong class="text-uppercase">2. Einschätzung ausgefüllt</strong>
+                        <div class="name min-w-0"><strong class="text-uppercase hyphens-auto wrap-break-word">2. Einschätzung ausgefüllt</strong>
                             <div class="count-number">{{$surveys_2offen ?? ''}}</div>
                         </div>
                     </div>
@@ -37,8 +36,7 @@
                 <!-- Count item widget-->
                 <div class="px-[15px] md:w-1/4 w-1/2 max-[992px]:mb-5">
                     <div class="wrapper count-title flex">
-                        <div class="icon"><i class="icon-padnote"></i></div>
-                        <div class="name"><strong class="text-uppercase">Quali-Prozesse abgeschlossen</strong>
+                        <div class="name min-w-0"><strong class="text-uppercase hyphens-auto wrap-break-word">Quali-Prozesse abgeschlossen</strong>
                             <div class="count-number">{{$surveys_fertig ?? ''}}</div>
                         </div>
                     </div>

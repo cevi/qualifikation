@@ -36,7 +36,7 @@ class UserSearchTest extends DuskTestCase
                 ->assertScript("document.querySelector('{$input}').form.elements.user_id.value", (string) $outsider->id);
 
             $browser->select('role_id', (string) Role::Teilnehmer->value)
-                ->press('Person Hinzufügen')
+                ->press('Person hinzufügen')
                 ->waitForLocation('/admin/users/create');
         });
 

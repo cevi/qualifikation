@@ -12,7 +12,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
-                                    <th scope="col">Kursleiter</th>
+                                    <th scope="col">Kursleitung</th>
                                 </tr>
                             </thead>
                         @foreach ($camp_types as $camp_type)

@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 @section('survey_content')
-    <div class="px-[15px] md:px-12">
+    <div>
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help" :header=false/>
         <div class="grid grid-cols-12 sm:gap-x-8">

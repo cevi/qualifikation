@@ -158,7 +158,7 @@ class Helper
         }
         $dataset_first = self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers, $dataset_ids);
         $dataset_second = self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers, $dataset_ids);
-        $dataset_leader = self::GetDataset('Leiter Qualifikation', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
+        $dataset_leader = self::GetDataset('Einschätzung Leitende', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
         if (Auth::user()->role_id !== Role::Teilnehmer) {
             if ($survey->status()->hasReachedSecondRound() && $camp['secondsurveyopen']) {
                 $dataset_add = [
@@ -288,7 +288,7 @@ class Helper
             }
         }
         if (! $isLeader) {
-            return response()->json(['error' => 'Der DB-Import steht nur den Kursleitern zur Verfügung', 'ok' => false], 404);
+            return response()->json(['error' => 'Der DB-Import steht nur der Kursleitung zur Verfügung', 'ok' => false], 404);
         }
 
         $relevantRoles = ['Event::Course::Role::Participant', 'Event::Role::AssistantLeader', 'Event::Role::Leader'];

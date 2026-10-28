@@ -66,6 +66,7 @@ class PagesRenderTest extends TestCase
             'Hilfe' => static fn () => route('helps.index'),
             'Hilfe bearbeiten' => static fn (CampScenario $s) => route('helps.edit', $s->help),
             'Feedback' => static fn () => route('feedback.index'),
+            'Wartung' => static fn () => route('admin.maintenance'),
         ];
 
         foreach (compact('teilnehmer', 'gruppenleiter', 'kursleiter', 'admin') as $role => $rolePages) {

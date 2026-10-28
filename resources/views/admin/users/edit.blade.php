@@ -34,8 +34,8 @@
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::label('leader_id', 'Gruppenleiter:', ['class' => 'field-label']) !!}
-                    {!! Form::select('leader_id', [''=>'Wähle Gruppenleiter'] + $leaders, null,  ['class' => 'field-input']) !!}
+                    {!! Form::label('leader_id', 'Leitende:', ['class' => 'field-label']) !!}
+                    {!! Form::select('leader_id', [''=>'Leitende wählen'] + $leaders, null,  ['class' => 'field-input']) !!}
                 </div>
 
                 <div class="mb-2.5">

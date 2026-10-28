@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
+    <div class="px-[15px] md:px-12">
     <x-layouts.page-title :title="$title" :help="$help"/>
     <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     <section
@@ -120,4 +121,5 @@
         </ol>
     </section>
 
+    </div>
 @endsection

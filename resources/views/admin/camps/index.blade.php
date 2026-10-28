@@ -41,7 +41,7 @@
                         'label' => 'Kurse',
                         'columns' => [
                             ['key' => 'name', 'label' => 'Name', 'link' => 'edit_url'],
-                            ['key' => 'username', 'label' => 'Kursleiter'],
+                            ['key' => 'username', 'label' => 'Kursleitung'],
                             ['key' => 'email', 'label' => 'E-Mail'],
                             ['key' => 'camp_type', 'label' => 'Kurstyp'],
                             ['key' => 'group', 'label' => 'Gruppe'],

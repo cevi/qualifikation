@@ -75,7 +75,7 @@ class SpiderChartTest extends TestCase
     {
         $first = '1. Selbsteinschätzung';
         $second = '2. Selbsteinschätzung';
-        $leader = 'Leiter Qualifikation';
+        $leader = 'Einschätzung Leitende';
 
         return [
             'TN, 1. Runde' => ['participant', false, SurveyStatus::ErsteRundeOffen, [$first]],
@@ -112,7 +112,7 @@ class SpiderChartTest extends TestCase
             ->assertViewHas('datasets', function (array $datasets) {
                 $labels = collect($datasets)->flatten(1)->pluck('label');
 
-                return $labels->isNotEmpty() && ! $labels->contains('Leiter Qualifikation');
+                return $labels->isNotEmpty() && ! $labels->contains('Einschätzung Leitende');
             });
     }
 

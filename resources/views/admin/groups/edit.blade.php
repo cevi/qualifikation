@@ -24,7 +24,7 @@
                         {!! Form::password('api_token', ['class' => 'field-input']) !!}
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Update Gruppe', ['class' => 'button-primary'])!!}
+                        {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
                     </div>
                 {!! Form::close()!!}
 

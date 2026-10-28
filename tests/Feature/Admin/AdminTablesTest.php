@@ -67,7 +67,7 @@ class AdminTablesTest extends TestCase
         $this->assertSame($s->participant->username, $row['name']);
         $this->assertSame($s->gruppenleiter->username, $row['leader']);
         $this->assertSame([
-            ['label' => 'Zur Qualifikationen', 'url' => route('survey.compare', $s->survey->slug)],
+            ['label' => 'Zur Qualifikation', 'url' => route('survey.compare', $s->survey->slug)],
             ['label' => 'Bearbeiten', 'url' => route('surveys.edit', $s->survey->slug)],
         ], $row['actions']);
     }

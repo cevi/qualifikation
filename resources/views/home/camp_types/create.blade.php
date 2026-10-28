@@ -1,6 +1,6 @@
 @extends('layouts.layout')
 @section('survey_content')
-    <div class="px-[15px] md:px-12">
+    <div>
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help" :header=false/>
         @if ($errors->camp_types->any())

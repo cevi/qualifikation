@@ -6,15 +6,15 @@
         <x-layouts.page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         @if(!$aktUser->isTeilnehmer())
             <p>
-                <a type="button" class="button-primary"
+                <a type="button" class="button-purple"
                    href="{{route('survey.downloadPDF', $survey)}}">Druckansicht</a>
             </p>
             <p>
-                Die Bewertungen und die Kommentare der Leiter sind für die Teilnehmer nicht ersichtlich.
+                Die Bewertungen und die Kommentare der Leitenden sind für die Teilnehmenden nicht ersichtlich.
             </p>
         @endif
         <p>
-            Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für deine
+            Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für diese
             Ausbildungsstufe.
         </p>
         <x-surveys.bewertungs-schluessel :answers="$answers"/>
@@ -36,7 +36,7 @@
                                     <th colspan="2" width="250px" class="px-6 py-3">2. Selbsteinschätzung</th>
                                 @endif
                                 @if(!$aktUser->isTeilnehmer())
-                                    <th colspan="2" width="250px" class="px-6 py-3">Leiter</th>
+                                    <th colspan="2" width="250px" class="px-6 py-3">Leitende</th>
                                 @endif
                             </tr>
                             <tr>

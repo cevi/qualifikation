@@ -19,7 +19,7 @@
                 </div>
                 {!! Form::hidden('user_id') !!}
                 <div class="mb-2.5">
-                    {!! Form::submit('Person Hinzufügen', ['class' => 'button-primary'])!!}
+                    {!! Form::submit('Person hinzufügen', ['class' => 'button-primary'])!!}
                 </div>
                 {!! Form::close()!!}
             </div>
@@ -56,8 +56,8 @@
                     </div>
 
                     <div class="mb-2.5">
-                        {!! Form::label('leader_id', 'Gruppenleiter:', ['class' => 'field-label']) !!}
-                        {!! Form::select('leader_id', [''=>'Wähle Gruppenleiter'] + $leaders, null,  ['class' => 'field-input']) !!}
+                        {!! Form::label('leader_id', 'Leitende:', ['class' => 'field-label']) !!}
+                        {!! Form::select('leader_id', [''=>'Leitende wählen'] + $leaders, null,  ['class' => 'field-input']) !!}
                     </div>
 
                     <div class="mb-2.5">
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::submit('Person Erstellen', ['class' => 'button-primary'])!!}
+                    {!! Form::submit('Person erstellen', ['class' => 'button-primary'])!!}
                 </div>
                 {!! Form::close()!!}
 

@@ -149,9 +149,9 @@ class AdminCampsController extends Controller
         $camptypes = CampType::pluck('name', 'id')->all();
         $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
         $users = User::where('role_id', Role::Kursleiter)->pluck('username', 'id')->all();
-        $title = 'Lager bearbeiten';
+        $title = 'Kurs bearbeiten';
         $help = Help::where('title', $title)->first();
-        $help['main_title'] = 'Lager';
+        $help['main_title'] = 'Kursübersicht';
         $help['main_route'] = '/admin/camps';
 
         return view('admin.camps.edit', compact('camp', 'users', 'camptypes', 'groups', 'title', 'help'));

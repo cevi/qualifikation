@@ -1,5 +1,5 @@
 <section class="content">
-    <h3 class="text-3xl font-bold dark:text-white">{{$title}}</h3>
+    <h2 class="mt-4 mb-2 text-2xl font-bold dark:text-white">{{$title}}</h2>
     <div class="text-[0.9em]">
         @foreach ($posts as $post)
             {{-- Breit: Text | Angaben untereinander | Knöpfe; mittel: Angaben in drei Spalten; Handy: Karte mit Angaben als Fusszeile --}}

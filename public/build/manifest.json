@@ -20,17 +20,17 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-xctd8rSb.css",
+    "file": "assets/app-CL6Io4oj.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-DCyO2QD8.css",
+    "file": "assets/legacy-C9B64lrh.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-DjdIhHzn.js",
+    "file": "assets/app-BQx-Veb9.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -84,7 +84,7 @@
     "isEntry": true
   },
   "resources/js/pages/surveys-index.js": {
-    "file": "assets/surveys-index-CjcsUs0x.js",
+    "file": "assets/surveys-index-Dfj5ne6P.js",
     "name": "surveys-index",
     "src": "resources/js/pages/surveys-index.js",
     "isEntry": true,

@@ -12,7 +12,7 @@
                         <x-forms.text label="Name:" name="name" required=true/>
                     </x-forms.container> 
                     <x-forms.container>
-                        <x-forms.select label="Kursleiter:" name="user_id" :collection="$users"/>
+                        <x-forms.select label="Kursleitung:" name="user_id" :collection="$users"/>
                     </x-forms.container> 
                     <x-forms.container>
                         <x-forms.select label="Kurstyp:" name="camp_type_id" :collection="$camptypes" :withEmptyOption="true" required=true/>

@@ -120,9 +120,10 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Sicherheit | [`Security/CommentEscapingTest`](Feature/Security/CommentEscapingTest.php) | 5 | Rückmeldungen und Bemerkungen als Text mit Zeilenumbrüchen |
 | Sicherheit | [`Security/SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php) | 6 | Antworten speichern, Quali abschliessen |
 | Sicherheit | [`Security/PostAccessTest`](Feature/Security/PostAccessTest.php) | 5 | Rückmeldungen nur durch Autor*in |
-| Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 4 | Wartungs-URLs nur für Admin |
+| Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 9 | Wartungsseite nur für Admin, Aktionen nur per POST, alte GET-URLs weg |
 | Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 30 | Runden, Abschliessen, Freigeben, Zurücksetzen |
 | Quali-Ablauf | [`SurveyAccessTest`](Feature/SurveyAccessTest.php) | 3 | Zugriff von Leitenden auf Qualis |
+| Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 3 | Übersicht nach dem Login: Links je nach Rolle und Status, auf dem Handy als Karten |
 | Quali-Ablauf | [`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php) | 9 | „Qualis erstellen“ |
 | Quali-Ablauf | [`Admin/SurveyEditTest`](Feature/Admin/SurveyEditTest.php) | 3 | Quali im Admin-Bereich bearbeiten |
 | Quali-Ablauf | [`Unit/SurveyStatusTest`](Unit/SurveyStatusTest.php) | 7 | Enum `SurveyStatus`: Werte und Regeln |
@@ -288,7 +289,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_other_leader_cannot_overwrite_post_via_profile_form` | Auch nicht über das Profil-Formular |
 | `test_author_can_update_post_via_profile_form` | Autor*in ändert über das Profil-Formular |
 
-**[`MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php)**: `admin/run-migrations` und `admin/run-deployment` lösen für Gäste und Kursleitung kein Artisan aus (je 2 Fälle).
+**[`MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php)**: Wartungsseite `admin/maintenance` (Migrationen ausführen, Cache leeren). Gäste und Kursleitung lösen kein Artisan aus, GET auf die Aktionen gibt 405, `admin/run-migrations` und `admin/run-deployment` gibt es nicht mehr (404); die Seite listet offene Migrationen, Admin-Aktionen rufen `migrate --force` bzw. `optimize:clear` auf und zeigen die Ausgabe.
 
 ### Quali-Ablauf
 
@@ -318,6 +319,14 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_leader_is_redirected_from_survey_of_participant_without_leader` | Teilnehmende ohne Leitung: Umleitung statt Fehler |
 | `test_leader_has_access_to_survey_of_own_participant` | Eigene Teilnehmende: Zugriff |
 | `test_access_does_not_depend_on_loaded_relations_of_the_camp` | Kursvergleich mit `is()`, nicht `==` |
+
+**[`SurveyOverviewTest`](Feature/SurveyOverviewTest.php)**: Übersicht nach dem Login (`/home`), Karten (Handy) und Tabelle (ab md).
+
+| Test | Prüft |
+|---|---|
+| `test_participant_sees_own_survey_without_compare_and_profile_links` | Teilnehmende: Link zum Ausfüllen, kein Vergleich, kein Profil |
+| `test_participant_gets_compare_link_after_closing` | Nach dem Abschliessen führt der Name zum Vergleich |
+| `test_leader_sees_compare_and_profile_links_in_cards_and_table` | Leitende: Quali, Vergleich und Profil in Karte und Tabelle |
 
 **[`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php)**: „Qualis erstellen“ (`POST admin/surveys`).
 
@@ -495,11 +504,11 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | Datei | Fälle | Prüft |
 |---|---:|---|
 | [`PagesInBrowserTest`](Browser/PagesInBrowserTest.php) | 2 | Alle Seiten aus `PagesRenderTest` pro Rolle plus Gast-Seiten: keine Fehler in der Browser-Konsole, jede `id` nur einmal |
-| [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 4 | Person, Kurs, Gruppe, Rückmeldung (gemeinsames Modul `confirm-submit.js`, Knöpfe mit `data-confirm`): "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag |
+| [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 5 | Person, Kurs, Gruppe, Rückmeldung (gemeinsames Modul `confirm-submit.js`, Knöpfe mit `data-confirm`): "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag; Selbsteinschätzung abschliessen erst nach "Ja" (Knopfwert `action=close` kommt an) |
 | [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung wählt Antwort und schreibt Kommentar, ohne zu speichern: nach "Gespeichert ✓" in der DB und nach dem Neuladen noch da |
 | [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
 | [`UserSearchTest`](Browser/UserSearchTest.php) | 1 | Person hinzufügen: Vorschlag aus der Personensuche erscheint, die Wahl setzt Name und `user_id`, die Person ist danach im Kurs |
-| [`AdminTablesTest`](Browser/AdminTablesTest.php) | 2 | Personenliste lädt, sucht, sortiert per Klick und merkt sich die Sortierung in Adresse und Verlauf (Neuladen, Zurück); Quali- und Kursliste zeigen Zeilen mit Status bzw. Knöpfen |
+| [`AdminTablesTest`](Browser/AdminTablesTest.php) | 3 | Personenliste lädt, sucht, sortiert per Klick und merkt sich die Sortierung in Adresse und Verlauf (Neuladen, Zurück); Quali- und Kursliste zeigen Zeilen mit Status bzw. Knöpfen; Kursliste filtert Alle/Offene/Abgeschlossene |
 | [`PhotoCropperTest`](Browser/PhotoCropperTest.php) | 1 | Profilbild: Datei wählen öffnet den Dialog, "Abbrechen" lässt das Feld leer, "Zuschneiden" legt ein PNG als data-URL ab |
 | [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
 
@@ -614,7 +623,7 @@ public function test_example(SurveyStatus $status, bool $allowed)
 | Hitobito-/JEMK-Login | `Socialite::shouldReceive('driver')` mit Mockery-Provider | `HitobitoLoginTest` |
 | Mails | `Mail::fake()` und `Mail::assertSent(...)` | `AdminOnlyAreasTest` |
 | GitHub-Issues (Feedback senden) | `config(['auth.github.api_url' => 'http://127.0.0.1:9'])` im `setUp()` | `AdminOnlyAreasTest` |
-| Artisan-Befehle | `Artisan::spy()` | `MaintenanceRoutesTest` |
+| Artisan-Befehle | `Artisan::shouldReceive('call')` vor der ersten Anfrage | `MaintenanceRoutesTest` |
 
 **Dateien:** Code, der direkt nach `storage_path()` schreibt, bekommt ein eigenes Temp-Verzeichnis (siehe `PostFilesTest`):
 

@@ -17,7 +17,7 @@
                     {!! Form::textarea('content', null, ['class' => 'field-input','required' ,'rows' => 10]) !!}
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::submit('Artikel Erfassen', ['class' => 'button-primary'])!!}
+                    {!! Form::submit('Artikel erfassen', ['class' => 'button-primary'])!!}
                 </div>
                 {!! Form::close()!!}
             </div>

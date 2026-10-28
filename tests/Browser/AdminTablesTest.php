@@ -58,7 +58,7 @@ class AdminTablesTest extends DuskTestCase
             $browser->loginAs($s->kursleiter)->visit(route('surveys.index'))
                 ->waitForText($s->participant->username)
                 ->assertPresent('tbody .progressbar li.active')
-                ->assertSeeLink('Zur Qualifikationen');
+                ->assertSeeLink('Zur Qualifikation');
 
             $browser->loginAs($s->admin)->visit(route('admin.camps.index'))
                 ->waitForText($s->camp->name)

@@ -19,7 +19,7 @@
             </div>
             @endif
             <p>
-                Diese Seite ist für Teilnehmer nicht sichtbar.
+                Diese Seite ist für Teilnehmende nicht sichtbar.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>

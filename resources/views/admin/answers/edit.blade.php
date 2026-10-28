@@ -20,7 +20,7 @@
                             {!! Form::text('description', null, ['class' => 'field-input', 'required']) !!}
                         </div>
                         <div class="mb-2.5">
-                            {!! Form::submit('Update Antwort', ['class' => 'button-primary'])!!}
+                            {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
                         </div>
                     {!! Form::close()!!}
 

@@ -35,8 +35,8 @@
         <div class="px-[15px] md:px-12" style="page-break-inside:avoid; page-break-after:always;">
             <!-- Page Header-->
             <header>
-                <h2>Teilnehmer: {{$survey->campuser->user['username']}}</h2>
-                <h3>Leiter: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>
+                <h2>Teilnehmende: {{$survey->campuser->user['username']}}</h2>
+                <h3>Leitende: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>
             </header>
             @foreach ($survey->chapters as $chapter)
 
@@ -52,7 +52,7 @@
                         <th rowspan="2" width="300px">Thema</th>
                         <th colspan="2" width="250">1. Selbsteinschätzung</th>
                         <th colspan="2" width="250">2. Selbsteinschätzung</th>
-                        <th colspan="2" width="250">Leiter</th>
+                        <th colspan="2" width="250">Leitende</th>
                     </tr>
                     <tr>
                         <th width="50px"></th>

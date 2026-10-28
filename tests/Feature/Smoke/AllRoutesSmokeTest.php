@@ -21,8 +21,6 @@ class AllRoutesSmokeTest extends TestCase
      * Routen, die hier bewusst nicht aufgerufen werden.
      */
     private const EXCLUDED = [
-        'admin/run-migrations' => 'Seiteneffekt: führt Migrationen aus',
-        'admin/run-deployment' => 'Seiteneffekt: leert Caches',
         'login/hitobito' => 'Redirect zu externem OAuth-Provider',
         'login/hitobito/callback' => 'braucht OAuth-Antwort von Hitobito',
         'login/hitobito_jemk' => 'Redirect zu externem OAuth-Provider',

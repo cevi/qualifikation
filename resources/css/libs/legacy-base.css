@@ -91,9 +91,6 @@ h2 { color: #555; font-weight: 400; }
 .section-padding { padding: 1.5rem 0; }
 section header { padding-top: 2rem; padding-bottom: 2rem; }
 .navbar-background { background: var(--background-header); padding: .8rem 0; }
-@media (max-width: 1199px) {
-    .page { width: 100%; padding-left: 15px; }
-}
 .dashboard-counts .count-title i { font-size: 1.5em; }
 .dashboard-counts .icon { margin-right: 10px; }
 .dashboard-counts strong { font-size: 0.9em; font-weight: 500; display: block; }
@@ -110,7 +107,7 @@ section header { padding-top: 2rem; padding-bottom: 2rem; }
 @media (min-width: 992px) {
     .dashboard-header { margin-bottom: 30px; }
 }
-footer.main-footer { position: absolute; width: 100%; bottom: 0; background: var(--darkblue); padding: 10px 0; }
+footer.main-footer { position: absolute; left: 0; width: 100%; bottom: 0; background: var(--darkblue); padding: 10px 0; }
 footer.main-footer p { font-size: 0.7em; color: white; margin: 0; }
 footer.main-footer a { color: white; text-decoration: underline; }
 @media (min-width: 768px) {

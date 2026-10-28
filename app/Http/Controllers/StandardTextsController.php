@@ -71,9 +71,9 @@ class StandardTextsController extends Controller
     {
         $this->authorize('manage', $standard_text);
         //
-        $title = 'Standart-Text bearbeiten';
+        $title = 'Standard-Text bearbeiten';
         $help = Help::where('title', $title)->first();
-        $help['main_title'] = 'Standart-Texte';
+        $help['main_title'] = 'Standard-Text';
         $help['main_route'] = '/admin/standard_texts';
 
         return view('admin.standard_texts.edit', compact('standard_text', 'title', 'help'));

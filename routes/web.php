@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\Camp;
 use App\Models\User;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -129,15 +128,10 @@ Route::group(['middleware' => 'verified'], function () {
 
         // Globale Stammdaten. Kursleitende können sich selbst registrieren und sind dafür nicht berechtigt.
         Route::group(['middleware' => 'admin'], function () {
-            // Der Container migriert beim Start selbst (docker/entrypoint-php.sh).
-            Route::get('admin/run-migrations', function () {
-                return Artisan::call('migrate', ['--force' => true]);
-            });
-            Route::get('admin/run-deployment', function () {
-                Artisan::call('optimize:clear');
-
-                return true;
-            });
+            // Wartung ohne SSH (Migrationen, Cache leeren); der Container migriert zusätzlich beim Start selbst.
+            Route::get('admin/maintenance', ['as' => 'admin.maintenance', 'uses' => 'MaintenanceController@index']);
+            Route::post('admin/maintenance/migrate', ['as' => 'admin.maintenance.migrate', 'uses' => 'MaintenanceController@migrate']);
+            Route::post('admin/maintenance/clear-cache', ['as' => 'admin.maintenance.clear-cache', 'uses' => 'MaintenanceController@clearCache']);
             Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
             Route::post('users/feedback/send', 'FeedbackController@send');
             Route::resource('admin/answers', 'AdminAnswersController');

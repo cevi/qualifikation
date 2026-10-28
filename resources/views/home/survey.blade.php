@@ -5,7 +5,7 @@
     @foreach ($surveys as $survey)
         <x-layouts.page-title :title="$title" :help="$help" :subtitle="$subtitle" :header=false/>
         <p>
-            Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für deine
+            Die <span class='core_competence'>blau hinterlegten Kompetenzen</span> sind die Kernkompetenzen für diese
             Ausbildungsstufe.
         </p>
         <x-surveys.bewertungs-schluessel :answers="$answers"/>
@@ -81,20 +81,17 @@
             {!! Form::textarea('comment', null, ['class' => 'field-input', 'rows'=> 2]) !!}
             <br>
         @endif
-        <div class="mb-2.5 grid grid-cols-12 sm:gap-x-8">
-            <div class="min-w-0 col-span-12 sm:col-span-4">
-                
-                <button type="submit" name="action" value="save" class="button-primary">
-                    {{$survey->surveyName()}} speichern
-                </button>
-            </div>
+        <div class="mb-2.5 flex flex-wrap items-start">
+            <button type="submit" name="action" value="save" class="button-primary">
+                {{$survey->surveyName()}} speichern
+            </button>
             @if ($aktUser->isTeilnehmer())
-                <div class="min-w-0 col-span-12 sm:col-span-4">
-                    <button type="submit" name="action" value="close"
-                    class="button-primary">
+                <button type="submit" name="action" value="close" class="button-secondary"
+                        data-confirm="{{$survey->surveyName()}} abschliessen?"
+                        data-confirm-text="Danach kannst du deine Einschätzung nicht mehr ändern."
+                        data-confirm-icon="question">
                     {{$survey->surveyName()}} speichern und abschliessen
-                    </button>
-                </div>
+                </button>
             @endif
         </div>
         {!! Form::close()!!}

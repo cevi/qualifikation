@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('survey_content')
-    <div class="wide" id="all">
+    <div class="wide -mx-[31px] md:-mx-16" id="all">
         <!-- HERO SLIDER SECTION-->
         <section class="text-dark__white bg-cover bg-center primary-overlay overlay-dense"
                  style="background: url('img/photogrid.jpg') repeat">
@@ -13,9 +13,9 @@
                         <div class="h-auto mb-5">
                             <div class="flex flex-wrap -mx-[15px] h-full items-center">
                                 <div class="px-[15px] w-full lg:w-5/12">
-                                    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl">
-                                        Online Qualifikationstool für J+S-Kurse</h1>
-                                        <p class="mb-6 text-lg font-normal lg:text-xl8">
+                                    <h1 class="mb-4 text-3xl font-extrabold leading-none tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+                                        Online Qualifikations&shy;tool für J+S-Kurse</h1>
+                                        <p class="mb-6 text-lg font-normal lg:text-xl">
                                             Verwalte und Erstelle Qualifikationen für deinen
                                                 J+S-Lagersport/Trekking-Kurs nach dem offiziellen Dokument.
                                         </p>
@@ -90,7 +90,7 @@
             <div class="container mx-auto px-[15px]">
                 <div class="flex flex-wrap -mx-[15px] items-center">
                     <div class="px-[15px] w-full md:w-1/2 text-center">
-                        <h2 class="text-4xl font-bold">Kursleiter Dashboard</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold hyphens-auto wrap-break-word">Dashboard für die Kursleitung</h2>
                         <p class="text-xl font-light mb-3">Erhalte den Überblick über deinen Kurs</p>
                         <p class="mb-3">Behalte den Überblick über deine Teilnehmenden, die Qualifikationen und alle
                             wichtigen Daten deines Kurses im Dashboard.</p>
@@ -109,7 +109,7 @@
                     <div class="icon icon-outlined icon-outlined-white icon-lg mx-auto mb-4">
                         <img src="img/cevi_pfad.svg" alt="Cevi Logo">
                     </div>
-                    <h2 class="text-4xl font-bold text-white">Du willst deinen Kurs online qualifizieren lassen?</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold hyphens-auto wrap-break-word text-white">Du willst deinen Kurs online qualifizieren lassen?</h2>
                     <p class="text-xl font-light mb-4">Registrier dich jetzt und erstell gleich deinen Kurs.</p><a
                         class="inline-block border border-gray-50 text-gray-50 hover:bg-gray-50 hover:text-gray-900 transition-colors px-4 py-2 text-xl leading-normal" href="/register">Jetzt registrieren</a>
                 </div>
@@ -125,7 +125,7 @@
                             <div class="icon-outlined text-gray-900 icon-lg mx-auto mb-3 icon-thin"><i
                                     class="fa-solid fa-campground"></i></div>
                             <h2 class="text-4xl counter font-bold" data-counter="{{$camp_counter}}">0</h2>
-                            <h3 class="text-3xl font-bold">Kurse</h2>
+                            <h3 class="text-3xl font-bold">Kurse</h3>
                         </div>
                     </div>
                     <div class="px-[15px] w-full lg:w-1/2 sm:w-1/2">
@@ -146,7 +146,7 @@
                     <div class="px-[15px] w-full md:w-1/2"><img class="max-w-full h-auto block mx-auto" src="img/template-easy-code.png"
                                                alt="..."></div>
                     <div class="px-[15px] w-full md:w-1/2 text-center">
-                        <h2 class="text-4xl font-bold">Qualifikation online ausfüllen</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold hyphens-auto wrap-break-word">Qualifikation online ausfüllen</h2>
                         <p class="mb-3">Fülle die Qualifikation direkt Online aus und vergleiche als Leitende deine
                             Einschätzung mit der Selbsteinschätzung der Teilnehmenden.</p>
                     </div>
@@ -158,7 +158,7 @@
             <div class="container mx-auto px-[15px]">
                 <div class="flex flex-wrap -mx-[15px] items-center">
                     <div class="px-[15px] w-full md:w-1/2">
-                        <h2 class="text-4xl font-bold">Sammle Rückmeldungen zu deinen Teilnehmenden</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold hyphens-auto wrap-break-word">Sammle Rückmeldungen zu deinen Teilnehmenden</h2>
                         <p class="mb-3">Hinterlege direkt einen Kommentar, wenn Teilnehmende auffällig wurden. Sammle
                             die Rückmeldungen und verschaff dir als Kursleitung einen Überblick über deine Teilnehmende.
                         <p>

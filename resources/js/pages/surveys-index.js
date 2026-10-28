@@ -26,7 +26,7 @@ async function post(url) {
 async function createSurveys(url) {
     const result = await Swal.fire({
         titleText: 'Qualifikationen erstellen?',
-        text: 'Dies erstellt den Qualifikationsprozess für alle Teilnehmer deines Kurses, welche ihn noch nicht haben.',
+        text: 'Dies erstellt den Qualifikationsprozess für alle Teilnehmenden deines Kurses, welche ihn noch nicht haben.',
         icon: 'info',
         showCancelButton: true,
         confirmButtonText: 'Ja',

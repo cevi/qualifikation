@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::submit('Kompetenz Erstellen', ['class' => 'button-primary'])!!}
+                    {!! Form::submit('Kompetenz erstellen', ['class' => 'button-primary'])!!}
                 </div>
                 {!! Form::close()!!}
                 @include('includes.form_error')

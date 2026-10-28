@@ -16,7 +16,7 @@
                         {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Update Kapitel', ['class' => 'button-primary'])!!}
+                        {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
                     </div>
                 {!! Form::close()!!}
 
