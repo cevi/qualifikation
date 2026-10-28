@@ -25,11 +25,22 @@
                         ['key' => 'leader', 'label' => 'Leitende'],
                         ['key' => 'camp', 'label' => 'Kurs'],
                         ['key' => 'group', 'label' => 'Abteilung'],
-                        ['key' => 'steps', 'label' => 'Status', 'type' => 'steps'],
+                        ['key' => 'status', 'label' => 'Status', 'type' => 'status'],
                         ['key' => 'actions', 'label' => 'Qualifikation', 'type' => 'actions'],
                     ],
                     'defaultSort' => [['id' => 'name', 'desc' => false]],
-                    'mobile' => ['title' => 'name', 'kicker' => 'group', 'lines' => ['leader', 'steps'], 'details' => ['camp']],
+                    'mobile' => ['title' => 'name', 'kicker' => 'group', 'lines' => ['leader', 'status'], 'details' => ['camp']],
+                    // phase aus SurveyStatus::phase(); "Zum Abschliessen" wie der Zähler auf der Übersicht
+                    'filter' => [
+                        'key' => 'phase',
+                        'label' => 'Qualifikationen anzeigen',
+                        'options' => [
+                            ['label' => 'Alle', 'value' => null],
+                            ['label' => 'Offen', 'value' => 'offen'],
+                            ['label' => 'Zum Abschliessen', 'value' => 'abschliessen'],
+                            ['label' => 'Fertig', 'value' => 'fertig'],
+                        ],
+                    ],
                 ];
             @endphp
             <div class="my-4" data-vue-component="data-table" data-props="{{ json_encode($table) }}">

@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\Enums\SurveyStatus;
 use App\Models\Camp;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
@@ -9,7 +10,7 @@ use Tests\Support\CampScenario;
 
 /**
  * Admin-Tabellen (components/DataTable.vue) mit den echten Endpunkten: Zeilen erscheinen, Suche und Sortierung
- * wirken, die Kursliste filtert nach offen/abgeschlossen, die Personenliste merkt sich die Sortierung in der
+ * wirken, Kurs- und Quali-Liste filtern (offen/abgeschlossen bzw. nach Status), die Personenliste merkt sich die Sortierung in der
  * Adresse. Logik: tests/js/data-table.test.js.
  */
 class AdminTablesTest extends DuskTestCase
@@ -57,12 +58,30 @@ class AdminTablesTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($s) {
             $browser->loginAs($s->kursleiter)->visit(route('surveys.index'))
                 ->waitForText($s->participant->username)
-                ->assertPresent('tbody .progressbar li.active')
+                ->assertPresent('tbody [data-status-bar]')
                 ->assertSeeLink('Zur Qualifikation');
 
             $browser->loginAs($s->admin)->visit(route('admin.camps.index'))
                 ->waitForText($s->camp->name)
                 ->assertSeeLink('Export der Rückmeldungen');
+        });
+    }
+
+    public function test_quali_list_filters_by_phase(): void
+    {
+        $s = CampScenario::create();
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
+
+        $this->browse(function (Browser $browser) use ($s) {
+            $browser->loginAs($s->kursleiter)->visit(route('surveys.index'))
+                ->waitForText($s->participant->username)
+                ->assertSee($s->unassignedParticipant->username)
+                ->press('Zum Abschliessen')
+                ->waitUntilMissingText($s->unassignedParticipant->username)
+                ->assertSee($s->participant->username)
+                ->press('Offen')
+                ->waitForText($s->unassignedParticipant->username)
+                ->assertDontSee($s->participant->username);
         });
     }
 

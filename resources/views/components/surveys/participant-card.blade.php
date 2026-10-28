@@ -19,8 +19,10 @@
                 @endif
                 <span class="font-normal text-gray-500 dark:text-gray-400">{{ $user->group['shortname'] ?? '' }}</span>
             </h3>
+            {{-- Unter dem Namen, weil die Status-Namen lang sein können --}}
+            <x-surveys.status-badge :survey="$survey" class="mt-1 inline-block"/>
             @if (! $isParticipant)
-                <p class="text-xs text-gray-500 dark:text-gray-400">
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     {{ collect([
                         ! $leader ? 'Noch ohne Leitende' : ($leader->id !== $aktUser->id ? 'Leitende: '.$leader->username : null),
                         $postCount === 1 ? '1 Rückmeldung' : $postCount.' Rückmeldungen',
@@ -28,7 +30,6 @@
                 </p>
             @endif
         </div>
-        <x-surveys.status-badge :survey="$survey"/>
     </div>
     <div class="mt-3 flex flex-wrap gap-2">
         @if ($closed)

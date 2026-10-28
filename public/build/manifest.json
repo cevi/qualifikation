@@ -20,12 +20,12 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-C19kIirC.css",
+    "file": "assets/app-DyKVKm9-.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-DUzyrmwf.css",
+    "file": "assets/legacy-BSO4ADYv.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },
@@ -45,7 +45,7 @@
     "isEntry": true
   },
   "resources/js/islands.js": {
-    "file": "assets/islands-Bs7TRISr.js",
+    "file": "assets/islands-DnPGYtz-.js",
     "name": "islands",
     "src": "resources/js/islands.js",
     "isEntry": true

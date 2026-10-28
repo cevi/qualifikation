@@ -15,7 +15,7 @@ const columns = [
     { key: 'avatar', label: 'Bild', type: 'image' },
     { key: 'role', label: 'Rolle' },
     { key: 'last_login', label: 'Letztes Login' },
-    { key: 'steps', label: 'Status', type: 'steps' },
+    { key: 'status', label: 'Status', type: 'status' },
     { key: 'actions', label: 'Aktionen', type: 'actions' },
     { key: 'note', label: 'Notiz', sortable: false },
 ];
@@ -32,7 +32,7 @@ describe('Zellwerte', () => {
     });
 
     it('sortiert nur Textspalten, die nicht ausgeschlossen sind', () => {
-        expect(columns.filter(isSortable).map((column) => column.key)).toEqual(['name', 'role', 'last_login']);
+        expect(columns.filter(isSortable).map((column) => column.key)).toEqual(['name', 'role', 'last_login', 'status']);
     });
 });
 

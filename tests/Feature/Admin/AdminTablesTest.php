@@ -49,7 +49,7 @@ class AdminTablesTest extends TestCase
         );
     }
 
-    public function test_survey_rows_show_status_steps_without_second_round_when_not_opened()
+    public function test_survey_rows_show_status_with_steps_without_second_round_when_not_opened()
     {
         $s = CampScenario::create();
         $s->camp->update(['secondsurveyopen' => false]);
@@ -58,12 +58,15 @@ class AdminTablesTest extends TestCase
 
         $row = $this->rows($s->kursleiter, route('surveys.table'))->firstWhere('id', $s->survey->id);
 
+        // Schritte Neu, 1. offen, TN abgeschlossen, Fertig: der zweite ist erreicht
         $this->assertSame([
-            ['name' => $names[SurveyStatus::Neu->value], 'done' => true],
-            ['name' => $names[SurveyStatus::ErsteRundeOffen->value], 'done' => true],
-            ['name' => $names[SurveyStatus::TnAbgeschlossen->value], 'done' => false],
-            ['name' => $names[SurveyStatus::Fertig->value], 'done' => false],
-        ], $row['steps']);
+            'display' => $names[SurveyStatus::ErsteRundeOffen->value],
+            'sort' => SurveyStatus::ErsteRundeOffen->value,
+            'tone' => 'blue',
+            'step' => 2,
+            'steps' => 4,
+        ], $row['status']);
+        $this->assertSame('offen', $row['phase']);
         $this->assertSame($s->participant->username, $row['name']);
         $this->assertSame($s->gruppenleiter->username, $row['leader']);
         $this->assertSame([
@@ -79,8 +82,9 @@ class AdminTablesTest extends TestCase
 
         $row = $this->rows($s->kursleiter, route('surveys.table'))->firstWhere('id', $s->survey->id);
 
-        $this->assertCount(count(SurveyStatus::cases()), $row['steps']);
-        $this->assertSame([true, false, false, false, false], array_column($row['steps'], 'done'));
+        $this->assertSame(count(SurveyStatus::cases()), $row['status']['steps']);
+        $this->assertSame(1, $row['status']['step']);
+        $this->assertSame('gray', $row['status']['tone']);
     }
 
     public function test_camp_rows_show_only_own_camp_with_actions_for_course_leader()

@@ -236,7 +236,7 @@ const mobileSort = computed({
                     v-for="(option, index) in filter.options"
                     :key="option.label"
                     type="button"
-                    class="flex-1 border px-4 py-2.5 text-sm font-medium focus:z-10 focus:ring-2 focus:ring-blue-300 focus:outline-hidden dark:focus:ring-blue-800"
+                    class="flex-1 border px-4 py-2.5 text-sm font-medium md:whitespace-nowrap focus:z-10 focus:ring-2 focus:ring-blue-300 focus:outline-hidden dark:focus:ring-blue-800"
                     :class="[
                         index === 0 ? 'rounded-s-lg' : '-ms-px',
                         index === filter.options.length - 1 ? 'rounded-e-lg' : '',

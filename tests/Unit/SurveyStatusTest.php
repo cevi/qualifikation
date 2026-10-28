@@ -47,4 +47,17 @@ class SurveyStatusTest extends TestCase
         $this->assertTrue(SurveyStatus::TnAbgeschlossen->isAtLeast(SurveyStatus::TnAbgeschlossen));
         $this->assertFalse(SurveyStatus::ZweiteRundeOffen->isAtLeast(SurveyStatus::TnAbgeschlossen));
     }
+
+    /** Farbe (Badge, Balken) und Filtergruppe der Quali-Liste: wartet auf Leitende = orange, "Zum Abschliessen". */
+    public function test_tone_and_phase()
+    {
+        $this->assertSame(
+            ['gray', 'blue', 'blue', 'orange', 'green'],
+            array_map(fn (SurveyStatus $status) => $status->tone(), SurveyStatus::cases())
+        );
+        $this->assertSame(
+            ['offen', 'offen', 'offen', 'abschliessen', 'fertig'],
+            array_map(fn (SurveyStatus $status) => $status->phase(), SurveyStatus::cases())
+        );
+    }
 }

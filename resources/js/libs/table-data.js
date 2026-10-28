@@ -4,8 +4,8 @@
  * (z. B. Datum: angezeigt "05.03.2026", sortiert "2026-03-05").
  */
 
-// Spaltentypen ohne Text: nicht durchsuchbar und nicht sortierbar.
-const NON_TEXT_TYPES = ['image', 'steps', 'actions'];
+// Spaltentypen ohne Text: nicht durchsuchbar und nicht sortierbar. "status" ist Text ({ display, sort }).
+const NON_TEXT_TYPES = ['image', 'actions'];
 
 export function isTextColumn(column) {
     return !NON_TEXT_TYPES.includes(column.type);

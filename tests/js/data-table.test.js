@@ -8,7 +8,7 @@ const columns = [
     { key: 'role', label: 'Rolle' },
     { key: 'counter', label: 'Anzahl' },
     { key: 'last_login', label: 'Letztes Login' },
-    { key: 'steps', label: 'Status', type: 'steps' },
+    { key: 'status', label: 'Status', type: 'status' },
     { key: 'actions', label: 'Aktionen', type: 'actions' },
 ];
 
@@ -22,10 +22,9 @@ function person(id, name, role, counter, login) {
         role,
         counter,
         last_login: { display: login.split('-').reverse().join('.'), sort: login },
-        steps: [
-            { name: 'Neu', done: true },
-            { name: '1. offen', done: id === 1 },
-        ],
+        status: id === 1
+            ? { display: '1. offen', sort: 10, tone: 'blue', step: 2, steps: 4 }
+            : { display: 'Neu', sort: 5, tone: 'gray', step: 1, steps: 4 },
         actions: [{ label: 'Bearbeiten', url: `/surveys/${id}/edit` }],
     };
 }
@@ -89,8 +88,12 @@ describe('Admin-Tabelle', () => {
         expect(cells[1].find('a').attributes('href')).toBe('/profile/1');
         expect(cells[1].find('img').attributes()).toMatchObject({ src: '/img/1.png', alt: '' });
         expect(cells[4].text()).toBe('05.03.2026');
-        expect(cells[5].findAll('li').map((li) => li.classes().includes('active'))).toEqual([true, true]);
-        expect(cells[5].findAll('li').map((li) => li.attributes('title'))).toEqual(['Neu', '1. offen']);
+        expect(cells[5].find('.rounded-full').text()).toBe('1. offen');
+        expect(cells[5].find('.rounded-full').classes()).toContain('bg-blue-100');
+        const segments = cells[5].findAll('[data-status-bar] .h-1\\.5');
+        expect(segments.map((segment) => segment.classes().includes('bg-blue-600'))).toEqual([true, true, false, false]);
+        expect(cells[5].find('[data-status-bar]').attributes('aria-hidden')).toBe('true');
+        expect(cells[5].find('.sr-only').text()).toBe(', Schritt 2 von 4');
         expect(cells[6].find('a').attributes('href')).toBe('/surveys/1/edit');
     });
 
@@ -136,6 +139,13 @@ describe('Admin-Tabelle', () => {
         expect(wrapper.findAll('thead th')[2].attributes('aria-sort')).toBe('none');
         await nameHeader.trigger('click');
         expect(names(wrapper)).toEqual(['Zora', 'Ben', 'anna']);
+    });
+
+    it('sortiert den Status nach dem Ablauf, nicht alphabetisch', async () => {
+        const wrapper = await render();
+
+        await wrapper.findAll('thead button').find((button) => button.text().startsWith('Status')).trigger('click');
+        expect(names(wrapper)).toEqual(['anna', 'Ben', 'Zora']);
     });
 
     it('sucht in allen Textspalten und zeigt, wie viele Zeilen passen', async () => {
@@ -238,7 +248,7 @@ describe('Admin-Tabelle', () => {
     });
 
     describe('auf dem Handy', () => {
-        const mobile = { title: 'name', image: 'avatar', kicker: 'role', lines: ['steps'] };
+        const mobile = { title: 'name', image: 'avatar', kicker: 'role', lines: ['status'] };
 
         it('zeigt Karten statt Tabelle mit Titel, Bild, Kopfzeile, Zeilen, Details und Aktionen', async () => {
             stubPhone();

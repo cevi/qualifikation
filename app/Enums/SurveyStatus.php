@@ -49,4 +49,25 @@ enum SurveyStatus: int
     {
         return $this === self::Fertig;
     }
+
+    /** Farbe für Badge und Fortschritt (Übersicht, Quali-Liste): offen blau, wartet auf Leitende orange, fertig grün. */
+    public function tone(): string
+    {
+        return match ($this) {
+            self::Neu => 'gray',
+            self::ErsteRundeOffen, self::ZweiteRundeOffen => 'blue',
+            self::TnAbgeschlossen => 'orange',
+            self::Fertig => 'green',
+        };
+    }
+
+    /** Gruppe für den Filter der Quali-Liste: offen, zum Abschliessen (wartet auf Leitende), fertig. */
+    public function phase(): string
+    {
+        return match ($this) {
+            self::Neu, self::ErsteRundeOffen, self::ZweiteRundeOffen => 'offen',
+            self::TnAbgeschlossen => 'abschliessen',
+            self::Fertig => 'fertig',
+        };
+    }
 }

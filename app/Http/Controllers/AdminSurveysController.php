@@ -54,8 +54,9 @@ class AdminSurveysController extends Controller
 
         return response()->json(['data' => $surveys->map(function (Survey $survey) use ($names) {
             $campUser = $survey->campuser;
+            $status = $survey->status();
             // Ohne zweite Runde fehlt der Schritt "2. offen".
-            $steps = array_filter(SurveyStatus::cases(), fn (SurveyStatus $status) => $campUser->camp['secondsurveyopen'] || $status !== SurveyStatus::ZweiteRundeOffen);
+            $steps = array_filter(SurveyStatus::cases(), fn (SurveyStatus $step) => $campUser->camp['secondsurveyopen'] || $step !== SurveyStatus::ZweiteRundeOffen);
 
             return [
                 'id' => $survey->id,
@@ -64,10 +65,15 @@ class AdminSurveysController extends Controller
                 'leader' => $campUser->leader?->username ?? '',
                 'camp' => $campUser->camp->name,
                 'group' => $campUser->user->group?->shortname ?? '',
-                'steps' => array_map(fn (SurveyStatus $status) => [
-                    'name' => $names[$status->value],
-                    'done' => $survey->status()->isAtLeast($status),
-                ], array_values($steps)),
+                // Badge mit Text, Fortschritt "Schritt x von y"; sortiert wird nach dem Ablauf
+                'status' => [
+                    'display' => $names[$status->value],
+                    'sort' => $status->value,
+                    'tone' => $status->tone(),
+                    'step' => count(array_filter($steps, fn (SurveyStatus $step) => $status->isAtLeast($step))),
+                    'steps' => count($steps),
+                ],
+                'phase' => $status->phase(),
                 'actions' => [
                     ['label' => 'Zur Qualifikation', 'url' => route('survey.compare', $survey->slug)],
                     ['label' => 'Bearbeiten', 'url' => route('surveys.edit', $survey->slug)],
