@@ -123,7 +123,10 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 9 | Wartungsseite nur für Admin, Aktionen nur per POST, alte GET-URLs weg |
 | Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 30 | Runden, Abschliessen, Freigeben, Zurücksetzen |
 | Quali-Ablauf | [`SurveyAccessTest`](Feature/SurveyAccessTest.php) | 3 | Zugriff von Leitenden auf Qualis |
-| Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 3 | Übersicht nach dem Login: Links je nach Rolle und Status, auf dem Handy als Karten |
+| Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 6 | Übersicht nach dem Login: Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
+| Quali-Ablauf | [`CampChecksTest`](Feature/CampChecksTest.php) | 18 | Regeln der Aufgabenliste (`App\Services\CampChecks`) |
+| Quali-Ablauf | [`BottomNavigationTest`](Feature/BottomNavigationTest.php) | 5 | Menü unten auf dem Handy: Punkte je Rolle |
+| Quali-Ablauf | [`PwaTest`](Feature/PwaTest.php) | 3 | Manifest, Service Worker speichert keine Seiten, Offline-Seite |
 | Quali-Ablauf | [`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php) | 9 | „Qualis erstellen“ |
 | Quali-Ablauf | [`Admin/SurveyEditTest`](Feature/Admin/SurveyEditTest.php) | 3 | Quali im Admin-Bereich bearbeiten |
 | Quali-Ablauf | [`Unit/SurveyStatusTest`](Unit/SurveyStatusTest.php) | 7 | Enum `SurveyStatus`: Werte und Regeln |
@@ -320,13 +323,48 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_leader_has_access_to_survey_of_own_participant` | Eigene Teilnehmende: Zugriff |
 | `test_access_does_not_depend_on_loaded_relations_of_the_camp` | Kursvergleich mit `is()`, nicht `==` |
 
-**[`SurveyOverviewTest`](Feature/SurveyOverviewTest.php)**: Übersicht nach dem Login (`/home`), Karten (Handy) und Tabelle (ab md).
+**[`SurveyOverviewTest`](Feature/SurveyOverviewTest.php)**: Übersicht nach dem Login (`/home`): Aufgaben, Zähler, eine Karte pro Quali.
 
 | Test | Prüft |
 |---|---|
-| `test_participant_sees_own_survey_without_compare_and_profile_links` | Teilnehmende: Link zum Ausfüllen, kein Vergleich, kein Profil |
-| `test_participant_gets_compare_link_after_closing` | Nach dem Abschliessen führt der Name zum Vergleich |
-| `test_leader_sees_compare_and_profile_links_in_cards_and_table` | Leitende: Quali, Vergleich und Profil in Karte und Tabelle |
+| `test_participant_sees_own_survey_and_task_without_compare_and_profile_links` | Teilnehmende: Aufgabe „1. Selbsteinschätzung ausfüllen“, Link zum Ausfüllen, kein Vergleich, kein Profil, keine Zähler |
+| `test_participant_gets_compare_link_and_no_task_after_closing` | Nach dem Abschliessen: Vergleich statt Ausfüllen, keine Aufgabe mehr |
+| `test_leader_sees_own_participants_with_links_and_counters` | Leitende: nur eigene Teilnehmende, Vergleich, „+ Rückmeldung“ (`?neu=1`), Anzahl Rückmeldungen, Zähler |
+| `test_leader_task_links_to_compare_when_participant_has_closed` | „hat die Selbsteinschätzung abgeschlossen“ als dringende Aufgabe |
+| `test_campleader_sees_all_participants_and_camp_tasks` | Kursleitung: alle Teilnehmenden, „Noch ohne Leitende“, Kurs-Aufgaben |
+| `test_overview_does_not_load_chart_data` | Kein Radar-Diagramm mehr auf der Übersicht |
+
+**[`CampChecksTest`](Feature/CampChecksTest.php)**: Regeln der Aufgabenliste (`App\Services\CampChecks`).
+
+| Test | Prüft |
+|---|---|
+| `test_leader_sees_only_own_participants_and_campleader_all` | Welche Qualis jemand auf der Übersicht sieht |
+| `test_closed_self_assessment_is_an_urgent_task_for_the_leader` | „TN abgeschlossen“ ist dringend und führt zum Vergleich |
+| `test_not_started_is_a_task_only_after_release` | „Noch nicht begonnen“ nur, wenn die 1. Runde frei ist (ohne Status-Steuerung immer, mit Steuerung ab Kurs-Status „1. offen“), 4 Fälle |
+| `test_participant_task_is_the_own_open_self_assessment` | Teilnehmende: eigene offene Selbsteinschätzung, nach dem Abschliessen keine |
+| `test_camp_tasks_only_for_campleader` | Kurs-Aufgaben nur für die Kursleitung |
+| `test_participants_without_survey` | Teilnehmende ohne Quali |
+| `test_camp_must_be_finished_three_months_after_end_date` | Kurs abschliessen: erst 3 Monate nach Schlussdatum, nie für Demo-, Global- und abgeschlossene Kurse, ohne Schlussdatum oder mit `0000-00-00`, 7 Fälle |
+| `test_finishing_the_camp_is_an_urgent_campleader_task_on_top` | „Kurs abschliessen“ steht zuoberst und führt zu „Kurs bearbeiten“ |
+| `test_second_round_can_be_released_when_all_have_closed_the_first` | „2. Selbsteinschätzung freigeben“ erst, wenn alle die 1. abgeschlossen haben, nicht mehr nach der Freigabe |
+
+**[`BottomNavigationTest`](Feature/BottomNavigationTest.php)**: Menü unten auf dem Handy (`includes/bottomnav.blade.php`).
+
+| Test | Prüft |
+|---|---|
+| `test_guest_has_no_bottom_navigation` | Gäste sehen kein Menü unten |
+| `test_participant_gets_overview_own_quali_and_account` | Teilnehmende: Übersicht (aktiv), eigene Quali, Konto; kein Feedback, Neu, Kursadmin, Mehr |
+| `test_participant_quali_link_goes_to_compare_after_closing` | Nach dem Abschliessen führt „Quali“ zum Vergleich |
+| `test_leader_gets_feedback_new_feedback_account_and_more` | Leitende: Feedback (aktiv auf `/posts`), Neu (`/posts?neu=1`), Konto, Mehr; kein Kursadmin |
+| `test_campleader_gets_course_admin_instead_of_account` | Kursleitung: Kursadmin statt Konto |
+
+**[`PwaTest`](Feature/PwaTest.php)**: Installierbare App.
+
+| Test | Prüft |
+|---|---|
+| `test_manifest_starts_on_overview_with_icons_and_shortcut` | Start auf `/home`, Icons vorhanden, Verknüpfung „Neue Rückmeldung“ |
+| `test_service_worker_never_caches_pages` | `public/sw.js` holt Seiten nur aus dem Netz (ohne Netz `offline.html`), speichert nur Dateien aus `/build/` und Bilder |
+| `test_layout_links_manifest` | Das Layout verlinkt das Manifest |
 
 **[`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php)**: „Qualis erstellen“ (`POST admin/surveys`).
 
@@ -509,6 +547,7 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
 | [`UserSearchTest`](Browser/UserSearchTest.php) | 1 | Person hinzufügen: Vorschlag aus der Personensuche erscheint, die Wahl setzt Name und `user_id`, die Person ist danach im Kurs |
 | [`AdminTablesTest`](Browser/AdminTablesTest.php) | 3 | Personenliste lädt, sucht, sortiert per Klick und merkt sich die Sortierung in Adresse und Verlauf (Neuladen, Zurück); Quali- und Kursliste zeigen Zeilen mit Status bzw. Knöpfen; Kursliste filtert Alle/Offene/Abgeschlossene |
+| [`MobileNavigationTest`](Browser/MobileNavigationTest.php) | 3 | Menü unten (390 px): „Mehr“ öffnet das Menü oben, „Neu“ öffnet „Neue Rückmeldung“ mit Cursor im Textfeld; auf dem Desktop ausgeblendet; Service Worker speichert die Offline-Seite, aber keine besuchte Seite (Chrome behandelt die Testadresse dafür als sicher, siehe `DuskTestCase`) |
 | [`PhotoCropperTest`](Browser/PhotoCropperTest.php) | 1 | Profilbild: Datei wählen öffnet den Dialog, "Abbrechen" lässt das Feld leer, "Zuschneiden" legt ein PNG als data-URL ab |
 | [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
 

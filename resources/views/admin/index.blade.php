@@ -69,7 +69,7 @@
                 </div>
             </div>
         </section>
-        <section class="w-full lg:w-1/6 dashboard-header section-padding">
+        <section class="hidden w-full lg:block lg:w-1/6 dashboard-header section-padding">
             <div class="px-[15px] md:px-12 lg:sticky lg:top-24" id="Sidepanel">
                 <div class="flex flex-wrap -mx-[15px] md:items-stretch">
                     <ul class="list-none ps-0">

@@ -1,10 +1,14 @@
 {
-    "name": "Qualifikation",
-    "short_name": "QualiTool",
-    "start_url": "/",
+    "id": "/home",
+    "name": "Cevi Qualitool",
+    "short_name": "Qualitool",
+    "description": "Qualifikationen und Rückmeldungen für J+S-Kurse",
+    "lang": "de-CH",
+    "start_url": "/home",
+    "scope": "/",
     "display": "standalone",
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#f3f4f6",
+    "background_color": "#f3f4f6",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -15,6 +19,13 @@
             "src": "/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Neue Rückmeldung",
+            "url": "/posts?neu=1",
+            "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192" }]
         }
     ],
     "screenshots": [

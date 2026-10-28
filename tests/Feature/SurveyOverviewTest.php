@@ -3,29 +3,30 @@
 namespace Tests\Feature;
 
 use App\Enums\SurveyStatus;
-use Illuminate\Support\Str;
 use Tests\Support\CampScenario;
 use Tests\TestCase;
 
 /**
- * Übersicht nach dem Login (home/surveys.blade.php): auf dem Handy Karten, ab md eine Tabelle, beide mit denselben
- * Links je nach Rolle und Status.
+ * Übersicht nach dem Login (home/surveys.blade.php): Aufgaben (App\Services\CampChecks, siehe CampChecksTest),
+ * Zähler und eine Karte pro Quali mit Links je nach Rolle und Status.
  */
 class SurveyOverviewTest extends TestCase
 {
-    public function test_participant_sees_own_survey_without_compare_and_profile_links(): void
+    public function test_participant_sees_own_survey_and_task_without_compare_and_profile_links(): void
     {
         $s = CampScenario::create();
 
         $this->actingAs($s->participant)->get('/home')
             ->assertOk()
+            ->assertSee('Meine Qualifikation')
+            ->assertSee('1. Selbsteinschätzung ausfüllen')
             ->assertSee(route('survey.survey', $s->survey->slug), false)
             ->assertDontSee(route('survey.compare', $s->survey->slug), false)
             ->assertDontSee(route('home.profile', $s->participant->slug), false)
-            ->assertSee($s->participant->username);
+            ->assertDontSee('Zum Abschliessen');
     }
 
-    public function test_participant_gets_compare_link_after_closing(): void
+    public function test_participant_gets_compare_link_and_no_task_after_closing(): void
     {
         $s = CampScenario::create();
         $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
@@ -33,22 +34,56 @@ class SurveyOverviewTest extends TestCase
         $this->actingAs($s->participant)->get('/home')
             ->assertOk()
             ->assertSee(route('survey.compare', $s->survey->slug), false)
-            ->assertDontSee(route('survey.survey', $s->survey->slug), false);
+            ->assertDontSee(route('survey.survey', $s->survey->slug), false)
+            ->assertDontSee('ausfüllen');
     }
 
-    public function test_leader_sees_compare_and_profile_links_in_cards_and_table(): void
+    public function test_leader_sees_own_participants_with_links_and_counters(): void
     {
         $s = CampScenario::create();
 
-        $html = $this->actingAs($s->gruppenleiter)->get('/home')->assertOk()->getContent();
+        $this->actingAs($s->gruppenleiter)->get('/home')
+            ->assertOk()
+            ->assertSee('Meine Teilnehmenden')
+            ->assertSee($s->participant->username)
+            ->assertDontSee($s->unassignedParticipant->username.'</a>', false)
+            ->assertSee('href="'.route('survey.compare', $s->survey->slug).'"', false)
+            ->assertSee('href="'.route('home.profile', $s->participant->slug).'?neu=1"', false)
+            ->assertSee('1 Rückmeldung')
+            ->assertSee('Zum Abschliessen');
+    }
 
-        $cards = Str::between($html, 'space-y-3 md:hidden', '<table');
-        $table = Str::between($html, '<table', '</table>');
-        foreach ([$cards, $table] as $part) {
-            $this->assertStringContainsString('href="'.route('survey.compare', $s->survey->slug).'"', $part);
-            $this->assertStringContainsString('href="'.route('home.profile', $s->participant->slug).'"', $part);
-            $this->assertStringContainsString('href="'.route('survey.survey', $s->survey->slug).'"', $part);
-        }
-        $this->assertStringContainsString('Teilnehmende</th>', $table);
+    public function test_leader_task_links_to_compare_when_participant_has_closed(): void
+    {
+        $s = CampScenario::create();
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
+
+        $this->actingAs($s->gruppenleiter)->get('/home')
+            ->assertOk()
+            ->assertSee('Aufgaben · 1')
+            ->assertSee($s->participant->username.' hat die Selbsteinschätzung abgeschlossen')
+            ->assertSee('(dringend)');
+    }
+
+    public function test_campleader_sees_all_participants_and_camp_tasks(): void
+    {
+        $s = CampScenario::create();
+
+        $this->actingAs($s->kursleiter)->get('/home')
+            ->assertOk()
+            ->assertDontSee('Meine Teilnehmenden')
+            ->assertSee($s->participant->username)
+            ->assertSee($s->unassignedParticipant->username)
+            ->assertSee('Noch ohne Leitende')
+            ->assertSee('1 Teilnehmende Person ohne Leitende');
+    }
+
+    public function test_overview_does_not_load_chart_data(): void
+    {
+        $s = CampScenario::create();
+
+        $this->actingAs($s->gruppenleiter)->get('/home')
+            ->assertOk()
+            ->assertDontSee('radarChart-', false);
     }
 }

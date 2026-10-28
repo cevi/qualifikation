@@ -116,5 +116,12 @@
     @if($post_new->id ?? false)
         openFeedbackModal();
     @endif
+
+    // ?neu=1 (Menü unten, Karten der Übersicht): direkt eine neue Rückmeldung erfassen
+    if (new URLSearchParams(window.location.search).has('neu')) {
+        resetForm();
+        openFeedbackModal();
+        commentTextarea.focus();
+    }
 </script>
 @endpush

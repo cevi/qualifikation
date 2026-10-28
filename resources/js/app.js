@@ -6,3 +6,5 @@
 import 'flowbite';
 import './theme-toggle.js';
 import './confirm-submit.js';
+import './bottom-nav.js';
+import './pwa.js';

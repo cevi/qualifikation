@@ -337,6 +337,11 @@ input[type="button"].btn.btn-primary:hover {
     @apply max-sm:flex max-sm:flex-wrap max-sm:gap-x-3 max-sm:pt-2 max-sm:text-left max-sm:text-gray-500 dark:max-sm:text-gray-400;
 }
 
+/* Kleiner Knopf mit Rand, z. B. Aktionen auf den Karten der Übersicht */
+.button-small {
+    @apply inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700;
+}
+
 /* Kleiner Knopf nur mit Symbol (Rückmeldung löschen/bearbeiten) */
 .button-icon {
     @apply inline-flex items-center justify-center rounded-lg px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-700;

@@ -1,4 +1,5 @@
-<footer class="main-footer">
+{{-- Mit Menü unten (eingeloggt, Handy) steht der Footer darüber; die Seite hält unten Platz frei (layouts/*.blade.php) --}}
+<footer class="main-footer @auth max-md:bottom-[calc(4.5rem+env(safe-area-inset-bottom))]! @endauth">
     <div class="px-[15px] md:px-12">
         <div class="flex flex-wrap -mx-[15px]">
             <div class="px-[15px] w-full sm:w-1/3 text-left">

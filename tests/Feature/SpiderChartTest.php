@@ -106,14 +106,12 @@ class SpiderChartTest extends TestCase
         $this->s->camp->update(['secondsurveyopen' => true]);
         $this->s->survey->update(['survey_status_id' => SurveyStatus::Fertig]);
 
+        // Seit Oktober 2026 zeigt die Übersicht gar kein Diagramm mehr (nur Karten), also auch keine Leitungsdaten.
         $this->actingAs($this->s->participant->fresh())
             ->get('/home')
             ->assertOk()
-            ->assertViewHas('datasets', function (array $datasets) {
-                $labels = collect($datasets)->flatten(1)->pluck('label');
-
-                return $labels->isNotEmpty() && ! $labels->contains('Einschätzung Leitende');
-            });
+            ->assertViewMissing('datasets')
+            ->assertDontSee('Einschätzung Leitende');
     }
 
     public function test_quali_without_questions_does_not_break_pages()
