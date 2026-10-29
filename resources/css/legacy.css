@@ -1,0 +1,14 @@
+/*
+ * Altes CSS (Reste von Bootstrap 4 und dem gekauften Theme, Bibliotheken, eigene Regeln), eingebunden vor app.css.
+ * Nicht in app.css importieren: Tailwind 4 optimiert mit Lightning CSS und löscht dabei Bootstrap-Regeln mit
+ * !important, wenn eine Tailwind-Klasse denselben Namen hat (w-100, h-100, p-5, mb-3, border ...).
+ */
+@import './libs/tailwind3-preflight.css';
+@import './libs/welcome.css';
+@import './libs/legacy-base.css';
+@import './libs/fontawesome-icons.css'; /* nur gebrauchte Icons: npm run css:fontawesome */
+@import '@fortawesome/fontawesome-free/css/solid.css';
+@import '@fortawesome/fontawesome-free/css/regular.css';
+
+@import './libs/custom.css';
+@import './libs/flowbite-base.css';

@@ -9,12 +9,10 @@ class StandardText extends Model
 {
     use HasFactory;
 
-    
     protected $fillable = [
-        'title', 'content', 'camp_id', 'global'
+        'title', 'content', 'camp_id', 'global',
     ];
 
-    
     protected $casts = [
         'global' => 'boolean',
     ];
@@ -23,5 +21,4 @@ class StandardText extends Model
     {
         return $this->belongsTo('App\Models\Camp');
     }
-    
 }

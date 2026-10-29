@@ -1,14 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         @if(Session::has('message'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <p>{{ Session::get('message') }}</p>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            <x-layouts.alert id="alert-message">{{ Session::get('message') }}</x-layouts.alert>
         @endif
         @yield('survey_content')   
     </div>

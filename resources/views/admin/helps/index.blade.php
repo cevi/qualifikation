@@ -1,28 +1,29 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-4">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-4">
                 <p>Artikel Erfassen:</p>
                 {!! Form::open(['method' => 'POST', 'action'=>'AdminHelpController@store']) !!}
-                <div class="form-group">
-                    {!! Form::label('title', 'Titel:') !!}
-                    {!! Form::text('title', null, ['class' => 'form-control']) !!}
+                <div class="mb-2.5">
+                    {!! Form::label('title', 'Titel:', ['class' => 'field-label']) !!}
+                    {!! Form::text('title', null, ['class' => 'field-input']) !!}
                 </div>
-                <div class="form-group">
-                    {!! Form::label('content', 'Inhalt:') !!}
-                    {!! Form::textarea('content', null, ['class' => 'form-control','required' ,'rows' => 10]) !!}
+                <div class="mb-2.5">
+                    {!! Form::label('content', 'Inhalt:', ['class' => 'field-label']) !!}
+                    {!! Form::textarea('content', null, ['class' => 'field-input','required' ,'rows' => 10]) !!}
                 </div>
-                <div class="form-group">
-                    {!! Form::submit('Artikel Erfassen', ['class' => 'btn btn-primary'])!!}
+                <div class="mb-2.5">
+                    {!! Form::submit('Artikel erfassen', ['class' => 'button-primary'])!!}
                 </div>
                 {!! Form::close()!!}
             </div>
-            <div class="col-md-8">
-                <table class="table table-striped table-responsive" id="datatable">
+            <div class="min-w-0 col-span-12 md:col-span-8">
+                <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                <table class="list-table" id="datatable">
                     <thead>
                     <tr>
                         {{-- <th></th> --}}
@@ -40,6 +41,7 @@
                     @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

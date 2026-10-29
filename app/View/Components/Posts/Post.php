@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Posts;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Post extends Component
@@ -13,6 +14,7 @@ class Post extends Component
     public $title;
 
     public $editable;
+
     public $user;
 
     /**
@@ -20,7 +22,7 @@ class Post extends Component
      *
      * @return void
      */
-    public function __construct($posts, $showLeader, $title, $editable = true,  $user = null)
+    public function __construct($posts, $showLeader, $title, $editable = true, $user = null)
     {
         //
         $this->posts = $posts;
@@ -33,7 +35,7 @@ class Post extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|\Closure|string
      */
     public function render()
     {

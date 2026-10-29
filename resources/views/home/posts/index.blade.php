@@ -1,11 +1,11 @@
 @extends('layouts.layout')
 @section('survey_content')
-    <div class="container-fluid">
+    <div>
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help" :header=false/>
-        <div class="row">
-            <div class="col-md-12">
-                <button type="button" id="new-feedback-btn" class="btn btn-primary mb-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 md:col-span-12">
+                <button type="button" id="new-feedback-btn" class="button-primary mb-3">
                     Neue Rückmeldung
                 </button>
                 <x-posts.post :posts="$posts_no_user" :showLeader="false" :title="'Nicht zugeordnete Rückmeldungen'"/>
@@ -22,5 +22,5 @@
 @endsection
 
 @push('scripts')
-    @include('home.post_delete')
+    @include('home.standard-texts-modal')
 @endpush

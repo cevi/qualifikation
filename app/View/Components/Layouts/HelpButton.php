@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Layouts;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class HelpButton extends Component
@@ -19,7 +20,7 @@ class HelpButton extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|\Closure|string
      */
     public function render()
     {

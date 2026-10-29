@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
+use App\Enums\SurveyStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class Camp extends Model
 {
-    //
+    use HasFactory;
+
     public static function boot()
     {
         parent::boot();
@@ -17,14 +21,14 @@ class Camp extends Model
             // get the admin user and assign roles/permissions on new team model
             CampUser::create([
                 'user_id' => 1,
-                'role_id' => config('status.role_Administrator'),
+                'role_id' => Role::Administrator,
                 'camp_id' => $camp['id'],
             ]);
         });
     }
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date'
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date',
     ];
 
     protected $casts = [
@@ -33,6 +37,8 @@ class Camp extends Model
         'demo' => 'boolean',
         'finish' => 'boolean',
         'status_control' => 'boolean',
+        // Nur mit Status-Steuerung gesetzt (null = keine Steuerung).
+        'survey_status_id' => SurveyStatus::class,
     ];
 
     public function users()
@@ -47,14 +53,14 @@ class Camp extends Model
 
     public function allUsers()
     {
-        return $this->belongsToMany('App\Models\User', 'camp_users')->where('camp_users.role_id', '<>', config('status.role_Administrator'));
+        return $this->belongsToMany('App\Models\User', 'camp_users')->where('camp_users.role_id', '<>', Role::Administrator);
     }
 
     public function participants()
     {
-        return $this->allUsers()->where('camp_users.role_id', config('status.role_Teilnehmer'))->OrderBy('username');
+        return $this->allUsers()->where('camp_users.role_id', Role::Teilnehmer)->OrderBy('username');
     }
-    
+
     public function my_participants()
     {
         return $this->participants()->where('camp_users.leader_id', Auth::user()->id);
@@ -62,18 +68,19 @@ class Camp extends Model
 
     public function other_participants()
     {
-        return $this->participants()->where(function ($query){
-            $query->whereNull('camp_users.leader_id')->orWhere('camp_users.leader_id', '<>', Auth::user()->id);});
+        return $this->participants()->where(function ($query) {
+            $query->whereNull('camp_users.leader_id')->orWhere('camp_users.leader_id', '<>', Auth::user()->id);
+        });
     }
 
     public function camp_users()
     {
-        return $this->hasMany(CampUser::class)->where('camp_users.role_id', config('status.role_Teilnehmer'));
+        return $this->hasMany(CampUser::class)->where('camp_users.role_id', Role::Teilnehmer);
     }
 
     public function camp_users_all()
     {
-        return $this->hasMany(CampUser::class)->where('camp_users.role_id', '<>', config('status.role_Administrator'));
+        return $this->hasMany(CampUser::class)->where('camp_users.role_id', '<>', Role::Administrator);
     }
 
     public function camp_type()
@@ -85,7 +92,7 @@ class Camp extends Model
     {
         $campType = $this->camp_type;
 
-        if (!$campType) {
+        if (! $campType) {
             return collect();
         }
 

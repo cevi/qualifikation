@@ -8,7 +8,7 @@ class Question extends Model
 {
     //
     protected $fillable = [
-        'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description', 'camp_type_id', 'sort-index'
+        'name', 'number', 'competence', 'chapter_id', 'competence_js1', 'competence_js2', 'description', 'camp_type_id', 'sort-index',
     ];
 
     protected $casts = [
@@ -20,7 +20,6 @@ class Question extends Model
     {
         return $this->belongsTo('App\Models\Chapter');
     }
-
 
     public function camp_type()
     {

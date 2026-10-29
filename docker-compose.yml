@@ -25,6 +25,16 @@ services:
     depends_on:
       - mysql
       - phpmyadmin
+      - selenium
+  # Browser für die Dusk-Tests (php artisan dusk, siehe tests/README.md)
+  selenium:
+    image: "selenium/standalone-chromium"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - "/dev/shm:/dev/shm"
+    networks:
+      - sail
   mysql:
     image: "mysql/mysql-server:8.0"
     ports:

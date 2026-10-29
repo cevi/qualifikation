@@ -22,15 +22,9 @@
 
     <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <!-- Styles -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
     @vite([
+        'resources/css/legacy.css',
         'resources/css/app.css',
         'resources/js/app.js'])
 </head>
@@ -38,11 +32,11 @@
 <body>
 <section>
     @foreach($surveys as $survey)
-        <div class="container-fluid" style="page-break-inside:avoid; page-break-after:always;">
+        <div class="px-[15px] md:px-12" style="page-break-inside:avoid; page-break-after:always;">
             <!-- Page Header-->
             <header>
-                <h2>Teilnehmer: {{$survey->campuser->user['username']}}</h2>
-                <h3>Leiter: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>
+                <h2>Teilnehmende: {{$survey->campuser->user['username']}}</h2>
+                <h3>Leitende: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>
             </header>
             @foreach ($survey->chapters as $chapter)
 
@@ -50,7 +44,7 @@
                     {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
                 </h2>
 
-                <table class="table">
+                <table class="list-table">
                     <thead>
                     <tr>
                         <th rowspan="2" width="50px">Nr.</th>
@@ -58,7 +52,7 @@
                         <th rowspan="2" width="300px">Thema</th>
                         <th colspan="2" width="250">1. Selbsteinschätzung</th>
                         <th colspan="2" width="250">2. Selbsteinschätzung</th>
-                        <th colspan="2" width="250">Leiter</th>
+                        <th colspan="2" width="250">Leitende</th>
                     </tr>
                     <tr>
                         <th width="50px"></th>
@@ -89,7 +83,7 @@
             @endforeach
             <div>
                 <h2 class="display">Bemerkung:</h2>
-                {!! nl2br($survey['comment']) !!}
+                {!! nl2br(e($survey['comment'])) !!}
             </div>
             <br>
             <div class="pagebreak">
@@ -104,9 +98,6 @@
 </section>
 
 
-<!-- jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     @include('home.radar')
 
 </body>

@@ -9,12 +9,19 @@ use Illuminate\View\Component;
 class Select extends Component
 {
     public string $name;
+
     public string $label;
+
     public string $id;
+
     public bool $required;
+
     public $collection;
+
     public bool $withEmptyOption;
+
     public bool $withoutLabel;
+
     /**
      * Create a new component instance.
      */

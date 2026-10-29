@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-6">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-6">
                 {!! Form::model($classification, ['method' => 'Patch', 'action'=>['AdminClassificationController@update',$classification->id]]) !!}
-                    <div class="form-group">
-                        {!! Form::label('name', 'Antwort:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('name', 'Antwort:', ['class' => 'field-label']) !!}
+                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Update Klassifizierung', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
                     </div>
                 {!! Form::close()!!}
                 </div>

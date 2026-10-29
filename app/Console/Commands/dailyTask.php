@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\SurveyStatus;
 use App\Models\Camp;
 use Illuminate\Console\Command;
 
@@ -39,6 +40,7 @@ class dailyTask extends Command
     public function handle()
     {
         $this->ResetDemoCamp();
+
         return Command::SUCCESS;
     }
 
@@ -47,18 +49,18 @@ class dailyTask extends Command
         Camp::where('demo', true)->update([
             'secondsurveyopen' => false,
             'status_control' => false,
-            'survey_status_id' => null
+            'survey_status_id' => null,
         ]);
         $camp = Camp::where('demo', true)->first();
         $posts = $camp->posts()->get();
-        foreach ($posts as $post){
+        foreach ($posts as $post) {
             $post->update(['comment' => fake()->sentence()]);
         }
         $surveys = $camp->surveys()->get();
-        foreach ($surveys as $survey){
+        foreach ($surveys as $survey) {
             $survey->update([
                 'comment' => fake()->sentence(),
-                'survey_status_id' => config('status.survey_neu')
+                'survey_status_id' => SurveyStatus::Neu,
             ]);
             $questions = $survey->questions()->get();
             foreach ($questions as $question) {

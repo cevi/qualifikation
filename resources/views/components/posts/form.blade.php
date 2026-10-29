@@ -15,7 +15,7 @@
         <x-forms.container>
             <x-forms.checkbox name="delete_file" id="delete_file" :label="$post->file ? 'Bestehende Datei ' . e($post->filename()) . ' löschen' : 'Bestehende Datei löschen'" :value="$post['delete_file']"/>
         </x-forms.container>
-        <p class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">oder</p>
+        <p class="field-label">oder</p>
     </div>
     <x-forms.container>
         <x-forms.file name="file" :disabled="Auth::user()->demo"/>
@@ -27,8 +27,8 @@
        <x-forms.checkbox label="Sichtbar für Qualifikation" name="show_on_survey" value="{{$post['show_on_survey']}}"/>
     </x-forms.container>
     <x-forms.container>
-        <x-forms.button type="submit" class="btn btn-primary">
-            {{ $post['id'] ? 'Änderungen Speichern' : 'Rückmeldung Erstellen' }}
+        <x-forms.button type="submit" class="button-primary">
+            {{ $post['id'] ? 'Änderungen speichern' : 'Rückmeldung erstellen' }}
         </x-forms.button>
     </x-forms.container> 
 </x-forms.form>

@@ -2,11 +2,13 @@
 
 namespace App\View\Components\Layouts;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class DrawerContent extends Component
 {
     public $help;
+
     /**
      * Create a new component instance.
      *
@@ -20,7 +22,7 @@ class DrawerContent extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|\Closure|string
      */
     public function render()
     {

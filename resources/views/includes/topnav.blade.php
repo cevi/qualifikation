@@ -20,7 +20,7 @@
 
         <!-- Desktop Navigation Menu (visible only on desktop screen widths) -->
         <div class="hidden xl:flex xl:items-center xl:w-auto xl:order-1">
-            <ul class="flex flex-row xl:space-x-4 2xl:space-x-8 font-medium items-center m-0 p-0">
+            <ul class="flex flex-row xl:gap-4 2xl:gap-8 font-medium items-center m-0 p-0">
                 @auth
                     <!-- Home -->
                     <li>
@@ -41,7 +41,7 @@
                                         aria-expanded="false"
                                         data-dropdown-toggle="dropdown-users"
                                     >
-                                        <span>Teilnehmer</span>
+                                        <span>Teilnehmende</span>
                                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                         </svg>
@@ -244,6 +244,16 @@
                                             </span>
                                         </a>
                                     </li>
+                                    <li class="mx-1">
+                                        <a class="block py-2 px-3 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-150 text-left"
+                                           href="{{route('admin.maintenance')}}"
+                                        >
+                                            <i class="fas fa-screwdriver-wrench w-4 text-center mr-2"></i>
+                                            <span class="flex-1 ml-1 text-left whitespace-nowrap">
+                                                Wartung
+                                            </span>
+                                        </a>
+                                    </li>
                                 @endif
                                 <li class="mx-1">
                                     <a href="/admin/changes" class="block py-2 px-3 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors duration-150 text-left">
@@ -262,7 +272,7 @@
 
         <!-- Mobile Navigation Menu Sheet (visible only on mobile/tablet screens, toggleable) -->
         <div class="hidden w-full xl:hidden" id="mobile-menu-2">
-            <ul class="flex flex-col font-medium space-y-4 mt-6 w-full px-2">
+            <ul class="flex flex-col font-medium gap-4 mt-6 w-full px-2">
                 @auth
                     <!-- Kurs Auswahl (Camp Selector) -->
                     <li>
@@ -344,14 +354,14 @@
                                         aria-controls="mobile-dropdown-users"
                                         aria-expanded="false"
                                     >
-                                        <span>Teilnehmer</span>
+                                        <span>Teilnehmende</span>
                                         <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                         </svg>
                                     </button>
                                     <div id="mobile-dropdown-users" class="hidden border-l-2 border-gray-200 dark:border-gray-700 pl-4 mt-2 space-y-3 max-h-[50vh] overflow-y-auto">
                                         @if(count($camp->my_participants) > 0)
-                                            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Meine Teilnehmer</div>
+                                            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mt-1">Meine Teilnehmenden</div>
                                             @foreach ($camp->my_participants as $user_profile)
                                                 <a class="block py-1.5 text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                                     href="{{route('home.profile', $user_profile->slug)}}">
@@ -364,7 +374,7 @@
                                             @if(count($camp->my_participants) > 0)
                                                 <hr class="border-gray-100 dark:border-gray-800">
                                             @endif
-                                            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Andere Teilnehmer</div>
+                                            <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Andere Teilnehmende</div>
                                             @foreach ($camp->other_participants as $user_profile)
                                                 <a class="block py-1.5 text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                                     href="{{route('home.profile', $user_profile->slug)}}">
@@ -462,6 +472,10 @@
                                     <a href="/admin/feedback" class="flex items-center py-1.5 text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                         <i class="fas fa-clipboard-list w-5 text-center mr-2"></i>
                                         <span>Feedbacks</span>
+                                    </a>
+                                    <a href="{{route('admin.maintenance')}}" class="flex items-center py-1.5 text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                        <i class="fas fa-screwdriver-wrench w-5 text-center mr-2"></i>
+                                        <span>Wartung</span>
                                     </a>
                                 @endif
                                 <a href="/admin/changes" class="flex items-center py-1.5 text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">

@@ -1,21 +1,156 @@
-@import './libs/welcome.css';
-@import './libs/bootstrap.css';
-@import 'bootstrap-icons/font/bootstrap-icons.css';
-@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-/*@import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css";*/
-@import 'datatables.net-select-bs5/css/select.bootstrap5.css';
+/*
+ * Tailwind 4, ohne Preflight (in Tailwind 3: corePlugins.preflight = false).
+ * Die Utilities stehen bewusst in keiner CSS-Ebene: Wie in Tailwind 3 sind sie gleichrangig mit dem alten CSS
+ * (legacy.css, davor eingebunden), es entscheiden Spezifität und Reihenfolge. In @layer utilities würde jede
+ * Regel ohne Ebene gewinnen, auch die von Bootstrap.
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css';
 
-@import './libs/jquery-ui.css';
-@import './libs/jquery.mCustomScrollbar.css';
-@import './libs/style.default.premium.css';
-@import './libs/dropify.min.css';
-@import './libs/custom.css';
+@plugin 'flowbite/plugin';
+@source '../../node_modules/flowbite';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* darkMode: "class" aus Tailwind 3, mit derselben Spezifität wie dort (.dark .dark\:…) */
+@custom-variant dark (&:is(.dark *));
 
-/* @import "tailwindcss"; */
+@theme {
+    /* Eigene Breakpoints aus Tailwind 3 (480 und 976 px statt 640 und 1024); md, xl, 2xl wie der Standard */
+    --breakpoint-sm: 30rem;
+    --breakpoint-lg: 61rem;
+
+    /* Ecken wie bisher: Bootstraps .rounded-lg (0.3rem, !important) hat Tailwinds 0.5rem überall überschrieben */
+    --radius-lg: 0.3rem;
+
+    /*
+     * Zeilenhöhen der Schriftgrössen absolut wie in Tailwind 3. Tailwind 4 rechnet sie relativ zur Schriftgrösse
+     * (text-sm: 1.43), die hier oft aus Bootstrap oder dem Theme kommt (0.9rem): 20.6 statt 20 px pro Zeile.
+     */
+    --text-xs--line-height: 1rem;
+    --text-sm--line-height: 1.25rem;
+    --text-base--line-height: 1.5rem;
+    --text-lg--line-height: 1.75rem;
+    --text-xl--line-height: 1.75rem;
+    --text-2xl--line-height: 2rem;
+    --text-3xl--line-height: 2.25rem;
+    --text-4xl--line-height: 2.5rem;
+
+    /*
+     * Farben von Flowbite 2 (bis Oktober 2026 vom Plugin gesetzt). Flowbite 3 setzt keine Farben mehr, und seine
+     * Theme-Datei hat eine andere Palette (z. B. red-500 #EF4444 statt #F05252). So bleibt alles wie bisher.
+     */
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+    --color-red-50: #fdf2f2;
+    --color-red-100: #fde8e8;
+    --color-red-200: #fbd5d5;
+    --color-red-300: #f8b4b4;
+    --color-red-400: #f98080;
+    --color-red-500: #f05252;
+    --color-red-600: #e02424;
+    --color-red-700: #c81e1e;
+    --color-red-800: #9b1c1c;
+    --color-red-900: #771d1d;
+    --color-orange-50: #fff8f1;
+    --color-orange-100: #feecdc;
+    --color-orange-200: #fcd9bd;
+    --color-orange-300: #fdba8c;
+    --color-orange-400: #ff8a4c;
+    --color-orange-500: #ff5a1f;
+    --color-orange-600: #d03801;
+    --color-orange-700: #b43403;
+    --color-orange-800: #8a2c0d;
+    --color-orange-900: #771d1d;
+    --color-yellow-50: #fdfdea;
+    --color-yellow-100: #fdf6b2;
+    --color-yellow-200: #fce96a;
+    --color-yellow-300: #faca15;
+    --color-yellow-400: #e3a008;
+    --color-yellow-500: #c27803;
+    --color-yellow-600: #9f580a;
+    --color-yellow-700: #8e4b10;
+    --color-yellow-800: #723b13;
+    --color-yellow-900: #633112;
+    --color-green-50: #f3faf7;
+    --color-green-100: #def7ec;
+    --color-green-200: #bcf0da;
+    --color-green-300: #84e1bc;
+    --color-green-400: #31c48d;
+    --color-green-500: #0e9f6e;
+    --color-green-600: #057a55;
+    --color-green-700: #046c4e;
+    --color-green-800: #03543f;
+    --color-green-900: #014737;
+    --color-teal-50: #edfafa;
+    --color-teal-100: #d5f5f6;
+    --color-teal-200: #afecef;
+    --color-teal-300: #7edce2;
+    --color-teal-400: #16bdca;
+    --color-teal-500: #0694a2;
+    --color-teal-600: #047481;
+    --color-teal-700: #036672;
+    --color-teal-800: #05505c;
+    --color-teal-900: #014451;
+    --color-blue-50: #ebf5ff;
+    --color-blue-100: #e1effe;
+    --color-blue-200: #c3ddfd;
+    --color-blue-300: #a4cafe;
+    --color-blue-400: #76a9fa;
+    --color-blue-500: #3f83f8;
+    --color-blue-600: #1c64f2;
+    --color-blue-700: #1a56db;
+    --color-blue-800: #1e429f;
+    --color-blue-900: #233876;
+    --color-indigo-50: #f0f5ff;
+    --color-indigo-100: #e5edff;
+    --color-indigo-200: #cddbfe;
+    --color-indigo-300: #b4c6fc;
+    --color-indigo-400: #8da2fb;
+    --color-indigo-500: #6875f5;
+    --color-indigo-600: #5850ec;
+    --color-indigo-700: #5145cd;
+    --color-indigo-800: #42389d;
+    --color-indigo-900: #362f78;
+    --color-purple-50: #f6f5ff;
+    --color-purple-100: #edebfe;
+    --color-purple-200: #dcd7fe;
+    --color-purple-300: #cabffd;
+    --color-purple-400: #ac94fa;
+    --color-purple-500: #9061f9;
+    --color-purple-600: #7e3af2;
+    --color-purple-700: #6c2bd9;
+    --color-purple-800: #5521b5;
+    --color-purple-900: #4a1d96;
+    --color-pink-50: #fdf2f8;
+    --color-pink-100: #fce8f3;
+    --color-pink-200: #fad1e8;
+    --color-pink-300: #f8b4d9;
+    --color-pink-400: #f17eb8;
+    --color-pink-500: #e74694;
+    --color-pink-600: #d61f69;
+    --color-pink-700: #bf125d;
+    --color-pink-800: #99154b;
+    --color-pink-900: #751a3d;
+
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
+}
 
 :root {
     --color-bg-primary: #F4F7FA;
@@ -35,12 +170,12 @@
     --color-border: #dee2e6;
     --color-logo: #1c2128;
     --radius-base: 12px;
-    --color-gray-50: oklch(98.5% .002 247.839);
-    --color-gray-400: oklch(70.7% .022 261.325);
-    --color-gray-600: oklch(44.6% .03 256.802);
-    --color-gray-800: oklch(27.8% .033 256.848);
-    --color-body: var(--color-gray-600);
-    --color-neutral-secondary-medium: var(--color-gray-50);
+    --app-gray-50: oklch(98.5% .002 247.839);
+    --app-gray-400: oklch(70.7% .022 261.325);
+    --app-gray-600: oklch(44.6% .03 256.802);
+    --app-gray-800: oklch(27.8% .033 256.848);
+    --color-body: var(--app-gray-600);
+    --color-neutral-secondary-medium: var(--app-gray-50);
 }
 
 .dark {
@@ -58,10 +193,10 @@
     --color-primer-shadow-inset: 0 0 transparent;
     --color-fg-default: #adbac7;
     --color-accent-fg: #539bf5;
-    --color-border: #fafafa;
+    --color-border: #444c56;
     --color-logo:  #F4F7FA;
-    --color-body: var(--color-gray-400);
-    --color-neutral-secondary-medium: var(--color-gray-800);
+    --color-body: var(--app-gray-400);
+    --color-neutral-secondary-medium: var(--app-gray-800);
 }
 
 .text-dark__white {
@@ -114,4 +249,100 @@ input[type="button"].btn.btn-primary:hover {
 
 .bg-neutral-secondary-medium {
     background-color: var(--color-neutral-secondary-medium);
+}
+/*
+ * Bausteine für Formulare, Knöpfe und einfache Listen (Flowbite-Stil), statt Bootstrap form-group/form-control/btn
+ * und table. Ohne CSS-Ebene wie die Utilities. Genutzt in den Admin-Ansichten (Form::…) und in components/forms.
+ */
+.field-label {
+    @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white;
+}
+
+.field-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+}
+
+.field-file {
+    @apply block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-hidden dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 disabled:opacity-25 disabled:cursor-not-allowed;
+}
+
+.field-check {
+    @apply w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600;
+}
+
+.button-primary {
+    @apply inline-block text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800;
+}
+
+.button-danger {
+    @apply inline-block text-center focus:outline-hidden text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900;
+}
+
+.button-purple {
+    @apply inline-block text-center focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900;
+}
+
+.field-error {
+    @apply mt-2 text-sm text-red-600 dark:text-red-500;
+}
+
+.button-secondary {
+    @apply inline-block text-center text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 focus:outline-hidden;
+}
+
+.list-table {
+    @apply w-full text-sm text-left text-gray-600 dark:text-gray-300;
+}
+
+.list-table thead {
+    @apply text-xs uppercase text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300;
+}
+
+.list-table th,
+.list-table td {
+    @apply px-4 py-3 align-top;
+}
+
+.list-table tbody tr {
+    @apply border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+}
+
+.list-table a {
+    @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
+}
+
+/* Kasten mit Kopf, Inhalt und Fuss (statt Bootstrap card / card-header / card-body / card-footer) */
+.panel {
+    @apply relative mb-8 rounded-lg border border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800;
+}
+
+.panel-header {
+    @apply flex items-center border-b border-gray-200 px-5 py-3 dark:border-gray-700;
+}
+
+.panel-body {
+    @apply p-5;
+}
+
+.panel-footer {
+    @apply border-t border-gray-200 px-5 py-3 text-right dark:border-gray-700;
+}
+
+/* Rückmeldung (x-posts.post): auf dem Handy als Karte, Angaben als graue Fusszeile mit Symbolen */
+.post-card {
+    @apply max-sm:mb-3 max-sm:rounded-lg max-sm:border max-sm:border-gray-200 max-sm:bg-white max-sm:p-3 max-sm:shadow-xs dark:max-sm:border-gray-700 dark:max-sm:bg-gray-800;
+}
+
+.post-meta {
+    @apply max-sm:flex max-sm:flex-wrap max-sm:gap-x-3 max-sm:pt-2 max-sm:text-left max-sm:text-gray-500 dark:max-sm:text-gray-400;
+}
+
+/* Kleiner Knopf mit Rand, z. B. Aktionen auf den Karten der Übersicht */
+.button-small {
+    @apply inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-900 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700;
+}
+
+/* Kleiner Knopf nur mit Symbol (Rückmeldung löschen/bearbeiten) */
+.button-icon {
+    @apply inline-flex items-center justify-center rounded-lg px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-200 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-gray-700;
 }

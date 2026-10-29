@@ -1,36 +1,37 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
                 {!! Form::open(['action'=>'AdminGroupsController@store']) !!}
-                    <div class="form-group">
-                        {!! Form::label('name', 'Name:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('name', 'Name:', ['class' => 'field-label']) !!}
+                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('foreign_id', 'Gruppen ID (Cevi-DB):') !!}
-                        {!! Form::text('foreign_id', null,  ['class' => 'form-control']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('foreign_id', 'Gruppen ID (Cevi-DB):', ['class' => 'field-label']) !!}
+                        {!! Form::text('foreign_id', null,  ['class' => 'field-input']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('url', 'URL (Cevi-DB):') !!}
-                        {!! Form::text('url', null,  ['class' => 'form-control']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('url', 'URL (Cevi-DB):', ['class' => 'field-label']) !!}
+                        {!! Form::text('url', null,  ['class' => 'field-input']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('api_token', 'API Token (Cevi-DB):') !!}
-                        {!! Form::text('api_token', null,  ['class' => 'form-control']) !!}
+                    <div class="mb-2.5">
+                        {!! Form::label('api_token', 'API Token (Cevi-DB):', ['class' => 'field-label']) !!}
+                        {!! Form::text('api_token', null,  ['class' => 'field-input']) !!}
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Gruppe erstellen', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        {!! Form::submit('Gruppe erstellen', ['class' => 'button-primary'])!!}
                     </div>
                 {!! Form::close()!!}
             </div>
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($groups)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
@@ -52,6 +53,7 @@
                             </tbody>
                         @endforeach
                     </table>
+                    </div>
                 @endif
             </div>
         </div>

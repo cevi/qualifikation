@@ -1,7 +1,7 @@
 <section>
     @if($header)
         <div class="breadcrumb-holder">
-            <div class="container-fluid">
+            <div>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
                     @if(isset($help['main_title']))
@@ -12,15 +12,18 @@
             </div>
         </div>
     @endif
-    <div class="container-fluid">
+    <div>
         <header>
-            <h3 class="text-3xl font-bold dark:text-white">{{$title}} {{$subtitle}}
+            <h1 class="text-3xl font-bold dark:text-white">{{$title}} {{$subtitle}}
                 @if(isset($help['content']))
                     <x-layouts.help-button/>
                 @endif
-            </h3>
+            </h1>
         </header>
 
-        <x-layouts.drawer-content :help="$help"/>
+        {{-- Nur mit Hilfe-Knopf: ohne ihn initialisiert Flowbite die Leiste nicht und meldet einen Fehler. --}}
+        @if(isset($help['content']))
+            <x-layouts.drawer-content :help="$help"/>
+        @endif
     </div>
 </section>

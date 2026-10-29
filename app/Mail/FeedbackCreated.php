@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Feedback;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -19,7 +20,7 @@ class FeedbackCreated extends Mailable
      *
      * @return void
      */
-    public function __construct(\App\Models\Feedback $feedback)
+    public function __construct(Feedback $feedback)
     {
         //
         $this->feedback = $feedback;
@@ -28,7 +29,7 @@ class FeedbackCreated extends Mailable
     /**
      * Get the message envelope.
      *
-     * @return \Illuminate\Mail\Mailables\Envelope
+     * @return Envelope
      */
     public function envelope()
     {
@@ -40,7 +41,7 @@ class FeedbackCreated extends Mailable
     /**
      * Get the message content definition.
      *
-     * @return \Illuminate\Mail\Mailables\Content
+     * @return Content
      */
     public function content()
     {
