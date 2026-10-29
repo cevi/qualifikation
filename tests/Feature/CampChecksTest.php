@@ -36,15 +36,12 @@ class CampChecksTest extends TestCase
         $this->assertSame([$this->s->survey->id], $this->checks->surveysFor($this->s->participant)->pluck('id')->all());
     }
 
-    public function test_closed_self_assessment_is_an_urgent_task_for_the_leader(): void
+    /** Das Abschliessen der Quali ist fester Teil des Kursprogramms, keine Aufgabe (Entscheid Oktober 2026). */
+    public function test_closed_self_assessment_is_no_task(): void
     {
         $this->s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
 
-        $tasks = $this->tasksFor($this->s->gruppenleiter);
-
-        $this->assertCount(1, $tasks);
-        $this->assertTrue($tasks[0]['urgent']);
-        $this->assertSame(route('survey.compare', $this->s->survey->slug), $tasks[0]['link']);
+        $this->assertCount(0, $this->tasksFor($this->s->gruppenleiter));
     }
 
     public static function releases(): array
@@ -119,15 +116,54 @@ class CampChecksTest extends TestCase
         $this->assertSame($expected, $this->checks->mustBeFinished($camp));
     }
 
-    public function test_finishing_the_camp_is_an_urgent_campleader_task_on_top(): void
+    public function test_finishing_the_camp_is_a_red_campleader_task_on_top(): void
     {
         $this->s->camp->update(['end_date' => now()->subMonths(4)->toDateString()]);
 
         $tasks = $this->tasksFor($this->s->kursleiter);
 
         $this->assertSame('Kurs abschliessen', $tasks[0]['title']);
-        $this->assertTrue($tasks[0]['urgent']);
+        $this->assertSame('danger', $tasks[0]['level']);
         $this->assertSame(route('admin.camps.edit', $this->s->camp), $tasks[0]['link']);
+    }
+
+    public function test_leader_sees_own_participants_without_feedback_in_orange(): void
+    {
+        // Im Szenario hat nur der eigene Teilnehmer der Gruppenleitung eine Rückmeldung
+        $this->assertNotContains($this->s->participant->username.' hat noch keine Rückmeldung', $this->tasksFor($this->s->gruppenleiter)->pluck('title'));
+
+        $this->s->post->delete();
+        $task = $this->tasksFor($this->s->gruppenleiter)->firstWhere('title', $this->s->participant->username.' hat noch keine Rückmeldung');
+
+        $this->assertSame('warning', $task['level']);
+        $this->assertSame(route('home.profile', $this->s->participant->slug).'?neu=1', $task['link']);
+        $this->assertNotContains(
+            $this->s->unassignedParticipant->username.' hat noch keine Rückmeldung',
+            $this->tasksFor($this->s->gruppenleiter)->pluck('title'),
+            'nicht zugeteilte Teilnehmende sieht nur die Kursleitung',
+        );
+    }
+
+    public function test_campleader_sees_one_summary_line_for_all_participants_without_feedback(): void
+    {
+        $task = $this->tasksFor($this->s->kursleiter)->firstWhere('level', 'warning');
+        $this->assertSame('1 Teilnehmende Person ohne Rückmeldung', $task['title']);
+        $this->assertSame('#teilnehmende', $task['link']);
+
+        $this->s->post->delete();
+        $tasks = $this->tasksFor($this->s->kursleiter);
+
+        $this->assertSame(['2 Teilnehmende ohne Rückmeldung'], $tasks->where('level', 'warning')->pluck('title')->all());
+        $this->assertFalse($tasks->pluck('title')->contains(fn ($title) => str_ends_with($title, 'hat noch keine Rückmeldung')));
+    }
+
+    public function test_tasks_are_sorted_red_orange_grey(): void
+    {
+        $this->s->camp->update(['end_date' => now()->subMonths(4)->toDateString()]);
+
+        $levels = $this->tasksFor($this->s->kursleiter)->pluck('level')->all();
+
+        $this->assertSame(['danger', 'warning', 'normal', 'normal', 'normal'], $levels);
     }
 
     public function test_second_round_can_be_released_when_all_have_closed_the_first(): void

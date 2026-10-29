@@ -53,16 +53,17 @@ class SurveyOverviewTest extends TestCase
             ->assertSee('Zum Abschliessen');
     }
 
-    public function test_leader_task_links_to_compare_when_participant_has_closed(): void
+    public function test_closed_self_assessment_is_counted_but_no_task(): void
     {
         $s = CampScenario::create();
         $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
 
-        $this->actingAs($s->gruppenleiter)->get('/home')
+        $html = $this->actingAs($s->gruppenleiter)->get('/home')
             ->assertOk()
-            ->assertSee('Aufgaben · 1')
-            ->assertSee($s->participant->username.' hat die Selbsteinschätzung abgeschlossen')
-            ->assertSee('(dringend)');
+            ->assertDontSee('id="aufgaben"', false)
+            ->assertDontSee('hat die Selbsteinschätzung abgeschlossen')
+            ->getContent();
+        $this->assertMatchesRegularExpression('/>1<\/span>\s*<span[^>]*>Zum Abschliessen</', $html);
     }
 
     public function test_campleader_sees_all_participants_and_camp_tasks(): void
@@ -75,7 +76,10 @@ class SurveyOverviewTest extends TestCase
             ->assertSee($s->participant->username)
             ->assertSee($s->unassignedParticipant->username)
             ->assertSee('Noch ohne Leitende')
-            ->assertSee('1 Teilnehmende Person ohne Leitende');
+            ->assertSee('1 Teilnehmende Person ohne Leitende')
+            ->assertSee('1 Teilnehmende Person ohne Rückmeldung')
+            ->assertSee('text-orange-700', false)
+            ->assertSee('(wichtig)');
     }
 
     public function test_overview_does_not_load_chart_data(): void

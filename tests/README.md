@@ -124,7 +124,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 30 | Runden, Abschliessen, Freigeben, Zurücksetzen |
 | Quali-Ablauf | [`SurveyAccessTest`](Feature/SurveyAccessTest.php) | 3 | Zugriff von Leitenden auf Qualis |
 | Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 6 | Übersicht nach dem Login: Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
-| Quali-Ablauf | [`CampChecksTest`](Feature/CampChecksTest.php) | 18 | Regeln der Aufgabenliste (`App\Services\CampChecks`) |
+| Quali-Ablauf | [`CampChecksTest`](Feature/CampChecksTest.php) | 21 | Regeln der Aufgabenliste (`App\Services\CampChecks`) |
 | Quali-Ablauf | [`BottomNavigationTest`](Feature/BottomNavigationTest.php) | 5 | Menü unten auf dem Handy: Punkte je Rolle |
 | Quali-Ablauf | [`PwaTest`](Feature/PwaTest.php) | 3 | Manifest, Service Worker speichert keine Seiten, Offline-Seite |
 | Quali-Ablauf | [`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php) | 9 | „Qualis erstellen“ |
@@ -331,8 +331,8 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_participant_sees_own_survey_and_task_without_compare_and_profile_links` | Teilnehmende: Aufgabe „1. Selbsteinschätzung ausfüllen“, Link zum Ausfüllen, kein Vergleich, kein Profil, keine Zähler |
 | `test_participant_gets_compare_link_and_no_task_after_closing` | Nach dem Abschliessen: Vergleich statt Ausfüllen, keine Aufgabe mehr |
 | `test_leader_sees_own_participants_with_links_and_counters` | Leitende: nur eigene Teilnehmende, Vergleich, „+ Rückmeldung“ (`?neu=1`), Anzahl Rückmeldungen, Zähler |
-| `test_leader_task_links_to_compare_when_participant_has_closed` | „hat die Selbsteinschätzung abgeschlossen“ als dringende Aufgabe |
-| `test_campleader_sees_all_participants_and_camp_tasks` | Kursleitung: alle Teilnehmenden, „Noch ohne Leitende“, Kurs-Aufgaben |
+| `test_closed_self_assessment_is_counted_but_no_task` | „TN abgeschlossen“ zählt bei „Zum Abschliessen“, ist aber keine Aufgabe |
+| `test_campleader_sees_all_participants_and_camp_tasks` | Kursleitung: alle Teilnehmenden, „Noch ohne Leitende“, Kurs-Aufgaben, „Teilnehmende ohne Rückmeldung“ orange |
 | `test_overview_does_not_load_chart_data` | Kein Radar-Diagramm mehr auf der Übersicht |
 
 **[`CampChecksTest`](Feature/CampChecksTest.php)**: Regeln der Aufgabenliste (`App\Services\CampChecks`).
@@ -340,13 +340,16 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | Test | Prüft |
 |---|---|
 | `test_leader_sees_only_own_participants_and_campleader_all` | Welche Qualis jemand auf der Übersicht sieht |
-| `test_closed_self_assessment_is_an_urgent_task_for_the_leader` | „TN abgeschlossen“ ist dringend und führt zum Vergleich |
+| `test_closed_self_assessment_is_no_task` | „TN abgeschlossen“ ist keine Aufgabe (das Abschliessen ist fester Teil des Kursprogramms) |
 | `test_not_started_is_a_task_only_after_release` | „Noch nicht begonnen“ nur, wenn die 1. Runde frei ist (ohne Status-Steuerung immer, mit Steuerung ab Kurs-Status „1. offen“), 4 Fälle |
 | `test_participant_task_is_the_own_open_self_assessment` | Teilnehmende: eigene offene Selbsteinschätzung, nach dem Abschliessen keine |
 | `test_camp_tasks_only_for_campleader` | Kurs-Aufgaben nur für die Kursleitung |
 | `test_participants_without_survey` | Teilnehmende ohne Quali |
 | `test_camp_must_be_finished_three_months_after_end_date` | Kurs abschliessen: erst 3 Monate nach Schlussdatum, nie für Demo-, Global- und abgeschlossene Kurse, ohne Schlussdatum oder mit `0000-00-00`, 7 Fälle |
-| `test_finishing_the_camp_is_an_urgent_campleader_task_on_top` | „Kurs abschliessen“ steht zuoberst und führt zu „Kurs bearbeiten“ |
+| `test_finishing_the_camp_is_a_red_campleader_task_on_top` | „Kurs abschliessen“ ist rot, steht zuoberst und führt zu „Kurs bearbeiten“ |
+| `test_leader_sees_own_participants_without_feedback_in_orange` | „X hat noch keine Rückmeldung“ orange, nur für eigene Teilnehmende, Link öffnet „Neue Rückmeldung“ im Profil |
+| `test_campleader_sees_one_summary_line_for_all_participants_without_feedback` | Kursleitung: eine orange Zeile „X Teilnehmende ohne Rückmeldung“ für alle, keine Zeile pro Person |
+| `test_tasks_are_sorted_red_orange_grey` | Reihenfolge rot, orange, grau |
 | `test_second_round_can_be_released_when_all_have_closed_the_first` | „2. Selbsteinschätzung freigeben“ erst, wenn alle die 1. abgeschlossen haben, nicht mehr nach der Freigabe |
 
 **[`BottomNavigationTest`](Feature/BottomNavigationTest.php)**: Menü unten auf dem Handy (`includes/bottomnav.blade.php`).

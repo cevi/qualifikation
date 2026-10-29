@@ -49,4 +49,10 @@ class CampUser extends Model
     {
         return $this->hasMany(Survey::class);
     }
+
+    /** Rückmeldungen zu dieser Person in diesem Kurs. */
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

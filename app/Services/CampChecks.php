@@ -15,7 +15,8 @@ use Illuminate\Support\Collection;
  * Offene Arbeiten in einem Kurs, für die Aufgabenliste auf der Übersicht. Jede Prüfung ist eine eigene Methode,
  * damit die Monats-Mail "Kurs abschliessen" (camps:finish-reminder) dieselbe Regel verwendet.
  *
- * Aufgabe: array{title: string, subtitle: string, urgent: bool, link: string}
+ * Aufgabe: array{title: string, subtitle: string, level: 'danger'|'warning'|'normal', link: string}
+ * danger = rot (Kurs abschliessen), warning = orange (keine Rückmeldung), normal = grau.
  */
 class CampChecks
 {
@@ -60,7 +61,14 @@ class CampChecks
             $tasks = $tasks->merge($this->campTasks($user->camp));
         }
 
-        return $tasks->sortByDesc('urgent')->values();
+        if ($user->camp && ! $user->isTeilnehmer()) {
+            $tasks = $tasks->merge($this->feedbackTasks($user));
+        }
+
+        // Rot, dann orange, dann grau; innerhalb einer Stufe in der Reihenfolge der Prüfungen
+        $rank = ['danger' => 0, 'warning' => 1, 'normal' => 2];
+
+        return $tasks->values()->sortBy(fn (array $task, int $index) => $rank[$task['level']] * 10000 + $index)->values();
     }
 
     /** Teilnehmende: eigene Selbsteinschätzung, solange sie ausgefüllt werden darf. */
@@ -70,35 +78,69 @@ class CampChecks
             ->map(fn (Survey $survey) => [
                 'title' => $survey->SurveyName().' ausfüllen',
                 'subtitle' => 'Noch nicht abgeschlossen',
-                'urgent' => false,
+                'level' => 'normal',
                 'link' => route('survey.survey', $survey->slug),
             ])->values();
     }
 
-    /** Leitende: Selbsteinschätzung abgeschlossen (wartet auf die Leitenden) oder trotz Freigabe nicht begonnen. */
+    /**
+     * Leitende: Selbsteinschätzung trotz Freigabe nicht begonnen. Das Abschliessen der Quali ist fester Teil des
+     * Kursprogramms und deshalb keine Aufgabe.
+     */
     public function leaderTasks(Collection $surveys, ?Camp $camp): Collection
     {
         $tasks = collect();
         foreach ($surveys as $survey) {
             $name = $survey->campuser->user->username;
-            if ($survey->status() === SurveyStatus::TnAbgeschlossen) {
-                $tasks->push([
-                    'title' => "$name hat die Selbsteinschätzung abgeschlossen",
-                    'subtitle' => 'Vergleich besprechen und Quali abschliessen',
-                    'urgent' => true,
-                    'link' => route('survey.compare', $survey->slug),
-                ]);
-            } elseif ($survey->status() === SurveyStatus::Neu && $camp && $this->firstRoundReleased($camp)) {
+            if ($survey->status() === SurveyStatus::Neu && $camp && $this->firstRoundReleased($camp)) {
                 $tasks->push([
                     'title' => "$name hat noch nicht begonnen",
                     'subtitle' => '1. Selbsteinschätzung ist offen',
-                    'urgent' => false,
+                    'level' => 'normal',
                     'link' => route('home.profile', $survey->campuser->user->slug),
                 ]);
             }
         }
 
         return $tasks;
+    }
+
+    /**
+     * Noch keine Rückmeldung erfasst (orange). Leitende: eine Zeile pro eigene Teilnehmende Person. Kursleitung: eine
+     * Zeile für alle, sonst wäre die Liste zu Kursbeginn so lang wie die Teilnehmendenliste.
+     */
+    public function feedbackTasks(User $user): Collection
+    {
+        if ($user->isCampleader()) {
+            $count = $this->participantsWithoutPost($user->camp)->count();
+
+            return $count === 0 ? collect() : collect([[
+                'title' => $count === 1 ? '1 Teilnehmende Person ohne Rückmeldung' : "$count Teilnehmende ohne Rückmeldung",
+                'subtitle' => 'Bei den Teilnehmenden unten mit «0 Rückmeldungen»',
+                'level' => 'warning',
+                'link' => '#teilnehmende',
+            ]]);
+        }
+
+        return $this->participantsWithoutPost($user->camp, $user)
+            ->map(fn (CampUser $campUser) => [
+                'title' => $campUser->user->username.' hat noch keine Rückmeldung',
+                'subtitle' => 'Rückmeldung erfassen',
+                'level' => 'warning',
+                'link' => route('home.profile', $campUser->user->slug).'?neu=1',
+            ]);
+    }
+
+    /** Teilnehmende ohne Rückmeldung im Kurs; mit $leader nur die, die dieser Person zugeteilt sind. */
+    public function participantsWithoutPost(Camp $camp, ?User $leader = null): Collection
+    {
+        return CampUser::with('user')
+            ->where('camp_id', $camp->id)->where('role_id', Role::Teilnehmer)
+            ->when($leader, fn ($query) => $query->where('leader_id', $leader->id))
+            ->doesntHave('posts')
+            ->get()
+            ->sortBy('user.username', SORT_NATURAL | SORT_FLAG_CASE)
+            ->values();
     }
 
     /** Kursleitung: Zuteilung, fehlende Qualis, 2. Runde freigeben, Kurs abschliessen. */
@@ -109,7 +151,7 @@ class CampChecks
             $tasks->push([
                 'title' => 'Kurs abschliessen',
                 'subtitle' => 'Das Schlussdatum ('.Carbon::parse($camp->end_date)->format('d.m.Y').') liegt über '.self::FINISH_AFTER_MONTHS.' Monate zurück',
-                'urgent' => true,
+                'level' => 'danger',
                 'link' => route('admin.camps.edit', $camp),
             ]);
         }
@@ -117,7 +159,7 @@ class CampChecks
             $tasks->push([
                 'title' => $count === 1 ? '1 Teilnehmende Person ohne Leitende' : "$count Teilnehmende ohne Leitende",
                 'subtitle' => 'Unter Personen zuteilen',
-                'urgent' => false,
+                'level' => 'normal',
                 'link' => route('admin.users.index'),
             ]);
         }
@@ -125,7 +167,7 @@ class CampChecks
             $tasks->push([
                 'title' => $count === 1 ? '1 Teilnehmende Person ohne Qualifikation' : "$count Teilnehmende ohne Qualifikation",
                 'subtitle' => 'Unter Qualifikationen erstellen',
-                'urgent' => false,
+                'level' => 'normal',
                 'link' => route('surveys.index'),
             ]);
         }
@@ -133,7 +175,7 @@ class CampChecks
             $tasks->push([
                 'title' => '2. Selbsteinschätzung freigeben',
                 'subtitle' => 'Alle Teilnehmenden haben die 1. abgeschlossen',
-                'urgent' => false,
+                'level' => 'normal',
                 'link' => route('surveys.index'),
             ]);
         }

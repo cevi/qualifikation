@@ -12,7 +12,7 @@
                 $toClose = $surveys->filter(fn ($survey) => $survey->status() === \App\Enums\SurveyStatus::TnAbgeschlossen)->count();
                 $counters = [
                     ['count' => $surveys->count(), 'label' => 'Teilnehmende', 'link' => '#teilnehmende'],
-                    ['count' => $toClose, 'label' => 'Zum Abschliessen', 'link' => '#aufgaben'],
+                    ['count' => $toClose, 'label' => 'Zum Abschliessen', 'link' => '#teilnehmende'],
                     ['count' => $postCounts->sum(), 'label' => 'Rückmeldungen', 'link' => '/posts'],
                 ];
             @endphp
@@ -33,7 +33,7 @@
                 </h2>
                 <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach ($tasks->take(5) as $task)
-                        <x-dashboard.task :title="$task['title']" :subtitle="$task['subtitle']" :urgent="$task['urgent']" :link="$task['link']"/>
+                        <x-dashboard.task :title="$task['title']" :subtitle="$task['subtitle']" :level="$task['level']" :link="$task['link']"/>
                     @endforeach
                 </ul>
                 @if ($tasks->count() > 5)
@@ -43,7 +43,7 @@
                         </summary>
                         <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach ($tasks->skip(5) as $task)
-                                <x-dashboard.task :title="$task['title']" :subtitle="$task['subtitle']" :urgent="$task['urgent']" :link="$task['link']"/>
+                                <x-dashboard.task :title="$task['title']" :subtitle="$task['subtitle']" :level="$task['level']" :link="$task['link']"/>
                             @endforeach
                         </ul>
                     </details>
