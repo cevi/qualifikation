@@ -19,10 +19,7 @@
                         <div class="mx-2 my-4 grid grid-cols-12 gap-x-2 sm:gap-x-8 text-xl {{$question->competence_text() ? 'core_competence':''}}">
                             <div class="min-w-0 sm:col-span-1 col-span-2">{{$question->question['number']}}</div>
                             <div class="min-w-0 sm:col-span-3 col-span-10">{{$question->question['competence']}}</div>
-                            <div class="min-w-0 sm:col-span-8 col-span-12" 
-                            @if($question->competence_text())
-                                {{Popper::pop($question->competence_text())}}
-                                @endif>{{$question->question['name']}}
+                            <div class="min-w-0 sm:col-span-8 col-span-12" data-tooltip="{{ $question->competence_text() }}">{{$question->question['name']}}
 
                                 @if($question->competence_text())
                                     <i class="fas fa-info-circle"></i>
@@ -34,7 +31,7 @@
                                 <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                     @foreach ($answers as $answer)
                                         <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                                            <div class="flex items-center ps-3"  {{ Popper::pop($answer['description'])}}>
+                                            <div class="flex items-center ps-3" data-tooltip="{{ $answer['description'] }}">
                                                 @if ($aktUser->isLeader())
                                                     {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['id'] . '.3.' . $question->question['number'].$answer['id']], ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500'])}}
                                                     {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ", ['class' => 'w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300']) !!}
@@ -104,7 +101,7 @@
 @endsection
 
 @push('scripts')
-    @include('popper::assets')
+    @vite('resources/js/pages/tooltips.js')
     @include('home.radar')
     @vite('resources/js/pages/survey-autosave.js')
 @endpush

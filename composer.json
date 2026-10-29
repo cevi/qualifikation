@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.5",
-        "andcarpi/laravel-popper": "^0.9.4",
         "doctrine/dbal": "^4.0",
         "fakerphp/faker": "^1.23",
         "genealabs/laravel-caffeine": "^13.0",

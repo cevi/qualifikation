@@ -131,6 +131,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Quali-Ablauf | [`Admin/SurveyEditTest`](Feature/Admin/SurveyEditTest.php) | 3 | Quali im Admin-Bereich bearbeiten |
 | Quali-Ablauf | [`Unit/SurveyStatusTest`](Unit/SurveyStatusTest.php) | 8 | Enum `SurveyStatus`: Werte, Regeln, Farbe und Filtergruppe |
 | Quali-Ablauf | [`DailyTaskTest`](Feature/DailyTaskTest.php) | 2 | Nächtlicher Reset des Demo-Kurses |
+| Quali-Ablauf | [`CampFinishReminderTest`](Feature/CampFinishReminderTest.php) | 4 | Monatliche Mail „Kurs abschliessen“ an die Kursleitung |
 | Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 12 | Beschriftungen, Werte und Sichtbarkeit der Spider-Graphen |
 | Import & Login | [`CeviDbImportTest`](Feature/CeviDbImportTest.php) | 12 | Import aus der Cevi-DB (API und JSON-Datei) |
 | Import & Login | [`HitobitoLoginTest`](Feature/HitobitoLoginTest.php) | 11 | Login über Cevi-DB und JEMK-DB |
@@ -404,6 +405,15 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_demo_camp_is_reset` | Demo-Kurs: Einstellungen, Status und Kommentare zurückgesetzt |
 | `test_real_camps_are_not_touched` | Echte Kurse bleiben unverändert |
 
+**[`CampFinishReminderTest`](Feature/CampFinishReminderTest.php)**: `php artisan camps:finish-reminder`, geplant am letzten Tag jedes Monats um 08:00.
+
+| Test | Prüft |
+|---|---|
+| `test_only_overdue_camps_are_reminded_to_their_campleader` | Nur Kurse 3 Monate nach Schlussdatum, an die Kursleitung; nicht: jünger, abgeschlossen, Demo, Global, ohne Schlussdatum |
+| `test_one_mail_per_campleader_with_all_overdue_camps` | Eine Mail pro Person mit allen offenen Kursen, älteste zuerst |
+| `test_mail_names_camp_end_date_and_way_to_finish` | Betreff, Kursname maskiert, Schlussdatum, Weg zum Abschliessen, Link ins Tool, „jeweils Ende Monat“ |
+| `test_reminder_is_scheduled_on_the_last_day_of_each_month` | Eintrag im Scheduler am letzten Tag des laufenden Monats, 08:00 |
+
 ### Spider-Graphen
 
 **[`SpiderChartTest`](Feature/SpiderChartTest.php)**: `Helper::GetSurveysLabels()` und `Helper::GetSurveysDataset()`.
@@ -521,6 +531,7 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 | [`data-table.test.js`](js/data-table.test.js) | 16 | `DataTable.vue` mit `@vue/test-utils`: Laden mit Platzhaltern, Link/Bild/Status (Badge, Balken „Schritt x von y“)/Aktionen aus Daten, Namen mit `<` als Text, Sortieren per Klick und Shift-Klick, Status nach Ablauf statt Alphabet, Filter-Knöpfe, Suche mit Zähler, Blättern, Ladefehler mit "Erneut laden", Sortierung in Adresse und Verlauf, Karten auf dem Handy (`matchMedia` gestubbt) mit Sortier-Auswahl |
 | [`surveys-index.test.js`](js/surveys-index.test.js) | 4 | Quali-Liste: "Qualifikationen erstellen" nach Rückfrage, Freigeben ohne Rückfrage, POST mit CSRF-Token, Fehlermeldung statt Neuladen |
 | [`profile-ampel.test.js`](js/profile-ampel.test.js) | 2 | Ampel auf dem Profil: PATCH an `data-remote`, Neuladen nur bei Erfolg |
+| [`tooltips.test.js`](js/tooltips.test.js) | 3 | Erklärungen auf Quali und Vergleich (tippy.js): erst beim Antippen/Klick, Text nie als HTML, leere Erklärungen ohne Tooltip |
 
 ## Browser-Tests (Dusk)
 
@@ -549,6 +560,7 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | [`UserSearchTest`](Browser/UserSearchTest.php) | 1 | Person hinzufügen: Vorschlag aus der Personensuche erscheint, die Wahl setzt Name und `user_id`, die Person ist danach im Kurs |
 | [`AdminTablesTest`](Browser/AdminTablesTest.php) | 4 | Personenliste lädt, sucht, sortiert per Klick und merkt sich die Sortierung in Adresse und Verlauf (Neuladen, Zurück); Quali- und Kursliste zeigen Zeilen mit Status bzw. Knöpfen; Quali-Liste filtert Offen/Zum Abschliessen, Kursliste Alle/Offene/Abgeschlossene |
 | [`MobileNavigationTest`](Browser/MobileNavigationTest.php) | 3 | Menü unten (390 px): „Mehr“ öffnet das Menü oben, „Neu“ öffnet „Neue Rückmeldung“ mit Cursor im Textfeld; auf dem Desktop ausgeblendet; Service Worker speichert die Offline-Seite, aber keine besuchte Seite (Chrome behandelt die Testadresse dafür als sicher, siehe `DuskTestCase`) |
+| [`TooltipsTest`](Browser/TooltipsTest.php) | 1 | Quali: Antippen einer Antwort zeigt ihre Bedeutung; kein Skript mehr von unpkg.com |
 | [`PhotoCropperTest`](Browser/PhotoCropperTest.php) | 1 | Profilbild: Datei wählen öffnet den Dialog, "Abbrechen" lässt das Feld leer, "Zuschneiden" legt ein PNG als data-URL ab |
 | [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
 

@@ -1,4 +1,8 @@
 {
+  "_popper-zhYlKhUK.js": {
+    "file": "assets/popper-zhYlKhUK.js",
+    "name": "popper"
+  },
   "_sweetalert2.esm.all-0Z_61IYw.js": {
     "file": "assets/sweetalert2.esm.all-0Z_61IYw.js",
     "name": "sweetalert2.esm.all"
@@ -30,11 +34,12 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-yd7s5v7r.js",
+    "file": "assets/app-C1CCStnE.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
+      "_popper-zhYlKhUK.js",
       "_sweetalert2.esm.all-0Z_61IYw.js"
     ]
   },
@@ -90,6 +95,18 @@
     "isEntry": true,
     "imports": [
       "_sweetalert2.esm.all-0Z_61IYw.js"
+    ]
+  },
+  "resources/js/pages/tooltips.js": {
+    "file": "assets/tooltips-VeM4TvSn.js",
+    "name": "tooltips",
+    "src": "resources/js/pages/tooltips.js",
+    "isEntry": true,
+    "imports": [
+      "_popper-zhYlKhUK.js"
+    ],
+    "css": [
+      "assets/tooltips-HYXY87ae.css"
     ]
   },
   "resources/js/pages/user-search.js": {

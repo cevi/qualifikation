@@ -56,25 +56,21 @@
                             <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 {{$question->competence_text() ? 'core_competence':''}}">
                                 <td width="50px" class="px-6 py-4">{{$question->question['number']}}</td>
                                 <td width="150px" class="px-6 py-4">{{$question->question['competence']}}</td>
-                                <td width="300px" class="px-6 py-4"
-                                    @if($question->competence_text())
-                                        {{Popper::pop($question->competence_text())}}
-                                    @endif
-                                >
+                                <td width="300px" class="px-6 py-4" data-tooltip="{{ $question->competence_text() }}">
                                     {{$question->question['name']}}
                                     @if($question->competence_text())
                                         <i class="fas fa-info-circle"></i>
                                     @endif
                                 </td>
-                                <td width="50px" class="px-6 py-4" {{ Popper::pop($question->answer_first['description'])}}>{{$question->answer_first['name']}}</td>
+                                <td width="50px" class="px-6 py-4" data-tooltip="{{ $question->answer_first['description'] ?? '' }}">{{$question->answer_first['name']}}</td>
                                 <td width="200px" class="px-6 py-4">{{$question['comment_first']}}</td>
 
                                 @if($camp['secondsurveyopen'])
-                                <td width="50px" class="px-6 py-4" {{ Popper::pop($question->answer_second['description'])}}>{{$question->answer_second['name']}}</td>
+                                <td width="50px" class="px-6 py-4" data-tooltip="{{ $question->answer_second['description'] ?? '' }}">{{$question->answer_second['name']}}</td>
                                 <td width="200px" class="px-6 py-4">{{$question['comment_second']}}</td>
                                 @endif
                                 @if(!$aktUser->isTeilnehmer())
-                                    <td width="50px" class="px-6 py-4" {{ Popper::pop($question->answer_leader['description'])}}>{{$question->answer_leader['name']}}</td>
+                                    <td width="50px" class="px-6 py-4" data-tooltip="{{ $question->answer_leader['description'] ?? '' }}">{{$question->answer_leader['name']}}</td>
                                     <td width="200px" class="px-6 py-4">{{$question['comment_leader']}}</td>
                                 @endif
                             </tr>
@@ -109,6 +105,6 @@
 @endsection
 
 @push('scripts')
-    @include('popper::assets')
+    @vite('resources/js/pages/tooltips.js')
     @include('home.radar')
 @endpush

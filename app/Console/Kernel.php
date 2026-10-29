@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('task:daily')->daily();
+        // Letzter Tag im Monat: Kursleitung vergangener Kurse erinnern, den Kurs abzuschliessen (App\Services\CampChecks)
+        $schedule->command('camps:finish-reminder')->lastDayOfMonth('8:00');
     }
 
     /**

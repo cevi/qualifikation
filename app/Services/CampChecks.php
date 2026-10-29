@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 /**
  * Offene Arbeiten in einem Kurs, für die Aufgabenliste auf der Übersicht. Jede Prüfung ist eine eigene Methode,
- * damit z. B. die geplante Wochen-Mail "Kurs abschliessen" dieselbe Regel verwenden kann.
+ * damit die Monats-Mail "Kurs abschliessen" (camps:finish-reminder) dieselbe Regel verwendet.
  *
  * Aufgabe: array{title: string, subtitle: string, urgent: bool, link: string}
  */
@@ -156,6 +156,18 @@ class CampChecks
         }
 
         return Carbon::parse($camp->end_date)->addMonths(self::FINISH_AFTER_MONTHS)->isPast();
+    }
+
+    /** Alle Kurse, die abgeschlossen werden müssten (Monats-Mail an die Kursleitung, camps:finish-reminder). */
+    public function campsToFinish(): Collection
+    {
+        return Camp::with(['user', 'camp_type'])
+            ->where('finish', false)->where('demo', false)->where('global_camp', false)
+            ->whereNotNull('end_date')
+            ->where('end_date', '<=', now()->subMonths(self::FINISH_AFTER_MONTHS)->toDateString())
+            ->get()
+            ->filter(fn (Camp $camp) => $this->mustBeFinished($camp))
+            ->values();
     }
 
     public function participantsWithoutLeader(Camp $camp): Collection
