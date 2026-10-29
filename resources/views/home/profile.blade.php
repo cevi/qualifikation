@@ -79,7 +79,7 @@
 
 @push('scripts')
     @include('home.radar')
-    @include('home.post_delete')
+    @include('home.standard-texts-modal')
     @vite('resources/js/pages/profile-ampel.js')
 @endpush
 

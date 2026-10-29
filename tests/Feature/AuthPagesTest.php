@@ -3,8 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
+use Tests\Support\CampScenario;
 use Tests\TestCase;
 
 /**
@@ -49,5 +52,20 @@ class AuthPagesTest extends TestCase
             ->assertSee('value="Neue Person"', false)
             ->assertDontSee('geheim123')
             ->assertSee('field-error', false);
+    }
+
+    public function test_password_reset_link_is_sent_only_to_known_addresses()
+    {
+        Notification::fake();
+        $s = CampScenario::create();
+
+        $this->from('/password/reset')->post(route('password.email'), ['email' => $s->participant->email])
+            ->assertRedirect('/password/reset')
+            ->assertSessionHas('status');
+        Notification::assertSentTo($s->participant, ResetPassword::class);
+
+        $this->from('/password/reset')->post(route('password.email'), ['email' => 'niemand@example.com'])
+            ->assertSessionHasErrors('email');
+        Notification::assertSentTimes(ResetPassword::class, 1);
     }
 }

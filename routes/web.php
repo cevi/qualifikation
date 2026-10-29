@@ -81,7 +81,7 @@ Route::group(['middleware' => 'verified'], function () {
     Route::patch('/compare/{id}', ['as' => 'survey.finish', 'uses' => 'SurveysController@finish']);
     Route::get('/compare/{survey}/downloadPDF', ['as' => 'survey.downloadPDF', 'uses' => 'SurveysController@downloadPDF']);
 
-    Route::resource('/posts', 'PostController');
+    Route::resource('/posts', 'PostController')->except(['create', 'show', 'update']);
     Route::get('/posts/downloadFile/{id}', ['as' => 'downloadFile', 'uses' => 'PostController@downloadFile']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
@@ -117,7 +117,6 @@ Route::group(['middleware' => 'verified'], function () {
         Route::resource('admin/standard_texts', 'StandardTextsController', ['as' => 'admin'])->except(['create']);
 
         Route::resource('admin/questions', 'AdminQuestionsController')->except(['show']);
-        Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
 
         Route::resource('admin/surveys', 'AdminSurveysController')->except(['create', 'show']);
         Route::get('surveys/table', ['as' => 'surveys.table', 'uses' => 'AdminSurveysController@tableData']);
@@ -135,7 +134,7 @@ Route::group(['middleware' => 'verified'], function () {
             Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
             Route::post('users/feedback/send', 'FeedbackController@send');
             Route::resource('admin/answers', 'AdminAnswersController');
-            Route::resource('admin/classifications', 'AdminClassificationController');
+            Route::resource('admin/classifications', 'AdminClassificationController')->only(['index', 'edit', 'update']);
             Route::resource('admin/groups', 'AdminGroupsController');
             Route::resource('admin/helps', 'AdminHelpController');
         });

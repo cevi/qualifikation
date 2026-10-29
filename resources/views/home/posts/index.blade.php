@@ -22,5 +22,5 @@
 @endsection
 
 @push('scripts')
-    @include('home.post_delete')
+    @include('home.standard-texts-modal')
 @endpush

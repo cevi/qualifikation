@@ -6,7 +6,7 @@
 @import './libs/tailwind3-preflight.css';
 @import './libs/welcome.css';
 @import './libs/legacy-base.css';
-@import '@fortawesome/fontawesome-free/css/fontawesome.css';
+@import './libs/fontawesome-icons.css'; /* nur gebrauchte Icons: npm run css:fontawesome */
 @import '@fortawesome/fontawesome-free/css/solid.css';
 @import '@fortawesome/fontawesome-free/css/regular.css';
 

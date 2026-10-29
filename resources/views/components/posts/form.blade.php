@@ -28,7 +28,7 @@
     </x-forms.container>
     <x-forms.container>
         <x-forms.button type="submit" class="button-primary">
-            {{ $post['id'] ? 'Änderungen Speichern' : 'Rückmeldung Erstellen' }}
+            {{ $post['id'] ? 'Änderungen speichern' : 'Rückmeldung erstellen' }}
         </x-forms.button>
     </x-forms.container> 
 </x-forms.form>

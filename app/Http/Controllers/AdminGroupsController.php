@@ -46,7 +46,7 @@ class AdminGroupsController extends Controller
     {
         //
         $input = $request->all();
-        $input['api_token'] = Crypt::encryptString($request->api_token);
+        $input['api_token'] = $request->filled('api_token') ? Crypt::encryptString($request->api_token) : null;
         $input['campgroup'] = true;
         Group::create($input);
 
@@ -92,7 +92,12 @@ class AdminGroupsController extends Controller
     {
         $group = Group::findOrFail($id);
         $input = $request->all();
-        $input['api_token'] = Crypt::encryptString($request->api_token);
+        // Das Feld ist ein leeres Passwortfeld: leer lassen heisst "Token nicht ändern"
+        if ($request->filled('api_token')) {
+            $input['api_token'] = Crypt::encryptString($request->api_token);
+        } else {
+            unset($input['api_token']);
+        }
         $group->update($input);
 
         return redirect('/admin/groups');

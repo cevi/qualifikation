@@ -111,7 +111,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Smoke | [`Smoke/DemoLoginTest`](Feature/Smoke/DemoLoginTest.php) | 6 | Öffentliche Demo-Logins |
 | Sicherheit | [`Security/AccountUpdateTest`](Feature/Security/AccountUpdateTest.php) | 6 | Eigenes Konto ändern |
 | Sicherheit | [`Security/CampSwitchTest`](Feature/Security/CampSwitchTest.php) | 4 | Kurswechsel im Dropdown |
-| Sicherheit | [`Security/AdminOnlyAreasTest`](Feature/Security/AdminOnlyAreasTest.php) | 21 | Globale Stammdaten nur für Admin |
+| Sicherheit | [`Security/AdminOnlyAreasTest`](Feature/Security/AdminOnlyAreasTest.php) | 20 | Globale Stammdaten nur für Admin |
 | Sicherheit | [`Security/CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php) | 20 | Admin-Bereich nur für den eigenen Kurs |
 | Sicherheit | [`Security/CampTypeContentTest`](Feature/Security/CampTypeContentTest.php) | 6 | Kurstypen, Kapitel, Fragen, Kompetenzen |
 | Sicherheit | [`Security/UserCreationTest`](Feature/Security/UserCreationTest.php) | 4 | Personen anlegen |
@@ -134,15 +134,19 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Quali-Ablauf | [`CampFinishReminderTest`](Feature/CampFinishReminderTest.php) | 4 | Monatliche Mail „Kurs abschliessen“ an die Kursleitung |
 | Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 12 | Beschriftungen, Werte und Sichtbarkeit der Spider-Graphen |
 | Import & Login | [`CeviDbImportTest`](Feature/CeviDbImportTest.php) | 12 | Import aus der Cevi-DB (API und JSON-Datei) |
-| Import & Login | [`HitobitoLoginTest`](Feature/HitobitoLoginTest.php) | 11 | Login über Cevi-DB und JEMK-DB |
-| Import & Login | [`AuthPagesTest`](Feature/AuthPagesTest.php) | 3 | Login und Registrieren zeigen Fehler unter dem Feld (falsches Passwort, Cevi-DB, doppelte E-Mail), behalten Eingaben, aber nie das Passwort |
+| Import & Login | [`HitobitoLoginTest`](Feature/HitobitoLoginTest.php) | 13 | Login über Cevi-DB und JEMK-DB, Weiterleitung mit den richtigen Scopes |
+| Import & Login | [`AuthPagesTest`](Feature/AuthPagesTest.php) | 4 | Login und Registrieren zeigen Fehler unter dem Feld (falsches Passwort, Cevi-DB, doppelte E-Mail), behalten Eingaben, aber nie das Passwort; Link zum Zurücksetzen nur an bekannte Adressen |
 | Rückmeldungen | [`PostFilesTest`](Feature/PostFilesTest.php) | 9 | Dateianhänge |
 | Exporte | [`ExportsTest`](Feature/ExportsTest.php) | 5 | Excel-Export und Druckansicht (PDF) |
 | Profil | [`ProfileTest`](Feature/ProfileTest.php) | 3 | Profilseite und Vor/Zurück-Navigation |
 | Profil | [`AvatarUploadTest`](Feature/AvatarUploadTest.php) | 1 | Profilbilder |
 | Profil | [`ClassificationTest`](Feature/ClassificationTest.php) | 4 | Ampel rot/gelb/grün auf der Profilseite |
-| Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 3 | Gruppen anlegen; löschen nur, wenn keine Personen und Kurse mehr daran hängen (sonst Meldung statt Datenbankfehler) |
+| Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 5 | Gruppen anlegen; löschen nur, wenn keine Personen und Kurse mehr daran hängen (sonst Meldung statt Datenbankfehler); leeres Token-Feld lässt das Cevi-DB-Token unverändert |
 | Admin | [`Admin/UserEditTest`](Feature/Admin/UserEditTest.php) | 1 | Person bearbeiten |
+| Admin | [`Admin/UserAddTest`](Feature/Admin/UserAddTest.php) | 2 | Bestehende Person in den eigenen Kurs aufnehmen, ohne Auswahl Fehlermeldung |
+| Admin | [`Admin/MasterDataTest`](Feature/Admin/MasterDataTest.php) | 7 | Stammdaten (Admin): Antworten, Klassifizierungen, Hilfe, Gruppen mit verschlüsseltem Token, Feedback; leere Aktionen ohne Route; GitHub-Fehler wird gemeldet |
+| Admin | [`Admin/CourseContentStoreTest`](Feature/Admin/CourseContentStoreTest.php) | 4 | Kapitel und Kompetenzen anlegen, nur im eigenen Kurstyp; CSV-Import entfernt |
+| Quali-Ablauf | [`CampCreationTest`](Feature/CampCreationTest.php) | 5 | Kurs erstellen (Leitende werden Kursleitung, Mail), eindeutiger Name, Kurs im Kursadmin (Kursleitung ohne geschützte Felder, wird Mitglied), eigener Kurstyp |
 | Admin | [`Admin/AdminTablesTest`](Feature/Admin/AdminTablesTest.php) | 7 | Zeilen der Personen-, Quali- und Kursliste als JSON (Rolle und Klassifizierung im aktuellen Kurs, Status mit Farbe und Schritt x von 4 bzw. 5 (mit 2. Runde), Filtergruppe, Aktionen nur für den eigenen Kurs bzw. Admin), Seiten binden die Tabelle mit ihrer Daten-Adresse ein |
 | Beispiel | `Feature/ExampleTest`, `Unit/ExampleTest` | 2 | Laravel-Beispiele (Startseite lädt) |
 
@@ -497,7 +501,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 
 **[`AvatarUploadTest`](Feature/AvatarUploadTest.php)**: `test_cropped_avatar_is_stored_as_jpeg_with_generated_name`. Profilbilder werden immer als `<uuid>.jpg` gespeichert, unabhängig vom hochgeladenen Dateinamen.
 
-**[`Admin/GroupsTest`](Feature/Admin/GroupsTest.php)**: `test_admin_can_create_group_without_cevi_db_id`. Gruppe ohne Cevi-DB-ID anlegen.
+**[`Admin/GroupsTest`](Feature/Admin/GroupsTest.php)**: Gruppe ohne Cevi-DB-ID anlegen (`test_admin_can_create_group_without_cevi_db_id`), nur unbenutzte löschen, Token: leeres Feld lässt es unverändert, neue Gruppe ohne Token hat keines (`test_saving_a_group_without_token_keeps_the_token`, `test_group_created_without_token_has_none`).
 
 **[`ClassificationTest`](Feature/ClassificationTest.php)**: Ampel auf der Profilseite (`PATCH changeClassifications/{id}/{color}`).
 
@@ -509,6 +513,51 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_other_leader_cannot_change_classification` | Andere Leitung kann nichts ändern |
 
 **[`Admin/UserEditTest`](Feature/Admin/UserEditTest.php)**: `test_form_preselects_current_role`. Die Rollenauswahl zeigt die aktuelle Rolle (sonst setzt Speichern still eine andere).
+
+**[`Admin/UserAddTest`](Feature/Admin/UserAddTest.php)**: `test_campleader_adds_an_existing_person_to_the_own_camp` (Person aus einem anderen Kurs wird Teilnehmende im eigenen Kurs, ohne Leitende), `test_adding_without_choosing_a_person_shows_an_error` (vorher 500).
+
+**[`Admin/MasterDataTest`](Feature/Admin/MasterDataTest.php)**: Stammdaten als Admin anlegen, ändern, löschen (Zugriff anderer Rollen: `Security/AdminOnlyAreasTest`).
+
+| Test | Prüft |
+|---|---|
+| `test_admin_creates_changes_and_deletes_an_answer` | Antwort anlegen, ändern, löschen |
+| `test_admin_renames_a_classification` | Klassifizierung umbenennen |
+| `test_admin_creates_and_deletes_a_help_article` | Hilfe-Artikel anlegen und löschen |
+| `test_admin_changes_a_group_and_stores_the_token_encrypted` | Gruppe ändern, Cevi-DB-Token verschlüsselt gespeichert |
+| `test_admin_edits_a_feedback` | Feedback bearbeiten |
+| `test_empty_actions_have_no_routes` | Klassifizierung anlegen/löschen und Rückmeldung per PUT haben keine Route mehr (leere Methoden) |
+| `test_failed_github_issue_is_reported_as_error` | Nimmt GitHub das Issue nicht an, erscheint ein Fehler statt „Issue wurde erstellt“ |
+
+**[`Admin/CourseContentStoreTest`](Feature/Admin/CourseContentStoreTest.php)**: Kapitel und Kompetenzen anlegen (Ändern und fremde Kurstypen: `Security/CampTypeContentTest`).
+
+| Test | Prüft |
+|---|---|
+| `test_campleader_adds_a_chapter_to_the_own_camp_type` | Der Kurstyp kommt aus dem aktuellen Kurs, nicht aus der Anfrage |
+| `test_chapter_needs_number_and_name` | Nummer und Name sind Pflicht |
+| `test_campleader_adds_a_competence_to_an_own_chapter_only` | Kompetenz nur in eigenen Kapiteln, Standardkapitel 403 |
+| `test_csv_import_of_competences_is_gone` | Der CSV-Import (ohne Formular, ohne Berechtigung, Datei öffentlich) ist entfernt |
+
+**[`CampCreationTest`](Feature/CampCreationTest.php)**: Kurse und Kurstypen anlegen.
+
+| Test | Prüft |
+|---|---|
+| `test_leader_creates_a_camp_and_becomes_its_campleader` | „Kurs erstellen“: Kurs gehört der Person, sie wird Kursleitung und Mitglied, Status-Steuerung, Mail |
+| `test_camp_name_must_be_unique` | Gleicher Name wird abgelehnt |
+| `test_admin_creates_a_camp_for_a_campleader_in_course_admin` | Admin legt im Kursadmin einen Kurs für eine Kursleitung an |
+| `test_leader_creates_an_own_camp_type_in_both_places` | Eigener Kurstyp über beide Routen, Besitzer immer die angemeldete Person |
+| `test_campleader_cannot_set_protected_fields_and_becomes_member` | Kursleitung kann im Kursadmin `global_camp`, `finish`, `counter`, fremde Kursleitung nicht setzen und wird Mitglied des Kurses |
+
+### Abdeckung
+
+Gemessen mit PCOV (Skill `laravel-qualitaet`, `references/abdeckung.md`):
+
+```bash
+php -d xdebug.mode=off -d pcov.enabled=1 -d pcov.directory=app vendor/bin/phpunit --coverage-clover=/tmp/clover.xml
+php artisan route:list --json > /tmp/routes.json
+python3 -I .claude/skills/laravel-qualitaet/assets/routed-uncovered.py /tmp/clover.xml /tmp/routes.json
+```
+
+Stand 29.10.2026: 91,2 % der Zeilen, 79,4 % der Methoden (vor dem Abgleich 82,6 % / 74,7 %). Alle Controller-Aktionen mit Route laufen in mindestens einem PHP-Test. Gefundene und behobene Fehler: Gruppe speichern löschte das Cevi-DB-Token, Kursleitung konnte im Kursadmin geschützte Felder setzen und wurde nicht Mitglied, CSV-Import ohne Berechtigung (entfernt), Person hinzufügen ohne Auswahl gab 500, leere Methoden mit Route, GitHub-Fehler als Erfolg gemeldet. Dusk-Tests zählen nicht mit.
 
 ---
 
@@ -535,6 +584,9 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 | [`surveys-index.test.js`](js/surveys-index.test.js) | 4 | Quali-Liste: "Qualifikationen erstellen" nach Rückfrage, Freigeben ohne Rückfrage, POST mit CSRF-Token, Fehlermeldung statt Neuladen |
 | [`profile-ampel.test.js`](js/profile-ampel.test.js) | 2 | Ampel auf dem Profil: PATCH an `data-remote`, Neuladen nur bei Erfolg |
 | [`tooltips.test.js`](js/tooltips.test.js) | 3 | Erklärungen auf Quali und Vergleich (tippy.js): erst beim Antippen/Klick, Text nie als HTML, leere Erklärungen ohne Tooltip |
+| [`radar.test.js`](js/radar.test.js) | 8 | Radar-Diagramme (`resources/js/pages/radar.js`, Chart.js als Attrappe): mehrzeilige Beschriftungen, schmal nur Nummern, Kernkompetenzen am Stern, angetippte Antwort in der richtigen Runde eintragen (Leitende ohne 2. Runde im letzten Datensatz), jedes Diagramm mit eigener Breite, neu gezeichnet wird das erste |
+| [`feedback-modal.test.js`](js/feedback-modal.test.js) | 5 | Fenster „Rückmeldung“ (`resources/js/pages/feedback-modal.js`): neu leer mit Cursor im Text, Bearbeiten füllt aus `data-post` inkl. Datei, Escape/Kreuz/Hintergrund schliessen (nicht bei offenen Textbausteinen), `?neu` öffnet, Bearbeiten-Aufruf behält Server-Eingaben |
+| [`fontawesome-icons.test.js`](js/fontawesome-icons.test.js) | 3 | Font Awesome nur mit gebrauchten Icons (`scripts/fontawesome-icons.mjs`): erzeugte Datei passt zum Code (sonst `npm run css:fontawesome`), keine unbekannten `fa-`-Klassen (Tippfehler), Grundregeln und `@keyframes` bleiben |
 
 ## Browser-Tests (Dusk)
 

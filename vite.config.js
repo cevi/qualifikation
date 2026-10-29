@@ -18,7 +18,6 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 // Schwere Bibliotheken bzw. Vue, nur auf ihren Seiten
-                'resources/js/charts.js',
                 'resources/js/islands.js',
                 // Seitenskripte, eingebunden per @vite in der jeweiligen Ansicht (Tests: tests/js)
                 'resources/js/pages/survey-autosave.js',
@@ -29,6 +28,8 @@ export default defineConfig({
                 'resources/js/pages/surveys-index.js',
                 'resources/js/pages/profile-ampel.js',
                 'resources/js/pages/tooltips.js',
+                'resources/js/pages/radar.js',
+                'resources/js/pages/feedback-modal.js',
                 'resources/js/pages/photo-cropper.js',
             ],
             refresh: true

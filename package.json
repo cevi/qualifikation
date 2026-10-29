@@ -6,7 +6,8 @@
         "build": "vite build",
         "test": "vitest run",
         "test:watch": "vitest",
-        "css:flowbite-base": "node scripts/flowbite-base.mjs"
+        "css:flowbite-base": "node scripts/flowbite-base.mjs",
+        "css:fontawesome": "node scripts/fontawesome-icons.mjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.3.3",

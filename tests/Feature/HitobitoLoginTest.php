@@ -113,6 +113,25 @@ class HitobitoLoginTest extends TestCase
         $this->assertStringContainsString('/packs/media/images/profil-', $this->mapProfile(['id' => 7, 'email' => 'a@example.com'])->getAvatar());
     }
 
+    public static function logins(): array
+    {
+        return [
+            'Cevi-DB' => ['login.hitobito', 'hitobito', ['name', 'with_roles']],
+            'JEMK-DB' => ['login.hitobito_jemk', 'hitobito_jemk', ['name']],
+        ];
+    }
+
+    #[DataProvider('logins')]
+    public function test_login_button_redirects_to_the_database_with_its_scopes(string $route, string $driver, array $scopes)
+    {
+        $provider = Mockery::mock();
+        $provider->shouldReceive('setScopes')->once()->with($scopes)->andReturnSelf();
+        $provider->shouldReceive('redirect')->once()->andReturn(redirect('https://db.cevi.test/oauth/authorize'));
+        Socialite::shouldReceive('driver')->with($driver)->andReturn($provider);
+
+        $this->get(route($route))->assertRedirect('https://db.cevi.test/oauth/authorize');
+    }
+
     private function fakeHitobito(array $profile, string $driver = 'hitobito'): void
     {
         $provider = Mockery::mock();

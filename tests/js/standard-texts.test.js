@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Nachbau von home/post_delete.blade.php (Auswahl) und dem Kommentarfeld aus home/feedback_modal.blade.php.
+// Nachbau von home/standard-texts-modal.blade.php (Auswahl) und dem Kommentarfeld aus home/feedback_modal.blade.php.
 function render() {
     document.body.innerHTML = `
         <textarea id="comment" name="comment"></textarea>

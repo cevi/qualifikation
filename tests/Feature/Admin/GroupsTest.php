@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Support\Facades\Crypt;
 use Tests\Support\CampScenario;
 use Tests\TestCase;
 
@@ -44,5 +45,29 @@ class GroupsTest extends TestCase
             ->assertRedirect('/admin/groups');
 
         $this->assertModelMissing($group);
+    }
+
+    /** Das Token-Feld ist ein leeres Passwortfeld: leer lassen heisst "nicht ändern", nicht "löschen". */
+    public function test_saving_a_group_without_token_keeps_the_token()
+    {
+        $s = CampScenario::create();
+        $s->group->update(['api_token' => Crypt::encryptString('geheim')]);
+
+        $this->actingAs($s->admin)->put(route('groups.update', $s->group), ['name' => 'Neu', 'shortname' => 'neu', 'api_token' => null])
+            ->assertRedirect('/admin/groups');
+        $this->assertSame('geheim', Crypt::decryptString($s->group->fresh()->api_token));
+
+        $this->actingAs($s->admin)->put(route('groups.update', $s->group), ['name' => 'Neu', 'shortname' => 'neu', 'api_token' => 'neu'])
+            ->assertRedirect('/admin/groups');
+        $this->assertSame('neu', Crypt::decryptString($s->group->fresh()->api_token));
+    }
+
+    public function test_group_created_without_token_has_none()
+    {
+        $s = CampScenario::create();
+
+        $this->actingAs($s->admin)->post(route('groups.store'), ['name' => 'Ohne Token', 'shortname' => 'ot', 'api_token' => null]);
+
+        $this->assertNull(Group::where('name', 'Ohne Token')->firstOrFail()->api_token);
     }
 }

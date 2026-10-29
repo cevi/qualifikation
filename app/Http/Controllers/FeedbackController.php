@@ -73,9 +73,14 @@ class FeedbackController extends Controller
             ->withBearer(config('auth.github.token'))
             ->withData($body)
             ->asJson(true)
+            ->returnResponseObject()
             ->post();
 
-        //
+        // GitHub antwortet mit 201 und dem neuen Issue; sonst (abgelehnt, nicht erreichbar) Fehler zeigen
+        if ($issue->status !== 201) {
+            return redirect('admin/feedback')->withErrors(['github' => 'Das Issue konnte nicht erstellt werden (GitHub: '.($issue->content['message'] ?? $issue->error ?? 'keine Antwort').').']);
+        }
+
         return redirect('admin/feedback')->with('success', 'Issue wurde erstellt.');
     }
 

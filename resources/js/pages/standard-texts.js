@@ -1,5 +1,5 @@
 /**
- * Textbausteine in Rückmeldungen (home/post_delete.blade.php): "//" im Kommentarfeld öffnet die Auswahl,
+ * Textbausteine in Rückmeldungen (home/standard-texts-modal.blade.php): "//" im Kommentarfeld öffnet die Auswahl,
  * Pfeiltasten wählen, Enter oder Klick fügt den Text an der Stelle der "//" ein, Escape oder das Kreuz schliesst.
  */
 export const DOUBLE_SLASH_WINDOW = 500;

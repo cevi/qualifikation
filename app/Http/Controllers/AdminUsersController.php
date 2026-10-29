@@ -249,6 +249,7 @@ class AdminUsersController extends Controller
 
     public function add(Request $request)
     {
+        $request->validate(['user_id' => 'required|exists:users,id'], [], ['user_id' => 'Person']);
         $input = $request->all();
 
         if (! Auth::user()->demo) {

@@ -29,7 +29,7 @@
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-BSO4ADYv.css",
+    "file": "assets/legacy-D4AsaebD.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },
@@ -43,12 +43,6 @@
       "_sweetalert2.esm.all-0Z_61IYw.js"
     ]
   },
-  "resources/js/charts.js": {
-    "file": "assets/charts-CrjkCxT0.js",
-    "name": "charts",
-    "src": "resources/js/charts.js",
-    "isEntry": true
-  },
   "resources/js/islands.js": {
     "file": "assets/islands-DnPGYtz-.js",
     "name": "islands",
@@ -59,6 +53,12 @@
     "file": "assets/counter-up-z7Q173Nq.js",
     "name": "counter-up",
     "src": "resources/js/pages/counter-up.js",
+    "isEntry": true
+  },
+  "resources/js/pages/feedback-modal.js": {
+    "file": "assets/feedback-modal-DmMP1pko.js",
+    "name": "feedback-modal",
+    "src": "resources/js/pages/feedback-modal.js",
     "isEntry": true
   },
   "resources/js/pages/photo-cropper.js": {
@@ -74,6 +74,12 @@
     "file": "assets/profile-ampel-BPWs2e5v.js",
     "name": "profile-ampel",
     "src": "resources/js/pages/profile-ampel.js",
+    "isEntry": true
+  },
+  "resources/js/pages/radar.js": {
+    "file": "assets/radar-CXhQrd5c.js",
+    "name": "radar",
+    "src": "resources/js/pages/radar.js",
     "isEntry": true
   },
   "resources/js/pages/standard-texts.js": {

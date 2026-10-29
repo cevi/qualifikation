@@ -9,6 +9,7 @@ use App\Exports\PostsExport;
 use App\Helper\Helper;
 use App\Models\Camp;
 use App\Models\CampType;
+use App\Models\CampUser;
 use App\Models\Group;
 use App\Models\Help;
 use App\Models\User;
@@ -101,7 +102,8 @@ class AdminCampsController extends Controller
     public function store(Request $request)
     {
         //
-        $input = $request->all();
+        // Nur die Felder des Formulars; global_camp, finish, counter usw. setzt nie die Anfrage
+        $input = $request->only(['name', 'camp_type_id', 'group_id', 'end_date', 'foreign_id', 'user_id']);
 
         if (! Auth::user()->demo) {
             $user = User::findOrFail(Auth::user()->id);
@@ -117,7 +119,9 @@ class AdminCampsController extends Controller
             $camp = Camp::create($input);
             CampCreated::dispatch($camp);
             if (! $user->isAdmin()) {
+                // Wie "Kurs erstellen" (CampsController@store): die Kursleitung ist Mitglied ihres Kurses
                 $user->update(['camp_id' => $camp->id]);
+                CampUser::firstOrCreate(['camp_id' => $camp->id, 'user_id' => $user->id], ['role_id' => Role::Kursleiter]);
             }
         }
 

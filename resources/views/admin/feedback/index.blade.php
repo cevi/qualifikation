@@ -9,6 +9,7 @@
                 @if (session()->has('success'))
                     <x-layouts.alert id="alert-success"><strong>{!! session()->get('success') !!}</strong></x-layouts.alert>
                 @endif
+                @include('includes.form_error')
                 {!! Form::open(['action'=>'FeedbackController@send']) !!}
                     <div class="mb-2.5">
                         {!! Form::label('title', 'Titel:', ['class' => 'field-label']) !!}
