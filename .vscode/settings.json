@@ -4,5 +4,11 @@
         "editor.defaultFormatter": "open-southeners.laravel-pint",
         "editor.formatOnSave": true
     },
-    "laravel-pint.enable": true
+    "laravel-pint.enable": true,
+    // Blade nicht automatisch formatieren: Der HTML-Formatierer bricht ganze Dateien um und zerlegt
+    // Attribute wie data-x='{{ route('…') }}' (macht daraus route(' …')).
+    "[blade]": {
+        "editor.formatOnSave": false
+    },
+    "blade.format.enable": false
 }

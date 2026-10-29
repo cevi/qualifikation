@@ -5,11 +5,16 @@
     $leader = $survey->campuser->leader;
     $isParticipant = $aktUser->isTeilnehmer();
     $closed = $isParticipant && $survey->status()->isClosedByParticipant();
+    $avatar = $survey->campuser->avatarPath();
     $initials = collect(preg_split('/\s+/', trim($user->username)))->take(2)->map(fn ($part) => mb_substr($part, 0, 1))->implode('');
 @endphp
 <article class="flex flex-col rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-600 shadow-xs dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
     <div class="flex items-start gap-3">
-        <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-200" aria-hidden="true">{{ $initials }}</span>
+        @if ($avatar)
+            <img src="{{ $avatar }}" alt="" class="size-10 shrink-0 rounded-full object-cover" loading="lazy">
+        @else
+            <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-200" aria-hidden="true">{{ $initials }}</span>
+        @endif
         <div class="min-w-0 flex-1">
             <h3 class="text-base font-semibold text-gray-900 dark:text-white">
                 @if ($isParticipant)

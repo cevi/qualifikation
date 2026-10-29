@@ -82,6 +82,28 @@ class SurveyOverviewTest extends TestCase
             ->assertSee('(wichtig)');
     }
 
+    public function test_card_shows_camp_avatar_then_profile_picture_then_initials(): void
+    {
+        $s = CampScenario::create();
+        $campUser = $s->survey->campuser;
+        $s->participant->update(['username' => 'Anna Muster', 'avatar' => 'https://hitobito.example/anna.jpg']);
+        $campUser->update(['avatar' => 'avatars/kurs-anna.jpg']);
+
+        $this->actingAs($s->gruppenleiter)->get('/home')
+            ->assertOk()
+            ->assertSee('src="'.asset('storage/avatars/kurs-anna.jpg').'"', false)
+            ->assertDontSee('>AM</span>', false);
+
+        $campUser->update(['avatar' => null]);
+        $this->actingAs($s->gruppenleiter)->get('/home')
+            ->assertSee('src="https://hitobito.example/anna.jpg"', false);
+
+        $s->participant->update(['avatar' => null]);
+        $this->actingAs($s->gruppenleiter)->get('/home')
+            ->assertSee('>AM</span>', false)
+            ->assertDontSee('hitobito.example', false);
+    }
+
     public function test_overview_does_not_load_chart_data(): void
     {
         $s = CampScenario::create();

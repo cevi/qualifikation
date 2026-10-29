@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Classification;
 use App\Enums\Role;
+use App\Helper\Helper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,6 +49,12 @@ class CampUser extends Model
     public function surveys()
     {
         return $this->hasMany(Survey::class);
+    }
+
+    /** Kursbild, sonst Profilbild, sonst null (ohne eigene Abfrage, wenn user geladen ist). */
+    public function avatarPath(): ?string
+    {
+        return Helper::getAvatarPath($this->avatar) ?? Helper::getAvatarPath($this->user?->avatar);
     }
 
     /** Rückmeldungen zu dieser Person in diesem Kurs. */

@@ -31,12 +31,12 @@
                         <h3 class="user_name_max">{{$user->username}} {{$user->group['shortname'] ?? ''}}</h3>
                         <p>{{$user->leader ? $user->leader->username : ''}}</p>
                     </div>
-                    <div class="text-center-profile mbl">
+                    <div class="text-center-profile mbl mb-4">
                         <div class="ampel" id="ampel">
                             @foreach (\App\Enums\Classification::cases() as $classification)
                                 <a href="javascript:" class="ampel-btn"
                                     data-color="{{$classification->value}}"
-                                    data-remote='{{route('users.changeClassifications', ['id' => $user->id, 'color' => $classification->value])}}'>
+                                    data-remote="{{ route('users.changeClassifications', ['id' => $user->id, 'color' => $classification->value]) }}">
                                     <div
                                         class="circle {{$camp_user->classification_id === $classification ? $classification->cssClass() : ''}}"></div>
                                 </a>
