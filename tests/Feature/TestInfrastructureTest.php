@@ -51,8 +51,9 @@ class TestInfrastructureTest extends TestCase
             'camp_id' => $camp->id,
             'user_id' => $participant->id,
             'role_id' => Role::Teilnehmer,
-            'leader_id' => $leader->id,
         ]);
+        $campUser = CampUser::where('user_id', $participant->id)->firstOrFail();
+        $this->assertSame([$leader->id], $campUser->leaders->modelKeys());
         $this->assertSame(1, CampUser::where('user_id', $leader->id)->count());
     }
 

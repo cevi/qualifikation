@@ -29,7 +29,7 @@
                     </div>
                     <div class="profile_user">
                         <h3 class="user_name_max">{{$user->username}} {{$user->group['shortname'] ?? ''}}</h3>
-                        <p>{{$user->leader ? $user->leader->username : ''}}</p>
+                        <p>{{ $camp_user->leaderNames() }}</p>
                     </div>
                     <div class="text-center-profile mbl mb-4">
                         <div class="ampel" id="ampel">

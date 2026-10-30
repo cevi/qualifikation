@@ -39,12 +39,12 @@ class CampChecks
                 if ($user->isCampleader() || $user->role_id === Role::Stabsleiter) {
                     $query->orWhere('role_id', Role::Teilnehmer);
                 } else {
-                    $query->orWhere('leader_id', $user->id);
+                    $query->orWhere(fn ($ledBy) => $ledBy->ledBy($user));
                 }
             })
             ->pluck('id');
 
-        return Survey::with(['campuser.user.group', 'campuser.leader', 'survey_status'])
+        return Survey::with(['campuser.user.group', 'campuser.leaders', 'survey_status'])
             ->whereIn('camp_user_id', $campUsers)
             ->get()
             ->sortBy('campuser.user.username', SORT_NATURAL | SORT_FLAG_CASE)
@@ -136,7 +136,7 @@ class CampChecks
     {
         return CampUser::with('user')
             ->where('camp_id', $camp->id)->where('role_id', Role::Teilnehmer)
-            ->when($leader, fn ($query) => $query->where('leader_id', $leader->id))
+            ->when($leader, fn ($query) => $query->ledBy($leader))
             ->doesntHave('posts')
             ->get()
             ->sortBy('user.username', SORT_NATURAL | SORT_FLAG_CASE)
@@ -214,7 +214,7 @@ class CampChecks
 
     public function participantsWithoutLeader(Camp $camp): Collection
     {
-        return CampUser::where('camp_id', $camp->id)->where('role_id', Role::Teilnehmer)->whereNull('leader_id')->get();
+        return CampUser::where('camp_id', $camp->id)->where('role_id', Role::Teilnehmer)->doesntHave('leaders')->get();
     }
 
     public function participantsWithoutSurvey(Camp $camp): Collection

@@ -2,7 +2,8 @@
 @props(['survey', 'aktUser', 'postCount' => 0])
 @php
     $user = $survey->campuser->user;
-    $leader = $survey->campuser->leader;
+    $leaders = $survey->campuser->leaders;
+    $otherLeaders = $leaders->reject(fn ($leader) => $leader->is($aktUser))->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE)->pluck('username')->implode(', ');
     $isParticipant = $aktUser->isTeilnehmer();
     $closed = $isParticipant && $survey->status()->isClosedByParticipant();
     $avatar = $survey->campuser->avatarPath();
@@ -29,7 +30,12 @@
             @if (! $isParticipant)
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     {{ collect([
-                        ! $leader ? 'Noch ohne Leitende' : ($leader->id !== $aktUser->id ? 'Leitende: '.$leader->username : null),
+                        match (true) {
+                            $leaders->isEmpty() => 'Noch ohne Leitende',
+                            $otherLeaders === '' => null,
+                            $leaders->contains($aktUser) => 'Zusammen mit '.$otherLeaders,
+                            default => 'Leitende: '.$otherLeaders,
+                        },
                         $postCount === 1 ? '1 Rückmeldung' : $postCount.' Rückmeldungen',
                     ])->filter()->implode(' · ') }}
                 </p>

@@ -75,7 +75,6 @@ class DemoCampSeeder extends Seeder
                 for ($j = 0; $j < 4; $j++) {
                     $name = 'tn'.($i + 1).($j + 1).'@demo';
                     $user = User::factory()
-                        ->for($leader, 'leader')
                         ->create([
                             'username' => $name,
                             'email' => $name,
@@ -87,9 +86,9 @@ class DemoCampSeeder extends Seeder
                     $camp_user = CampUser::updateOrCreate([
                         'camp_id' => $camp['id'],
                         'user_id' => $user['id']], [
-                            'leader_id' => $leader['id'],
                             'role_id' => Role::Teilnehmer,
                         ]);
+                    $camp_user->leaders()->syncWithoutDetaching([$leader['id']]);
                     CampUser::updateOrCreate([
                         'camp_id' => 1,
                         'user_id' => $user['id']], [

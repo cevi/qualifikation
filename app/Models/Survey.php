@@ -39,7 +39,7 @@ class Survey extends Model
         $aktUser = Auth::user();
         $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $aktUser->camp['id'])->first();
 
-        return $this->camp_user_id === $camp_user['id'] || $this->camp_user->leader_id === $aktUser['id'];
+        return $this->camp_user_id === $camp_user['id'] || $this->campUser->isLedBy($aktUser);
     }
 
     public function SurveyName()
@@ -108,7 +108,7 @@ class Survey extends Model
             if ($camp && $camp->is($camp_survey)) {
                 $result =
                     ($aktUser->isCampleader()) ||
-                    ($aktUser->isLeader() && ($this->campUser->leader_id == $aktUser['id'])) ||
+                    ($aktUser->isLeader() && $this->campUser->isLedBy($aktUser)) ||
                     ($aktUser->isTeilnehmer() && ($this->campUser->user_id == $aktUser['id']));
             }
         }

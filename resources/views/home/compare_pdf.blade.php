@@ -36,7 +36,7 @@
             <!-- Page Header-->
             <header>
                 <h2>Teilnehmende: {{$survey->campuser->user['username']}}</h2>
-                <h3>Leitende: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>
+                <h3>Leitende: {{ $survey->campuser->leaderNames() }}</h3>
             </header>
             @foreach ($survey->chapters as $chapter)
 

@@ -93,7 +93,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 
 | Factory | Standard | States / Hilfen |
 |---|---|---|
-| `User::factory()` | Teilnehmende, verifiziert, kein Demo-User, UUID-Slug, Passwort `password` | `demo()`, `unverified()`, `admin()`, `kursleiter()`, `gruppenleiter()`, `stabsleiter()`, `inCamp($camp, $leader = null)` (setzt den Kurs und legt den `CampUser` mit gleicher Rolle an) |
+| `User::factory()` | Teilnehmende, verifiziert, kein Demo-User, UUID-Slug, Passwort `password` | `demo()`, `unverified()`, `admin()`, `kursleiter()`, `gruppenleiter()`, `stabsleiter()`, `inCamp($camp, $leaders = null)` (setzt den Kurs und legt den `CampUser` mit gleicher Rolle an; `$leaders` ist eine Person oder ein Array, sie werden als Leitende eingetragen) |
 | `Camp::factory()` | neuer Kursleiter als Ersteller, Kurstyp J+S Leiter 1, Enddatum in einem Monat | `finished()`, `withStatusControl()` |
 | `Post::factory()` | Text, nicht auf der Quali sichtbar | `shownOnSurvey()`; z. B. `Post::factory()->for($campUser, 'campUser')->for($leader, 'leader')->create(['camp_id' => $camp->id])` |
 | `Group::factory()` | Cevi-Gruppe mit Kurzname und Cevi-DB-ID | |
@@ -107,7 +107,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Grundlagen | [`TestInfrastructureTest`](Feature/TestInfrastructureTest.php) | 5 | Test-DB, Seeder, Factories |
 | Grundlagen | [`Unit/RoleAndClassificationTest`](Unit/RoleAndClassificationTest.php) | 4 | Enums `Role` und `Classification` passen zur Datenbank |
 | Smoke | [`Smoke/AllRoutesSmokeTest`](Feature/Smoke/AllRoutesSmokeTest.php) | 5 | Jede GET-Route liefert für jede Rolle keinen Serverfehler |
-| Smoke | [`Smoke/PagesRenderTest`](Feature/Smoke/PagesRenderTest.php) | 42 | Alle verlinkten Seiten laden pro Rolle mit 200 |
+| Smoke | [`Smoke/PagesRenderTest`](Feature/Smoke/PagesRenderTest.php) | 45 | Alle verlinkten Seiten laden pro Rolle mit 200 |
 | Smoke | [`Smoke/DemoLoginTest`](Feature/Smoke/DemoLoginTest.php) | 6 | Öffentliche Demo-Logins |
 | Sicherheit | [`Security/AccountUpdateTest`](Feature/Security/AccountUpdateTest.php) | 6 | Eigenes Konto ändern |
 | Sicherheit | [`Security/CampSwitchTest`](Feature/Security/CampSwitchTest.php) | 4 | Kurswechsel im Dropdown |
@@ -120,9 +120,10 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Sicherheit | [`Security/CommentEscapingTest`](Feature/Security/CommentEscapingTest.php) | 5 | Rückmeldungen und Bemerkungen als Text mit Zeilenumbrüchen |
 | Sicherheit | [`Security/SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php) | 6 | Antworten speichern, Quali abschliessen |
 | Sicherheit | [`Security/PostAccessTest`](Feature/Security/PostAccessTest.php) | 5 | Rückmeldungen nur durch Autor*in |
-| Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 9 | Wartungsseite nur für Admin, Aktionen nur per POST, alte GET-URLs weg |
+| Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 12 | Wartungsseite nur für Admin, Aktionen nur per POST, alte GET-URLs weg, bei offenen Migrationen erreichbar |
 | Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 30 | Runden, Abschliessen, Freigeben, Zurücksetzen |
 | Quali-Ablauf | [`SurveyAccessTest`](Feature/SurveyAccessTest.php) | 3 | Zugriff von Leitenden auf Qualis |
+| Quali-Ablauf | [`MultipleLeadersTest`](Feature/MultipleLeadersTest.php) | 18 | Mehrere gleichgestellte Leitende pro Teilnehmende Person |
 | Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 6 | Übersicht nach dem Login: Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
 | Quali-Ablauf | [`CampChecksTest`](Feature/CampChecksTest.php) | 21 | Regeln der Aufgabenliste (`App\Services\CampChecks`) |
 | Quali-Ablauf | [`BottomNavigationTest`](Feature/BottomNavigationTest.php) | 5 | Menü unten auf dem Handy: Punkte je Rolle |
@@ -297,7 +298,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_other_leader_cannot_overwrite_post_via_profile_form` | Auch nicht über das Profil-Formular |
 | `test_author_can_update_post_via_profile_form` | Autor*in ändert über das Profil-Formular |
 
-**[`MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php)**: Wartungsseite `admin/maintenance` (Migrationen ausführen, Cache leeren). Gäste und Kursleitung lösen kein Artisan aus, GET auf die Aktionen gibt 405, `admin/run-migrations` und `admin/run-deployment` gibt es nicht mehr (404); die Seite listet offene Migrationen, Admin-Aktionen rufen `migrate --force` bzw. `optimize:clear` auf und zeigen die Ausgabe.
+**[`MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php)**: Wartungsseite `admin/maintenance` (Migrationen ausführen, Cache leeren). Gäste und Kursleitung lösen kein Artisan aus, GET auf die Aktionen gibt 405, `admin/run-migrations` und `admin/run-deployment` gibt es nicht mehr (404); die Seite listet offene Migrationen, Admin-Aktionen rufen `migrate --force` bzw. `optimize:clear` auf und zeigen die Ausgabe. Bei offenen Migrationen leitet `RedirectAdminToMaintenance` Admins auf die Seite, und sie zeigt keine Menüs (die fragen Kursdaten ab); nachgestellt mit fehlender Tabelle `camp_user_leader`, an der beim Update auf mehrere Leitende jede Seite abstürzte. Nach der Migration ist das Menü wieder da.
 
 ### Quali-Ablauf
 
@@ -327,6 +328,29 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_leader_is_redirected_from_survey_of_participant_without_leader` | Teilnehmende ohne Leitung: Umleitung statt Fehler |
 | `test_leader_has_access_to_survey_of_own_participant` | Eigene Teilnehmende: Zugriff |
 | `test_access_does_not_depend_on_loaded_relations_of_the_camp` | Kursvergleich mit `is()`, nicht `==` |
+
+**[`MultipleLeadersTest`](Feature/MultipleLeadersTest.php)**: mehrere Leitende pro Teilnehmende Person (Tabelle `camp_user_leader`, `CampUser::leaders()`). Szenario plus eine zweite zugeteilte Leitung und eine nicht zugeteilte im selben Kurs.
+
+| Test | Prüft |
+|---|---|
+| `test_factory_assigns_several_leaders` | `inCamp($camp, [$a, $b])` trägt beide ein, `isLedBy()` |
+| `test_every_assigned_leader_opens_and_fills_in_the_quali` | Beide Leitenden: Vergleich und Ausfüllen |
+| `test_leader_who_is_not_assigned_has_no_access` | Nicht zugeteilte Leitung: Umleitung |
+| `test_every_assigned_leader_changes_classification` | Ampel: zweite Leitung ja, nicht zugeteilte nein |
+| `test_every_assigned_leader_may_finish_the_quali` | Knopf „Qualifikationsprozess abschliessen“ und Abschliessen auch für die zweite Leitung |
+| `test_navigation_lists_participant_under_own_participants_of_each_leader` | `my_participants` / `other_participants` im Menü |
+| `test_overview_names_the_other_leaders` | Karte: „Zusammen mit …“ für Leitende, „Leitende: A, B“ für die Kursleitung |
+| `test_tasks_count_participant_for_each_leader` | Aufgabenliste: Qualis und „ohne Rückmeldung“ je Leitung, „ohne Leitende“ |
+| `test_admin_tables_list_all_leaders` | Personen- und Quali-Liste: alle Namen, alphabetisch |
+| `test_profile_and_account_page_show_all_leaders` | Profil und eigenes Konto |
+| `test_edit_form_checks_current_leaders` | „Person bearbeiten“ kreuzt die aktuellen Leitenden an |
+| `test_campleader_assigns_several_leaders` | Speichern mit mehreren Leitenden |
+| `test_unchecking_all_leaders_removes_them` | Nichts angekreuzt (leeres `leader_ids`) entfernt alle |
+| `test_update_without_leader_field_keeps_leaders` | Ohne Feld `leader_ids` bleiben die Leitenden |
+| `test_leader_of_another_camp_cannot_be_assigned` | Leitende anderer Kurse → Validierungsfehler |
+| `test_new_person_gets_the_chosen_leaders` | „Person erstellen“ mit Leitenden |
+| `test_removing_a_leader_from_the_camp_unassigns_them` | Person aus dem Kurs entfernen: fällt als Leitung weg, die anderen bleiben |
+| `test_leaders_are_per_camp` | Zuteilung gilt pro Kurs |
 
 **[`SurveyOverviewTest`](Feature/SurveyOverviewTest.php)**: Übersicht nach dem Login (`/home`): Aufgaben, Zähler, eine Karte pro Quali.
 
@@ -677,7 +701,11 @@ Alle Regeln mit der Fähigkeit `manage` in [`app/Policies`](../app/Policies), re
 
 ### Ampel (Klassifizierung)
 
-Aus `ClassificationTest`: Die Farbe einer TN-Person setzen die zuständige Leitung und die Kursleitung. Gültig sind nur die drei Werte des Enums `Classification` (Rot, Gelb, Grün). Neue Personen starten mit Gelb.
+Aus `ClassificationTest` und `MultipleLeadersTest`: Die Farbe einer TN-Person setzen alle zugeteilten Leitenden und die Kursleitung. Gültig sind nur die drei Werte des Enums `Classification` (Rot, Gelb, Grün). Neue Personen starten mit Gelb.
+
+### Mehrere Leitende
+
+Aus `MultipleLeadersTest`: Eine Teilnehmende Person kann pro Kurs mehrere Leitende haben (`camp_user_leader`), alle gleichgestellt. Jede zugeteilte Leitung sieht und bearbeitet die Quali, stellt die Ampel und schliesst den Qualifikationsprozess ab. Die Leiter-Einschätzung gibt es pro Frage nur einmal: Die Leitenden füllen sie gemeinsam aus, es gilt der zuletzt gespeicherte Stand. Rückmeldungen (`posts.leader_id`) gehören weiterhin der Person, die sie geschrieben hat.
 
 ### Feste Werte als Enums
 

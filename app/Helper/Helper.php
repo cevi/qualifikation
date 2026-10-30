@@ -36,7 +36,6 @@ class Helper
     public static function updateCamp(User $user, Camp $camp)
     {
         $camp_user = CampUser::firstOrCreate(['camp_id' => $camp->id, 'user_id' => $user->id]);
-        $leader_id = $camp['global_camp'] ? null : $user['leader_id'];
         $role_id = $camp_user['role_id'];
         if ($role_id === null) {
             $role_id = $camp['global_camp'] ? Role::Teilnehmer : $user['role_id'];
@@ -44,17 +43,10 @@ class Helper
         $classification_id = $camp_user['classification_id'] ?: Classification::Gelb;
         $camp_user->update([
             'role_id' => $role_id,
-            'leader_id' => $leader_id,
             'classification_id' => $classification_id,
         ]);
-        if ($camp_user->leader) {
-            $leader_id = $camp_user->leader->id;
-        } else {
-            $leader_id = null;
-        }
         $user->update([
             'camp_id' => $camp->id,
-            'leader_id' => $leader_id,
             'role_id' => $camp_user->role->id,
         ]);
     }

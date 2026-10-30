@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Help;
+use App\Services\PendingMigrations;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\View\View;
@@ -14,11 +15,11 @@ use Illuminate\View\View;
  */
 class MaintenanceController extends Controller
 {
-    public function index(): View
+    public function index(PendingMigrations $migrations): View
     {
         $title = 'Wartung';
         $help = Help::where('title', $title)->first();
-        $pending = $this->pendingMigrations();
+        $pending = $migrations->all();
 
         return view('admin.maintenance', compact('title', 'help', 'pending'));
     }
@@ -35,18 +36,6 @@ class MaintenanceController extends Controller
         Artisan::call('optimize:clear');
 
         return $this->backWithOutput();
-    }
-
-    /** Dateinamen der Migrationen, die noch nicht gelaufen sind. */
-    private function pendingMigrations(): array
-    {
-        $migrator = app('migrator');
-        $files = array_keys($migrator->getMigrationFiles(database_path('migrations')));
-        if (! $migrator->repositoryExists()) {
-            return $files;
-        }
-
-        return array_values(array_diff($files, $migrator->getRepository()->getRan()));
     }
 
     private function backWithOutput(): RedirectResponse

@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.admin', ['withoutNav' => count($pending) > 0])
 
 @section('content')
     <div class="px-[15px] md:px-12">
@@ -17,6 +17,7 @@
                 <div class="panel-body">
                     @if (count($pending) > 0)
                         <p class="mb-2">{{ count($pending) }} offene {{ count($pending) === 1 ? 'Migration' : 'Migrationen' }}:</p>
+                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">Bis sie ausgeführt sind, leitet die App Admins hierher, und das Menü ist ausgeblendet.</p>
                         <ul class="mb-4 list-disc ps-5 font-mono text-sm break-all">
                             @foreach ($pending as $migration)
                                 <li>{{ $migration }}</li>

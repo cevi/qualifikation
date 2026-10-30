@@ -6,7 +6,9 @@ use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Camp extends Model
 {
@@ -61,16 +63,22 @@ class Camp extends Model
         return $this->allUsers()->where('camp_users.role_id', Role::Teilnehmer)->OrderBy('username');
     }
 
+    /** Teilnehmende, bei denen die angemeldete Person zu den Leitenden gehört. */
     public function my_participants()
     {
-        return $this->participants()->where('camp_users.leader_id', Auth::user()->id);
+        return $this->participants()->whereExists($this->ledByCurrentUser(...));
     }
 
     public function other_participants()
     {
-        return $this->participants()->where(function ($query) {
-            $query->whereNull('camp_users.leader_id')->orWhere('camp_users.leader_id', '<>', Auth::user()->id);
-        });
+        return $this->participants()->whereNotExists($this->ledByCurrentUser(...));
+    }
+
+    private function ledByCurrentUser(QueryBuilder $query): void
+    {
+        $query->select(DB::raw(1))->from('camp_user_leader')
+            ->whereColumn('camp_user_leader.camp_user_id', 'camp_users.id')
+            ->where('camp_user_leader.leader_id', Auth::id());
     }
 
     public function camp_users()

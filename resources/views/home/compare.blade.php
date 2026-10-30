@@ -88,7 +88,7 @@
             </div>
             <br>
         @endif
-        @if ($aktUser->id == $survey->campUser->leader_id)
+        @if ($survey->campUser->isLedBy($aktUser))
             <div class="mb-2.5">
                 {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@finish',$survey->id]]) !!}
                 {!! Form::submit('Qualifikationsprozess abschliessen', ['class' => 'button-primary'])!!}

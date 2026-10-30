@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\Classification;
 use App\Enums\Role;
 use App\Helper\Helper;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +14,7 @@ class CampUser extends Model
     use HasFactory;
 
     protected $fillable = [
-        'camp_id', 'user_id', 'role_id', 'leader_id', 'classification_id', 'avatar',
+        'camp_id', 'user_id', 'role_id', 'classification_id', 'avatar',
     ];
 
     protected $casts = [
@@ -36,9 +37,27 @@ class CampUser extends Model
         return $this->belongsTo('App\Models\Role');
     }
 
-    public function leader()
+    /** Zuständige Leitende, alle gleichgestellt (Tabelle camp_user_leader). */
+    public function leaders()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsToMany(User::class, 'camp_user_leader', 'camp_user_id', 'leader_id')->withTimestamps();
+    }
+
+    public function isLedBy(User $user): bool
+    {
+        return $this->leaders->contains($user);
+    }
+
+    /** Personen, bei denen $user zu den Leitenden gehört. */
+    public function scopeLedBy(Builder $query, User $user): void
+    {
+        $query->whereHas('leaders', fn (Builder $leaders) => $leaders->whereKey($user->id));
+    }
+
+    /** Namen der Leitenden für Anzeigen, alphabetisch, mit Komma getrennt. */
+    public function leaderNames(): string
+    {
+        return $this->leaders->sortBy('username', SORT_NATURAL | SORT_FLAG_CASE)->pluck('username')->implode(', ');
     }
 
     public function classification()

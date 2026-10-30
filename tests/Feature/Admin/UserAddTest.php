@@ -4,7 +4,6 @@ namespace Tests\Feature\Admin;
 
 use App\Enums\Role;
 use App\Models\CampUser;
-use App\Models\User;
 use Tests\Support\CampScenario;
 use Tests\TestCase;
 
@@ -25,7 +24,8 @@ class UserAddTest extends TestCase
 
         $this->assertSame($s->camp->id, $person->fresh()->camp_id);
         $this->assertTrue(CampUser::where('camp_id', $s->camp->id)->where('user_id', $person->id)->where('role_id', Role::Teilnehmer)->exists());
-        $this->assertNull(User::findOrFail($person->id)->leader_id);
+        // Die Leitenden aus dem anderen Kurs kommen nicht mit.
+        $this->assertTrue(CampUser::where('camp_id', $s->camp->id)->where('user_id', $person->id)->firstOrFail()->leaders->isEmpty());
     }
 
     public function test_adding_without_choosing_a_person_shows_an_error(): void

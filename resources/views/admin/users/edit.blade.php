@@ -33,10 +33,7 @@
                     {!! Form::select('group_id', [''=>'Wähle Abteilung'] + $groups, null, ['class' => 'field-input', 'required']) !!}
                 </div>
 
-                <div class="mb-2.5">
-                    {!! Form::label('leader_id', 'Leitende:', ['class' => 'field-label']) !!}
-                    {!! Form::select('leader_id', [''=>'Leitende wählen'] + $leaders, null,  ['class' => 'field-input']) !!}
-                </div>
+                <x-users.leader-checkboxes :leaders="$leaders" :selected="$selectedLeaders"/>
 
                 <div class="mb-2.5">
                     {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
