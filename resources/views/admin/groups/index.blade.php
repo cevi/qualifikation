@@ -6,27 +6,23 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-3">
-                {!! Form::open(['action'=>'AdminGroupsController@store']) !!}
+                <x-forms.form :action="action('AdminGroupsController@store')">
                     <div class="mb-2.5">
-                        {!! Form::label('name', 'Name:', ['class' => 'field-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="name" label="Name:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('foreign_id', 'Gruppen ID (Cevi-DB):', ['class' => 'field-label']) !!}
-                        {!! Form::text('foreign_id', null,  ['class' => 'field-input']) !!}
+                        <x-forms.text name="foreign_id" label="Gruppen ID (Cevi-DB):"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('url', 'URL (Cevi-DB):', ['class' => 'field-label']) !!}
-                        {!! Form::text('url', null,  ['class' => 'field-input']) !!}
+                        <x-forms.text name="url" label="URL (Cevi-DB):"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('api_token', 'API Token (Cevi-DB):', ['class' => 'field-label']) !!}
-                        {!! Form::text('api_token', null,  ['class' => 'field-input']) !!}
+                        <x-forms.text name="api_token" label="API Token (Cevi-DB):"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Gruppe erstellen', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Gruppe erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
             <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($groups)

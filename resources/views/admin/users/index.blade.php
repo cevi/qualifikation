@@ -7,7 +7,8 @@
         @if (Session::has('deleted_user'))
             <x-layouts.alert type="danger">{{ session('deleted_user') }}</x-layouts.alert>
         @endif
-        <div class="flex flex-wrap items-start">
+        {{-- Sprungziel #import aus «Erste Schritte» auf der Übersicht --}}
+        <div id="import" class="flex scroll-mt-24 flex-wrap items-start">
             <a href="{{route('admin.users.create')}}" class="button-primary" role="button">Person manuell erstellen oder zuordnen</a>
             @if (config('app.import_db'))
                 <button class="button-purple me-2 disabled:cursor-not-allowed disabled:opacity-50" type="button" id="showImport" data-url="{{ route('users.import') }}"

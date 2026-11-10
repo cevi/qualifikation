@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const swal = vi.hoisted(() => ({ fire: vi.fn() }));
-vi.mock('sweetalert2', () => ({ default: swal }));
+const dialog = vi.hoisted(() => ({ confirmDialog: vi.fn(), messageDialog: vi.fn() }));
+vi.mock('../../resources/js/lib/dialog.js', () => dialog);
 
 function render() {
     document.head.innerHTML = '<meta name="csrf-token" content="token-123">';
@@ -32,12 +32,13 @@ describe('Quali-Liste: Erstellen und Freigeben', () => {
     });
 
     it('erstellt die Qualifikationen erst nach der Rückfrage und lädt neu', async () => {
-        swal.fire.mockResolvedValue({ isConfirmed: true });
+        dialog.confirmDialog.mockResolvedValue(true);
 
         document.querySelector('.create').click();
         await vi.waitFor(() => expect(reload).toHaveBeenCalled());
 
-        expect(swal.fire.mock.calls[0][0].titleText).toBe('Qualifikationen erstellen?');
+        expect(dialog.confirmDialog.mock.calls[0][0]).toBe('Qualifikationen erstellen?');
+        expect(dialog.confirmDialog.mock.calls[0][1].confirmLabel).toBe('Qualifikationen erstellen');
         expect(fetchMock).toHaveBeenCalledWith('/admin/surveys', {
             method: 'POST',
             headers: { Accept: 'application/json', 'X-CSRF-TOKEN': 'token-123' },
@@ -45,10 +46,10 @@ describe('Quali-Liste: Erstellen und Freigeben', () => {
     });
 
     it('tut bei "Abbrechen" nichts', async () => {
-        swal.fire.mockResolvedValue({ isConfirmed: false });
+        dialog.confirmDialog.mockResolvedValue(false);
 
         document.querySelector('.create').click();
-        await vi.waitFor(() => expect(swal.fire).toHaveBeenCalled());
+        await vi.waitFor(() => expect(dialog.confirmDialog).toHaveBeenCalled());
 
         expect(fetchMock).not.toHaveBeenCalled();
         expect(reload).not.toHaveBeenCalled();
@@ -58,7 +59,7 @@ describe('Quali-Liste: Erstellen und Freigeben', () => {
         document.querySelector('.opensurvey').click();
         await vi.waitFor(() => expect(reload).toHaveBeenCalled());
 
-        expect(swal.fire).not.toHaveBeenCalled();
+        expect(dialog.confirmDialog).not.toHaveBeenCalled();
         expect(fetchMock.mock.calls[0][0]).toBe('/admin/camps/opensurvey');
     });
 
@@ -66,9 +67,9 @@ describe('Quali-Liste: Erstellen und Freigeben', () => {
         fetchMock.mockResolvedValue({ ok: false, status: 500 });
 
         document.querySelector('.opensurvey').click();
-        await vi.waitFor(() => expect(swal.fire).toHaveBeenCalled());
+        await vi.waitFor(() => expect(dialog.messageDialog).toHaveBeenCalled());
 
-        expect(swal.fire.mock.calls[0][0]).toMatchObject({ icon: 'error', titleText: 'Das hat nicht geklappt.' });
+        expect(dialog.messageDialog.mock.calls[0][0]).toBe('Das hat nicht geklappt.');
         expect(reload).not.toHaveBeenCalled();
     });
 });

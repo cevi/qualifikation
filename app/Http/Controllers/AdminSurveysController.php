@@ -126,6 +126,11 @@ class AdminSurveysController extends Controller
             }
         }
 
+        // Aus «Erste Schritte» als normales Formular abgeschickt, sonst per fetch von der Quali-Liste
+        if (request()->input('from') === 'dashboard') {
+            return redirect('/home');
+        }
+
         return true;
     }
 

@@ -6,36 +6,31 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-4">
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@store']) !!}
+                <x-forms.form :action="action('AdminQuestionsController@store')">
                 <div class="mb-2.5">
-                    {!! Form::label('chapter_id', 'Kapitel:', ['class' => 'field-label']) !!}
-                    {!! Form::select('chapter_id', [''=>'Wähle Kapitel'] + $chapters, null,  ['class' => 'field-input', 'required']) !!}
+                    <x-forms.select name="chapter_id" label="Kapitel:" :collection="$chapters" placeholder="Wähle Kapitel" required/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::label('number', 'Nummer:', ['class' => 'field-label']) !!}
-                    {!! Form::text('number', null, ['class' => 'field-input', 'required']) !!}
+                    <x-forms.text name="number" label="Nummer:" required/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::label('name', 'Name:', ['class' => 'field-label']) !!}
-                    {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                    <x-forms.text name="name" label="Name:" required/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::label('competence', 'Kompetenz:', ['class' => 'field-label']) !!}
-                    {!! Form::text('competence', null, ['class' => 'field-input', 'required']) !!}
+                    <x-forms.text name="competence" label="Kompetenz:" required/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::label('sort-index', 'Index zur Anzeige im Radar (Im Uhrzeigensinn ab 12Uhr):', ['class' => 'field-label']) !!}
-                    {!! Form::text('sort-index', null, ['class' => 'field-input', 'required']) !!}
+                    <x-forms.text name="sort-index" label="Index zur Anzeige im Radar (Im Uhrzeigensinn ab 12Uhr):" required/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::submit('Kompetenz erstellen', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Kompetenz erstellen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 @include('includes.form_error')
             </div>
             <div class="min-w-0 col-span-12 sm:col-span-8">

@@ -6,19 +6,17 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-3">
-                {!! Form::open(['action'=>'AdminChaptersController@store']) !!}
+                <x-forms.form :action="action('AdminChaptersController@store')">
                     <div class="mb-2.5">
-                        {!! Form::label('number', 'Nummer:', ['class' => 'field-label']) !!}
-                        {!! Form::text('number', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="number" label="Nummer:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('name', 'Kapitel:', ['class' => 'field-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="name" label="Kapitel:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Kapitel erstellen', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Kapitel erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 @include('includes.form_error')
             </div>
             <div class="min-w-0 col-span-12 sm:col-span-9">

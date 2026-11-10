@@ -7,19 +7,17 @@
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-4">
                 <p>Artikel Erfassen:</p>
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminHelpController@store']) !!}
+                <x-forms.form :action="action('AdminHelpController@store')">
                 <div class="mb-2.5">
-                    {!! Form::label('title', 'Titel:', ['class' => 'field-label']) !!}
-                    {!! Form::text('title', null, ['class' => 'field-input']) !!}
+                    <x-forms.text name="title" label="Titel:"/>
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::label('content', 'Inhalt:', ['class' => 'field-label']) !!}
-                    {!! Form::textarea('content', null, ['class' => 'field-input','required' ,'rows' => 10]) !!}
+                    <x-forms.text-area name="content" label="Inhalt:" required rows="10"/>
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::submit('Artikel erfassen', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Artikel erfassen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
             <div class="min-w-0 col-span-12 md:col-span-8">
                 <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">

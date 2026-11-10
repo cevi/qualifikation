@@ -1,11 +1,11 @@
 {
+  "_dialog-D2IIkbiJ.js": {
+    "file": "assets/dialog-D2IIkbiJ.js",
+    "name": "dialog"
+  },
   "_popper-zhYlKhUK.js": {
     "file": "assets/popper-zhYlKhUK.js",
     "name": "popper"
-  },
-  "_sweetalert2.esm.all-0Z_61IYw.js": {
-    "file": "assets/sweetalert2.esm.all-0Z_61IYw.js",
-    "name": "sweetalert2.esm.all"
   },
   "node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.ttf": {
     "file": "assets/fa-regular-400-DZaxPHgR.ttf",
@@ -24,23 +24,23 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CwUfc8yZ.css",
+    "file": "assets/app-DVgTR-XA.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/css/legacy.css": {
-    "file": "assets/legacy-D4AsaebD.css",
+    "file": "assets/legacy-irz8AVu1.css",
     "src": "resources/css/legacy.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-C1CCStnE.js",
+    "file": "assets/app-gTDG3lzQ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
       "_popper-zhYlKhUK.js",
-      "_sweetalert2.esm.all-0Z_61IYw.js"
+      "_dialog-D2IIkbiJ.js"
     ]
   },
   "resources/js/islands.js": {
@@ -95,12 +95,12 @@
     "isEntry": true
   },
   "resources/js/pages/surveys-index.js": {
-    "file": "assets/surveys-index-Dfj5ne6P.js",
+    "file": "assets/surveys-index-6nawPUZM.js",
     "name": "surveys-index",
     "src": "resources/js/pages/surveys-index.js",
     "isEntry": true,
     "imports": [
-      "_sweetalert2.esm.all-0Z_61IYw.js"
+      "_dialog-D2IIkbiJ.js"
     ]
   },
   "resources/js/pages/tooltips.js": {
@@ -122,12 +122,12 @@
     "isEntry": true
   },
   "resources/js/pages/users-import.js": {
-    "file": "assets/users-import-CMiMc--a.js",
+    "file": "assets/users-import-CexdcFKH.js",
     "name": "users-import",
     "src": "resources/js/pages/users-import.js",
     "isEntry": true,
     "imports": [
-      "_sweetalert2.esm.all-0Z_61IYw.js"
+      "_dialog-D2IIkbiJ.js"
     ]
   }
 }

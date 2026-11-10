@@ -118,7 +118,7 @@ return [
     */
 
     'markdown' => [
-        'theme' => 'default',
+        'theme' => 'qualitool',
 
         'paths' => [
             resource_path('views/vendor/mail'),

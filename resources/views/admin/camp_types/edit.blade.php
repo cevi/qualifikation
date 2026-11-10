@@ -6,21 +6,20 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-6">
-                {!! Form::model($camp_type, ['method' => 'Patch', 'action'=>['CampTypesController@update',$camp_type]]) !!}
+                <x-forms.form method="PATCH" :model="$camp_type" :action="action('CampTypesController@update', $camp_type)">
                     <div class="mb-2.5">
-                        {!! Form::label('name', 'Name:', ['class' => 'field-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="name" label="Name:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 @if($camp_type->camps->count()==0)
-                    {!! Form::model($camp_type, ['method' => 'DELETE', 'action'=>['CampTypesController@destroy',$camp_type], 'id'=> "DeleteForm"]) !!}
+                    <x-forms.form method="DELETE" :model="$camp_type" :action="action('CampTypesController@destroy', $camp_type)" id="DeleteForm">
                         <div class="mb-2.5">
-                            {!! Form::submit('Kurs-Typ löschen', ['class' => 'button-danger'])!!}
+                            <x-forms.button type="submit" delete>Kurs-Typ löschen</x-forms.button>
                         </div>
-                    {!! Form::close()!!}
+                    </x-forms.form>
                 @endif
                 </div>
         </div>

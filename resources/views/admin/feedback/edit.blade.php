@@ -6,15 +6,14 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-6">
-                {!! Form::model($feedback, ['method' => 'Patch', 'action'=>['FeedbackController@update',$feedback]]) !!}
+                <x-forms.form method="PATCH" :model="$feedback" :action="action('FeedbackController@update', $feedback)">
                     <div class="mb-2.5">
-                        {!! Form::label('feedback', 'Feedback:', ['class' => 'field-label']) !!}
-                        {!! Form::textarea('feedback', null, ['class' => 'field-input', 'required', 'rows' => 3]) !!}
+                        <x-forms.text-area name="feedback" label="Feedback:" required rows="3"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
                 </div>
         </div>

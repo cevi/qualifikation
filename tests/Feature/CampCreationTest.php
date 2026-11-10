@@ -86,7 +86,7 @@ class CampCreationTest extends TestCase
         $this->actingAs($s->kursleiter)->post(route('admin.camps.store'), [
             'name' => 'Eigener Kurs', 'camp_type_id' => $s->camp->camp_type_id, 'group_id' => $s->group->id, 'end_date' => '2026-12-01',
             'global_camp' => 1, 'finish' => 1, 'secondsurveyopen' => 1, 'counter' => 99, 'user_id' => $s->admin->id,
-        ])->assertRedirect('admin/camps');
+        ])->assertRedirect('/home'); // dort wartet «Erste Schritte» (CampChecklistTest)
 
         $camp = Camp::where('name', 'Eigener Kurs')->firstOrFail();
         $this->assertFalse($camp->global_camp);

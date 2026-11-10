@@ -7,6 +7,10 @@
     @else
         <p class="-mt-6 mb-6 text-sm text-gray-500 dark:text-gray-400">{{ $camp->name }} · {{ $camp->camp_type['name'] ?? '' }}</p>
 
+        @if ($steps)
+            <x-dashboard.checklist :checklist="$steps" :hidden="$stepsHidden"/>
+        @endif
+
         @unless ($aktUser->isTeilnehmer())
             @php
                 $toClose = $surveys->filter(fn ($survey) => $survey->status() === \App\Enums\SurveyStatus::TnAbgeschlossen)->count();

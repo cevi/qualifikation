@@ -6,23 +6,20 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-3">
-                {!! Form::open(['action'=>'AdminAnswersController@store']) !!}
+                <x-forms.form :action="action('AdminAnswersController@store')">
                     <div class="mb-2.5">
-                        {!! Form::label('name', 'Antwort:', ['class' => 'field-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="name" label="Antwort:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('count', 'Wertung:', ['class' => 'field-label']) !!}
-                        {!! Form::text('count', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="count" label="Wertung:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('description', 'Beschreibung:', ['class' => 'field-label']) !!}
-                        {!! Form::text('description', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="description" label="Beschreibung:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Antwort erstellen', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Antwort erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>    
             <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($answers)

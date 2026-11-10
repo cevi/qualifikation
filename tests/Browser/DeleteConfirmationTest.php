@@ -11,7 +11,7 @@ use Tests\DuskTestCase;
 use Tests\Support\CampScenario;
 
 /**
- * Löschen-Knöpfe fragen mit SweetAlert2 nach. "Abbrechen" darf nichts löschen, "Ja" löscht genau den gewählten Eintrag.
+ * Löschen-Knöpfe fragen im eigenen Dialog nach (resources/js/lib/dialog.js). "Abbrechen" darf nichts löschen, "Ja" löscht genau den gewählten Eintrag.
  * Ebenso das Abschliessen der Selbsteinschätzung.
  */
 class DeleteConfirmationTest extends DuskTestCase
@@ -116,14 +116,14 @@ class DeleteConfirmationTest extends DuskTestCase
     private function cancelDialog(Browser $browser, string $button): void
     {
         $this->clickCentered($browser, $button);
-        $browser->waitFor('.swal2-popup')
-            ->click('.swal2-cancel')
-            ->waitUntilMissing('.swal2-popup');
+        $browser->waitFor('dialog[data-confirm-dialog][open]')
+            ->click('[data-dialog-cancel]')
+            ->waitUntilMissing('dialog[data-confirm-dialog]');
     }
 
     private function confirmDialog(Browser $browser, string $button): void
     {
         $this->clickCentered($browser, $button);
-        $browser->waitFor('.swal2-popup')->click('.swal2-confirm');
+        $browser->waitFor('dialog[data-confirm-dialog][open]')->click('[data-dialog-confirm]');
     }
 }

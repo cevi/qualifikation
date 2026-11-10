@@ -6,29 +6,26 @@
             <x-layouts.page-title :title="$title" :help="$help"/>
             <div class="grid grid-cols-12 sm:gap-x-8">
                 <div class="min-w-0 col-span-12 sm:col-span-6">
-                    {!! Form::model($answer, ['method' => 'Patch', 'action'=>['AdminAnswersController@update',$answer->id]]) !!}
+                    <x-forms.form method="PATCH" :model="$answer" :action="action('AdminAnswersController@update', $answer->id)">
                         <div class="mb-2.5">
-                            {!! Form::label('name', 'Antwort:', ['class' => 'field-label']) !!}
-                            {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                            <x-forms.text name="name" label="Antwort:" required/>
                         </div>
                         <div class="mb-2.5">
-                            {!! Form::label('count', 'Wertung:', ['class' => 'field-label']) !!}
-                            {!! Form::text('count', null, ['class' => 'field-input', 'required']) !!}
+                            <x-forms.text name="count" label="Wertung:" required/>
                         </div>
                         <div class="mb-2.5">
-                            {!! Form::label('description', 'Beschreibung:', ['class' => 'field-label']) !!}
-                            {!! Form::text('description', null, ['class' => 'field-input', 'required']) !!}
+                            <x-forms.text name="description" label="Beschreibung:" required/>
                         </div>
                         <div class="mb-2.5">
-                            {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
+                            <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                         </div>
-                    {!! Form::close()!!}
+                    </x-forms.form>
 
-                    {!! Form::model($answer, ['method' => 'DELETE', 'action'=>['AdminAnswersController@destroy',$answer->id]]) !!}
+                    <x-forms.form method="DELETE" :model="$answer" :action="action('AdminAnswersController@destroy', $answer->id)">
                     <div class="mb-2.5">
-                        {!! Form::submit('Antwort löschen', ['class' => 'button-danger'])!!}
+                        <x-forms.button type="submit" delete>Antwort löschen</x-forms.button>
                     </div>
-                    {!! Form::close()!!}
+                    </x-forms.form>
                  </div>
             </div>
         </div>    

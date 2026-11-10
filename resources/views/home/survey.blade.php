@@ -84,8 +84,7 @@
             @if ($aktUser->isTeilnehmer())
                 <button type="submit" name="action" value="close" class="button-secondary"
                         data-confirm="{{$survey->surveyName()}} abschliessen?"
-                        data-confirm-text="Danach kannst du deine Einschätzung nicht mehr ändern."
-                        data-confirm-icon="question">
+                        data-confirm-text="Danach kannst du deine Einschätzung nicht mehr ändern.">
                     {{$survey->surveyName()}} speichern und abschliessen
                 </button>
             @endif

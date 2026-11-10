@@ -122,6 +122,9 @@ class AdminCampsController extends Controller
                 // Wie "Kurs erstellen" (CampsController@store): die Kursleitung ist Mitglied ihres Kurses
                 $user->update(['camp_id' => $camp->id]);
                 CampUser::firstOrCreate(['camp_id' => $camp->id, 'user_id' => $user->id], ['role_id' => Role::Kursleiter]);
+
+                // Der neue Kurs ist jetzt der aktuelle; auf der Übersicht wartet «Erste Schritte»
+                return redirect('/home');
             }
         }
 
@@ -232,7 +235,28 @@ class AdminCampsController extends Controller
             }
         }
 
-        return redirect('/admin/surveys');
+        // Aus «Erste Schritte» zurück auf die Übersicht; nur genau dieser Wert, keine freie Adresse
+        return redirect(request()->input('from') === 'dashboard' ? '/home' : '/admin/surveys');
+    }
+
+    /**
+     * «Erste Schritte» auf der Übersicht aus- oder einblenden, für den ganzen aktuellen Kurs. Demo-Benutzer teilen
+     * sich den Demo-Kurs, für sie gilt es nur in der Sitzung.
+     */
+    public function checklist(Request $request)
+    {
+        $camp = Auth::user()->camp;
+        abort_unless($camp, 404);
+        $this->authorize('manage', $camp);
+        $hidden = $request->boolean('hidden');
+
+        if (Auth::user()->demo) {
+            $request->session()->put("checklist_hidden.{$camp->id}", $hidden);
+        } else {
+            $camp->update(['checklist_hidden' => $hidden]);
+        }
+
+        return redirect('/home');
     }
 
     public function export()

@@ -201,10 +201,6 @@ select option {
     background-color: var(--color-bg-primary);
 }
 
-.swal2-actions button {
-    background-color: var(--swal2-confirm-button-background-color);
-}
-
 /* Disable default underlines on hover for all top navigation dropdown menu links to prevent stray icon underlines */
 nav [id^="dropdown"] a,
 nav [id^="dropdown"] a:hover,

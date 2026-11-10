@@ -9,13 +9,14 @@
                 <br>
                 {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add']) !!}
                 <div class="mb-2.5">
-                        {!! Form::label('username', 'Name:', ['class' => 'field-label']) !!}
-                        {!! Form::text('username', null, ['class' => 'field-input', 'placeholder' => 'name@abt', 'required', 'list' => 'user-suggestions', 'autocomplete' => 'off', 'data-search-url' => route('searchajaxuser')]) !!}
+                        {{-- IDs mit Präfix: das Formular «Person erstellen» daneben hat dieselben Feldnamen --}}
+                        {!! Form::label('search_username', 'Name:', ['class' => 'field-label']) !!}
+                        {!! Form::text('username', null, ['id' => 'search_username', 'class' => 'field-input', 'placeholder' => 'name@abt', 'required', 'list' => 'user-suggestions', 'autocomplete' => 'off', 'data-search-url' => route('searchajaxuser')]) !!}
                         <datalist id="user-suggestions"></datalist>
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::label('role_id', 'Rolle:', ['class' => 'field-label']) !!}
-                    {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'field-input', 'required']) !!}
+                    {!! Form::label('search_role_id', 'Rolle:', ['class' => 'field-label']) !!}
+                    {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['id' => 'search_role_id', 'class' => 'field-input', 'required']) !!}
                 </div>
                 {!! Form::hidden('user_id') !!}
                 <div class="mb-2.5">

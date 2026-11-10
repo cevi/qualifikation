@@ -30,7 +30,7 @@ class Camp extends Model
     }
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date',
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date', 'checklist_hidden',
     ];
 
     protected $casts = [
@@ -39,6 +39,7 @@ class Camp extends Model
         'demo' => 'boolean',
         'finish' => 'boolean',
         'status_control' => 'boolean',
+        'checklist_hidden' => 'boolean',
         // Nur mit Status-Steuerung gesetzt (null = keine Steuerung).
         'survey_status_id' => SurveyStatus::class,
     ];

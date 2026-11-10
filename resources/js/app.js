@@ -3,8 +3,11 @@
  * Einstiegspunkte in vite.config.js und werden per @vite nur in ihren Ansichten eingebunden.
  */
 
-import 'flowbite';
+import { initFlowbiteParts } from './libs/flowbite-parts.js';
 import './theme-toggle.js';
 import './confirm-submit.js';
 import './bottom-nav.js';
 import './pwa.js';
+
+// Module laufen nach dem Parsen, das DOM ist also schon da
+initFlowbiteParts();
