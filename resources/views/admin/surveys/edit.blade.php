@@ -5,31 +5,29 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-6">
-                {!! Form::model($survey, ['method' => 'PATCH', 'action'=>['AdminSurveysController@update', $survey->id]]) !!}
+                <x-forms.form method="PATCH" :model="$survey" :action="action('AdminSurveysController@update', $survey->id)">
 
                 <div class="mb-2.5">
-                    {!! Form::label('survey_status_id', 'Status:', ['class' => 'field-label']) !!}
-                    {!! Form::select('survey_status_id', [''=>'Wähle Status'] + $survey_statuses_id, $survey->survey_status_id?->value,  ['class' => 'field-input']) !!}
+                    <x-forms.select name="survey_status_id" label="Status:" :collection="$survey_statuses_id" placeholder="Wähle Status" :value="$survey->survey_status_id?->value"/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::checkbox('update', '1', false, ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-xs focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600']) !!}
-                    {!! Form::label('update', 'Allfällige Einträge löschen',  ['class' => 'ms-2 text-sm font-medium text-gray-900 dark:text-gray-300']) !!}
+                    <x-forms.checkbox name="update" label="Allfällige Einträge löschen"/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
                 @include('includes.form_error')
 
                 
-                {!! Form::open(['method' => 'DELETE', 'action'=>['AdminSurveysController@destroy',$survey]]) !!}
+                <x-forms.form method="DELETE" :action="action('AdminSurveysController@destroy', $survey)">
                 <div class="mb-2.5">
-                    {!! Form::submit('Lösche Qualifikation', ['class' => 'button-danger'])!!}
+                    <x-forms.button type="submit" delete>Lösche Qualifikation</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
         </div>
     </div>

@@ -90,12 +90,12 @@
         @endif
         @if ($survey->campUser->isLedBy($aktUser))
             <div class="mb-2.5">
-                {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@finish',$survey->id]]) !!}
-                {!! Form::submit('Qualifikationsprozess abschliessen', ['class' => 'button-primary'])!!}
+                <x-forms.form method="PATCH" :model="$survey" :action="action('SurveysController@finish', $survey->id)">
+                    <x-forms.button type="submit">Qualifikationsprozess abschliessen</x-forms.button>
+                </x-forms.form>
             </div>
             <br>
         @endif
-        {!! Form::close()!!}
         @if($aktUser->isLeader() || $aktUser->isCampleader())
             <x-posts.post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'" :editable="false"/>
         @endif

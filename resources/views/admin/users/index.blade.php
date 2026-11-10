@@ -16,10 +16,10 @@
                     Personen aus Cevi-DB importieren
                 </button>
             @endif
-            {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'files' => true, 'class' => 'flex flex-wrap items-start gap-x-2']) !!}
-                {!! Form::file('csv_file', ['accept' => '.json', 'class' => 'field-file mb-2 w-auto! max-w-xs', 'aria-label' => 'Teilnehmendenliste (JSON)']) !!}
-                {{ Form::submit('Teilnehmendenliste hochladen', ['class' => 'button-purple']) }}
-            {!! Form::close() !!}
+            <x-forms.form :action="action('AdminUsersController@uploadFile')" enctype="multipart/form-data" class="flex flex-wrap items-start gap-x-2">
+                <x-forms.file name="csv_file" accept=".json" class="mb-2 w-auto! max-w-xs" aria-label="Teilnehmendenliste (JSON)"/>
+                <x-forms.button type="submit" variant="purple">Teilnehmendenliste hochladen</x-forms.button>
+            </x-forms.form>
         </div>
         <br>
         @php

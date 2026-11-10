@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3aef935a797a473da64bbfee90919bed",
+    "content-hash": "e837afbffeb153777e2a393bda8869e0",
     "packages": [
         {
             "name": "brick/math",
@@ -4904,69 +4904,6 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.4"
             },
             "time": "2026-09-16T11:39:30+00:00"
-        },
-        {
-            "name": "rdx/laravelcollective-html",
-            "version": "6.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rudiedirkx/laravelcollective-html.git",
-                "reference": "08128898019b12c3ff5c9a7420d643285572601e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/laravelcollective-html/zipball/08128898019b12c3ff5c9a7420d643285572601e",
-                "reference": "08128898019b12c3ff5c9a7420d643285572601e",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/http": "^13.0 || ^12.0 || ^11.0",
-                "illuminate/routing": "^13.0 || ^12.0 || ^11.0",
-                "illuminate/session": "^13.0 || ^12.0 || ^11.0",
-                "illuminate/support": "^13.0 || ^12.0 || ^11.0",
-                "illuminate/view": "^13.0 || ^12.0 || ^11.0",
-                "php": "^8.2"
-            },
-            "replace": {
-                "laravelcollective/html": "self.version"
-            },
-            "require-dev": {
-                "illuminate/database": "^13.0 || ^12.0 || ^11.0",
-                "mockery/mockery": "^1.0",
-                "phpstan/phpstan": "^2.1",
-                "phpunit/phpunit": "^11.0",
-                "symfony/var-dumper": "^7.2"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Form": "Collective\\Html\\FormFacade",
-                        "Html": "Collective\\Html\\HtmlFacade"
-                    },
-                    "providers": [
-                        "Collective\\Html\\HtmlServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/helpers.php"
-                ],
-                "psr-4": {
-                    "Collective\\Html\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "HTML and Form Builders for the Laravel Framework",
-            "support": {
-                "issues": "https://github.com/rudiedirkx/laravelcollective-html/issues",
-                "source": "https://github.com/rudiedirkx/laravelcollective-html"
-            },
-            "time": "2026-03-26T15:45:57+00:00"
         },
         {
             "name": "spatie/laravel-honeypot",

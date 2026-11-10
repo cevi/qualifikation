@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Enums\Role;
+use App\Models\Answer;
+use Tests\Support\CampScenario;
 use Tests\TestCase;
 
 /**
@@ -110,6 +112,39 @@ class FormComponentsTest extends TestCase
         $this->assertMatchesRegularExpression('/<form method="POST"\s+action="\/x"\s+enctype="multipart\/form-data"\s*>/', $html);
         $this->assertStringContainsString('name="_method" value="PATCH"', $html);
         $this->assertStringContainsString('name="_token"', $html);
+    }
+
+    /** Ganzer Ablauf: Person erstellen mit ungültiger E-Mail, zurück auf dem Formular sind die Eingaben noch da. */
+    public function test_person_form_keeps_input_after_validation_error(): void
+    {
+        $s = CampScenario::create();
+
+        $this->actingAs($s->kursleiter)->from(route('admin.users.create'))->post(route('admin.users.store'), [
+            'username' => 'Neue Person', 'email' => 'keine-adresse', 'role_id' => Role::Teilnehmer->value,
+            'group_id' => $s->group->id, 'password' => 'geheim-123',
+        ])->assertRedirect(route('admin.users.create'))->assertSessionHasErrors('email');
+
+        $html = $this->get(route('admin.users.create'))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/name="email" id="email"\s+value="keine-adresse"/', $html);
+        $this->assertMatchesRegularExpression('/<option value="'.$s->group->id.'"\s+selected/', $html);
+        $this->assertStringNotContainsString('geheim-123', $html);
+    }
+
+    /** Quali: Label der Antwort zeigt auf ihren Radio-Knopf (mit Form::label zeigte es ins Leere), ohne Antwort ist «0» gewählt. */
+    public function test_survey_answer_labels_point_to_their_radio(): void
+    {
+        $s = CampScenario::create();
+        $question = $s->survey->chapters->first()->questions->first();
+        $zero = Answer::where('name', '0')->firstOrFail();
+
+        foreach ([[$s->participant, 1], [$s->gruppenleiter, 3]] as [$user, $round]) {
+            $id = $question->question['id'].'.'.$round.'.'.$question->question['number'].$zero->id;
+            $html = $this->actingAs($user)->get(route('survey.survey', $s->survey->slug))->assertOk()->getContent();
+
+            $this->assertMatchesRegularExpression('/<input name="answers\['.$question->id.'\]" id="'.preg_quote($id, '/').'" type="radio" value="'.$zero->id.'"[^>]*checked/', $html);
+            $this->assertStringContainsString('<label for="'.$id.'"', $html);
+            $this->assertStringContainsString('name="comments['.$question->id.']"', $html);
+        }
     }
 
     private function withOldInput(array $input): void

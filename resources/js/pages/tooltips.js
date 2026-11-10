@@ -10,6 +10,12 @@ import 'tippy.js/themes/light-border.css';
 export function initTooltips(root = document) {
     const elements = [...root.querySelectorAll('[data-tooltip]')].filter((element) => element.dataset.tooltip.trim() !== '');
 
+    // Ein Label mit for löst einen zweiten Klick auf seinem Feld aus (Quali: Zahl antippen wählt die Antwort). Beide
+    // erreichen den Tooltip, der dann auf- und gleich wieder zugeht. Nur der Klick des Felds soll zählen.
+    elements.forEach((element) =>
+        element.querySelectorAll('label[for]').forEach((label) => label.addEventListener('click', (event) => event.stopPropagation())),
+    );
+
     return tippy(elements, {
         content: (element) => element.dataset.tooltip,
         allowHTML: false,

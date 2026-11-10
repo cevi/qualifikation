@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 10.11.2026: **412 Testfälle in 51 Dateien**, Laufzeit rund 14 Sekunden.
+Stand 10.11.2026: **415 Testfälle in 52 Dateien**, Laufzeit rund 14 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -129,7 +129,8 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Quali-Ablauf | [`CampChecklistTest`](Feature/CampChecklistTest.php) | 15 | «Erste Schritte» der Kursleitung (`App\Services\CampChecklist`): Schritte aus den Daten, Knöpfe nur beim nächsten Schritt, Ausblenden, Rückweg auf die Übersicht |
 | Quali-Ablauf | [`BottomNavigationTest`](Feature/BottomNavigationTest.php) | 5 | Menü unten auf dem Handy: Punkte je Rolle |
 | Quali-Ablauf | [`PwaTest`](Feature/PwaTest.php) | 3 | Manifest, Service Worker speichert keine Seiten, Offline-Seite |
-| Grundlagen | [`FormComponentsTest`](Feature/FormComponentsTest.php) | 9 | `x-forms`-Komponenten wie `Form::`: alte Eingabe vor Wert vor Modell, Maskierung, Passwort leer, Select mit Leertext und Enum, Checkbox/Radio-Zustand, Formular mit `_method` und CSRF |
+| Grundlagen | [`FormComponentsTest`](Feature/FormComponentsTest.php) | 11 | `x-forms`-Komponenten wie `Form::`: alte Eingabe vor Wert vor Modell, Maskierung, Passwort leer, Select mit Leertext und Enum, Checkbox/Radio-Zustand, Formular mit `_method` und CSRF |
+| Grundlagen | [`NoLaravelCollectiveTest`](Feature/NoLaravelCollectiveTest.php) | 1 | Kein `Form::`/`Html::`-Aufruf und kein `Collective\Html` mehr in Views, `app`, `routes`, `config` (meldet Datei und Zeile) |
 | Grundlagen | [`MailLookTest`](Feature/MailLookTest.php) | 7 | Alle Mails im Look der App: Logo, blauer Knopf, du-Form, kein Englisch, kein Codeblock, Benutzertext maskiert |
 | Grundlagen | [`PageHeadTest`](Feature/PageHeadTest.php) | 5 | Kopf aller Seiten (Zeichensatz zuerst, Beschreibung, Open Graph), Sprunglink in beiden Layouts, kleine Bilder |
 | Quali-Ablauf | [`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php) | 9 | „Qualis erstellen“ |
@@ -415,6 +416,8 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_checkbox_label_is_escaped` | Label (z. B. Dateiname) als Text |
 | `test_radio_checked_by_model_prop_or_old_input` | `answers[12]`: angewählt nach Modell, `checked` oder alter Eingabe |
 | `test_form_spoofs_method_and_adds_csrf` | `method="PATCH"` wird POST mit `_method`, CSRF-Feld, `enctype` |
+| `test_survey_answer_labels_point_to_their_radio` | Quali je Runde (TN 1, Leitende 3): Radio `{Frage}.{Runde}.{Nummer}{Antwort}` mit «0» vorgewählt, Label zeigt darauf (mit `Form::label` zeigte es ins Leere), Kommentar `comments[…]` |
+| `test_person_form_keeps_input_after_validation_error` | Ganzer Ablauf «Person erstellen» mit ungültiger E-Mail: Eingaben und Abteilung bleiben, Passwort nicht |
 
 **[`MailLookTest`](Feature/MailLookTest.php)**: Mails im Look der App (Theme `resources/views/vendor/mail/html/themes/qualitool.css`, Logo `img/logo-mail.png`, Vorlagen in `resources/views/vendor/mail` und `vendor/notifications`).
 
@@ -699,7 +702,7 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | [`CampChecklistTest`](Browser/CampChecklistTest.php) | 2 | «Erste Schritte»: Ausblenden und Einblenden, «Qualifikationen erstellen» aus der Karte nach der Rückfrage, zurück auf der Übersicht mit dem nächsten Schritt |
 | [`FlowbitePartsTest`](Browser/FlowbitePartsTest.php) | 2 | Die fünf geladenen Flowbite-Komponenten (`resources/js/libs/flowbite-parts.js`): Benutzermenü, Hilfe rechts, Meldung schliessen, Kapitel der Quali aufklappen, Hamburger auf dem Handy; Konsole ohne Fehler |
 | [`SkipLinkTest`](Browser/SkipLinkTest.php) | 1 | «Zum Inhalt springen» ist beim ersten Tab sichtbar (Font Awesomes `.sr-only` mit altem `clip` überstimmt) und Enter springt in `<main id="inhalt">` |
-| [`TooltipsTest`](Browser/TooltipsTest.php) | 1 | Quali: Antippen einer Antwort zeigt ihre Bedeutung; kein Skript mehr von unpkg.com |
+| [`TooltipsTest`](Browser/TooltipsTest.php) | 1 | Quali: Antippen einer Antwort zeigt ihre Bedeutung und wählt sie an (Label zeigt auf den Radio-Knopf, Label-Klick schliesst den Tooltip nicht gleich wieder); kein Skript mehr von unpkg.com |
 | [`PhotoCropperTest`](Browser/PhotoCropperTest.php) | 1 | Profilbild: Datei wählen öffnet den Dialog, "Abbrechen" lässt das Feld leer, "Zuschneiden" legt ein PNG als data-URL ab |
 | [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
 

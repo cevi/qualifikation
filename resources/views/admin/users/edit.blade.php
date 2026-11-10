@@ -6,44 +6,39 @@
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-6">
                 @include('includes.form_error')
-                {!! Form::model($user, ['method' => 'PATCH', 'action'=>['AdminUsersController@update', $user->id],  'files' => true]) !!}
+                <x-forms.form method="PATCH" :model="$user" :action="action('AdminUsersController@update', $user->id)" enctype="multipart/form-data">
                 <div class="mb-2.5">
-                    {!! Form::label('avatar', 'Bild:', ['class' => 'field-label']) !!}
-                    {!! Form::file('avatar', ['class' => 'photo field-file']) !!}
+                    <x-forms.file name="avatar" label="Bild:" class="photo"/>
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::hidden('cropped_photo_id', null, ['class' => 'field-input', 'id' => 'cropped_photo_id']) !!}
+                    <x-forms.hidden name="cropped_photo_id" class="field-input"/>
                 </div>
                 <div class="mb-2.5">
-                        {!! Form::label('username', 'Name:', ['class' => 'field-label']) !!}
-                        {!! Form::text('username', null, ['class' => 'field-input', 'placeholder' => 'name@abt']) !!}
+                        <x-forms.text name="username" label="Name:" placeholder="name@abt"/>
                 </div>
                 <div class="mb-2.5">
-                        {!! Form::label('email', 'E-Mail:', ['class' => 'field-label']) !!}
-                        {!! Form::text('email', null, ['class' => 'field-input', 'placeholder' => 'name@abt.ch']) !!}
+                        <x-forms.text name="email" label="E-Mail:" placeholder="name@abt.ch"/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::label('role_id', 'Rolle:', ['class' => 'field-label']) !!}
-                    {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, $user->role_id?->value, ['class' => 'field-input']) !!}
+                    <x-forms.select name="role_id" label="Rolle:" :collection="$roles" placeholder="Wähle Rolle" :value="$user->role_id?->value"/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::label('group_id', 'Abteilung:', ['class' => 'field-label']) !!}
-                    {!! Form::select('group_id', [''=>'Wähle Abteilung'] + $groups, null, ['class' => 'field-input', 'required']) !!}
+                    <x-forms.select name="group_id" label="Abteilung:" :collection="$groups" placeholder="Wähle Abteilung" required/>
                 </div>
 
                 <x-users.leader-checkboxes :leaders="$leaders" :selected="$selectedLeaders"/>
 
                 <div class="mb-2.5">
-                    {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                 </div>
-                {!! Form::close()!!}
-                {!! Form::model($user, ['method' => 'DELETE', 'action'=>['AdminUsersController@destroy',$user], 'id'=> "DeleteForm"]) !!}
+                </x-forms.form>
+                <x-forms.form method="DELETE" :model="$user" :action="action('AdminUsersController@destroy', $user)" id="DeleteForm">
                 <div class="mb-2.5">
-                    {!! Form::submit('Person löschen', ['data-confirm' => 'Person löschen?', 'data-confirm-text' => 'Sicher, dass die Person gelöscht werden soll?', 'class' => 'confirm button-danger'])!!}
+                    <x-forms.button type="submit" data-confirm="Person löschen?" data-confirm-text="Sicher, dass die Person gelöscht werden soll?" delete class="confirm">Person löschen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
             </div>
         </div>

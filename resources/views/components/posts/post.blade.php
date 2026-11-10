@@ -44,9 +44,9 @@
                 <div class="col-span-12 text-right sm:col-span-2 lg:col-span-1">
                     @if ($post->leader && ($post->leader['id'] === Auth::user()->id) && $editable)
                         <div class="flex flex-wrap justify-end gap-1 max-sm:flex-nowrap lg:flex-col lg:items-end">
-                            {!! Form::model($post, ['method' => 'DELETE', 'action'=>['PostController@destroy',$post]]) !!}
-                                {!! Form::button(' <i class="fas fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'button-icon confirm', 'title' => 'Rückmeldung löschen', 'data-confirm' => 'Rückmeldung löschen?', 'data-confirm-text' => 'Willst du die Rückmeldung wirklich löschen?'])!!}
-                            {!! Form::close()!!}
+                            <x-forms.form method="DELETE" :action="action('PostController@destroy', $post)">
+                                <x-forms.button type="submit" variant="icon" class="confirm" title="Rückmeldung löschen" data-confirm="Rückmeldung löschen?" data-confirm-text="Willst du die Rückmeldung wirklich löschen?"><i class="fas fa-trash-alt"></i></x-forms.button>
+                            </x-forms.form>
                             @if($user)
                                 <button type="button" class="edit-post-btn button-icon" title="Rückmeldung bearbeiten"
                                     data-post="{{ json_encode([

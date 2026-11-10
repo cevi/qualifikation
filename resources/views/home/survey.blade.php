@@ -8,7 +8,16 @@
             Ausbildungsstufe.
         </p>
         <x-surveys.bewertungs-schluessel :answers="$answers"/>
-        {!! Form::model($survey, ['method' => 'Patch', 'action'=>['SurveysController@update',$survey->slug], 'class' => 'survey-form']) !!}
+        @php
+            // Welche Einschätzung die Person ausfüllt: Leitende ihre, Teilnehmende die 1. oder 2. Selbsteinschätzung.
+            // Die Runde steckt in der ID der Radio-Knöpfe (Frage.Runde.NummerAntwort).
+            [$round, $answerField, $commentField] = match (true) {
+                $aktUser->isLeader() => [3, 'answer_leader_id', 'comment_leader'],
+                ($survey->survey_status_id ?? \App\Enums\SurveyStatus::Neu)->isFirstRound() => [1, 'answer_first_id', 'comment_first'],
+                default => [2, 'answer_second_id', 'comment_second'],
+            };
+        @endphp
+        <x-forms.form method="PATCH" :model="$survey" :action="action('SurveysController@update', $survey->slug)" class="survey-form">
         <div data-accordion="collapse" id="accordion-flush">
             @foreach ($survey->chapters as $ch_key => $chapter)
 
@@ -32,36 +41,20 @@
                                     @foreach ($answers as $answer)
                                         <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                             <div class="flex items-center ps-3" data-tooltip="{{ $answer['description'] }}">
-                                                @if ($aktUser->isLeader())
-                                                    {{ Form::radio('answers['.$question['id'].']', $answer['id'], ($question['answer_leader_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_leader_id']===$answer['id']) ? true : false), ["id" => $question->question['id'] . '.3.' . $question->question['number'].$answer['id']], ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500'])}}
-                                                    {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ", ['class' => 'w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300']) !!}
-                                                @else
-                                                    @isFirstSurvey($survey->survey_status_id)
-                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_first_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_first_id']===$answer['id']) ? true : false), ["id" => $question->question['id'] . '.1.' .$question->question['number'].$answer['id']], ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500']) }}
-                                                        {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ", ['class' => 'w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300']) !!}
-                                                    @else
-                                                        {{Form::radio('answers['.$question['id'].']', $answer['id'],  ($question['answer_second_id']===NULL) && ($answer['name']==='0') ? true : (($question['answer_second_id']===$answer['id']) ? true : false), ["id" => $question->question['id'] . '.2.' . $question->question['number'].$answer['id']], ['class' => 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500']) }}
-                                                        {!! Form::label($question->question['number'].$answer['id'], $answer['name'] ? $answer['name'] : " 0 ", ['class' => 'w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300']) !!}
-                                                    @endif
-                                                @endif
+                                                {{-- Ohne Antwort ist «0» angewählt --}}
+                                                @php
+                                                    $radioId = $question->question['id'].'.'.$round.'.'.$question->question['number'].$answer['id'];
+                                                @endphp
+                                                <x-forms.radio name="answers[{{ $question['id'] }}]" :value="$answer['id']" :id="$radioId"
+                                                    :checked="$question[$answerField] === $answer['id'] || ($question[$answerField] === null && $answer['name'] === '0')"/>
+                                                <label for="{{ $radioId }}" class="w-full py-3 ms-2 text-xl font-bold text-gray-900 dark:text-gray-300">{{ $answer['name'] ? $answer['name'] : ' 0 ' }}</label>
                                         </div>
                                         </li>
                                     @endforeach
                                 </ul>
                             </div>
                             <div class="mt-4 mb-6">
-                                @if($aktUser->isLeader())
-                                    {!! Form::label('comment_leader', 'Kommentar:', ['class' => 'field-label']) !!}
-                                    {!! Form::textarea('comments['.$question['id'].']', $question['comment_leader'], ['class' => 'field-input', 'rows'=> 2]) !!}
-                                @else
-                                    @isFirstSurvey($survey->survey_status_id)
-                                        {!! Form::label('comment_first', 'Kommentar:', ['class' => 'field-label']) !!}
-                                        {!! Form::textarea('comments['.$question['id'].']', $question['comment_first'], ['class' => 'field-input', 'rows'=> 2]) !!}
-                                    @else
-                                        {!! Form::label('comment_second', 'Kommentar:', ['class' => 'field-label']) !!}    
-                                        {!! Form::textarea('comments['.$question['id'].']', $question['comment_second'], ['class' => 'field-input', 'rows'=> 2]) !!}
-                                    @endif
-                                @endif
+                                <x-forms.text-area name="comments[{{ $question['id'] }}]" label="Kommentar:" :value="$question[$commentField]" rows="2"/>
                             </div>
                         </div>
                         @if(!$loop->last)
@@ -73,8 +66,7 @@
         </div>
         @if($aktUser->isLeader())
             <br>
-            {!! Form::label('comment', 'Bemerkung:', ['class' => 'field-label']) !!}
-            {!! Form::textarea('comment', null, ['class' => 'field-input', 'rows'=> 2]) !!}
+            <x-forms.text-area name="comment" label="Bemerkung:" rows="2"/>
             <br>
         @endif
         <div class="mb-2.5 flex flex-wrap items-start">
@@ -89,7 +81,7 @@
                 </button>
             @endif
         </div>
-        {!! Form::close()!!}
+        </x-forms.form>
         @if($aktUser->isLeader())
             <x-posts.post :posts="$posts" :showLeader="true" :title="'Rückmeldungen'"/>
         @endif
