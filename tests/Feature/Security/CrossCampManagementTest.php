@@ -29,6 +29,8 @@ class CrossCampManagementTest extends TestCase
             'Person bearbeiten' => ['get', static fn (CampScenario $b) => route('admin.users.edit', $b->participant)],
             'Person ändern' => ['put', static fn (CampScenario $b) => route('admin.users.update', $b->participant->id)],
             'Person entfernen' => ['delete', static fn (CampScenario $b) => route('admin.users.destroy', $b->participant)],
+            'Leitende zuteilen' => ['put', static fn (CampScenario $b) => route('admin.leaders.assign', [$b->campUser($b->unassignedParticipant), $b->gruppenleiter->id])],
+            'Leitende wegnehmen' => ['delete', static fn (CampScenario $b) => route('admin.leaders.unassign', [$b->campUser($b->participant), $b->gruppenleiter->id])],
             'Quali bearbeiten' => ['get', static fn (CampScenario $b) => route('surveys.edit', $b->survey)],
             'Quali ändern' => ['put', static fn (CampScenario $b) => route('surveys.update', $b->survey->id)],
             'Quali löschen' => ['delete', static fn (CampScenario $b) => route('surveys.destroy', $b->survey)],

@@ -82,6 +82,16 @@ class Camp extends Model
             ->where('camp_user_leader.leader_id', Auth::id());
     }
 
+    /** Mögliche Leitende im Kurs (Gruppen-, Kurs- und Stabsleitende) als [user_id => Name], nach Name sortiert. */
+    public function leaderOptions(): array
+    {
+        $userIds = CampUser::where('camp_id', $this->id)
+            ->whereIn('role_id', [Role::Gruppenleiter, Role::Kursleiter, Role::Stabsleiter])
+            ->pluck('user_id');
+
+        return User::whereIn('id', $userIds)->orderBy('username')->pluck('username', 'id')->all();
+    }
+
     public function camp_users()
     {
         return $this->hasMany(CampUser::class)->where('camp_users.role_id', Role::Teilnehmer);

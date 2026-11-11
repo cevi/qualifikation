@@ -81,7 +81,7 @@ class CampChecklist
                 'detail' => $participants > 0
                     ? ($participants - $this->checks->participantsWithoutLeader($camp)->count())." von $participants zugeteilt"
                     : 'Eine Person kann mehrere Leitende haben',
-                'actions' => [$this->link('Zuteilen', route('admin.users.index'))],
+                'actions' => [$this->link('Zuteilen', route('admin.leaders.index'))],
             ],
             [
                 'key' => 'surveys', 'group' => 'Vorbereitung', 'title' => 'Qualifikationen erstellen',

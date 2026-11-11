@@ -51,8 +51,9 @@
                 <svg class="text-blue-400" style="width: 4rem; height: 4rem; margin-bottom: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <h3 class="font-bold text-gray-800 dark:text-white" style="margin-bottom: 0.5rem; font-size: 1.25rem;">Noch keine Qualifikationen vorhanden</h3>
                 <p class="text-gray-500 dark:text-gray-400" style="margin-bottom: 1.5rem;">Es wurden noch keine Qualifikationen für die Teilnehmenden dieses Kurses erstellt.</p>
-                <a href="javascript:;" class="create button-primary inline-flex items-center" role="button">
-                    <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; margin-left: -0.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                {{-- inline-flex! nötig: .button-primary (ohne CSS-Ebene) setzt sonst inline-block, das Plus stünde über dem Text --}}
+                <a href="javascript:;" class="create button-primary inline-flex! items-center gap-2 whitespace-nowrap" role="button">
+                    <svg class="-ms-1 size-5 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                     Qualifikationen erstellen
                 </a>
             </div>

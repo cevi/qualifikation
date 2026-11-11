@@ -23,7 +23,7 @@
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
-                    <div class="text-center-profile mbl">
+                    <div class="text-center-profile mbl mb-2">
                         <img src="{{$user->getAvatar()}}" alt="img"
                                 class="img-bor">
                     </div>

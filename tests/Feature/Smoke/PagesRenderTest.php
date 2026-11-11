@@ -45,6 +45,7 @@ class PagesRenderTest extends TestCase
             'Personen' => static fn () => route('admin.users.index'),
             'Person erstellen' => static fn () => route('admin.users.create'),
             'Person bearbeiten' => static fn (CampScenario $s) => route('admin.users.edit', $s->participant),
+            'Leitende zuteilen' => static fn () => route('admin.leaders.index'),
             'Qualis' => static fn () => route('surveys.index'),
             'Kurse' => static fn () => route('admin.camps.index'),
             'Kurs bearbeiten' => static fn (CampScenario $s) => route('admin.camps.edit', $s->camp),

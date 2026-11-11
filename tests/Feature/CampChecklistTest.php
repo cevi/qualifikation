@@ -37,6 +37,7 @@ class CampChecklistTest extends TestCase
         // Szenario: zwei Teilnehmende mit Quali, eine Person ohne Leitende, eine ohne Rückmeldung
         $this->assertSame('leaders', $this->next($s->camp));
         $this->assertSame('1 von 2 zugeteilt', $this->step($s->camp, 'leaders')['detail']);
+        $this->assertSame(route('admin.leaders.index'), $this->step($s->camp, 'leaders')['actions'][0]['url'], 'Zuteilen führt direkt zur Matrix');
         $this->assertSame('1 leitende Person · 2 Teilnehmende', $this->step($s->camp, 'people')['detail']);
 
         $s->campUser($s->unassignedParticipant)->leaders()->attach($s->gruppenleiter->id);

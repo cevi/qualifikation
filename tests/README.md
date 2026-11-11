@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 10.11.2026: **415 Testfälle in 52 Dateien**, Laufzeit rund 14 Sekunden.
+Stand 10.11.2026: **417 Testfälle in 52 Dateien**, Laufzeit rund 14 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -107,12 +107,12 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Grundlagen | [`TestInfrastructureTest`](Feature/TestInfrastructureTest.php) | 5 | Test-DB, Seeder, Factories |
 | Grundlagen | [`Unit/RoleAndClassificationTest`](Unit/RoleAndClassificationTest.php) | 4 | Enums `Role` und `Classification` passen zur Datenbank |
 | Smoke | [`Smoke/AllRoutesSmokeTest`](Feature/Smoke/AllRoutesSmokeTest.php) | 5 | Jede GET-Route liefert für jede Rolle keinen Serverfehler |
-| Smoke | [`Smoke/PagesRenderTest`](Feature/Smoke/PagesRenderTest.php) | 45 | Alle verlinkten Seiten laden pro Rolle mit 200 |
+| Smoke | [`Smoke/PagesRenderTest`](Feature/Smoke/PagesRenderTest.php) | 46 | Alle verlinkten Seiten laden pro Rolle mit 200 |
 | Smoke | [`Smoke/DemoLoginTest`](Feature/Smoke/DemoLoginTest.php) | 6 | Öffentliche Demo-Logins |
 | Sicherheit | [`Security/AccountUpdateTest`](Feature/Security/AccountUpdateTest.php) | 6 | Eigenes Konto ändern |
 | Sicherheit | [`Security/CampSwitchTest`](Feature/Security/CampSwitchTest.php) | 4 | Kurswechsel im Dropdown |
 | Sicherheit | [`Security/AdminOnlyAreasTest`](Feature/Security/AdminOnlyAreasTest.php) | 20 | Globale Stammdaten nur für Admin |
-| Sicherheit | [`Security/CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php) | 20 | Admin-Bereich nur für den eigenen Kurs |
+| Sicherheit | [`Security/CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php) | 22 | Admin-Bereich nur für den eigenen Kurs |
 | Sicherheit | [`Security/CampTypeContentTest`](Feature/Security/CampTypeContentTest.php) | 6 | Kurstypen, Kapitel, Fragen, Kompetenzen |
 | Sicherheit | [`Security/UserCreationTest`](Feature/Security/UserCreationTest.php) | 4 | Personen anlegen |
 | Sicherheit | [`Security/UserDataExposureTest`](Feature/Security/UserDataExposureTest.php) | 6 | Keine Passwort-Hashes oder fremden Daten in JSON |
@@ -124,7 +124,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 30 | Runden, Abschliessen, Freigeben, Zurücksetzen |
 | Quali-Ablauf | [`SurveyAccessTest`](Feature/SurveyAccessTest.php) | 3 | Zugriff von Leitenden auf Qualis |
 | Quali-Ablauf | [`MultipleLeadersTest`](Feature/MultipleLeadersTest.php) | 18 | Mehrere gleichgestellte Leitende pro Teilnehmende Person |
-| Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 6 | Übersicht nach dem Login: Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
+| Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 9 | Übersicht nach dem Login: Hinweis ohne Kurs, Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
 | Quali-Ablauf | [`CampChecksTest`](Feature/CampChecksTest.php) | 21 | Regeln der Aufgabenliste (`App\Services\CampChecks`) |
 | Quali-Ablauf | [`CampChecklistTest`](Feature/CampChecklistTest.php) | 15 | «Erste Schritte» der Kursleitung (`App\Services\CampChecklist`): Schritte aus den Daten, Knöpfe nur beim nächsten Schritt, Ausblenden, Rückweg auf die Übersicht |
 | Quali-Ablauf | [`BottomNavigationTest`](Feature/BottomNavigationTest.php) | 5 | Menü unten auf dem Handy: Punkte je Rolle |
@@ -149,6 +149,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Profil | [`ClassificationTest`](Feature/ClassificationTest.php) | 4 | Ampel rot/gelb/grün auf der Profilseite |
 | Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 5 | Gruppen anlegen; löschen nur, wenn keine Personen und Kurse mehr daran hängen (sonst Meldung statt Datenbankfehler); leeres Token-Feld lässt das Cevi-DB-Token unverändert |
 | Admin | [`Admin/UserEditTest`](Feature/Admin/UserEditTest.php) | 1 | Person bearbeiten |
+| Admin | [`Admin/LeaderAssignmentTest`](Feature/Admin/LeaderAssignmentTest.php) | 7 | Leitende zuteilen (Matrix): Link von der Personenliste, Teilnehmende mit ihren Leitenden als Props, PUT teilt zu (ohne Doppel), DELETE nimmt weg, nur Leitende des Kurses (sonst 422), Gruppenleitung darf nicht, Demo speichert nichts |
 | Admin | [`Admin/UserAddTest`](Feature/Admin/UserAddTest.php) | 2 | Bestehende Person in den eigenen Kurs aufnehmen, ohne Auswahl Fehlermeldung |
 | Admin | [`Admin/MasterDataTest`](Feature/Admin/MasterDataTest.php) | 7 | Stammdaten (Admin): Antworten, Klassifizierungen, Hilfe, Gruppen mit verschlüsseltem Token, Feedback; leere Aktionen ohne Route; GitHub-Fehler wird gemeldet |
 | Admin | [`Admin/CourseContentStoreTest`](Feature/Admin/CourseContentStoreTest.php) | 4 | Kapitel und Kompetenzen anlegen, nur im eigenen Kurstyp; CSV-Import entfernt |
@@ -225,7 +226,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_kursleiter_can_still_submit_feedback` | Feedback einreichen geht weiterhin, Mail an `MAIL_CAMP_ADDRESS` |
 | `test_admin_can_manage_global_data` | Admin darf alles |
 
-**[`CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php)**: Kurs, Personen, Qualis und Standardtexte im Admin-Bereich.
+**[`CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php)**: Kurs, Personen, Leitende zuteilen, Qualis und Standardtexte im Admin-Bereich.
 
 | Test | Prüft |
 |---|---|
@@ -361,11 +362,14 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 
 | Test | Prüft |
 |---|---|
+| `test_new_user_in_global_camp_is_asked_to_create_a_camp` | Neue Person im Global-Camp: „Noch kein Kurs“ mit Link „Kurs erstellen“ statt „Meine Qualifikation“ |
+| `test_user_with_own_camp_is_pointed_to_camp_switcher_in_global_camp` | Wer schon einen Kurs hat und ins Global-Camp wechselt, wird auf «Meine Kurse» hingewiesen |
 | `test_participant_sees_own_survey_and_task_without_compare_and_profile_links` | Teilnehmende: Aufgabe „1. Selbsteinschätzung ausfüllen“, Link zum Ausfüllen, kein Vergleich, kein Profil, keine Zähler |
 | `test_participant_gets_compare_link_and_no_task_after_closing` | Nach dem Abschliessen: Vergleich statt Ausfüllen, keine Aufgabe mehr |
 | `test_leader_sees_own_participants_with_links_and_counters` | Leitende: nur eigene Teilnehmende, Vergleich, „+ Rückmeldung“ (`?neu=1`), Anzahl Rückmeldungen, Zähler |
 | `test_closed_self_assessment_is_counted_but_no_task` | „TN abgeschlossen“ zählt bei „Zum Abschliessen“, ist aber keine Aufgabe |
 | `test_campleader_sees_all_participants_and_camp_tasks` | Kursleitung: alle Teilnehmenden, „Noch ohne Leitende“, Kurs-Aufgaben, „Teilnehmende ohne Rückmeldung“ orange |
+| `test_card_shows_camp_avatar_then_profile_picture_then_initials` | Bild auf der Karte: Kursbild, sonst Profilbild, sonst Initialen |
 | `test_overview_does_not_load_chart_data` | Kein Radar-Diagramm mehr auf der Übersicht |
 
 **[`CampChecksTest`](Feature/CampChecksTest.php)**: Regeln der Aufgabenliste (`App\Services\CampChecks`).
@@ -665,6 +669,7 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 | [`theme-toggle.test.js`](js/theme-toggle.test.js) | 4 | Hell/Dunkel-Umschalter: Klasse `dark`, gespeicherte Wahl und Symbol, auch ohne gespeicherte Wahl (Systemeinstellung) |
 | [`table-data.test.js`](js/table-data.test.js) | 10 | Hilfsfunktionen der Admin-Tabellen: Anzeige- und Sortierwert (`{ display, sort }`), Vergleich (Zahlen, natürlich, Umlaute, ISO-Daten), Suche über Textspalten, Sortierung in der Adresse (`?order=role:asc,name:desc`, alte Spaltennummern verworfen) |
 | [`data-table.test.js`](js/data-table.test.js) | 16 | `DataTable.vue` mit `@vue/test-utils`: Laden mit Platzhaltern, Link/Bild/Status (Badge, Balken „Schritt x von y“)/Aktionen aus Daten, Namen mit `<` als Text, Sortieren per Klick und Shift-Klick, Status nach Ablauf statt Alphabet, Filter-Knöpfe, Suche mit Zähler, Blättern, Ladefehler mit "Erneut laden", Sortierung in Adresse und Verlauf, Karten auf dem Handy (`matchMedia` gestubbt) mit Sortier-Auswahl |
+| [`leader-matrix.test.js`](js/leader-matrix.test.js) | 12 | Leitende zuteilen (`LeaderMatrix.vue`, `lib/leader-assignment.js`): Zähler pro Leitende/r, Suche, neues Array beim Zuteilen; Kreuz speichert sofort per PUT/DELETE mit CSRF-Token, Kästchen gesperrt während des Speicherns, bei Fehler zurück mit Meldung, Stand vom Server gilt (Demo), «Nur ohne Leitende» behält Zeilen nach dem ersten Kreuz, Karten mit Knöpfen auf dem Handy, Hinweis ohne Leitende |
 | [`surveys-index.test.js`](js/surveys-index.test.js) | 4 | Quali-Liste: "Qualifikationen erstellen" nach Rückfrage (Knopf heisst wie die Aktion), Freigeben ohne Rückfrage, POST mit CSRF-Token, Fehlermeldung statt Neuladen |
 | [`profile-ampel.test.js`](js/profile-ampel.test.js) | 2 | Ampel auf dem Profil: PATCH an `data-remote`, Neuladen nur bei Erfolg |
 | [`tooltips.test.js`](js/tooltips.test.js) | 3 | Erklärungen auf Quali und Vergleich (tippy.js): erst beim Antippen/Klick, Text nie als HTML, leere Erklärungen ohne Tooltip |
@@ -769,6 +774,8 @@ Aus `ClassificationTest` und `MultipleLeadersTest`: Die Farbe einer TN-Person se
 ### Mehrere Leitende
 
 Aus `MultipleLeadersTest`: Eine Teilnehmende Person kann pro Kurs mehrere Leitende haben (`camp_user_leader`), alle gleichgestellt. Jede zugeteilte Leitung sieht und bearbeitet die Quali, stellt die Ampel und schliesst den Qualifikationsprozess ab. Die Leiter-Einschätzung gibt es pro Frage nur einmal: Die Leitenden füllen sie gemeinsam aus, es gilt der zuletzt gespeicherte Stand. Rückmeldungen (`posts.leader_id`) gehören weiterhin der Person, die sie geschrieben hat.
+
+Aus `Admin/LeaderAssignmentTest`: Die Kursleitung teilt auf «Leitende zuteilen» (Link auf der Personenliste) in einer Matrix zu; jedes Kreuz speichert sofort. Leitende sein können nur Personen des Kurses mit der Rolle Gruppen-, Kurs- oder Stabsleitende (`Camp::leaderOptions()`, dieselbe Regel wie im Formular «Person bearbeiten»).
 
 ### Feste Werte als Enums
 

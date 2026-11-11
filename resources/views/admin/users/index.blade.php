@@ -10,6 +10,7 @@
         {{-- Sprungziel #import aus «Erste Schritte» auf der Übersicht --}}
         <div id="import" class="flex scroll-mt-24 flex-wrap items-start">
             <a href="{{route('admin.users.create')}}" class="button-primary" role="button">Person manuell erstellen oder zuordnen</a>
+            <a href="{{route('admin.leaders.index')}}" class="button-secondary" role="button">Leitende zuteilen</a>
             @if (config('app.import_db'))
                 <button class="button-purple me-2 disabled:cursor-not-allowed disabled:opacity-50" type="button" id="showImport" data-url="{{ route('users.import') }}"
                         title="{{$has_api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.' }}" {{$has_api_token ? '' : 'disabled'}}>

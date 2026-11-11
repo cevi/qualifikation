@@ -5,7 +5,7 @@
     </x-forms.container>
      @if($chooseFromUser)
         <x-forms.container>
-            <x-forms.select label="Benutzer:" name="camp_user_id" :collection="$campusers" :with-empty-option="true"/>
+            <x-forms.select label="Teilnehmende:" name="camp_user_id" :collection="$campusers" :with-empty-option="true"/>
         </x-forms.container>
     @endif
     <x-forms.container>

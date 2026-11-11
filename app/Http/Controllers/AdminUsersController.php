@@ -114,7 +114,7 @@ class AdminUsersController extends Controller
                 return [$group->id => $label];
             })
             ->all();
-        $leaders = $this->leaderOptions($aktUser->camp);
+        $leaders = $aktUser->camp->leaderOptions();
         $title = 'Person erstellen / suchen';
         $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Personen';
@@ -288,7 +288,7 @@ class AdminUsersController extends Controller
                 return [$group->id => $label];
             })
             ->all();
-        $leaders = $this->leaderOptions($aktUser->camp);
+        $leaders = $aktUser->camp->leaderOptions();
         $selectedLeaders = CampUser::where('camp_id', $aktUser->camp->id)->where('user_id', $user->id)->first()?->leaders->modelKeys() ?? [];
         $title = 'Person bearbeiten';
         $help = Help::where('title', $title)->first();
@@ -353,22 +353,12 @@ class AdminUsersController extends Controller
         return redirect('/admin/users');
     }
 
-    /** Mögliche Leitende im Kurs (Gruppen-, Kurs- und Stabsleitende) als [user_id => Name]. */
-    private function leaderOptions(Camp $camp): array
-    {
-        $userIds = CampUser::where('camp_id', $camp->id)
-            ->whereIn('role_id', [Role::Gruppenleiter, Role::Kursleiter, Role::Stabsleiter])
-            ->pluck('user_id');
-
-        return User::whereIn('id', $userIds)->orderBy('username')->pluck('username', 'id')->all();
-    }
-
-    /** Nur Leitende aus leaderOptions(), sonst liessen sich Personen anderer Kurse eintragen. */
+    /** Nur Leitende aus Camp::leaderOptions(), sonst liessen sich Personen anderer Kurse eintragen. */
     private function leaderRules(Camp $camp): array
     {
         return [
             'leader_ids' => ['nullable', 'array'],
-            'leader_ids.*' => ['integer', Rule::in(array_keys($this->leaderOptions($camp)))],
+            'leader_ids.*' => ['integer', Rule::in(array_keys($camp->leaderOptions()))],
         ];
     }
 
