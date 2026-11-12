@@ -121,7 +121,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Sicherheit | [`Security/SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php) | 6 | Antworten speichern, Quali abschliessen |
 | Sicherheit | [`Security/PostAccessTest`](Feature/Security/PostAccessTest.php) | 5 | Rückmeldungen nur durch Autor*in |
 | Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 12 | Wartungsseite nur für Admin, Aktionen nur per POST, alte GET-URLs weg, bei offenen Migrationen erreichbar |
-| Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 30 | Runden, Abschliessen, Freigeben, Zurücksetzen |
+| Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 31 | Runden, Abschliessen, Freigeben, Zurücksetzen |
 | Quali-Ablauf | [`SurveyAccessTest`](Feature/SurveyAccessTest.php) | 3 | Zugriff von Leitenden auf Qualis |
 | Quali-Ablauf | [`MultipleLeadersTest`](Feature/MultipleLeadersTest.php) | 18 | Mehrere gleichgestellte Leitende pro Teilnehmende Person |
 | Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 9 | Übersicht nach dem Login: Hinweis ohne Kurs, Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
@@ -138,13 +138,15 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Quali-Ablauf | [`Unit/SurveyStatusTest`](Unit/SurveyStatusTest.php) | 8 | Enum `SurveyStatus`: Werte, Regeln, Farbe und Filtergruppe |
 | Quali-Ablauf | [`DailyTaskTest`](Feature/DailyTaskTest.php) | 2 | Nächtlicher Reset des Demo-Kurses |
 | Quali-Ablauf | [`CampFinishReminderTest`](Feature/CampFinishReminderTest.php) | 4 | Monatliche Mail „Kurs abschliessen“ an die Kursleitung |
-| Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 12 | Beschriftungen, Werte und Sichtbarkeit der Spider-Graphen |
+| Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 13 | Beschriftungen, Werte, Sichtbarkeit und Farben der Spider-Graphen |
+| Quali-Ablauf | [`SurveyPagesTest`](Feature/SurveyPagesTest.php) | 7 | Aufbau von Quali und Vergleich: offene Kapitel mit Sprungleiste, Kernkompetenz mit Beschreibung, Speicherstand, Abschliessen oben und unten, Hinweis «TN selbst» für Leitende, eine Spalte pro Einschätzung, Abweichungen ab 2 Stufen, Rückmeldungen als Karte nur wenn vorhanden, Druckansicht im selben Aufbau mit allen drei Einschätzungen, in der 2. Runde die eigene erste Einschätzung als Hinweis |
+| Rückmeldungen | [`PostsPageTest`](Feature/PostsPageTest.php) | 2 | Seite «Rückmeldungen»: Knopf «Neue Rückmeldung» rechts im Titel, nicht zugeordnete und zugeordnete als Karten, leere Liste ausgeblendet, ohne Rückmeldungen ein Hinweis |
 | Import & Login | [`CeviDbImportTest`](Feature/CeviDbImportTest.php) | 12 | Import aus der Cevi-DB (API und JSON-Datei) |
 | Import & Login | [`HitobitoLoginTest`](Feature/HitobitoLoginTest.php) | 13 | Login über Cevi-DB und JEMK-DB, Weiterleitung mit den richtigen Scopes |
 | Import & Login | [`AuthPagesTest`](Feature/AuthPagesTest.php) | 4 | Login und Registrieren zeigen Fehler unter dem Feld (falsches Passwort, Cevi-DB, doppelte E-Mail), behalten Eingaben, aber nie das Passwort; Link zum Zurücksetzen nur an bekannte Adressen |
 | Rückmeldungen | [`PostFilesTest`](Feature/PostFilesTest.php) | 9 | Dateianhänge |
 | Exporte | [`ExportsTest`](Feature/ExportsTest.php) | 5 | Excel-Export und Druckansicht (PDF) |
-| Profil | [`ProfileTest`](Feature/ProfileTest.php) | 3 | Profilseite und Vor/Zurück-Navigation |
+| Profil | [`ProfileTest`](Feature/ProfileTest.php) | 4 | Profilseite und Vor/Zurück-Navigation; Kopf mit Foto zum Vergrössern, Links zu Quali und Vergleich, Reiter auf dem Handy, lange Rückmeldungen mit «Mehr» |
 | Profil | [`AvatarUploadTest`](Feature/AvatarUploadTest.php) | 1 | Profilbilder |
 | Profil | [`ClassificationTest`](Feature/ClassificationTest.php) | 4 | Ampel rot/gelb/grün auf der Profilseite |
 | Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 5 | Gruppen anlegen; löschen nur, wenn keine Personen und Kurse mehr daran hängen (sonst Meldung statt Datenbankfehler); leeres Token-Feld lässt das Cevi-DB-Token unverändert |
@@ -323,6 +325,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_releasing_first_round_with_status_control_lets_participants_start` | „Erste Selbsteinschätzung freigeben“ |
 | `test_releasing_second_round_reopens_closed_self_assessments_only` | „Zweite Selbsteinschätzung freigeben“ |
 | `test_leader_finishes_only_closed_quali` | Fertigstellen nur aus „TN abgeschlossen“ |
+| `test_finish_button_only_while_it_can_finish` | Knopf «Qualifikationsprozess abschliessen» nur bei „TN abgeschlossen“, danach Hinweis «abgeschlossen» |
 | `test_resetting_to_new_clears_both_rounds` | Zurücksetzen auf „Neu“ leert beide Runden |
 | `test_resetting_to_first_round_clears_only_second_round` | Zurücksetzen auf „1. offen“ leert nur die 2. Runde |
 | `test_changing_status_without_reset_keeps_answers` | Ohne Häkchen bleiben die Antworten |
@@ -499,6 +502,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_visible_datasets` | Wer welche Datensätze sieht, 8 Fälle (Tabelle unten) |
 | `test_participant_never_receives_leader_assessment_on_overview` | Startseite der Teilnehmenden ohne Leiter-Einschätzung |
 | `test_quali_without_questions_does_not_break_pages` | Quali ohne Fragen: Seiten laden trotzdem |
+| `test_rounds_are_told_apart_by_color_and_line` | Runden mit `series`, 1. grau gestrichelt, 2. blau, Leitende orange, Linien deckend |
 
 ### Import und Login
 
@@ -659,7 +663,7 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 
 | Datei | Fälle | Prüft |
 |---|---:|---|
-| [`survey-autosave.test.js`](js/survey-autosave.test.js) | 6 | Quali speichert sich 1 s nach der letzten Änderung selbst (einmal, ganzes Formular mit `action=save`), Zustand im Speichern-Knopf, Fehler bei abgelehnter Anfrage und ohne Verbindung, mehrere Formulare getrennt |
+| [`survey-autosave.test.js`](js/survey-autosave.test.js) | 8 | Quali speichert sich 1 s nach der letzten Änderung selbst (einmal, ganzes Formular mit `action=save`), Zustand im Speichern-Knopf, dauerhaft «Gespeichert 18:42» bzw. «Nicht gespeichert» in jedem `data-save-status`, Fehler bei abgelehnter Anfrage und ohne Verbindung, mehrere Formulare getrennt |
 | [`standard-texts.test.js`](js/standard-texts.test.js) | 11 | `//` öffnet die Textbausteine (nur zwei schnelle `/` direkt vor dem Cursor), Pfeiltasten mit Umspringen, Enter und Klick fügen an der Stelle der `//` ein (auch mitten im Text), ein weiteres `/` danach öffnet nicht erneut, Escape und Kreuz schliessen, Tasten bei geschlossener Auswahl unberührt |
 | [`users-import.test.js`](js/users-import.test.js) | 4 | Import aus der Cevi-DB mit dem echten Dialog: Adresse aus `data-url` und CSRF-Token, Abbrechen tut nichts, übersprungene Namen als Text und Neuladen erst nach OK, Fehlermeldung des Servers bleibt im Dialog |
 | [`dialog.test.js`](js/dialog.test.js) | 8 | Eigener Rückfrage-Dialog (`resources/js/lib/dialog.js`, ersetzt SweetAlert2): Fokus auf Abbrechen, Bestätigen/Abbrechen/Esc/Klick daneben, rot nur bei `danger`, Texte nie als HTML, mit `onConfirm` offen bis fertig und Fehler im Dialog, Meldung mit OK |
@@ -672,8 +676,9 @@ Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../
 | [`leader-matrix.test.js`](js/leader-matrix.test.js) | 12 | Leitende zuteilen (`LeaderMatrix.vue`, `lib/leader-assignment.js`): Zähler pro Leitende/r, Suche, neues Array beim Zuteilen; Kreuz speichert sofort per PUT/DELETE mit CSRF-Token, Kästchen gesperrt während des Speicherns, bei Fehler zurück mit Meldung, Stand vom Server gilt (Demo), «Nur ohne Leitende» behält Zeilen nach dem ersten Kreuz, Karten mit Knöpfen auf dem Handy, Hinweis ohne Leitende |
 | [`surveys-index.test.js`](js/surveys-index.test.js) | 4 | Quali-Liste: "Qualifikationen erstellen" nach Rückfrage (Knopf heisst wie die Aktion), Freigeben ohne Rückfrage, POST mit CSRF-Token, Fehlermeldung statt Neuladen |
 | [`profile-ampel.test.js`](js/profile-ampel.test.js) | 2 | Ampel auf dem Profil: PATCH an `data-remote`, Neuladen nur bei Erfolg |
+| [`photo-dialog.test.js`](js/photo-dialog.test.js) | 3 | Foto im Profil: Klick öffnet den Dialog, Klick neben das Bild schliesst, Knopf ohne Dialog stört nicht |
 | [`tooltips.test.js`](js/tooltips.test.js) | 3 | Erklärungen auf Quali und Vergleich (tippy.js): erst beim Antippen/Klick, Text nie als HTML, leere Erklärungen ohne Tooltip |
-| [`radar.test.js`](js/radar.test.js) | 8 | Radar-Diagramme (`resources/js/pages/radar.js`, Chart.js als Attrappe): mehrzeilige Beschriftungen, schmal nur Nummern, Kernkompetenzen am Stern, angetippte Antwort in der richtigen Runde eintragen (Leitende ohne 2. Runde im letzten Datensatz), jedes Diagramm mit eigener Breite, neu gezeichnet wird das erste |
+| [`radar.test.js`](js/radar.test.js) | 12 | Radar-Diagramme (`resources/js/pages/radar.js`, Chart.js als Attrappe): mehrzeilige Beschriftungen, lange Namen umgebrochen (sonst bleibt der Kreis auf breiten Bildschirmen klein), schmal nur Nummern, Stern nicht angezeigt, Kernkompetenzen über den Index fett und blau, Skala «- 0 + ++» (schmal ausgeblendet), hellere Farben im Dark Mode, angetippte Antwort in der richtigen Runde eintragen (Leitende ohne 2. Runde im letzten Datensatz), jedes Diagramm mit eigener Breite, neu gezeichnet wird das erste |
 | [`feedback-modal.test.js`](js/feedback-modal.test.js) | 5 | Fenster „Rückmeldung“ (`resources/js/pages/feedback-modal.js`): neu leer mit Cursor im Text, Bearbeiten füllt aus `data-post` inkl. Datei, Escape/Kreuz/Hintergrund schliessen (nicht bei offenen Textbausteinen), `?neu` öffnet, Bearbeiten-Aufruf behält Server-Eingaben |
 | [`fontawesome-icons.test.js`](js/fontawesome-icons.test.js) | 3 | Font Awesome nur mit gebrauchten Icons (`scripts/fontawesome-icons.mjs`): erzeugte Datei passt zum Code (sonst `npm run css:fontawesome`), keine unbekannten `fa-`-Klassen (Tippfehler), Grundregeln und `@keyframes` bleiben |
 
@@ -699,13 +704,13 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 |---|---:|---|
 | [`PagesInBrowserTest`](Browser/PagesInBrowserTest.php) | 2 | Alle Seiten aus `PagesRenderTest` pro Rolle plus Gast-Seiten: keine Fehler in der Browser-Konsole, jede `id` nur einmal |
 | [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 5 | Person, Kurs, Gruppe, Rückmeldung (gemeinsames Modul `confirm-submit.js`, Knöpfe mit `data-confirm`, eigener `<dialog>`): "Abbrechen" löscht nichts, Bestätigen löscht genau den gewählten Eintrag; Selbsteinschätzung abschliessen erst nach dem Bestätigen (Knopfwert `action=close` kommt an) |
-| [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung wählt Antwort und schreibt Kommentar, ohne zu speichern: nach "Gespeichert ✓" in der DB und nach dem Neuladen noch da |
+| [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung tippt eine Antwort an, klappt den Kommentar auf und schreibt, ohne zu speichern: nach "Gespeichert ✓" (auch in der Leiste) in der DB und nach dem Neuladen noch da |
 | [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
 | [`UserSearchTest`](Browser/UserSearchTest.php) | 1 | Person hinzufügen: Vorschlag aus der Personensuche erscheint, die Wahl setzt Name und `user_id`, die Person ist danach im Kurs |
 | [`AdminTablesTest`](Browser/AdminTablesTest.php) | 4 | Personenliste lädt, sucht, sortiert per Klick und merkt sich die Sortierung in Adresse und Verlauf (Neuladen, Zurück); Quali- und Kursliste zeigen Zeilen mit Status bzw. Knöpfen; Quali-Liste filtert Offen/Zum Abschliessen, Kursliste Alle/Offene/Abgeschlossene |
 | [`MobileNavigationTest`](Browser/MobileNavigationTest.php) | 3 | Menü unten (390 px): „Mehr“ öffnet das Menü oben, „Neu“ öffnet „Neue Rückmeldung“ mit Cursor im Textfeld; auf dem Desktop ausgeblendet; Service Worker speichert die Offline-Seite, aber keine besuchte Seite (Chrome behandelt die Testadresse dafür als sicher, siehe `DuskTestCase`) |
 | [`CampChecklistTest`](Browser/CampChecklistTest.php) | 2 | «Erste Schritte»: Ausblenden und Einblenden, «Qualifikationen erstellen» aus der Karte nach der Rückfrage, zurück auf der Übersicht mit dem nächsten Schritt |
-| [`FlowbitePartsTest`](Browser/FlowbitePartsTest.php) | 2 | Die fünf geladenen Flowbite-Komponenten (`resources/js/libs/flowbite-parts.js`): Benutzermenü, Hilfe rechts, Meldung schliessen, Kapitel der Quali aufklappen, Hamburger auf dem Handy; Konsole ohne Fehler |
+| [`FlowbitePartsTest`](Browser/FlowbitePartsTest.php) | 2 | Die vier geladenen Flowbite-Komponenten (`resources/js/libs/flowbite-parts.js`): Benutzermenü, Hilfe rechts, Meldung schliessen, Hamburger auf dem Handy; Konsole ohne Fehler. Die Kapitel der Quali sind `<details>` |
 | [`SkipLinkTest`](Browser/SkipLinkTest.php) | 1 | «Zum Inhalt springen» ist beim ersten Tab sichtbar (Font Awesomes `.sr-only` mit altem `clip` überstimmt) und Enter springt in `<main id="inhalt">` |
 | [`TooltipsTest`](Browser/TooltipsTest.php) | 1 | Quali: Antippen einer Antwort zeigt ihre Bedeutung und wählt sie an (Label zeigt auf den Radio-Knopf, Label-Klick schliesst den Tooltip nicht gleich wieder); kein Skript mehr von unpkg.com |
 | [`PhotoCropperTest`](Browser/PhotoCropperTest.php) | 1 | Profilbild: Datei wählen öffnet den Dialog, "Abbrechen" lässt das Feld leer, "Zuschneiden" legt ein PNG als data-URL ab |

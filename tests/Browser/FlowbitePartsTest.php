@@ -7,7 +7,7 @@ use Tests\DuskTestCase;
 use Tests\Support\CampScenario;
 
 /**
- * app.js lädt nur noch fünf Flowbite-Komponenten (resources/js/libs/flowbite-parts.js). Jede wird einmal im Browser
+ * app.js lädt nur noch vier Flowbite-Komponenten (resources/js/libs/flowbite-parts.js). Jede wird einmal im Browser
  * bedient; fehlt eine beim Import, tut der Knopf nichts.
  */
 class FlowbitePartsTest extends DuskTestCase
@@ -39,17 +39,13 @@ class FlowbitePartsTest extends DuskTestCase
         });
     }
 
-    public function test_accordion_and_collapse_work(): void
+    public function test_collapse_works(): void
     {
         $s = CampScenario::create();
 
         $this->browse(function (Browser $browser) use ($s) {
-            $browser->resize(1440, 1000)->loginAs($s->participant)->visit(route('survey.survey', $s->survey->slug));
-            $this->clickCentered($browser, '[data-accordion-target]');
-            $browser->waitUntil("!document.querySelector(document.querySelector('[data-accordion-target]').dataset.accordionTarget).classList.contains('hidden')");
-
             // Hamburger auf dem Handy
-            $browser->resize(390, 844)->visit('/home')
+            $browser->resize(390, 844)->loginAs($s->participant)->visit('/home')
                 ->click('[data-collapse-toggle="mobile-menu-2"]')
                 ->waitUntil("!document.getElementById('mobile-menu-2').classList.contains('hidden')");
 

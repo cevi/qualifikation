@@ -19,15 +19,15 @@ class TooltipsTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($s) {
             $browser->loginAs($s->participant)->visit(route('survey.survey', $s->survey))
-                ->click('[data-accordion-target="#accordion-flush-body-1"]')
-                ->waitFor('#accordion-flush-body-1 [data-tooltip="In gutem Masse"]')
-                ->click('#accordion-flush-body-1 [data-tooltip="In gutem Masse"]')
+                ->waitFor('#kapitel-1 [data-tooltip="In gutem Masse"]')
+                ->click('#kapitel-1 [data-tooltip="In gutem Masse"] label')
                 ->waitFor('.tippy-box')
                 ->assertSeeIn('.tippy-box', 'In gutem Masse')
-                // Der Klick trifft die Zahl, deren Label auf den Radio-Knopf zeigt: Antwort gewählt, Tooltip bleibt offen
-                ->assertScript("document.querySelector('#accordion-flush-body-1 [data-tooltip=\"In gutem Masse\"] input').checked", true)
+                // Der Klick trifft das Label des Radio-Knopfs: Antwort gewählt, Tooltip bleibt offen
+                ->assertScript("document.querySelector('#kapitel-1 [data-tooltip=\"In gutem Masse\"] input').checked", true)
                 ->pause(300)
                 ->assertVisible('.tippy-box');
+
             $this->assertStringNotContainsString('unpkg.com', $browser->driver->getPageSource());
         });
     }

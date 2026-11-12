@@ -148,9 +148,9 @@ class Helper
             $leader_answers[] = $question->answer_leader['count'];
             $dataset_ids[] = $question->question->id;
         }
-        $dataset_first = self::GetDataset('1. Selbsteinschätzung', 'rgba(179,181,198,0.2)', '#fff', 2, $first_answers, $dataset_ids);
-        $dataset_second = self::GetDataset('2. Selbsteinschätzung', 'rgba(50,181,198,0.2)', '#fff', 2, $second_answers, $dataset_ids);
-        $dataset_leader = self::GetDataset('Einschätzung Leitende', 'rgba(51, 179, 90, 0.2)', '#fff', 2, $leader_answers, $dataset_ids);
+        $dataset_first = self::GetDataset('1. Selbsteinschätzung', 'first', $first_answers, $dataset_ids);
+        $dataset_second = self::GetDataset('2. Selbsteinschätzung', 'second', $second_answers, $dataset_ids);
+        $dataset_leader = self::GetDataset('Einschätzung Leitende', 'leader', $leader_answers, $dataset_ids);
         if (Auth::user()->role_id !== Role::Teilnehmer) {
             if ($survey->status()->hasReachedSecondRound() && $camp['secondsurveyopen']) {
                 $dataset_add = [
@@ -180,17 +180,33 @@ class Helper
         return $dataset_add;
     }
 
-    public static function GetDataset(string $title, string $color, string $point_color, int $borderwith, array $dataset, array $dataset_ids)
+    /**
+     * Farben der Runden im Radar (hell; dunkel setzt resources/js/pages/radar.js): 1. Selbsteinschätzung grau gestrichelt,
+     * 2. blau, Leitende orange. Gleiche Farben wie die Bewertungsmarken auf Quali und Vergleich.
+     */
+    private const RADAR_SERIES = [
+        'first' => ['color' => '#6b7280', 'fill' => 'rgba(107,114,128,0)', 'width' => 2, 'dash' => [6, 4]],
+        'second' => ['color' => '#1a56db', 'fill' => 'rgba(26,86,219,0.12)', 'width' => 2.5, 'dash' => []],
+        'leader' => ['color' => '#d03801', 'fill' => 'rgba(208,56,1,0.08)', 'width' => 2.5, 'dash' => []],
+    ];
+
+    public static function GetDataset(string $title, string $series, array $dataset, array $dataset_ids)
     {
+        $style = self::RADAR_SERIES[$series];
+
         return [
             'label' => $title,
-            'backgroundColor' => $color,
-            'borderWidth' => $borderwith,
-            'borderColor' => $color,
-            'pointBackgroundColor' => $color,
-            'pointBorderColor' => $point_color,
-            'pointHoverBackgroundColor' => $point_color,
-            'pointHoverBorderColor' => $color,
+            'series' => $series,
+            'backgroundColor' => $style['fill'],
+            'borderWidth' => $style['width'],
+            'borderColor' => $style['color'],
+            'borderDash' => $style['dash'],
+            'pointRadius' => 3.5,
+            'pointBorderWidth' => 1.5,
+            'pointBackgroundColor' => $style['color'],
+            'pointBorderColor' => '#fff',
+            'pointHoverBackgroundColor' => '#fff',
+            'pointHoverBorderColor' => $style['color'],
             'data' => $dataset,
             'dataset_ids' => $dataset_ids,
         ];

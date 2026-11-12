@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Camp;
+use App\Models\Post;
 use App\Models\User;
 use Tests\Support\CampScenario;
 use Tests\TestCase;
@@ -42,5 +43,28 @@ class ProfileTest extends TestCase
             ->assertOk()
             ->assertViewHas('previousUser', null)
             ->assertViewHas('nextUser', null);
+    }
+
+    public function test_profile_shows_everything_in_one_header_and_two_cards(): void
+    {
+        $s = CampScenario::create();
+        $long = str_repeat('Sehr ausführliche Beobachtung aus dem Lager. ', 8);
+        $post = Post::factory()->for($s->campUser($s->participant), 'campUser')->for($s->gruppenleiter, 'leader')
+            ->create(['camp_id' => $s->camp->id, 'comment' => $long]);
+
+        $html = $this->actingAs($s->gruppenleiter)->get(route('home.profile', $s->participant))->assertOk()
+            ->assertSee('data-photo-open="profil-foto"', false)
+            ->assertSee('<dialog id="profil-foto"', false)
+            ->assertSee(route('survey.survey', $s->survey->slug))
+            ->assertSee(route('survey.compare', $s->survey->slug))
+            ->assertSee('id="ansicht-radar"', false)
+            ->assertSee('id="mehr-'.$post->id.'"', false)
+            ->assertDontSee('id="mehr-'.$s->post->id.'"', false)
+            ->getContent();
+
+        // Vor/Zurück nur noch einmal, «Neue Rückmeldung» im Kopf der Karte
+        $this->assertSame(1, substr_count($html, 'aria-label="Andere Teilnehmende"'));
+        $card = substr($html, strpos($html, '>Rückmeldungen</h2>'), 1500);
+        $this->assertStringContainsString('id="new-feedback-btn"', $card);
     }
 }

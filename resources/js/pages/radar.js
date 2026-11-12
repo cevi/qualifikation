@@ -6,14 +6,72 @@ import Chart from 'chart.js/auto';
  * zur Leinwand #radarChart-(i+1). Auf der Quali führt das erste Diagramm angetippte Antworten sofort nach.
  */
 
-/** Beschriftungen mit Zeilenumbruch werden für Chart.js zu mehrzeiligen Beschriftungen (Array). */
-export function splitLabels(labels) {
-    return labels.map((label) => (/\n/.test(label) ? label.split(/\n/) : label));
+/** Längste Zeile einer Beschriftung im Radar; längere Namen brechen an Leerzeichen um. */
+export const LABEL_LINE_LENGTH = 24;
+
+/**
+ * Lange Beschriftung auf mehrere Zeilen verteilen. Chart.js verkleinert sonst den Kreis, bis die Namen auf einer Zeile
+ * links und rechts Platz haben (auf breiten Bildschirmen blieb das Radar klein mit viel Leerraum).
+ */
+export function wrapLabel(label, max = LABEL_LINE_LENGTH) {
+    const lines = [];
+    String(label).split(' ').forEach((word) => {
+        const last = lines.length - 1;
+        if (last >= 0 && `${lines[last]} ${word}`.length <= max) {
+            lines[last] = `${lines[last]} ${word}`;
+        } else {
+            lines.push(word);
+        }
+    });
+    return lines.length > 1 ? lines : String(label);
 }
 
-/** Schmal (Handy, Dashboard-Kachel): nur die Nummer ("*1.1"), der ganze Name steht im Tooltip. */
+/** Beschriftungen mit Zeilenumbruch werden mehrzeilig (Array), lange ohne Umbruch werden umgebrochen. */
+export function splitLabels(labels) {
+    return labels.map((label) => (/\n/.test(label) ? label.split(/\n/) : wrapLabel(label)));
+}
+
+/**
+ * Beschriftung ohne den Stern der Kernkompetenzen (die sind fett und blau). Schmal (Handy, Dashboard-Kachel): nur die
+ * Nummer ("1.1"), der ganze Name steht im Tooltip.
+ */
 export function pointLabel(label, compact) {
-    return compact ? String(label).split(' ')[0] : label;
+    const lines = (Array.isArray(label) ? [...label] : [String(label)]);
+    lines[0] = lines[0].replace(/^\*/, '');
+    if (compact) {
+        return lines[0].split(' ')[0];
+    }
+    return Array.isArray(label) ? lines : lines[0];
+}
+
+/** Skala wie die Antworten ("-", "0", "+", "++" haben die Werte -1 bis 2); die Mitte (-2) bleibt leer. */
+export const SCALE_LABELS = { '-1': '-', 0: '0', 1: '+', 2: '++' };
+
+export function scaleLabel(value) {
+    return SCALE_LABELS[value] ?? '';
+}
+
+/** Dunkle Variante der Farben aus Helper::GetDataset (heller, damit sie auf Grau lesbar bleiben). */
+export const DARK_SERIES = {
+    first: { color: '#9ca3af', fill: 'rgba(156,163,175,0)' },
+    second: { color: '#76a9fa', fill: 'rgba(118,169,250,0.16)' },
+    leader: { color: '#ff8a4c', fill: 'rgba(255,138,76,0.12)' },
+};
+
+/** Im Dark Mode die Farben der Runden ersetzen (Datensätze mit "series" aus Helper::GetDataset). */
+export function applyDarkColors(datasets) {
+    datasets.flat().forEach((dataset) => {
+        const dark = DARK_SERIES[dataset.series];
+        if (dark) {
+            Object.assign(dataset, {
+                borderColor: dark.color,
+                backgroundColor: dark.fill,
+                pointBackgroundColor: dark.color,
+                pointBorderColor: '#1f2937',
+                pointHoverBorderColor: dark.color,
+            });
+        }
+    });
 }
 
 /** Kernkompetenzen beginnen mit "*" (Helper::GetSurveyLabels), auch bei mehrzeiligen Beschriftungen. */
@@ -42,7 +100,9 @@ export function applyAnswer(datasets, radioId) {
     return true;
 }
 
-function chartOptions(compact, colors) {
+function chartOptions(compact, colors, labels) {
+    // context.label ist schon ohne Stern (pointLabel), darum über den Index in den Original-Beschriftungen nachsehen
+    const isCore = (context) => isCoreCompetence(labels[context.index] ?? '');
     return {
         aspectRatio: compact ? 1 : 1.4,
         scales: {
@@ -50,14 +110,16 @@ function chartOptions(compact, colors) {
                 startAngle: 15,
                 min: -2,
                 max: 2,
-                ticks: { maxTicksLimit: 5, color: colors.text, backdropColor: 'transparent', z: 5 },
+                // Die Skala liegt auf der ersten Linie: Hintergrund in Kartenfarbe, damit sie lesbar bleibt. Schmal ist
+                // dafür kein Platz; die Legende der Seite erklärt die Werte.
+                ticks: { display: !compact, stepSize: 1, callback: scaleLabel, color: colors.text, backdropColor: colors.card, backdropPadding: 2, font: { size: 12, weight: 'bold' }, z: 5 },
                 pointLabels: {
                     callback: (label) => pointLabel(label, compact),
-                    font: {
+                    font: (context) => ({
                         size: window.innerWidth > 1600 ? 16 : 12,
-                        weight: (context) => (isCoreCompetence(context.label) ? 'bold' : 'normal'),
-                    },
-                    color: (context) => (isCoreCompetence(context.label) ? colors.blue : colors.text),
+                        weight: isCore(context) ? 'bold' : 'normal',
+                    }),
+                    color: (context) => (isCore(context) ? colors.core : colors.text),
                 },
                 angleLines: { color: colors.grid },
                 grid: { color: colors.grid },
@@ -68,12 +130,20 @@ function chartOptions(compact, colors) {
 
 export function initRadarCharts(config, root = document) {
     const style = getComputedStyle(root.documentElement);
+    const dark = root.documentElement.classList.contains('dark');
     const colors = {
-        blue: style.getPropertyValue('--blue').trim(),
+        // Wie das Etikett «Kernkompetenz» auf Quali und Vergleich
+        core: dark ? '#a4cafe' : '#1e429f',
+        // Hintergrund der Karte (bg-white bzw. dark:bg-gray-800)
+        card: dark ? '#1f2937' : '#ffffff',
         text: style.getPropertyValue('--color-text-primary').trim(),
         grid: style.getPropertyValue('--color-chart-grid').trim(),
     };
     Chart.defaults.color = colors.text;
+    if (dark) {
+        applyDarkColors(config.datasets);
+    }
+    const labels = splitLabels(config.labels);
 
     const charts = config.datasets.map((datasets, index) => {
         const canvas = root.getElementById(`radarChart-${index + 1}`);
@@ -83,8 +153,8 @@ export function initRadarCharts(config, root = document) {
         const compact = canvas.parentElement.clientWidth < 560;
         return new Chart(canvas, {
             type: 'radar',
-            data: { labels: splitLabels(config.labels), datasets },
-            options: chartOptions(compact, colors),
+            data: { labels, datasets },
+            options: chartOptions(compact, colors, labels),
         });
     });
 
