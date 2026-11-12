@@ -6,36 +6,32 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-6">
-                {!! Form::model($group, ['method' => 'Patch', 'action'=>['AdminGroupsController@update',$group->id]]) !!}
+                <x-forms.form method="PATCH" :model="$group" :action="action('AdminGroupsController@update', $group->id)">
                     <div class="mb-2.5">
-                        {!! Form::label('name', 'Name:', ['class' => 'field-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="name" label="Name:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('foreign_id', 'Gruppen ID (Cevi-DB):', ['class' => 'field-label']) !!}
-                        {!! Form::text('foreign_id', null,  ['class' => 'field-input']) !!}
+                        <x-forms.text name="foreign_id" label="Gruppen ID (Cevi-DB):"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('url', 'URL (Cevi-DB):', ['class' => 'field-label']) !!}
-                        {!! Form::text('url', null,  ['class' => 'field-input']) !!}
+                        <x-forms.text name="url" label="URL (Cevi-DB):"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('api_token', 'API Token (Cevi-DB):', ['class' => 'field-label']) !!}
-                        {!! Form::password('api_token', ['class' => 'field-input']) !!}
+                        <x-forms.text type="password" name="api_token" label="API Token (Cevi-DB):"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
                 @error('group')
                     <x-layouts.alert type="danger">{{ $message }}</x-layouts.alert>
                 @enderror
-                {!! Form::model($group, ['method' => 'DELETE', 'action'=>['AdminGroupsController@destroy',$group->id], 'id'=> "DeleteForm"]) !!}
+                <x-forms.form method="DELETE" :model="$group" :action="action('AdminGroupsController@destroy', $group->id)" id="DeleteForm">
                 <div class="mb-2.5">
-                    {!! Form::submit('Gruppe löschen', ['class' => 'button-danger confirm', 'data-confirm' => 'Gruppe löschen?', 'data-confirm-text' => 'Willst du die Gruppe wirklich löschen?'])!!}
+                    <x-forms.button type="submit" data-confirm="Gruppe löschen?" data-confirm-text="Willst du die Gruppe wirklich löschen?" delete class="confirm">Gruppe löschen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 </div>
         </div>
     </div>

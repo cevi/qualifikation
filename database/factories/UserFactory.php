@@ -7,6 +7,7 @@ use App\Models\Camp;
 use App\Models\CampUser;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -67,20 +68,20 @@ class UserFactory extends Factory
 
     /**
      * Setzt das aktuelle Camp des Users und legt den passenden CampUser an
-     * (gleiche Rolle, optional mit zuständigem Leiter).
+     * (gleiche Rolle, optional mit einer oder mehreren zuständigen Leitenden).
+     *
+     * @param  User|array<User>|null  $leaders
      */
-    public function inCamp(Camp $camp, ?User $leader = null)
+    public function inCamp(Camp $camp, User|array|null $leaders = null)
     {
         return $this->state([
             'camp_id' => $camp->id,
-            'leader_id' => $leader?->id,
-        ])->afterCreating(function (User $user) use ($camp, $leader) {
+        ])->afterCreating(function (User $user) use ($camp, $leaders) {
             CampUser::create([
                 'camp_id' => $camp->id,
                 'user_id' => $user->id,
                 'role_id' => $user->role_id,
-                'leader_id' => $leader?->id,
-            ]);
+            ])->leaders()->attach(collect(Arr::wrap($leaders))->pluck('id'));
         });
     }
 }

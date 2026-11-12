@@ -23,7 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at',
+        'username', 'password', 'role_id', 'camp_id', 'password_change_at',
         'avatar', 'slug', 'foreign_id', 'email', 'email_verified_at', 'group_id',
     ];
 
@@ -72,16 +72,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function camps()
     {
         return $this->belongsToMany('App\Models\Camp', 'camp_users')->where('finish', '=', false);
-    }
-
-    public function leader()
-    {
-        return $this->belongsTo('App\Models\User');
-    }
-
-    public function leaders()
-    {
-        return $this->belongsToMany('App\Models\User', 'camp_users');
     }
 
     public function posts()

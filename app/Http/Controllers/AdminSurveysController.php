@@ -49,7 +49,7 @@ class AdminSurveysController extends Controller
         } else {
             $surveys = Survey::all();
         }
-        $surveys->load(['campuser.user.group', 'campuser.leader', 'campuser.camp']);
+        $surveys->load(['campuser.user.group', 'campuser.leaders', 'campuser.camp']);
         $names = SurveyStatusModel::pluck('name', 'id');
 
         return response()->json(['data' => $surveys->map(function (Survey $survey) use ($names) {
@@ -62,7 +62,7 @@ class AdminSurveysController extends Controller
                 'id' => $survey->id,
                 'name' => $campUser->user->username,
                 'profile_url' => route('home.profile', $campUser->user->slug),
-                'leader' => $campUser->leader?->username ?? '',
+                'leader' => $campUser->leaderNames(),
                 'camp' => $campUser->camp->name,
                 'group' => $campUser->user->group?->shortname ?? '',
                 // Badge mit Text, Fortschritt "Schritt x von y"; sortiert wird nach dem Ablauf
@@ -124,6 +124,11 @@ class AdminSurveysController extends Controller
                     }
                 }
             }
+        }
+
+        // Aus «Erste Schritte» als normales Formular abgeschickt, sonst per fetch von der Quali-Liste
+        if (request()->input('from') === 'dashboard') {
+            return redirect('/home');
         }
 
         return true;

@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Enums\SurveyStatus;
+use App\Helper\Helper;
+use App\Models\Camp;
+use App\Models\User;
 use Tests\Support\CampScenario;
 use Tests\TestCase;
 
@@ -12,6 +15,30 @@ use Tests\TestCase;
  */
 class SurveyOverviewTest extends TestCase
 {
+    public function test_new_user_in_global_camp_is_asked_to_create_a_camp(): void
+    {
+        CampScenario::create();
+        $user = User::factory()->create();
+        Helper::updateCamp($user, Camp::where('global_camp', true)->firstOrFail());
+
+        $this->actingAs($user->fresh())->get('/home')
+            ->assertOk()
+            ->assertSee('Noch kein Kurs')
+            ->assertSee(route('home.camps.create'), false)
+            ->assertDontSee('Meine Qualifikation')
+            ->assertDontSee('Für dich ist noch keine Qualifikation erstellt.');
+    }
+
+    public function test_user_with_own_camp_is_pointed_to_camp_switcher_in_global_camp(): void
+    {
+        $s = CampScenario::create();
+        Helper::updateCamp($s->participant, Camp::where('global_camp', true)->firstOrFail());
+
+        $this->actingAs($s->participant->fresh())->get('/home')
+            ->assertOk()
+            ->assertSee('Wechsle oben unter «Meine Kurse»');
+    }
+
     public function test_participant_sees_own_survey_and_task_without_compare_and_profile_links(): void
     {
         $s = CampScenario::create();

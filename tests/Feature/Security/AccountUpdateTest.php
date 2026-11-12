@@ -67,14 +67,13 @@ class AccountUpdateTest extends TestCase
     public function test_user_cannot_change_role_camp_or_name_of_own_account()
     {
         $s = CampScenario::create();
-        $before = $s->participant->only(['role_id', 'camp_id', 'leader_id', 'username', 'slug', 'demo']);
+        $before = $s->participant->only(['role_id', 'camp_id', 'username', 'slug', 'demo']);
 
         $this->actingAs($s->participant)
             ->patch(route('home.update', $s->participant->id), [
                 'email' => $s->participant->email,
                 'role_id' => Role::Administrator->value,
                 'camp_id' => 1,
-                'leader_id' => null,
                 'username' => 'Anderer Name',
                 'slug' => 'anderer-slug',
                 'demo' => true,

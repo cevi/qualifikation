@@ -6,7 +6,9 @@ use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Camp extends Model
 {
@@ -28,7 +30,7 @@ class Camp extends Model
     }
 
     protected $fillable = [
-        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date',
+        'name', 'year', 'user_id', 'camp_type_id', 'group_id', 'foreign_id', 'secondsurveyopen', 'global_camp', 'finish', 'counter', 'status_control', 'survey_status_id', 'end_date', 'checklist_hidden',
     ];
 
     protected $casts = [
@@ -37,6 +39,7 @@ class Camp extends Model
         'demo' => 'boolean',
         'finish' => 'boolean',
         'status_control' => 'boolean',
+        'checklist_hidden' => 'boolean',
         // Nur mit Status-Steuerung gesetzt (null = keine Steuerung).
         'survey_status_id' => SurveyStatus::class,
     ];
@@ -61,16 +64,32 @@ class Camp extends Model
         return $this->allUsers()->where('camp_users.role_id', Role::Teilnehmer)->OrderBy('username');
     }
 
+    /** Teilnehmende, bei denen die angemeldete Person zu den Leitenden gehört. */
     public function my_participants()
     {
-        return $this->participants()->where('camp_users.leader_id', Auth::user()->id);
+        return $this->participants()->whereExists($this->ledByCurrentUser(...));
     }
 
     public function other_participants()
     {
-        return $this->participants()->where(function ($query) {
-            $query->whereNull('camp_users.leader_id')->orWhere('camp_users.leader_id', '<>', Auth::user()->id);
-        });
+        return $this->participants()->whereNotExists($this->ledByCurrentUser(...));
+    }
+
+    private function ledByCurrentUser(QueryBuilder $query): void
+    {
+        $query->select(DB::raw(1))->from('camp_user_leader')
+            ->whereColumn('camp_user_leader.camp_user_id', 'camp_users.id')
+            ->where('camp_user_leader.leader_id', Auth::id());
+    }
+
+    /** Mögliche Leitende im Kurs (Gruppen-, Kurs- und Stabsleitende) als [user_id => Name], nach Name sortiert. */
+    public function leaderOptions(): array
+    {
+        $userIds = CampUser::where('camp_id', $this->id)
+            ->whereIn('role_id', [Role::Gruppenleiter, Role::Kursleiter, Role::Stabsleiter])
+            ->pluck('user_id');
+
+        return User::whereIn('id', $userIds)->orderBy('username')->pluck('username', 'id')->all();
     }
 
     public function camp_users()

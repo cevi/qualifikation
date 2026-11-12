@@ -7,26 +7,24 @@
 
             <div class="min-w-0 col-span-12 sm:col-span-6">
 
-                {!! Form::model($help, ['method' => 'PATCH', 'action'=>['AdminHelpController@update' , $help]]) !!}
+                <x-forms.form method="PATCH" :model="$help" :action="action('AdminHelpController@update', $help)">
                 <div class="mb-2.5">
-                    {!! Form::label('title', 'Titel:', ['class' => 'field-label']) !!}
-                    {!! Form::text('title', null, ['class' => 'field-input']) !!}
+                    <x-forms.text name="title" label="Titel:"/>
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::label('content', 'Inhalt:', ['class' => 'field-label']) !!}
-                    {!! Form::textarea('content', null, ['class' => 'field-input','required' ,'rows' => 10]) !!}
+                    <x-forms.text-area name="content" label="Inhalt:" required rows="10"/>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::submit('Hilfe-Artikel aktualisieren', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Hilfe-Artikel aktualisieren</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
-                {!! Form::open(['method' => 'DELETE', 'action'=>['AdminHelpController@destroy',$help]]) !!}
+                <x-forms.form method="DELETE" :action="action('AdminHelpController@destroy', $help)">
                 <div class="mb-2.5">
-                    {!! Form::submit('Lösche Hilfe-Artikel', ['class' => 'button-danger'])!!}
+                    <x-forms.button type="submit" delete>Lösche Hilfe-Artikel</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
         </div>
         <div class="grid grid-cols-12 sm:gap-x-8">

@@ -1,11 +1,18 @@
-import Swal from 'sweetalert2';
+import { confirmDialog } from './lib/dialog.js';
 
 /**
- * Löschen-Knöpfe auf jeder Seite: Ein Absende-Knopf mit data-confirm="Titel" (optional data-confirm-text,
- * data-confirm-icon) fragt mit SweetAlert2 nach und schickt erst nach "Ja" das Formular ab, in dem er steht.
- * Ersetzt die jQuery-Kopien in Personen, Kursen, Gruppen und Rückmeldungen (Browser: DeleteConfirmationTest),
- * fragt auch vor dem Abschliessen der Selbsteinschätzung.
+ * Absende-Knöpfe mit Rückfrage auf jeder Seite: data-confirm="Frage" (optional data-confirm-text) fragt im eigenen
+ * Dialog nach und schickt erst nach dem Bestätigen das Formular ab, in dem der Knopf steht. Der Bestätigen-Knopf
+ * heisst wie der Knopf selbst ("Person löschen"); rot bei button-danger und bei "… löschen".
+ * Für Personen, Kurse, Gruppen, Rückmeldungen, die Selbsteinschätzung und «Erste Schritte» (Browser:
+ * DeleteConfirmationTest, CampChecklistTest).
  */
+export function confirmLabel(button) {
+    const text = button.tagName === 'INPUT' ? button.value : button.textContent.trim();
+
+    return button.dataset.confirmLabel || text || button.title || 'OK';
+}
+
 document.addEventListener('click', async (event) => {
     const button = event.target.closest('[data-confirm]');
     if (!button?.form) {
@@ -13,18 +20,13 @@ document.addEventListener('click', async (event) => {
     }
     event.preventDefault();
 
-    const result = await Swal.fire({
-        titleText: button.dataset.confirm,
+    const label = confirmLabel(button);
+    const confirmed = await confirmDialog(button.dataset.confirm, {
         text: button.dataset.confirmText,
-        icon: button.dataset.confirmIcon ?? 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ja',
-        cancelButtonText: 'Abbrechen',
-        confirmButtonColor: 'blue',
-        cancelButtonColor: 'red',
-        theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+        confirmLabel: label,
+        danger: button.classList.contains('button-danger') || /löschen/i.test(label),
     });
-    if (result.isConfirmed) {
+    if (confirmed) {
         // requestSubmit(button) schickt name/value des Knopfs mit (Quali: action=close)
         button.form.requestSubmit(button);
     }

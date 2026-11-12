@@ -131,4 +131,21 @@ class SpiderChartTest extends TestCase
         $this->get('/home')->assertOk();
         $this->get(route('survey.compare', $empty))->assertOk();
     }
+
+    public function test_rounds_are_told_apart_by_color_and_line(): void
+    {
+        $this->s->camp->update(['secondsurveyopen' => true]);
+        $this->s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
+        $this->actingAs($this->s->gruppenleiter);
+
+        $datasets = collect(Helper::GetSurveysDataset(collect([$this->s->survey->fresh()]))[0])->keyBy('series');
+
+        $this->assertSame(['first', 'second', 'leader'], $datasets->keys()->all());
+        $this->assertSame([6, 4], $datasets['first']['borderDash'], '1. Runde gestrichelt');
+        $this->assertSame([], $datasets['second']['borderDash']);
+        $this->assertSame('#1a56db', $datasets['second']['borderColor']);
+        $this->assertSame('#d03801', $datasets['leader']['borderColor']);
+        // Linien deckend, nicht mehr halb durchsichtig wie die alten rgba(…, 0.2)
+        $datasets->each(fn (array $dataset) => $this->assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $dataset['borderColor']));
+    }
 }

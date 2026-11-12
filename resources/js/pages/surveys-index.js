@@ -1,4 +1,4 @@
-import Swal from 'sweetalert2';
+import { confirmDialog, messageDialog } from '../lib/dialog.js';
 
 /**
  * Quali-Liste (admin/surveys/index.blade.php): "Qualifikationen erstellen" fragt nach, "… Selbsteinschätzung
@@ -20,21 +20,15 @@ async function post(url) {
     } catch {
         // wie bei einer Fehlerantwort
     }
-    Swal.fire({ icon: 'error', titleText: 'Das hat nicht geklappt.', text: 'Bitte lade die Seite neu und versuche es nochmals.' });
+    messageDialog('Das hat nicht geklappt.', { text: 'Bitte lade die Seite neu und versuche es nochmals.', tone: 'warning' });
 }
 
 async function createSurveys(url) {
-    const result = await Swal.fire({
-        titleText: 'Qualifikationen erstellen?',
+    const confirmed = await confirmDialog('Qualifikationen erstellen?', {
         text: 'Dies erstellt den Qualifikationsprozess für alle Teilnehmenden deines Kurses, welche ihn noch nicht haben.',
-        icon: 'info',
-        showCancelButton: true,
-        confirmButtonText: 'Ja',
-        cancelButtonText: 'Abbrechen',
-        confirmButtonColor: 'blue',
-        cancelButtonColor: 'red',
+        confirmLabel: 'Qualifikationen erstellen',
     });
-    if (result.isConfirmed) {
+    if (confirmed) {
         await post(url);
     }
 }

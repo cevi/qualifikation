@@ -14,6 +14,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -51,8 +52,8 @@ class AdminUsersController extends Controller
     public function tableData()
     {
         $camp = Auth::user()->camp;
-        $campUsers = CampUser::with(['role', 'classification'])->where('camp_id', $camp->id)->get()->keyBy('user_id');
-        $users = $camp->allusers()->with(['leader', 'group', 'camp'])->get();
+        $campUsers = CampUser::with(['role', 'classification', 'leaders'])->where('camp_id', $camp->id)->get()->keyBy('user_id');
+        $users = $camp->allusers()->with(['group', 'camp'])->get();
 
         return response()->json(['data' => $users->map(function (User $user) use ($campUsers) {
             $campUser = $campUsers->get($user->id);
@@ -65,7 +66,7 @@ class AdminUsersController extends Controller
                 'avatar' => $user->getAvatar(),
                 'email' => $user->email,
                 'role' => $campUser?->role?->name ?? '',
-                'leader' => $user->leader?->username ?? '',
+                'leader' => $campUser?->leaderNames() ?? '',
                 'classification' => $campUser?->classification?->name ?? '',
                 'camp' => $user->camp?->name ?? '',
                 'group' => $user->group?->shortname ?? '',
@@ -113,14 +114,7 @@ class AdminUsersController extends Controller
                 return [$group->id => $label];
             })
             ->all();
-        $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
-            ->where(function ($query) {
-                $query->where('role_id', Role::Gruppenleiter)
-                    ->Orwhere('role_id', Role::Kursleiter)
-                    ->Orwhere('role_id', Role::Stabsleiter);
-            })
-            ->pluck('user_id')->all();
-        $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
+        $leaders = $aktUser->camp->leaderOptions();
         $title = 'Person erstellen / suchen';
         $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Personen';
@@ -223,13 +217,14 @@ class AdminUsersController extends Controller
             'email' => 'required|unique:users|email',
             'role_id' => $roleRules,
             'password' => 'required',
+            ...$this->leaderRules($aktUser->camp),
         ], [
             'role_id.required' => 'Die Rolle muss ausgefüllt sein.', ]);
 
         if (! Auth::user()->demo) {
             $camp = $aktUser->camp;
             // Nur die Felder des Formulars, das Startpasswort eingeschlossen.
-            $input = $request->only(['username', 'email', 'role_id', 'leader_id', 'group_id']);
+            $input = $request->only(['username', 'email', 'role_id', 'group_id']);
             $input['password'] = bcrypt($request->password);
 
             if (! $aktUser->isAdmin()) {
@@ -241,6 +236,7 @@ class AdminUsersController extends Controller
             $user = User::create($input);
             UserCreated::dispatch($user);
             Helper::updateCamp($user, $camp);
+            $this->syncLeaders($request, $user, $camp);
             Helper::updateAvatar($request, $user);
         }
 
@@ -258,7 +254,6 @@ class AdminUsersController extends Controller
                 $camp = $aktUser->camp;
                 $user = User::findOrFail($input['user_id']);
                 UserCreated::dispatch($user);
-                $user->update(['leader_id' => null]);
                 Helper::updateCamp($user, $camp);
             }
         }
@@ -293,20 +288,14 @@ class AdminUsersController extends Controller
                 return [$group->id => $label];
             })
             ->all();
-        $leader_campUsers_Id = CampUser::where('camp_id', $aktUser->camp->id)
-            ->where(function ($query) {
-                $query->where('role_id', Role::Gruppenleiter)
-                    ->Orwhere('role_id', Role::Kursleiter)
-                    ->Orwhere('role_id', Role::Stabsleiter);
-            })
-            ->pluck('user_id')->all();
-        $leaders = User::whereIn('id', $leader_campUsers_Id)->pluck('username', 'id')->all();
+        $leaders = $aktUser->camp->leaderOptions();
+        $selectedLeaders = CampUser::where('camp_id', $aktUser->camp->id)->where('user_id', $user->id)->first()?->leaders->modelKeys() ?? [];
         $title = 'Person bearbeiten';
         $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Personen';
         $help['main_route'] = '/admin/users';
 
-        return view('admin.users.edit', compact('user', 'roles', 'leaders', 'title', 'help', 'groups'));
+        return view('admin.users.edit', compact('user', 'roles', 'leaders', 'selectedLeaders', 'title', 'help', 'groups'));
     }
 
     /**
@@ -321,23 +310,22 @@ class AdminUsersController extends Controller
             'email' => 'required|email|unique:users,email,'.$id,
             // Die Rollenauswahl im Formular bietet Administrator nicht an.
             'role_id' => ['nullable', Rule::notIn([Role::Administrator->value])],
+            ...$this->leaderRules(Auth::user()->camp),
         ]);
         $aktuser = Auth::user();
         $camp = $aktuser->camp;
 
         if (! $aktuser->demo) {
             // Nur die Felder des Formulars. Passwörter ändern Personen selbst auf ihrer Kontoseite.
-            $input = $request->only(['username', 'email', 'role_id', 'leader_id', 'group_id']);
+            $input = $request->only(['username', 'email', 'role_id', 'group_id']);
 
             $user->update($input);
             // UserCreated::dispatch($user);
             $camp_user = CampUser::firstOrCreate(['camp_id' => $aktuser->camp->id, 'user_id' => $user->id]);
-            $camp_user->update([
-                'role_id' => $user['role_id'],
-                'leader_id' => $user['leader_id'],
-            ]);
+            $camp_user->update(['role_id' => $user['role_id']]);
 
             Helper::updateCamp($user, $aktuser->camp);
+            $this->syncLeaders($request, $user, $aktuser->camp);
             Helper::updateAvatar($request, $user);
         }
 
@@ -356,8 +344,33 @@ class AdminUsersController extends Controller
             $camp_global = Camp::where('global_camp', true)->first();
             Helper::updateCamp($user, $camp_global);
             CampUser::where('camp_id', $camp->id)->where('user_id', $user->id)->delete();
+            // Leitet die Person Teilnehmende dieses Kurses, fällt sie dort als Leitende weg.
+            DB::table('camp_user_leader')->where('leader_id', $user->id)
+                ->whereIn('camp_user_id', CampUser::where('camp_id', $camp->id)->select('id'))
+                ->delete();
         }
 
         return redirect('/admin/users');
+    }
+
+    /** Nur Leitende aus Camp::leaderOptions(), sonst liessen sich Personen anderer Kurse eintragen. */
+    private function leaderRules(Camp $camp): array
+    {
+        return [
+            'leader_ids' => ['nullable', 'array'],
+            'leader_ids.*' => ['integer', Rule::in(array_keys($camp->leaderOptions()))],
+        ];
+    }
+
+    /**
+     * Leitende der Person im Kurs wie im Formular angekreuzt. Das Formular sendet leader_ids immer mit (leer, wenn
+     * nichts angekreuzt ist); fehlt das Feld ganz, bleiben die Leitenden wie sie sind.
+     */
+    private function syncLeaders(Request $request, User $user, Camp $camp): void
+    {
+        if ($request->has('leader_ids')) {
+            CampUser::where('camp_id', $camp->id)->where('user_id', $user->id)->firstOrFail()
+                ->leaders()->sync(array_filter((array) $request->input('leader_ids')));
+        }
     }
 }

@@ -27,6 +27,7 @@ export default defineConfig({
                 'resources/js/pages/counter-up.js',
                 'resources/js/pages/surveys-index.js',
                 'resources/js/pages/profile-ampel.js',
+                'resources/js/pages/photo-dialog.js',
                 'resources/js/pages/tooltips.js',
                 'resources/js/pages/radar.js',
                 'resources/js/pages/feedback-modal.js',

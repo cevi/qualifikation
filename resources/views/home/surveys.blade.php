@@ -2,10 +2,31 @@
 
 @section('survey_content')
     <x-layouts.page-title :title="$title" :help="$help" :header=false/>
-    @if (! $camp)
-        <p>Du bist noch keinem Kurs zugeteilt.</p>
+    @if (! $camp || $camp->global_camp)
+        {{-- Neue Benutzer landen im Global-Camp, dort gibt es keine Qualifikationen --}}
+        @php
+            $otherCamps = $aktUser->camps->where('global_camp', false)->count();
+        @endphp
+        <section class="panel max-w-2xl">
+            <div class="panel-body">
+                <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Noch kein Kurs</h2>
+                @if ($otherCamps)
+                    <p class="mb-4 text-gray-600 dark:text-gray-300">Du bist im Global-Camp. Wechsle oben unter «Meine Kurse» zu einem deiner Kurse oder erstelle einen neuen.</p>
+                @else
+                    <p class="mb-4 text-gray-600 dark:text-gray-300">Erstelle deinen Kurs, um Leitende und Teilnehmende zu erfassen und die Qualifikationen zu starten.</p>
+                @endif
+                @unless ($aktUser->demo)
+                    <a href="{{ route('home.camps.create') }}" class="button-primary inline-block">Kurs erstellen</a>
+                @endunless
+                <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Nimmst du an einem Kurs teil? Dann fügt dich deine Kursleitung hinzu.</p>
+            </div>
+        </section>
     @else
-        <p class="-mt-6 mb-6 text-sm text-gray-500 dark:text-gray-400">{{ $camp->name }} · {{ $camp->camp_type['name'] ?? '' }}</p>
+        <p class="-mt-6 mb-6 text-sm text-gray-500 dark:text-gray-400">{{ collect([$camp->name, $camp->camp_type['name'] ?? null])->filter()->implode(' · ') }}</p>
+
+        @if ($steps)
+            <x-dashboard.checklist :checklist="$steps" :hidden="$stepsHidden"/>
+        @endif
 
         @unless ($aktUser->isTeilnehmer())
             @php

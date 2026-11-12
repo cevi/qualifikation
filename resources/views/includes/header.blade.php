@@ -1,13 +1,23 @@
 <head>
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Qualifikation">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @php($description = 'Online-Qualifikationstool für J+S-Kurse: Selbsteinschätzung der Teilnehmenden, Rückmeldungen der Leitenden und Qualifikation nach dem offiziellen Dokument.')
+    <meta name="description" content="{{ $description }}">
     <meta name="author" content="Jérôme Sigg v/o Amigo">
     <meta name="robots" content="all,follow">
+
+    {{-- Vorschau beim Teilen (WhatsApp, Signal, Teams); Bild 1200 × 630 aus der Luftaufnahme vom Lager --}}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:title" content="{{ isset($title) ? $title . ' - ' : '' }}{{ config('app.name') }}">
+    <meta property="og:description" content="{{ $description }}">
+    <meta property="og:image" content="{{ url('/img/og-image.jpg') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:locale" content="de_CH">
+    <meta name="twitter:card" content="summary_large_image">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">

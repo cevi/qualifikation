@@ -28,11 +28,15 @@ class ClassificationTest extends TestCase
         $s = CampScenario::create();
         $s->campUser($s->participant)->update(['classification_id' => Classification::Gruen]);
 
-        $this->actingAs($s->gruppenleiter)
+        $html = $this->actingAs($s->gruppenleiter)
             ->get(route('home.profile', $s->participant))
             ->assertOk()
-            ->assertSee('class="circle green"', false)
-            ->assertDontSee('class="circle red"', false);
+            ->getContent();
+
+        // Nur Grün ist gedrückt (aria-pressed) und hat den Ring
+        preg_match_all('/aria-pressed="(true|false)" aria-label="(Rot|Gelb|Grün)"/', $html, $buttons, PREG_SET_ORDER);
+        $this->assertSame(['Rot' => 'false', 'Gelb' => 'false', 'Grün' => 'true'], array_column($buttons, 1, 2));
+        $this->assertSame(1, substr_count($html, 'ring-green-500'));
     }
 
     public function test_unknown_color_is_rejected()

@@ -7,18 +7,20 @@
         @if (Session::has('deleted_user'))
             <x-layouts.alert type="danger">{{ session('deleted_user') }}</x-layouts.alert>
         @endif
-        <div class="flex flex-wrap items-start">
+        {{-- Sprungziel #import aus «Erste Schritte» auf der Übersicht --}}
+        <div id="import" class="flex scroll-mt-24 flex-wrap items-start">
             <a href="{{route('admin.users.create')}}" class="button-primary" role="button">Person manuell erstellen oder zuordnen</a>
+            <a href="{{route('admin.leaders.index')}}" class="button-secondary" role="button">Leitende zuteilen</a>
             @if (config('app.import_db'))
                 <button class="button-purple me-2 disabled:cursor-not-allowed disabled:opacity-50" type="button" id="showImport" data-url="{{ route('users.import') }}"
                         title="{{$has_api_token ? '' : 'Deine Region hat den DB-Import nicht freigeschalten.' }}" {{$has_api_token ? '' : 'disabled'}}>
                     Personen aus Cevi-DB importieren
                 </button>
             @endif
-            {!! Form::open(['action' => 'AdminUsersController@uploadFile', 'method' => 'POST', 'enctype' => 'multipart/form-data', 'files' => true, 'class' => 'flex flex-wrap items-start gap-x-2']) !!}
-                {!! Form::file('csv_file', ['accept' => '.json', 'class' => 'field-file mb-2 w-auto! max-w-xs', 'aria-label' => 'Teilnehmendenliste (JSON)']) !!}
-                {{ Form::submit('Teilnehmendenliste hochladen', ['class' => 'button-purple']) }}
-            {!! Form::close() !!}
+            <x-forms.form :action="action('AdminUsersController@uploadFile')" enctype="multipart/form-data" class="flex flex-wrap items-start gap-x-2">
+                <x-forms.file name="csv_file" accept=".json" class="mb-2 w-auto! max-w-xs" aria-label="Teilnehmendenliste (JSON)"/>
+                <x-forms.button type="submit" variant="purple">Teilnehmendenliste hochladen</x-forms.button>
+            </x-forms.form>
         </div>
         <br>
         @php

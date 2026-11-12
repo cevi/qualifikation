@@ -101,6 +101,11 @@ Route::group(['middleware' => 'verified'], function () {
         Route::resource('/admin/feedback', 'FeedbackController')->only(['store']);
 
         Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
+        // Vor der Ressource, sonst fängt admin/users/{user} die Adresse ab.
+        Route::get('admin/users/leaders', ['as' => 'admin.leaders.index', 'uses' => 'LeaderAssignmentController@index']);
+        // Ohne scoped bindings, sonst sucht Laravel {leader} nur unter den bereits zugeteilten Leitenden (CampUser::leaders()).
+        Route::put('admin/users/leaders/{campUser}/{leader:id}', ['as' => 'admin.leaders.assign', 'uses' => 'LeaderAssignmentController@update'])->withoutScopedBindings();
+        Route::delete('admin/users/leaders/{campUser}/{leader:id}', ['as' => 'admin.leaders.unassign', 'uses' => 'LeaderAssignmentController@destroy'])->withoutScopedBindings();
         Route::resource('admin/users', 'AdminUsersController', ['as' => 'admin']);
         Route::get('users/table', ['as' => 'users.table', 'uses' => 'AdminUsersController@tableData']);
         Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
@@ -109,6 +114,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::get('admin/camps/export/', ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
+        Route::post('admin/camps/checklist', ['as' => 'admin.camps.checklist', 'uses' => 'AdminCampsController@checklist']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
         Route::get('camps/table', ['as' => 'camps.table', 'uses' => 'AdminCampsController@tableData']);
 

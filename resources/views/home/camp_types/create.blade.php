@@ -14,15 +14,14 @@
         @endif
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-3">
-                {!! Form::open(['action'=>'CampTypesController@store']) !!}
+                <x-forms.form :action="action('CampTypesController@store')">
                 <div class="mb-2.5">
-                    {!! Form::label('name', 'Name:', ['class' => 'field-label']) !!}
-                    {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                    <x-forms.text name="name" label="Name:" required/>
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::submit('Kurs-Typ erstellen', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Kurs-Typ erstellen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
         </div>
     </div>

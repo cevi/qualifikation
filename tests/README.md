@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 25.10.2026: **270 Testfälle in 36 Dateien**, Laufzeit rund 10 Sekunden.
+Stand 10.11.2026: **417 Testfälle in 52 Dateien**, Laufzeit rund 14 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -93,7 +93,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 
 | Factory | Standard | States / Hilfen |
 |---|---|---|
-| `User::factory()` | Teilnehmende, verifiziert, kein Demo-User, UUID-Slug, Passwort `password` | `demo()`, `unverified()`, `admin()`, `kursleiter()`, `gruppenleiter()`, `stabsleiter()`, `inCamp($camp, $leader = null)` (setzt den Kurs und legt den `CampUser` mit gleicher Rolle an) |
+| `User::factory()` | Teilnehmende, verifiziert, kein Demo-User, UUID-Slug, Passwort `password` | `demo()`, `unverified()`, `admin()`, `kursleiter()`, `gruppenleiter()`, `stabsleiter()`, `inCamp($camp, $leaders = null)` (setzt den Kurs und legt den `CampUser` mit gleicher Rolle an; `$leaders` ist eine Person oder ein Array, sie werden als Leitende eingetragen) |
 | `Camp::factory()` | neuer Kursleiter als Ersteller, Kurstyp J+S Leiter 1, Enddatum in einem Monat | `finished()`, `withStatusControl()` |
 | `Post::factory()` | Text, nicht auf der Quali sichtbar | `shownOnSurvey()`; z. B. `Post::factory()->for($campUser, 'campUser')->for($leader, 'leader')->create(['camp_id' => $camp->id])` |
 | `Group::factory()` | Cevi-Gruppe mit Kurzname und Cevi-DB-ID | |
@@ -107,12 +107,12 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Grundlagen | [`TestInfrastructureTest`](Feature/TestInfrastructureTest.php) | 5 | Test-DB, Seeder, Factories |
 | Grundlagen | [`Unit/RoleAndClassificationTest`](Unit/RoleAndClassificationTest.php) | 4 | Enums `Role` und `Classification` passen zur Datenbank |
 | Smoke | [`Smoke/AllRoutesSmokeTest`](Feature/Smoke/AllRoutesSmokeTest.php) | 5 | Jede GET-Route liefert für jede Rolle keinen Serverfehler |
-| Smoke | [`Smoke/PagesRenderTest`](Feature/Smoke/PagesRenderTest.php) | 42 | Alle verlinkten Seiten laden pro Rolle mit 200 |
+| Smoke | [`Smoke/PagesRenderTest`](Feature/Smoke/PagesRenderTest.php) | 46 | Alle verlinkten Seiten laden pro Rolle mit 200 |
 | Smoke | [`Smoke/DemoLoginTest`](Feature/Smoke/DemoLoginTest.php) | 6 | Öffentliche Demo-Logins |
 | Sicherheit | [`Security/AccountUpdateTest`](Feature/Security/AccountUpdateTest.php) | 6 | Eigenes Konto ändern |
 | Sicherheit | [`Security/CampSwitchTest`](Feature/Security/CampSwitchTest.php) | 4 | Kurswechsel im Dropdown |
 | Sicherheit | [`Security/AdminOnlyAreasTest`](Feature/Security/AdminOnlyAreasTest.php) | 20 | Globale Stammdaten nur für Admin |
-| Sicherheit | [`Security/CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php) | 20 | Admin-Bereich nur für den eigenen Kurs |
+| Sicherheit | [`Security/CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php) | 22 | Admin-Bereich nur für den eigenen Kurs |
 | Sicherheit | [`Security/CampTypeContentTest`](Feature/Security/CampTypeContentTest.php) | 6 | Kurstypen, Kapitel, Fragen, Kompetenzen |
 | Sicherheit | [`Security/UserCreationTest`](Feature/Security/UserCreationTest.php) | 4 | Personen anlegen |
 | Sicherheit | [`Security/UserDataExposureTest`](Feature/Security/UserDataExposureTest.php) | 6 | Keine Passwort-Hashes oder fremden Daten in JSON |
@@ -120,33 +120,42 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Sicherheit | [`Security/CommentEscapingTest`](Feature/Security/CommentEscapingTest.php) | 5 | Rückmeldungen und Bemerkungen als Text mit Zeilenumbrüchen |
 | Sicherheit | [`Security/SurveyAnswerTest`](Feature/Security/SurveyAnswerTest.php) | 6 | Antworten speichern, Quali abschliessen |
 | Sicherheit | [`Security/PostAccessTest`](Feature/Security/PostAccessTest.php) | 5 | Rückmeldungen nur durch Autor*in |
-| Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 9 | Wartungsseite nur für Admin, Aktionen nur per POST, alte GET-URLs weg |
-| Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 30 | Runden, Abschliessen, Freigeben, Zurücksetzen |
+| Sicherheit | [`Security/MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php) | 12 | Wartungsseite nur für Admin, Aktionen nur per POST, alte GET-URLs weg, bei offenen Migrationen erreichbar |
+| Quali-Ablauf | [`SurveyFlowTest`](Feature/SurveyFlowTest.php) | 31 | Runden, Abschliessen, Freigeben, Zurücksetzen |
 | Quali-Ablauf | [`SurveyAccessTest`](Feature/SurveyAccessTest.php) | 3 | Zugriff von Leitenden auf Qualis |
-| Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 6 | Übersicht nach dem Login: Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
+| Quali-Ablauf | [`MultipleLeadersTest`](Feature/MultipleLeadersTest.php) | 18 | Mehrere gleichgestellte Leitende pro Teilnehmende Person |
+| Quali-Ablauf | [`SurveyOverviewTest`](Feature/SurveyOverviewTest.php) | 9 | Übersicht nach dem Login: Hinweis ohne Kurs, Aufgaben, Zähler, Karten mit Links je nach Rolle und Status, kein Diagramm |
 | Quali-Ablauf | [`CampChecksTest`](Feature/CampChecksTest.php) | 21 | Regeln der Aufgabenliste (`App\Services\CampChecks`) |
+| Quali-Ablauf | [`CampChecklistTest`](Feature/CampChecklistTest.php) | 15 | «Erste Schritte» der Kursleitung (`App\Services\CampChecklist`): Schritte aus den Daten, Knöpfe nur beim nächsten Schritt, Ausblenden, Rückweg auf die Übersicht |
 | Quali-Ablauf | [`BottomNavigationTest`](Feature/BottomNavigationTest.php) | 5 | Menü unten auf dem Handy: Punkte je Rolle |
 | Quali-Ablauf | [`PwaTest`](Feature/PwaTest.php) | 3 | Manifest, Service Worker speichert keine Seiten, Offline-Seite |
+| Grundlagen | [`FormComponentsTest`](Feature/FormComponentsTest.php) | 11 | `x-forms`-Komponenten wie `Form::`: alte Eingabe vor Wert vor Modell, Maskierung, Passwort leer, Select mit Leertext und Enum, Checkbox/Radio-Zustand, Formular mit `_method` und CSRF |
+| Grundlagen | [`NoLaravelCollectiveTest`](Feature/NoLaravelCollectiveTest.php) | 1 | Kein `Form::`/`Html::`-Aufruf und kein `Collective\Html` mehr in Views, `app`, `routes`, `config` (meldet Datei und Zeile) |
+| Grundlagen | [`MailLookTest`](Feature/MailLookTest.php) | 7 | Alle Mails im Look der App: Logo, blauer Knopf, du-Form, kein Englisch, kein Codeblock, Benutzertext maskiert |
+| Grundlagen | [`PageHeadTest`](Feature/PageHeadTest.php) | 5 | Kopf aller Seiten (Zeichensatz zuerst, Beschreibung, Open Graph), Sprunglink in beiden Layouts, kleine Bilder |
 | Quali-Ablauf | [`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php) | 9 | „Qualis erstellen“ |
 | Quali-Ablauf | [`Admin/SurveyEditTest`](Feature/Admin/SurveyEditTest.php) | 3 | Quali im Admin-Bereich bearbeiten |
 | Quali-Ablauf | [`Unit/SurveyStatusTest`](Unit/SurveyStatusTest.php) | 8 | Enum `SurveyStatus`: Werte, Regeln, Farbe und Filtergruppe |
 | Quali-Ablauf | [`DailyTaskTest`](Feature/DailyTaskTest.php) | 2 | Nächtlicher Reset des Demo-Kurses |
 | Quali-Ablauf | [`CampFinishReminderTest`](Feature/CampFinishReminderTest.php) | 4 | Monatliche Mail „Kurs abschliessen“ an die Kursleitung |
-| Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 12 | Beschriftungen, Werte und Sichtbarkeit der Spider-Graphen |
+| Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 13 | Beschriftungen, Werte, Sichtbarkeit und Farben der Spider-Graphen |
+| Quali-Ablauf | [`SurveyPagesTest`](Feature/SurveyPagesTest.php) | 7 | Aufbau von Quali und Vergleich: offene Kapitel mit Sprungleiste, Kernkompetenz mit Beschreibung, Speicherstand, Abschliessen oben und unten, Hinweis «TN selbst» für Leitende, eine Spalte pro Einschätzung, Abweichungen ab 2 Stufen, Rückmeldungen als Karte nur wenn vorhanden, Druckansicht im selben Aufbau mit allen drei Einschätzungen, in der 2. Runde die eigene erste Einschätzung als Hinweis |
+| Rückmeldungen | [`PostsPageTest`](Feature/PostsPageTest.php) | 2 | Seite «Rückmeldungen»: Knopf «Neue Rückmeldung» rechts im Titel, nicht zugeordnete und zugeordnete als Karten, leere Liste ausgeblendet, ohne Rückmeldungen ein Hinweis |
 | Import & Login | [`CeviDbImportTest`](Feature/CeviDbImportTest.php) | 12 | Import aus der Cevi-DB (API und JSON-Datei) |
 | Import & Login | [`HitobitoLoginTest`](Feature/HitobitoLoginTest.php) | 13 | Login über Cevi-DB und JEMK-DB, Weiterleitung mit den richtigen Scopes |
 | Import & Login | [`AuthPagesTest`](Feature/AuthPagesTest.php) | 4 | Login und Registrieren zeigen Fehler unter dem Feld (falsches Passwort, Cevi-DB, doppelte E-Mail), behalten Eingaben, aber nie das Passwort; Link zum Zurücksetzen nur an bekannte Adressen |
 | Rückmeldungen | [`PostFilesTest`](Feature/PostFilesTest.php) | 9 | Dateianhänge |
 | Exporte | [`ExportsTest`](Feature/ExportsTest.php) | 5 | Excel-Export und Druckansicht (PDF) |
-| Profil | [`ProfileTest`](Feature/ProfileTest.php) | 3 | Profilseite und Vor/Zurück-Navigation |
+| Profil | [`ProfileTest`](Feature/ProfileTest.php) | 4 | Profilseite und Vor/Zurück-Navigation; Kopf mit Foto zum Vergrössern, Links zu Quali und Vergleich, Reiter auf dem Handy, lange Rückmeldungen mit «Mehr» |
 | Profil | [`AvatarUploadTest`](Feature/AvatarUploadTest.php) | 1 | Profilbilder |
 | Profil | [`ClassificationTest`](Feature/ClassificationTest.php) | 4 | Ampel rot/gelb/grün auf der Profilseite |
 | Admin | [`Admin/GroupsTest`](Feature/Admin/GroupsTest.php) | 5 | Gruppen anlegen; löschen nur, wenn keine Personen und Kurse mehr daran hängen (sonst Meldung statt Datenbankfehler); leeres Token-Feld lässt das Cevi-DB-Token unverändert |
 | Admin | [`Admin/UserEditTest`](Feature/Admin/UserEditTest.php) | 1 | Person bearbeiten |
+| Admin | [`Admin/LeaderAssignmentTest`](Feature/Admin/LeaderAssignmentTest.php) | 7 | Leitende zuteilen (Matrix): Link von der Personenliste, Teilnehmende mit ihren Leitenden als Props, PUT teilt zu (ohne Doppel), DELETE nimmt weg, nur Leitende des Kurses (sonst 422), Gruppenleitung darf nicht, Demo speichert nichts |
 | Admin | [`Admin/UserAddTest`](Feature/Admin/UserAddTest.php) | 2 | Bestehende Person in den eigenen Kurs aufnehmen, ohne Auswahl Fehlermeldung |
 | Admin | [`Admin/MasterDataTest`](Feature/Admin/MasterDataTest.php) | 7 | Stammdaten (Admin): Antworten, Klassifizierungen, Hilfe, Gruppen mit verschlüsseltem Token, Feedback; leere Aktionen ohne Route; GitHub-Fehler wird gemeldet |
 | Admin | [`Admin/CourseContentStoreTest`](Feature/Admin/CourseContentStoreTest.php) | 4 | Kapitel und Kompetenzen anlegen, nur im eigenen Kurstyp; CSV-Import entfernt |
-| Quali-Ablauf | [`CampCreationTest`](Feature/CampCreationTest.php) | 5 | Kurs erstellen (Leitende werden Kursleitung, Mail), eindeutiger Name, Kurs im Kursadmin (Kursleitung ohne geschützte Felder, wird Mitglied), eigener Kurstyp |
+| Quali-Ablauf | [`CampCreationTest`](Feature/CampCreationTest.php) | 5 | Kurs erstellen (Leitende werden Kursleitung, Mail), eindeutiger Name, Kurs im Kursadmin (Kursleitung ohne geschützte Felder, wird Mitglied), eigener Kurstyp; Kursleitung landet danach auf der Übersicht |
 | Admin | [`Admin/AdminTablesTest`](Feature/Admin/AdminTablesTest.php) | 7 | Zeilen der Personen-, Quali- und Kursliste als JSON (Rolle und Klassifizierung im aktuellen Kurs, Status mit Farbe und Schritt x von 4 bzw. 5 (mit 2. Runde), Filtergruppe, Aktionen nur für den eigenen Kurs bzw. Admin), Seiten binden die Tabelle mit ihrer Daten-Adresse ein |
 | Beispiel | `Feature/ExampleTest`, `Unit/ExampleTest` | 2 | Laravel-Beispiele (Startseite lädt) |
 
@@ -219,7 +228,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_kursleiter_can_still_submit_feedback` | Feedback einreichen geht weiterhin, Mail an `MAIL_CAMP_ADDRESS` |
 | `test_admin_can_manage_global_data` | Admin darf alles |
 
-**[`CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php)**: Kurs, Personen, Qualis und Standardtexte im Admin-Bereich.
+**[`CrossCampManagementTest`](Feature/Security/CrossCampManagementTest.php)**: Kurs, Personen, Leitende zuteilen, Qualis und Standardtexte im Admin-Bereich.
 
 | Test | Prüft |
 |---|---|
@@ -297,7 +306,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_other_leader_cannot_overwrite_post_via_profile_form` | Auch nicht über das Profil-Formular |
 | `test_author_can_update_post_via_profile_form` | Autor*in ändert über das Profil-Formular |
 
-**[`MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php)**: Wartungsseite `admin/maintenance` (Migrationen ausführen, Cache leeren). Gäste und Kursleitung lösen kein Artisan aus, GET auf die Aktionen gibt 405, `admin/run-migrations` und `admin/run-deployment` gibt es nicht mehr (404); die Seite listet offene Migrationen, Admin-Aktionen rufen `migrate --force` bzw. `optimize:clear` auf und zeigen die Ausgabe.
+**[`MaintenanceRoutesTest`](Feature/Security/MaintenanceRoutesTest.php)**: Wartungsseite `admin/maintenance` (Migrationen ausführen, Cache leeren). Gäste und Kursleitung lösen kein Artisan aus, GET auf die Aktionen gibt 405, `admin/run-migrations` und `admin/run-deployment` gibt es nicht mehr (404); die Seite listet offene Migrationen, Admin-Aktionen rufen `migrate --force` bzw. `optimize:clear` auf und zeigen die Ausgabe. Bei offenen Migrationen leitet `RedirectAdminToMaintenance` Admins auf die Seite, und sie zeigt keine Menüs (die fragen Kursdaten ab); nachgestellt mit fehlender Tabelle `camp_user_leader`, an der beim Update auf mehrere Leitende jede Seite abstürzte. Nach der Migration ist das Menü wieder da.
 
 ### Quali-Ablauf
 
@@ -316,6 +325,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_releasing_first_round_with_status_control_lets_participants_start` | „Erste Selbsteinschätzung freigeben“ |
 | `test_releasing_second_round_reopens_closed_self_assessments_only` | „Zweite Selbsteinschätzung freigeben“ |
 | `test_leader_finishes_only_closed_quali` | Fertigstellen nur aus „TN abgeschlossen“ |
+| `test_finish_button_only_while_it_can_finish` | Knopf «Qualifikationsprozess abschliessen» nur bei „TN abgeschlossen“, danach Hinweis «abgeschlossen» |
 | `test_resetting_to_new_clears_both_rounds` | Zurücksetzen auf „Neu“ leert beide Runden |
 | `test_resetting_to_first_round_clears_only_second_round` | Zurücksetzen auf „1. offen“ leert nur die 2. Runde |
 | `test_changing_status_without_reset_keeps_answers` | Ohne Häkchen bleiben die Antworten |
@@ -328,15 +338,41 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_leader_has_access_to_survey_of_own_participant` | Eigene Teilnehmende: Zugriff |
 | `test_access_does_not_depend_on_loaded_relations_of_the_camp` | Kursvergleich mit `is()`, nicht `==` |
 
+**[`MultipleLeadersTest`](Feature/MultipleLeadersTest.php)**: mehrere Leitende pro Teilnehmende Person (Tabelle `camp_user_leader`, `CampUser::leaders()`). Szenario plus eine zweite zugeteilte Leitung und eine nicht zugeteilte im selben Kurs.
+
+| Test | Prüft |
+|---|---|
+| `test_factory_assigns_several_leaders` | `inCamp($camp, [$a, $b])` trägt beide ein, `isLedBy()` |
+| `test_every_assigned_leader_opens_and_fills_in_the_quali` | Beide Leitenden: Vergleich und Ausfüllen |
+| `test_leader_who_is_not_assigned_has_no_access` | Nicht zugeteilte Leitung: Umleitung |
+| `test_every_assigned_leader_changes_classification` | Ampel: zweite Leitung ja, nicht zugeteilte nein |
+| `test_every_assigned_leader_may_finish_the_quali` | Knopf „Qualifikationsprozess abschliessen“ und Abschliessen auch für die zweite Leitung |
+| `test_navigation_lists_participant_under_own_participants_of_each_leader` | `my_participants` / `other_participants` im Menü |
+| `test_overview_names_the_other_leaders` | Karte: „Zusammen mit …“ für Leitende, „Leitende: A, B“ für die Kursleitung |
+| `test_tasks_count_participant_for_each_leader` | Aufgabenliste: Qualis und „ohne Rückmeldung“ je Leitung, „ohne Leitende“ |
+| `test_admin_tables_list_all_leaders` | Personen- und Quali-Liste: alle Namen, alphabetisch |
+| `test_profile_and_account_page_show_all_leaders` | Profil und eigenes Konto |
+| `test_edit_form_checks_current_leaders` | „Person bearbeiten“ kreuzt die aktuellen Leitenden an |
+| `test_campleader_assigns_several_leaders` | Speichern mit mehreren Leitenden |
+| `test_unchecking_all_leaders_removes_them` | Nichts angekreuzt (leeres `leader_ids`) entfernt alle |
+| `test_update_without_leader_field_keeps_leaders` | Ohne Feld `leader_ids` bleiben die Leitenden |
+| `test_leader_of_another_camp_cannot_be_assigned` | Leitende anderer Kurse → Validierungsfehler |
+| `test_new_person_gets_the_chosen_leaders` | „Person erstellen“ mit Leitenden |
+| `test_removing_a_leader_from_the_camp_unassigns_them` | Person aus dem Kurs entfernen: fällt als Leitung weg, die anderen bleiben |
+| `test_leaders_are_per_camp` | Zuteilung gilt pro Kurs |
+
 **[`SurveyOverviewTest`](Feature/SurveyOverviewTest.php)**: Übersicht nach dem Login (`/home`): Aufgaben, Zähler, eine Karte pro Quali.
 
 | Test | Prüft |
 |---|---|
+| `test_new_user_in_global_camp_is_asked_to_create_a_camp` | Neue Person im Global-Camp: „Noch kein Kurs“ mit Link „Kurs erstellen“ statt „Meine Qualifikation“ |
+| `test_user_with_own_camp_is_pointed_to_camp_switcher_in_global_camp` | Wer schon einen Kurs hat und ins Global-Camp wechselt, wird auf «Meine Kurse» hingewiesen |
 | `test_participant_sees_own_survey_and_task_without_compare_and_profile_links` | Teilnehmende: Aufgabe „1. Selbsteinschätzung ausfüllen“, Link zum Ausfüllen, kein Vergleich, kein Profil, keine Zähler |
 | `test_participant_gets_compare_link_and_no_task_after_closing` | Nach dem Abschliessen: Vergleich statt Ausfüllen, keine Aufgabe mehr |
 | `test_leader_sees_own_participants_with_links_and_counters` | Leitende: nur eigene Teilnehmende, Vergleich, „+ Rückmeldung“ (`?neu=1`), Anzahl Rückmeldungen, Zähler |
 | `test_closed_self_assessment_is_counted_but_no_task` | „TN abgeschlossen“ zählt bei „Zum Abschliessen“, ist aber keine Aufgabe |
 | `test_campleader_sees_all_participants_and_camp_tasks` | Kursleitung: alle Teilnehmenden, „Noch ohne Leitende“, Kurs-Aufgaben, „Teilnehmende ohne Rückmeldung“ orange |
+| `test_card_shows_camp_avatar_then_profile_picture_then_initials` | Bild auf der Karte: Kursbild, sonst Profilbild, sonst Initialen |
 | `test_overview_does_not_load_chart_data` | Kein Radar-Diagramm mehr auf der Übersicht |
 
 **[`CampChecksTest`](Feature/CampChecksTest.php)**: Regeln der Aufgabenliste (`App\Services\CampChecks`).
@@ -373,6 +409,40 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_manifest_starts_on_overview_with_icons_and_shortcut` | Start auf `/home`, Icons vorhanden, Verknüpfung „Neue Rückmeldung“ |
 | `test_service_worker_never_caches_pages` | `public/sw.js` holt Seiten nur aus dem Netz (ohne Netz `offline.html`), speichert nur Dateien aus `/build/` und Bilder |
 | `test_layout_links_manifest` | Das Layout verlinkt das Manifest |
+
+**[`FormComponentsTest`](Feature/FormComponentsTest.php)**: Formular-Komponenten (`resources/views/components/forms`, Logik im Trait `App\View\Components\Forms\Concerns\ResolvesValue`), die `Form::` aus laravelcollective ersetzen.
+
+| Test | Prüft |
+|---|---|
+| `test_text_takes_old_input_then_value_then_model` | Reihenfolge wie bei `Form::text`: nach einem Validierungsfehler die alte Eingabe, sonst `value`, sonst `x-forms.form :model` |
+| `test_values_are_escaped` | Werte aus dem Modell in Feld und Textfeld maskiert |
+| `test_password_is_never_filled` | Passwortfeld ohne `value`, auch mit Modell und alter Eingabe |
+| `test_select_with_placeholder_model_enum_and_old_input` | Leertext («Wähle Rolle»), Label zeigt auf die eigene ID, Enum aus dem Modell angewählt, alte Eingabe gewinnt |
+| `test_textarea_has_own_id_and_old_input` | Eigene ID, `rows` und alte Eingabe |
+| `test_checkbox_value_and_checked_are_separate` | `value` ist der gesendete Wert, `checked` der Zustand; ohne Angabe das Modell; abgeschickt ohne Haken bleibt leer |
+| `test_checkbox_label_is_escaped` | Label (z. B. Dateiname) als Text |
+| `test_radio_checked_by_model_prop_or_old_input` | `answers[12]`: angewählt nach Modell, `checked` oder alter Eingabe |
+| `test_form_spoofs_method_and_adds_csrf` | `method="PATCH"` wird POST mit `_method`, CSRF-Feld, `enctype` |
+| `test_survey_answer_labels_point_to_their_radio` | Quali je Runde (TN 1, Leitende 3): Radio `{Frage}.{Runde}.{Nummer}{Antwort}` mit «0» vorgewählt, Label zeigt darauf (mit `Form::label` zeigte es ins Leere), Kommentar `comments[…]` |
+| `test_person_form_keeps_input_after_validation_error` | Ganzer Ablauf «Person erstellen» mit ungültiger E-Mail: Eingaben und Abteilung bleiben, Passwort nicht |
+
+**[`MailLookTest`](Feature/MailLookTest.php)**: Mails im Look der App (Theme `resources/views/vendor/mail/html/themes/qualitool.css`, Logo `img/logo-mail.png`, Vorlagen in `resources/views/vendor/mail` und `vendor/notifications`).
+
+| Test | Prüft |
+|---|---|
+| `test_mail_looks_like_the_app` | Kurs erstellt, Kurs abschliessen, Feedback, Passwort zurücksetzen, E-Mail bestätigen: PNG-Logo, Fusszeile ohne „All rights reserved“, kein `<pre` (eingerückte Zeilen), kein „Sie/Ihr“, keine englischen Reste, Knopf inline in `#1a56db`; 5 Fälle |
+| `test_feedback_text_is_shown_as_text_with_line_breaks` | Feedback-Text maskiert, Zeilenumbrüche als `<br>`, Markdown im Text wird weder Liste noch Link |
+| `test_camp_created_mail_points_to_the_overview` | „Kurs erstellt“ nennt den Kurs fett und verlinkt auf die Übersicht mit «Erste Schritte» |
+
+**[`PageHeadTest`](Feature/PageHeadTest.php)**: Kopf aller Seiten (`includes/header.blade.php`) und Bilder der öffentlichen Seiten.
+
+| Test | Prüft |
+|---|---|
+| `test_charset_comes_first_and_old_ie_header_is_gone` | `<meta charset>` steht zuoberst im `<head>`, kein `X-UA-Compatible` |
+| `test_description_and_open_graph_for_sharing` | Beschreibung als Satz, Open Graph mit absoluter Bild-Adresse, `de_CH`, `twitter:card` (Vorschau in WhatsApp & Co.) |
+| `test_open_graph_image_has_the_size_messengers_expect` | `img/og-image.jpg` ist 1200 × 630 und unter 300 KB |
+| `test_both_layouts_have_a_skip_link_to_the_content` | «Zum Inhalt springen» direkt nach `<body>` und `<main id="inhalt">` in `layouts.app` und `layouts.admin` |
+| `test_images_of_public_pages_are_small` | Login-, Banner- und Fotostreifen-Bild unter 400 KB; Banner im Seitenverhältnis des Originals (füllt per `bg-cover` das Fenster) |
 
 **[`Admin/SurveyGenerationTest`](Feature/Admin/SurveyGenerationTest.php)**: „Qualis erstellen“ (`POST admin/surveys`).
 
@@ -432,6 +502,7 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_visible_datasets` | Wer welche Datensätze sieht, 8 Fälle (Tabelle unten) |
 | `test_participant_never_receives_leader_assessment_on_overview` | Startseite der Teilnehmenden ohne Leiter-Einschätzung |
 | `test_quali_without_questions_does_not_break_pages` | Quali ohne Fragen: Seiten laden trotzdem |
+| `test_rounds_are_told_apart_by_color_and_line` | Runden mit `series`, 1. grau gestrichelt, 2. blau, Leitende orange, Linien deckend |
 
 ### Import und Login
 
@@ -545,7 +616,27 @@ Die Regeln dazu stehen als Policies in [`app/Policies`](../app/Policies), siehe 
 | `test_camp_name_must_be_unique` | Gleicher Name wird abgelehnt |
 | `test_admin_creates_a_camp_for_a_campleader_in_course_admin` | Admin legt im Kursadmin einen Kurs für eine Kursleitung an |
 | `test_leader_creates_an_own_camp_type_in_both_places` | Eigener Kurstyp über beide Routen, Besitzer immer die angemeldete Person |
-| `test_campleader_cannot_set_protected_fields_and_becomes_member` | Kursleitung kann im Kursadmin `global_camp`, `finish`, `counter`, fremde Kursleitung nicht setzen und wird Mitglied des Kurses |
+| `test_campleader_cannot_set_protected_fields_and_becomes_member` | Kursleitung kann im Kursadmin `global_camp`, `finish`, `counter`, fremde Kursleitung nicht setzen, wird Mitglied des Kurses und landet auf der Übersicht |
+
+**[`CampChecklistTest`](Feature/CampChecklistTest.php)**: Karte «Erste Schritte» auf der Übersicht (`App\Services\CampChecklist`, `x-dashboard.checklist`). Entscheide November 2026: nur Kursleitung, Leitende und Teilnehmende ein Schritt, nur Standardtexte optional, Aufgabenliste bleibt, Karte verschwindet nach dem Kursabschluss.
+
+| Test | Prüft |
+|---|---|
+| `test_new_camp_has_only_the_first_step_done` | Neuer Kurs: nur «Kurs erstellen» erledigt, nächster Schritt ist der Import, 1 von 8 |
+| `test_steps_follow_the_course_from_preparation_to_the_end` | Zuteilen → Rückmeldungen → 2. Runde → Qualis abschliessen → Kurs abschliessen, jeweils mit Zahlen im Text |
+| `test_first_round_step_only_with_status_control` | «1. Selbsteinschätzung freigeben» nur mit «Quali-Ablauf kontrollieren» |
+| `test_only_the_next_step_and_open_optional_steps_have_buttons` | Knöpfe nur beim nächsten Pflichtschritt und bei offenen optionalen |
+| `test_optional_standard_texts_do_not_count` | Standardtexte zählen nicht zum Fortschritt |
+| `test_missing_end_date_leaves_the_first_step_open` | Ohne Schlussdatum bleibt «Kurs erstellen» offen (sonst keine Erinnerungs-Mail) |
+| `test_db_import_is_mentioned_only_when_possible` | Cevi-DB nur erwähnt mit `IMPORT_DB`, Kurs-ID und Token der Region |
+| `test_dashboard_shows_the_card_only_to_the_campleader_of_an_open_camp` | Karte nur für die Kursleitung, nicht nach dem Kursabschluss |
+| `test_task_list_stays_next_to_the_card` | Aufgabenliste bleibt unverändert neben der Karte |
+| `test_post_actions_return_to_the_dashboard` | «Qualifikationen erstellen» und «Freigeben» mit `from=dashboard` zurück auf `/home`, Rückfrage beim Erstellen |
+| `test_foreign_from_value_is_ignored` | Fremde Adresse in `from` wird ignoriert |
+| `test_campleader_hides_and_shows_the_card_for_the_whole_camp` | Ausblenden/Einblenden in `camps.checklist_hidden` |
+| `test_leader_cannot_hide_the_card` | Leitende können nicht ausblenden |
+| `test_demo_user_hides_the_card_only_in_the_session` | Demo-Benutzer: nur in der Sitzung, der geteilte Demo-Kurs bleibt unverändert |
+| `test_campleader_creating_a_camp_lands_on_the_dashboard` | Nach «Kurs erstellen» im Kursadmin wartet die Karte auf der Übersicht |
 
 ### Abdeckung
 
@@ -566,25 +657,28 @@ Stand 29.10.2026: 91,2 % der Zeilen, 79,4 % der Methoden (vor dem Abgleich 82,6 
 Seitenskripte mit eigener Logik liegen als Module in [`resources/js/pages/`](../resources/js/pages) und werden in der jeweiligen Ansicht mit `@vite(...)` eingebunden (Einstiegspunkte in [`vite.config.js`](../vite.config.js)). Die Tests in [`js/`](js) laufen mit Vitest und happy-dom (ein simuliertes DOM, kein Browser) in unter einer Sekunde, Konfiguration in [`vitest.config.js`](../vitest.config.js).
 
 - **Vue-Komponenten** (`resources/js/components/`) mit `mount()` aus `@vue/test-utils`, `flushPromises()` nach dem Laden. Die Vue-Inseln werden über `resources/js/islands.js` in Blade eingebunden (`data-vue-component`, Props in `data-props`).
-- **Muster:** Pro Test das Markup der Blade-Ansicht nachbauen (`document.body.innerHTML`), dann `vi.resetModules()` und das Modul mit `await import(...)` laden; es startet sich beim Import selbst. `fetch` per `vi.stubGlobal`, SweetAlert2 per `vi.mock('sweetalert2')`, Zeit per `vi.useFakeTimers()`.
+- **Muster:** Pro Test das Markup der Blade-Ansicht nachbauen (`document.body.innerHTML`), dann `vi.resetModules()` und das Modul mit `await import(...)` laden; es startet sich beim Import selbst. `fetch` per `vi.stubGlobal`, Rückfragen per `vi.mock('../../resources/js/lib/dialog.js')` oder mit dem echten Dialog (happy-dom kann `<dialog>`), Zeit per `vi.useFakeTimers()`.
 - **Grenzen:** Ob Modul, Server und Seite zusammenspielen, prüfen die Browser-Tests (z. B. `SurveyAutosaveTest`, `StandardTextsTest`).
 - **Node:** Vitest 5 braucht Node ≥ 22.12 (und Vite ≥ 6.4). Container (`docker/8.5/Dockerfile`), CI und Prod-Build stehen auf Node 22.
 
 | Datei | Fälle | Prüft |
 |---|---:|---|
-| [`survey-autosave.test.js`](js/survey-autosave.test.js) | 6 | Quali speichert sich 1 s nach der letzten Änderung selbst (einmal, ganzes Formular mit `action=save`), Zustand im Speichern-Knopf, Fehler bei abgelehnter Anfrage und ohne Verbindung, mehrere Formulare getrennt |
+| [`survey-autosave.test.js`](js/survey-autosave.test.js) | 8 | Quali speichert sich 1 s nach der letzten Änderung selbst (einmal, ganzes Formular mit `action=save`), Zustand im Speichern-Knopf, dauerhaft «Gespeichert 18:42» bzw. «Nicht gespeichert» in jedem `data-save-status`, Fehler bei abgelehnter Anfrage und ohne Verbindung, mehrere Formulare getrennt |
 | [`standard-texts.test.js`](js/standard-texts.test.js) | 11 | `//` öffnet die Textbausteine (nur zwei schnelle `/` direkt vor dem Cursor), Pfeiltasten mit Umspringen, Enter und Klick fügen an der Stelle der `//` ein (auch mitten im Text), ein weiteres `/` danach öffnet nicht erneut, Escape und Kreuz schliessen, Tasten bei geschlossener Auswahl unberührt |
-| [`users-import.test.js`](js/users-import.test.js) | 3 | Import aus der Cevi-DB: Adresse aus `data-url` und CSRF-Token, übersprungene Namen als Text, Fehlermeldung des Servers im Dialog |
-| [`escape-html.test.js`](js/escape-html.test.js) | 2 | `escapeHtml()` für HTML-Vorlagen |
+| [`users-import.test.js`](js/users-import.test.js) | 4 | Import aus der Cevi-DB mit dem echten Dialog: Adresse aus `data-url` und CSRF-Token, Abbrechen tut nichts, übersprungene Namen als Text und Neuladen erst nach OK, Fehlermeldung des Servers bleibt im Dialog |
+| [`dialog.test.js`](js/dialog.test.js) | 8 | Eigener Rückfrage-Dialog (`resources/js/lib/dialog.js`, ersetzt SweetAlert2): Fokus auf Abbrechen, Bestätigen/Abbrechen/Esc/Klick daneben, rot nur bei `danger`, Texte nie als HTML, mit `onConfirm` offen bis fertig und Fehler im Dialog, Meldung mit OK |
+| [`confirm-submit.test.js`](js/confirm-submit.test.js) | 4 | Knöpfe mit `data-confirm`: Bestätigen-Knopf heisst wie der Knopf (Wert, Text oder Titel), rot bei `button-danger` und «löschen», `requestSubmit(button)` erst nach Bestätigen |
 | [`user-search.test.js`](js/user-search.test.js) | 6 | Person hinzufügen: Suche ab drei Zeichen und nach kurzer Pause, Vorschlag übernimmt Name und `user_id`, Ändern löscht die ID, keine veralteten oder späten Antworten, Netzwerkfehler |
 | [`counter-up.test.js`](js/counter-up.test.js) | 3 | Startseite: Zähler zählen erst hoch, wenn sie ins Bild kommen (`IntersectionObserver` simuliert), in Schritten bis zum Zielwert |
 | [`theme-toggle.test.js`](js/theme-toggle.test.js) | 4 | Hell/Dunkel-Umschalter: Klasse `dark`, gespeicherte Wahl und Symbol, auch ohne gespeicherte Wahl (Systemeinstellung) |
 | [`table-data.test.js`](js/table-data.test.js) | 10 | Hilfsfunktionen der Admin-Tabellen: Anzeige- und Sortierwert (`{ display, sort }`), Vergleich (Zahlen, natürlich, Umlaute, ISO-Daten), Suche über Textspalten, Sortierung in der Adresse (`?order=role:asc,name:desc`, alte Spaltennummern verworfen) |
 | [`data-table.test.js`](js/data-table.test.js) | 16 | `DataTable.vue` mit `@vue/test-utils`: Laden mit Platzhaltern, Link/Bild/Status (Badge, Balken „Schritt x von y“)/Aktionen aus Daten, Namen mit `<` als Text, Sortieren per Klick und Shift-Klick, Status nach Ablauf statt Alphabet, Filter-Knöpfe, Suche mit Zähler, Blättern, Ladefehler mit "Erneut laden", Sortierung in Adresse und Verlauf, Karten auf dem Handy (`matchMedia` gestubbt) mit Sortier-Auswahl |
-| [`surveys-index.test.js`](js/surveys-index.test.js) | 4 | Quali-Liste: "Qualifikationen erstellen" nach Rückfrage, Freigeben ohne Rückfrage, POST mit CSRF-Token, Fehlermeldung statt Neuladen |
+| [`leader-matrix.test.js`](js/leader-matrix.test.js) | 12 | Leitende zuteilen (`LeaderMatrix.vue`, `lib/leader-assignment.js`): Zähler pro Leitende/r, Suche, neues Array beim Zuteilen; Kreuz speichert sofort per PUT/DELETE mit CSRF-Token, Kästchen gesperrt während des Speicherns, bei Fehler zurück mit Meldung, Stand vom Server gilt (Demo), «Nur ohne Leitende» behält Zeilen nach dem ersten Kreuz, Karten mit Knöpfen auf dem Handy, Hinweis ohne Leitende |
+| [`surveys-index.test.js`](js/surveys-index.test.js) | 4 | Quali-Liste: "Qualifikationen erstellen" nach Rückfrage (Knopf heisst wie die Aktion), Freigeben ohne Rückfrage, POST mit CSRF-Token, Fehlermeldung statt Neuladen |
 | [`profile-ampel.test.js`](js/profile-ampel.test.js) | 2 | Ampel auf dem Profil: PATCH an `data-remote`, Neuladen nur bei Erfolg |
+| [`photo-dialog.test.js`](js/photo-dialog.test.js) | 3 | Foto im Profil: Klick öffnet den Dialog, Klick neben das Bild schliesst, Knopf ohne Dialog stört nicht |
 | [`tooltips.test.js`](js/tooltips.test.js) | 3 | Erklärungen auf Quali und Vergleich (tippy.js): erst beim Antippen/Klick, Text nie als HTML, leere Erklärungen ohne Tooltip |
-| [`radar.test.js`](js/radar.test.js) | 8 | Radar-Diagramme (`resources/js/pages/radar.js`, Chart.js als Attrappe): mehrzeilige Beschriftungen, schmal nur Nummern, Kernkompetenzen am Stern, angetippte Antwort in der richtigen Runde eintragen (Leitende ohne 2. Runde im letzten Datensatz), jedes Diagramm mit eigener Breite, neu gezeichnet wird das erste |
+| [`radar.test.js`](js/radar.test.js) | 12 | Radar-Diagramme (`resources/js/pages/radar.js`, Chart.js als Attrappe): mehrzeilige Beschriftungen, lange Namen umgebrochen (sonst bleibt der Kreis auf breiten Bildschirmen klein), schmal nur Nummern, Stern nicht angezeigt, Kernkompetenzen über den Index fett und blau, Skala «- 0 + ++» (schmal ausgeblendet), hellere Farben im Dark Mode, angetippte Antwort in der richtigen Runde eintragen (Leitende ohne 2. Runde im letzten Datensatz), jedes Diagramm mit eigener Breite, neu gezeichnet wird das erste |
 | [`feedback-modal.test.js`](js/feedback-modal.test.js) | 5 | Fenster „Rückmeldung“ (`resources/js/pages/feedback-modal.js`): neu leer mit Cursor im Text, Bearbeiten füllt aus `data-post` inkl. Datei, Escape/Kreuz/Hintergrund schliessen (nicht bei offenen Textbausteinen), `?neu` öffnet, Bearbeiten-Aufruf behält Server-Eingaben |
 | [`fontawesome-icons.test.js`](js/fontawesome-icons.test.js) | 3 | Font Awesome nur mit gebrauchten Icons (`scripts/fontawesome-icons.mjs`): erzeugte Datei passt zum Code (sonst `npm run css:fontawesome`), keine unbekannten `fa-`-Klassen (Tippfehler), Grundregeln und `@keyframes` bleiben |
 
@@ -609,13 +703,16 @@ php artisan dusk tests/Browser/DeleteConfirmationTest.php
 | Datei | Fälle | Prüft |
 |---|---:|---|
 | [`PagesInBrowserTest`](Browser/PagesInBrowserTest.php) | 2 | Alle Seiten aus `PagesRenderTest` pro Rolle plus Gast-Seiten: keine Fehler in der Browser-Konsole, jede `id` nur einmal |
-| [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 5 | Person, Kurs, Gruppe, Rückmeldung (gemeinsames Modul `confirm-submit.js`, Knöpfe mit `data-confirm`): "Abbrechen" löscht nichts, "Ja" löscht genau den gewählten Eintrag; Selbsteinschätzung abschliessen erst nach "Ja" (Knopfwert `action=close` kommt an) |
-| [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung wählt Antwort und schreibt Kommentar, ohne zu speichern: nach "Gespeichert ✓" in der DB und nach dem Neuladen noch da |
+| [`DeleteConfirmationTest`](Browser/DeleteConfirmationTest.php) | 5 | Person, Kurs, Gruppe, Rückmeldung (gemeinsames Modul `confirm-submit.js`, Knöpfe mit `data-confirm`, eigener `<dialog>`): "Abbrechen" löscht nichts, Bestätigen löscht genau den gewählten Eintrag; Selbsteinschätzung abschliessen erst nach dem Bestätigen (Knopfwert `action=close` kommt an) |
+| [`SurveyAutosaveTest`](Browser/SurveyAutosaveTest.php) | 1 | Leitung tippt eine Antwort an, klappt den Kommentar auf und schreibt, ohne zu speichern: nach "Gespeichert ✓" (auch in der Leiste) in der DB und nach dem Neuladen noch da |
 | [`StandardTextsTest`](Browser/StandardTextsTest.php) | 2 | `//` im Fenster "Neue Rückmeldung" fügt einen Textbaustein ein, auch mitten im Text an der Cursor-Stelle; Escape schliesst nur die Auswahl, nicht das Fenster |
 | [`UserSearchTest`](Browser/UserSearchTest.php) | 1 | Person hinzufügen: Vorschlag aus der Personensuche erscheint, die Wahl setzt Name und `user_id`, die Person ist danach im Kurs |
 | [`AdminTablesTest`](Browser/AdminTablesTest.php) | 4 | Personenliste lädt, sucht, sortiert per Klick und merkt sich die Sortierung in Adresse und Verlauf (Neuladen, Zurück); Quali- und Kursliste zeigen Zeilen mit Status bzw. Knöpfen; Quali-Liste filtert Offen/Zum Abschliessen, Kursliste Alle/Offene/Abgeschlossene |
 | [`MobileNavigationTest`](Browser/MobileNavigationTest.php) | 3 | Menü unten (390 px): „Mehr“ öffnet das Menü oben, „Neu“ öffnet „Neue Rückmeldung“ mit Cursor im Textfeld; auf dem Desktop ausgeblendet; Service Worker speichert die Offline-Seite, aber keine besuchte Seite (Chrome behandelt die Testadresse dafür als sicher, siehe `DuskTestCase`) |
-| [`TooltipsTest`](Browser/TooltipsTest.php) | 1 | Quali: Antippen einer Antwort zeigt ihre Bedeutung; kein Skript mehr von unpkg.com |
+| [`CampChecklistTest`](Browser/CampChecklistTest.php) | 2 | «Erste Schritte»: Ausblenden und Einblenden, «Qualifikationen erstellen» aus der Karte nach der Rückfrage, zurück auf der Übersicht mit dem nächsten Schritt |
+| [`FlowbitePartsTest`](Browser/FlowbitePartsTest.php) | 2 | Die vier geladenen Flowbite-Komponenten (`resources/js/libs/flowbite-parts.js`): Benutzermenü, Hilfe rechts, Meldung schliessen, Hamburger auf dem Handy; Konsole ohne Fehler. Die Kapitel der Quali sind `<details>` |
+| [`SkipLinkTest`](Browser/SkipLinkTest.php) | 1 | «Zum Inhalt springen» ist beim ersten Tab sichtbar (Font Awesomes `.sr-only` mit altem `clip` überstimmt) und Enter springt in `<main id="inhalt">` |
+| [`TooltipsTest`](Browser/TooltipsTest.php) | 1 | Quali: Antippen einer Antwort zeigt ihre Bedeutung und wählt sie an (Label zeigt auf den Radio-Knopf, Label-Klick schliesst den Tooltip nicht gleich wieder); kein Skript mehr von unpkg.com |
 | [`PhotoCropperTest`](Browser/PhotoCropperTest.php) | 1 | Profilbild: Datei wählen öffnet den Dialog, "Abbrechen" lässt das Feld leer, "Zuschneiden" legt ein PNG als data-URL ab |
 | [`VisualSnapshotTest`](Browser/VisualSnapshotTest.php) | 1 | Nur mit `SNAPSHOT_SET`, sonst übersprungen: ganzseitige Fotos aller Seiten aus `PagesRenderTest` und der Gast-Seiten, in 390, 1000 und 1440 px sowie Dark Mode (184 Fotos), für den Pixelvergleich |
 
@@ -677,7 +774,13 @@ Alle Regeln mit der Fähigkeit `manage` in [`app/Policies`](../app/Policies), re
 
 ### Ampel (Klassifizierung)
 
-Aus `ClassificationTest`: Die Farbe einer TN-Person setzen die zuständige Leitung und die Kursleitung. Gültig sind nur die drei Werte des Enums `Classification` (Rot, Gelb, Grün). Neue Personen starten mit Gelb.
+Aus `ClassificationTest` und `MultipleLeadersTest`: Die Farbe einer TN-Person setzen alle zugeteilten Leitenden und die Kursleitung. Gültig sind nur die drei Werte des Enums `Classification` (Rot, Gelb, Grün). Neue Personen starten mit Gelb.
+
+### Mehrere Leitende
+
+Aus `MultipleLeadersTest`: Eine Teilnehmende Person kann pro Kurs mehrere Leitende haben (`camp_user_leader`), alle gleichgestellt. Jede zugeteilte Leitung sieht und bearbeitet die Quali, stellt die Ampel und schliesst den Qualifikationsprozess ab. Die Leiter-Einschätzung gibt es pro Frage nur einmal: Die Leitenden füllen sie gemeinsam aus, es gilt der zuletzt gespeicherte Stand. Rückmeldungen (`posts.leader_id`) gehören weiterhin der Person, die sie geschrieben hat.
+
+Aus `Admin/LeaderAssignmentTest`: Die Kursleitung teilt auf «Leitende zuteilen» (Link auf der Personenliste) in einer Matrix zu; jedes Kreuz speichert sofort. Leitende sein können nur Personen des Kurses mit der Rolle Gruppen-, Kurs- oder Stabsleitende (`Camp::leaderOptions()`, dieselbe Regel wie im Formular «Person bearbeiten»).
 
 ### Feste Werte als Enums
 

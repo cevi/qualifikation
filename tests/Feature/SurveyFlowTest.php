@@ -233,6 +233,21 @@ class SurveyFlowTest extends TestCase
         $this->assertSame(SurveyStatus::Fertig, $s->survey->fresh()->survey_status_id);
     }
 
+    public function test_finish_button_only_while_it_can_finish()
+    {
+        $s = CampScenario::create();
+        $compare = fn () => $this->actingAs($s->gruppenleiter)->get(route('survey.compare', $s->survey))->assertOk();
+
+        $s->survey->update(['survey_status_id' => SurveyStatus::ZweiteRundeOffen]);
+        $compare()->assertDontSee('Qualifikationsprozess abschliessen')->assertDontSee('Qualifikationsprozess abgeschlossen');
+
+        $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
+        $compare()->assertSee('Qualifikationsprozess abschliessen');
+
+        $this->actingAs($s->gruppenleiter)->patch(route('survey.finish', $s->survey->id));
+        $compare()->assertDontSee('Qualifikationsprozess abschliessen')->assertSee('Qualifikationsprozess abgeschlossen');
+    }
+
     public function test_resetting_to_new_clears_both_rounds()
     {
         $s = CampScenario::create();

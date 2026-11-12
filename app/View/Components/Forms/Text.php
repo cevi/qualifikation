@@ -2,12 +2,15 @@
 
 namespace App\View\Components\Forms;
 
+use App\View\Components\Forms\Concerns\ResolvesValue;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Text extends Component
 {
+    use ResolvesValue;
+
     public string $name;
 
     public string $label;

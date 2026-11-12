@@ -6,25 +6,23 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-6">
-                {!! Form::model($chapter, ['method' => 'Patch', 'action'=>['AdminChaptersController@update',$chapter->id]]) !!}
+                <x-forms.form method="PATCH" :model="$chapter" :action="action('AdminChaptersController@update', $chapter->id)">
                     <div class="mb-2.5">
-                        {!! Form::label('number', 'Nummer:', ['class' => 'field-label']) !!}
-                        {!! Form::text('number', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="number" label="Nummer:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('name', 'Kapitel:', ['class' => 'field-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="name" label="Kapitel:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Änderungen speichern', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
-                {!! Form::model($chapter, ['method' => 'DELETE', 'action'=>['AdminChaptersController@destroy',$chapter->id]]) !!}
+                <x-forms.form method="DELETE" :model="$chapter" :action="action('AdminChaptersController@destroy', $chapter->id)">
                 <div class="mb-2.5">
-                    {!! Form::submit('Kapitel löschen', ['class' => 'button-danger'])!!}
+                    <x-forms.button type="submit" delete>Kapitel löschen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 </div>
         </div>
     </div>    

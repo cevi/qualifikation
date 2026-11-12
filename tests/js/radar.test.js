@@ -16,7 +16,7 @@ vi.mock('chart.js/auto', () => {
     return { default: Chart };
 });
 
-const { applyAnswer, initRadarCharts, isCoreCompetence, pointLabel, splitLabels } = await import(
+const { applyAnswer, applyDarkColors, initRadarCharts, isCoreCompetence, pointLabel, scaleLabel, splitLabels } = await import(
     '../../resources/js/pages/radar.js'
 );
 
@@ -39,9 +39,23 @@ describe('Beschriftungen', () => {
         ]);
     });
 
-    it('zeigt schmal nur die Nummer', () => {
-        expect(pointLabel('*2.2 Führen, Leiten', true)).toBe('*2.2');
-        expect(pointLabel('*2.2 Führen, Leiten', false)).toBe('*2.2 Führen, Leiten');
+    it('bricht lange Namen ohne Zeilenumbruch an Leerzeichen um, kurze bleiben', () => {
+        expect(splitLabels(['*2.3 Planungs- und Organisationsfähigkeit', '3.3 Ausdauer und Belastbarkeit (physisch & psychisch)', '1.1 Cevitechnik'])).toEqual([
+            ['*2.3 Planungs- und', 'Organisationsfähigkeit'],
+            ['3.3 Ausdauer und', 'Belastbarkeit (physisch', '& psychisch)'],
+            '1.1 Cevitechnik',
+        ]);
+    });
+
+    it('zeigt schmal nur die Nummer, ohne den Stern der Kernkompetenzen', () => {
+        expect(pointLabel('*2.2 Führen, Leiten', true)).toBe('2.2');
+        expect(pointLabel('*2.2 Führen, Leiten', false)).toBe('2.2 Führen, Leiten');
+        expect(pointLabel(['*2.3 Planungs- und', 'Organisationsfähigkeit'], false)).toEqual(['2.3 Planungs- und', 'Organisationsfähigkeit']);
+        expect(pointLabel('1.2 J+S', false)).toBe('1.2 J+S');
+    });
+
+    it('beschriftet die Skala wie die Antworten, die Mitte bleibt leer', () => {
+        expect([-2, -1, 0, 1, 2].map(scaleLabel)).toEqual(['', '-', '0', '+', '++']);
     });
 
     it('erkennt Kernkompetenzen am Stern, auch mehrzeilig', () => {
@@ -92,9 +106,30 @@ describe('Diagramme', () => {
         expect(created.map((chart) => chart.canvas.id)).toEqual(['radarChart-1', 'radarChart-2']);
         const [narrow, wide] = created.map((chart) => chart.config.options);
         expect(narrow.aspectRatio).toBe(1);
-        expect(narrow.scales.r.pointLabels.callback('*1.1 Cevitechnik')).toBe('*1.1');
+        expect(narrow.scales.r.pointLabels.callback('*1.1 Cevitechnik')).toBe('1.1');
         expect(wide.aspectRatio).toBe(1.4);
-        expect(wide.scales.r.pointLabels.callback('*1.1 Cevitechnik')).toBe('*1.1 Cevitechnik');
+        expect(wide.scales.r.pointLabels.callback('*1.1 Cevitechnik')).toBe('1.1 Cevitechnik');
+        expect(narrow.scales.r.ticks.display).toBe(false);
+        expect(wide.scales.r.ticks.display).toBe(true);
+    });
+
+    it('macht Kernkompetenzen fett und blau, auch wenn die Beschriftung keinen Stern mehr hat', () => {
+        initRadarCharts({ labels: ['*1.1 Cevitechnik', '1.2 J+S'], datasets: datasets() });
+
+        const { pointLabels } = created[1].config.options.scales.r;
+        expect(pointLabels.font({ index: 0, label: '1.1 Cevitechnik' }).weight).toBe('bold');
+        expect(pointLabels.font({ index: 1, label: '1.2 J+S' }).weight).toBe('normal');
+        expect(pointLabels.color({ index: 0 })).toBe('#1e429f');
+    });
+
+    it('nimmt im Dark Mode hellere Farben für die Runden', () => {
+        const data = [[{ series: 'second', borderColor: '#1a56db' }, { series: 'leader', borderColor: '#d03801' }, { label: 'ohne' }]];
+
+        applyDarkColors(data);
+
+        expect(data[0][0].borderColor).toBe('#76a9fa');
+        expect(data[0][1].pointBackgroundColor).toBe('#ff8a4c');
+        expect(data[0][2]).toEqual({ label: 'ohne' });
     });
 
     it('zeichnet nach einer angetippten Antwort das erste Diagramm neu', () => {

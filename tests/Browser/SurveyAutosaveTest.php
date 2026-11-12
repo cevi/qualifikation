@@ -10,7 +10,7 @@ use Tests\Support\CampScenario;
 
 /**
  * Quali ausfüllen ohne Speichern-Knopf: Antwort und Kommentar sind nach "Gespeichert ✓" auf dem Server
- * und nach dem Neuladen noch da. Die Logik selbst prüft tests/js/survey-autosave.test.js.
+ * und nach dem Neuladen noch da (der Kommentar ist dann schon aufgeklappt). Die Logik selbst prüft tests/js/survey-autosave.test.js.
  */
 class SurveyAutosaveTest extends DuskTestCase
 {
@@ -24,30 +24,22 @@ class SurveyAutosaveTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($s, $radio, $comment) {
             $browser->loginAs($s->gruppenleiter)->visit(route('survey.survey', $s->survey));
-            $this->openChapterOf($browser, $radio);
 
-            $this->clickCentered($browser, $radio);
+            // Der Radio-Knopf ist unsichtbar, angetippt wird sein Label; der Kommentar klappt erst auf Klick auf
+            $this->clickCentered($browser, $radio.' + label');
+            $this->clickCentered($browser, 'details[data-comment]:has('.$comment.') > summary');
             $browser->type($comment, 'Sicher im Auftritt')
-                ->waitForTextIn('button[name="action"][value="save"]', 'Gespeichert ✓');
+                ->waitForTextIn('button[name="action"][value="save"]', 'Gespeichert ✓')
+                ->assertSeeIn('[data-save-status]', 'Gespeichert');
 
-            $browser->refresh();
-            $this->openChapterOf($browser, $radio);
-            $browser->assertChecked($radio)
+            $browser->refresh()
+                ->waitFor($comment)
+                ->assertChecked($radio)
                 ->assertInputValue($comment, 'Sicher im Auftritt');
         });
 
         $saved = SurveyQuestion::findOrFail($question->id);
         $this->assertSame($plus, $saved->answer_leader_id);
         $this->assertSame('Sicher im Auftritt', $saved->comment_leader);
-    }
-
-    /**
-     * Die Fragen liegen in zugeklappten Kapiteln (Flowbite-Accordion): Überschrift des Kapitels anklicken.
-     */
-    private function openChapterOf(Browser $browser, string $selector): void
-    {
-        $chapter = $browser->script('return document.querySelector('.json_encode($selector).').closest(\'[id^="accordion-flush-body-"]\').id')[0];
-        $this->clickCentered($browser, '[data-accordion-target="#'.$chapter.'"]');
-        $browser->waitFor($selector);
     }
 }

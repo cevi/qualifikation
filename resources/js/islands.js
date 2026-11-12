@@ -4,9 +4,11 @@
  */
 import { createApp } from 'vue';
 import DataTable from './components/DataTable.vue';
+import LeaderMatrix from './components/LeaderMatrix.vue';
 
 const components = {
     'data-table': DataTable,
+    'leader-matrix': LeaderMatrix,
 };
 
 document.querySelectorAll('[data-vue-component]').forEach((element) => {

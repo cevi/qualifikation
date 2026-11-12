@@ -7,69 +7,59 @@
             <div class="min-w-0 col-span-12 sm:col-span-6">
                 <h3 class="text-3xl font-bold">Person Suchen:</h3>
                 <br>
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@add']) !!}
+                <x-forms.form :action="action('AdminUsersController@add')">
                 <div class="mb-2.5">
-                        {!! Form::label('username', 'Name:', ['class' => 'field-label']) !!}
-                        {!! Form::text('username', null, ['class' => 'field-input', 'placeholder' => 'name@abt', 'required', 'list' => 'user-suggestions', 'autocomplete' => 'off', 'data-search-url' => route('searchajaxuser')]) !!}
+                        {{-- IDs mit Präfix: das Formular «Person erstellen» daneben hat dieselben Feldnamen --}}
+                        <x-forms.text name="username" id="search_username" label="Name:" placeholder="name@abt" required list="user-suggestions" autocomplete="off" :data-search-url="route('searchajaxuser')"/>
                         <datalist id="user-suggestions"></datalist>
                 </div>
                 <div class="mb-2.5">
-                    {!! Form::label('role_id', 'Rolle:', ['class' => 'field-label']) !!}
-                    {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'field-input', 'required']) !!}
+                    <x-forms.select name="role_id" :collection="$roles" placeholder="Wähle Rolle" id="search_role_id" label="Rolle:" required/>
                 </div>
-                {!! Form::hidden('user_id') !!}
+                <x-forms.hidden name="user_id"/>
                 <div class="mb-2.5">
-                    {!! Form::submit('Person hinzufügen', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Person hinzufügen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
             <div class="min-w-0 col-span-12 sm:col-span-6">
                 <h3 class="text-3xl font-bold">Person Erstellen:</h3>
                 <br>
                 @include('includes.form_error')
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminUsersController@store',  'files' => true]) !!}
+                <x-forms.form :action="action('AdminUsersController@store')" enctype="multipart/form-data">
                 <div class="mb-2.5">
-                        {!! Form::label('username', 'Name:', ['class' => 'field-label']) !!}
-                        {!! Form::text('username', null, ['class' => 'field-input', 'placeholder' => 'name@abt', 'required']) !!}
+                        <x-forms.text name="username" label="Name:" placeholder="name@abt" required/>
                 </div>
                 <div id="user_information_form">
                     <div class="mb-2.5">
-                            {!! Form::label('email', 'E-Mail:', ['class' => 'field-label']) !!}
-                            {!! Form::text('email', null, ['class' => 'field-input', 'placeholder' => 'name@abt.ch', 'required']) !!}
+                            <x-forms.text name="email" label="E-Mail:" placeholder="name@abt.ch" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('avatar', 'Bild:', ['class' => 'field-label']) !!}
-                        {!! Form::file('avatar', ['class' => 'photo field-file']) !!}
+                        <x-forms.file name="avatar" label="Bild:" class="photo"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::hidden('cropped_photo_id', null, ['class' => 'field-input', 'id' => 'cropped_photo_id']) !!}
+                        <x-forms.hidden name="cropped_photo_id" class="field-input"/>
                     </div>
 
                     <div class="mb-2.5">
-                        {!! Form::label('role_id', 'Rolle:', ['class' => 'field-label']) !!}
-                        {!! Form::select('role_id', [''=>'Wähle Rolle'] + $roles, null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.select name="role_id" label="Rolle:" :collection="$roles" placeholder="Wähle Rolle" required/>
                     </div>
 
                     <div class="mb-2.5">
-                        {!! Form::label('group_id', 'Abteilung:', ['class' => 'field-label']) !!}
-                        {!! Form::select('group_id', [''=>'Wähle Abteilung'] + $groups, null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.select name="group_id" label="Abteilung:" :collection="$groups" placeholder="Wähle Abteilung" required/>
                     </div>
 
-                    <div class="mb-2.5">
-                        {!! Form::label('leader_id', 'Leitende:', ['class' => 'field-label']) !!}
-                        {!! Form::select('leader_id', [''=>'Leitende wählen'] + $leaders, null,  ['class' => 'field-input']) !!}
-                    </div>
+                    <x-users.leader-checkboxes :leaders="$leaders"/>
 
                     <div class="mb-2.5">
-                        {!! Form::label('password', 'Passwort:', ['class' => 'field-label']) !!}
-                        {!! Form::password('password', ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text type="password" name="password" label="Passwort:" required/>
                     </div>
                 </div>
 
                 <div class="mb-2.5">
-                    {!! Form::submit('Person erstellen', ['class' => 'button-primary'])!!}
+                    <x-forms.button type="submit">Person erstellen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
             </div>
         </div>

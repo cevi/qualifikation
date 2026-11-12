@@ -9,15 +9,14 @@
         @if (session()->has('success'))
             <x-layouts.alert id="alert-success"><strong>{!! session()->get('success') !!}</strong></x-layouts.alert>
         @endif
-        {!! Form::open(['method' => 'POST', 'action'=>'FeedbackController@store']) !!}
+        <x-forms.form :action="action('FeedbackController@store')">
         <div class="mb-2.5">
-            {!! Form::label('feedback', 'Rückmeldung:', ['class' => 'field-label']) !!}
-            {!! Form::textarea('feedback', null, ['class' => 'field-input', 'required', 'rows' => 3]) !!}
+            <x-forms.text-area name="feedback" label="Rückmeldung:" required rows="3"/>
         </div>
         <div class="mb-2.5">
-            {!! Form::submit('Rückmeldung absenden', ['class' => 'button-primary'])!!}
+            <x-forms.button type="submit">Rückmeldung absenden</x-forms.button>
         </div>
-        {!! Form::close()!!}
+        </x-forms.form>
     </section>
 
     <section

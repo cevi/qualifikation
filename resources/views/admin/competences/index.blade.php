@@ -6,23 +6,20 @@
         <x-layouts.page-title :title="$title" :help="$help"/>
         <div class="grid grid-cols-12 sm:gap-x-8">
             <div class="min-w-0 col-span-12 sm:col-span-3">
-                {!! Form::open(['action'=>'AdminCompetencesController@store']) !!}
+                <x-forms.form :action="action('AdminCompetencesController@store')">
                     <div class="mb-2.5">
-                        {!! Form::label('name', 'Beschreibung:', ['class' => 'field-label']) !!}
-                        {!! Form::text('name', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="name" label="Beschreibung:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('question_id', 'Kompetenz:', ['class' => 'field-label']) !!}
-                        {!! Form::select('question_id', [''=>'Wähle Kompetenz'] + $questions, null,  ['class' => 'field-input', 'required']) !!}
+                        <x-forms.select name="question_id" label="Kompetenz:" :collection="$questions" placeholder="Wähle Kompetenz" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('camp_type_id', 'Kurs-Typ:', ['class' => 'field-label']) !!}
-                        {!! Form::select('camp_type_id', [''=>'Wähle Kurs-Typ'] + $camp_types, null,  ['class' => 'field-input', 'required']) !!}
+                        <x-forms.select name="camp_type_id" label="Kurs-Typ:" :collection="$camp_types" placeholder="Wähle Kurs-Typ" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Kernkompetenzen erstellen', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Kernkompetenzen erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 @include('includes.form_error')
             </div>    
             <div class="min-w-0 col-span-12 sm:col-span-9">

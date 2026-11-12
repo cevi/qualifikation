@@ -17,10 +17,12 @@ class SurveyEditTest extends TestCase
         $s = CampScenario::create();
         $s->survey->update(['survey_status_id' => SurveyStatus::TnAbgeschlossen]);
 
-        $this->actingAs($s->kursleiter)
+        $html = $this->actingAs($s->kursleiter)
             ->get(route('surveys.edit', $s->survey))
             ->assertOk()
-            ->assertSee('<option value="'.SurveyStatus::TnAbgeschlossen->value.'" selected="selected">', false);
+            ->getContent();
+
+        $this->assertMatchesRegularExpression('/<option value="'.SurveyStatus::TnAbgeschlossen->value.'"\s+selected[^>]*>/', $html);
     }
 
     public function test_invalid_status_is_rejected()

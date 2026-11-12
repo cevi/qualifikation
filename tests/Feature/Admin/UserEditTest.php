@@ -16,9 +16,11 @@ class UserEditTest extends TestCase
         // Sonst würde Speichern ohne Änderung still eine andere Rolle setzen.
         $s = CampScenario::create();
 
-        $this->actingAs($s->kursleiter)
+        $html = $this->actingAs($s->kursleiter)
             ->get(route('admin.users.edit', $s->gruppenleiter))
             ->assertOk()
-            ->assertSee('<option value="'.Role::Gruppenleiter->value.'" selected="selected">', false);
+            ->getContent();
+
+        $this->assertMatchesRegularExpression('/<option value="'.Role::Gruppenleiter->value.'"\s+selected[^>]*>/', $html);
     }
 }

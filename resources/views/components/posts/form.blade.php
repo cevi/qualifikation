@@ -5,7 +5,7 @@
     </x-forms.container>
      @if($chooseFromUser)
         <x-forms.container>
-            <x-forms.select label="Benutzer:" name="camp_user_id" :collection="$campusers" :with-empty-option="true"/>
+            <x-forms.select label="Teilnehmende:" name="camp_user_id" :collection="$campusers" :with-empty-option="true"/>
         </x-forms.container>
     @endif
     <x-forms.container>
@@ -13,7 +13,7 @@
     </x-forms.container>
     <div id="delete-file-container" class="{{ $post->file ? '' : 'hidden' }}">
         <x-forms.container>
-            <x-forms.checkbox name="delete_file" id="delete_file" :label="$post->file ? 'Bestehende Datei ' . e($post->filename()) . ' löschen' : 'Bestehende Datei löschen'" :value="$post['delete_file']"/>
+            <x-forms.checkbox name="delete_file" id="delete_file" :label="$post->file ? 'Bestehende Datei ' . $post->filename() . ' löschen' : 'Bestehende Datei löschen'" :checked="(bool) $post['delete_file']"/>
         </x-forms.container>
         <p class="field-label">oder</p>
     </div>
@@ -24,7 +24,7 @@
         @endif
     </x-forms.container>
     <x-forms.container>
-       <x-forms.checkbox label="Sichtbar für Qualifikation" name="show_on_survey" value="{{$post['show_on_survey']}}"/>
+       <x-forms.checkbox label="Sichtbar für Qualifikation" name="show_on_survey" :checked="(bool) $post['show_on_survey']"/>
     </x-forms.container>
     <x-forms.container>
         <x-forms.button type="submit" class="button-primary">

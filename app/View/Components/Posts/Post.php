@@ -17,12 +17,21 @@ class Post extends Component
 
     public $user;
 
+    /** Als Karte wie «Bemerkung» (Quali, Vergleich); ohne Rückmeldungen dann gar nicht angezeigt. */
+    public bool $card;
+
+    /** Lange Texte auf drei Zeilen gekürzt, mit «Mehr» zum Aufklappen (Profil). */
+    public bool $clamp;
+
+    /** Karte füllt die Höhe des Elternelements, die Liste scrollt darin (Profil am Computer). */
+    public bool $fill;
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($posts, $showLeader, $title, $editable = true, $user = null)
+    public function __construct($posts, $showLeader, $title, $editable = true, $user = null, bool $card = false, bool $clamp = false, bool $fill = false)
     {
         //
         $this->posts = $posts;
@@ -30,6 +39,9 @@ class Post extends Component
         $this->title = $title;
         $this->editable = $editable;
         $this->user = $user;
+        $this->card = $card;
+        $this->clamp = $clamp;
+        $this->fill = $fill;
     }
 
     /**

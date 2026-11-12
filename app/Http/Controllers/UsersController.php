@@ -37,8 +37,9 @@ class UsersController extends Controller
             $help = Help::where('title', $title)->first();
             $post_new = new Post;
             $standard_texts = Helper::getStandardTextsForCamp($camp->id);
+            $leaderNames = CampUser::where('camp_id', $camp->id)->where('user_id', $aktUser->id)->first()?->leaderNames() ?? '';
 
-            return view('home.user', compact('aktUser', 'camp', 'title', 'help', 'post_new', 'standard_texts'));
+            return view('home.user', compact('aktUser', 'camp', 'title', 'help', 'post_new', 'standard_texts', 'leaderNames'));
         } else {
             return redirect()->back();
         }
@@ -149,7 +150,7 @@ class UsersController extends Controller
         $camp_user = CampUser::where('user_id', '=', $id)->where('camp_id', '=', $camp['id'])->first();
         $classification = Classification::tryFrom((int) $color);
         abort_unless($camp_user && $classification, 404);
-        if ($aktUser->isCampleader() || $aktUser['id'] == $camp_user['leader_id']) {
+        if ($aktUser->isCampleader() || $camp_user->isLedBy($aktUser)) {
             $camp_user->update(['classification_id' => $classification]);
         }
 

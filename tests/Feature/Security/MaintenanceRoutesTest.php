@@ -4,6 +4,7 @@ namespace Tests\Feature\Security;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Support\CampScenario;
 use Tests\TestCase;
@@ -98,5 +99,48 @@ class MaintenanceRoutesTest extends TestCase
 
         $this->actingAs($s->admin)->get(route('admin.maintenance'))
             ->assertSee('INFO  Clearing cached bootstrap files.');
+    }
+
+    public function test_admin_is_sent_to_maintenance_while_migrations_are_pending()
+    {
+        $s = CampScenario::create();
+        DB::table('migrations')->where('migration', '2026_10_28_000000_rename_help_titles')->delete();
+
+        $this->actingAs($s->admin)->get('/home')->assertRedirect(route('admin.maintenance'));
+        $this->actingAs($s->admin)->get(route('admin.users.index'))->assertRedirect(route('admin.maintenance'));
+        $this->actingAs($s->admin)->get(route('admin.maintenance'))
+            ->assertOk()
+            ->assertSee('1 offene Migration:')
+            ->assertDontSee('id="dropdown-users"', false);
+        // Nur Admins, die anderen können nichts migrieren.
+        $this->actingAs($s->kursleiter)->get('/home')->assertOk();
+    }
+
+    public function test_maintenance_works_when_new_code_queries_a_missing_table()
+    {
+        // Update auf mehrere Leitende (camp_user_leader): Das Menü oben fragt die neue Tabelle ab, vor der Migration
+        // stürzte jede Seite ab, auch die Wartung. Der Admin ist dafür in einem Kurs mit Teilnehmenden.
+        $s = CampScenario::create();
+        $s->admin->update(['camp_id' => $s->camp->id]);
+        Schema::drop('camp_user_leader');
+        DB::table('migrations')->where('migration', '2026_10_29_000000_create_camp_user_leader_table')->delete();
+        $admin = $s->admin->fresh();
+
+        $this->actingAs($admin)->get('/home')->assertRedirect(route('admin.maintenance'));
+        $this->actingAs($admin)->get('/posts')->assertRedirect(route('admin.maintenance'));
+        $this->actingAs($admin)->get(route('admin.maintenance'))
+            ->assertOk()
+            ->assertSee('2026_10_29_000000_create_camp_user_leader_table')
+            ->assertSee('Migrationen ausführen');
+    }
+
+    public function test_menu_is_back_when_all_migrations_ran()
+    {
+        $s = CampScenario::create();
+        $s->admin->update(['camp_id' => $s->camp->id]);
+
+        $this->actingAs($s->admin->fresh())->get(route('admin.maintenance'))
+            ->assertOk()
+            ->assertSee('id="dropdown-users"', false);
     }
 }

@@ -8,7 +8,9 @@ function renderForms(count = 1) {
             <input type="radio" name="answers[1]" value="2" id="q${i}-0" checked>
             <input type="radio" name="answers[1]" value="3" id="q${i}-plus">
             <textarea name="comments[1]"></textarea>
+            <span data-save-status>Speichert automatisch</span>
             <button type="submit" name="action" value="save">Quali speichern</button>
+            <span data-save-status>Speichert automatisch</span>
             <button type="submit" name="action" value="close">Quali speichern und abschliessen</button>
         </form>`).join('');
 
@@ -33,6 +35,7 @@ function type(form, text) {
 }
 
 const saveButton = (form) => form.querySelector('button[value="save"]');
+const statuses = (form) => [...form.querySelectorAll('[data-save-status]')].map((element) => [element.textContent, element.dataset.tone]);
 
 // Antwort des Servers, die erst auf Kommando eintrifft.
 function deferredResponse() {
@@ -106,6 +109,32 @@ describe('Quali automatisch speichern', () => {
 
         await vi.advanceTimersByTimeAsync(2000);
         expect(saveButton(form).textContent).toBe('Quali speichern');
+    });
+
+    it('zeigt in jeder Statuszeile dauerhaft, wann zuletzt gespeichert wurde', async () => {
+        vi.setSystemTime(new Date(2026, 10, 12, 18, 42));
+        const [form] = renderForms();
+        const response = deferredResponse();
+        fetchMock.mockReturnValue(response.promise);
+        await load();
+
+        choose('q0-plus');
+        await vi.advanceTimersByTimeAsync(1000);
+        expect(statuses(form)).toEqual([['Wird gespeichert …', 'busy'], ['Wird gespeichert …', 'busy']]);
+
+        response.resolve({ ok: true, redirected: false });
+        await vi.advanceTimersByTimeAsync(5000);
+        expect(statuses(form)).toEqual([['Gespeichert 18:42', 'ok'], ['Gespeichert 18:42', 'ok']]);
+    });
+
+    it('meldet in der Statuszeile, wenn nicht gespeichert wurde', async () => {
+        const [form] = renderForms();
+        fetchMock.mockResolvedValue({ ok: false, redirected: false });
+        await load();
+
+        choose('q0-plus');
+        await vi.advanceTimersByTimeAsync(5000);
+        expect(statuses(form)[0]).toEqual(['Nicht gespeichert', 'error']);
     });
 
     it.each([

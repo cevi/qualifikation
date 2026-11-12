@@ -10,23 +10,21 @@
                     <x-layouts.alert id="alert-success"><strong>{!! session()->get('success') !!}</strong></x-layouts.alert>
                 @endif
                 @include('includes.form_error')
-                {!! Form::open(['action'=>'FeedbackController@send']) !!}
+                <x-forms.form :action="action('FeedbackController@send')">
                     <div class="mb-2.5">
-                        {!! Form::label('title', 'Titel:', ['class' => 'field-label']) !!}
-                        {!! Form::text('title', null, ['class' => 'field-input', 'required']) !!}
+                        <x-forms.text name="title" label="Titel:" required/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('description', 'Beschreibung:', ['class' => 'field-label']) !!}
-                        {!! Form::textarea('description', null, ['class' => 'field-input', 'required', 'rows' => 3]) !!}
+                        <x-forms.text-area name="description" label="Beschreibung:" required rows="3"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::label('bug', 'Bug:', ['class' => 'field-label']) !!}
-                        {!! Form::checkbox('bug', '1', false) !!}
+                        <label for="bug" class="field-label">Bug:</label>
+                        <x-forms.checkbox name="bug"/>
                     </div>
                     <div class="mb-2.5">
-                        {!! Form::submit('Issue auf Github erstellen', ['class' => 'button-primary'])!!}
+                        <x-forms.button type="submit">Issue auf Github erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
             <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($feedbacks)
