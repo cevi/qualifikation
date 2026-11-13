@@ -4,7 +4,7 @@
 
 > **Beim Hinzufügen eines Tests bitte diese Datei ergänzen**, siehe [Neuen Test schreiben](#neuen-test-schreiben).
 
-Stand 10.11.2026: **417 Testfälle in 52 Dateien**, Laufzeit rund 14 Sekunden.
+Stand 13.11.2026: **440 Testfälle in 55 Dateien**, Laufzeit rund 14 Sekunden.
 Aktuelle Zahlen: `vendor/bin/phpunit --list-tests`
 
 ## Inhalt
@@ -139,7 +139,7 @@ Für Tests über mehrere Kurse einfach zwei Szenarien erzeugen: `$a = CampScenar
 | Quali-Ablauf | [`DailyTaskTest`](Feature/DailyTaskTest.php) | 2 | Nächtlicher Reset des Demo-Kurses |
 | Quali-Ablauf | [`CampFinishReminderTest`](Feature/CampFinishReminderTest.php) | 4 | Monatliche Mail „Kurs abschliessen“ an die Kursleitung |
 | Graphen | [`SpiderChartTest`](Feature/SpiderChartTest.php) | 13 | Beschriftungen, Werte, Sichtbarkeit und Farben der Spider-Graphen |
-| Quali-Ablauf | [`SurveyPagesTest`](Feature/SurveyPagesTest.php) | 7 | Aufbau von Quali und Vergleich: offene Kapitel mit Sprungleiste, Kernkompetenz mit Beschreibung, Speicherstand, Abschliessen oben und unten, Hinweis «TN selbst» für Leitende, eine Spalte pro Einschätzung, Abweichungen ab 2 Stufen, Rückmeldungen als Karte nur wenn vorhanden, Druckansicht im selben Aufbau mit allen drei Einschätzungen, in der 2. Runde die eigene erste Einschätzung als Hinweis |
+| Quali-Ablauf | [`SurveyPagesTest`](Feature/SurveyPagesTest.php) | 8 | Aufbau von Quali und Vergleich: offene Kapitel mit Sprungleiste, Kernkompetenz mit Beschreibung, Speicherstand, Abschliessen oben und unten, Hinweis «TN selbst» für Leitende, eine Spalte pro Einschätzung, Abweichungen ab 2 Stufen gegen die letzte offene Runde (`SurveyQuestion::differsFromLeader`, Vergleich und Druckansicht gleich), Rückmeldungen als Karte nur wenn vorhanden, Druckansicht im selben Aufbau mit allen drei Einschätzungen, in der 2. Runde die eigene erste Einschätzung als Hinweis |
 | Rückmeldungen | [`PostsPageTest`](Feature/PostsPageTest.php) | 2 | Seite «Rückmeldungen»: Knopf «Neue Rückmeldung» rechts im Titel, nicht zugeordnete und zugeordnete als Karten, leere Liste ausgeblendet, ohne Rückmeldungen ein Hinweis |
 | Import & Login | [`CeviDbImportTest`](Feature/CeviDbImportTest.php) | 12 | Import aus der Cevi-DB (API und JSON-Datei) |
 | Import & Login | [`HitobitoLoginTest`](Feature/HitobitoLoginTest.php) | 13 | Login über Cevi-DB und JEMK-DB, Weiterleitung mit den richtigen Scopes |

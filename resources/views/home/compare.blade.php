@@ -23,11 +23,8 @@
                 2 => 'md:grid-cols-[2.75rem_minmax(0,1fr)_repeat(2,14rem)]',
                 default => 'md:grid-cols-[2.75rem_minmax(0,1fr)_repeat(3,12.5rem)]',
             };
-            // Abweichung: Leitende und letzte Selbsteinschätzung liegen mindestens zwei Stufen auseinander
-            $selfAnswer = $columns[count($columns) - 2]['answer'] ?? null;
-            $differs = fn ($question) => ! $isParticipant && $selfAnswer
-                && $question->answer_leader && $question->{$selfAnswer}
-                && abs($question->answer_leader['count'] - $question->{$selfAnswer}['count']) >= 2;
+            // Abweichung nur für Leitende (Regel in SurveyQuestion::differsFromLeader, gleich wie in der Druckansicht)
+            $differs = fn ($question) => ! $isParticipant && $question->differsFromLeader((bool) $camp['secondsurveyopen']);
             $differences = $survey->chapters->sum(fn ($chapter) => $chapter->questions->filter($differs)->count());
             $canFinish = $survey->campUser->isLedBy($aktUser) && $survey->status() === \App\Enums\SurveyStatus::TnAbgeschlossen;
             $finished = $survey->campUser->isLedBy($aktUser) && $survey->status() === \App\Enums\SurveyStatus::Fertig;

@@ -15,6 +15,21 @@ class SurveyQuestion extends Model
         'survey_chapter_id', 'question_id', 'comment_second', 'comment_first', 'answer_first_id', 'answer_second_id', 'comment_leader', 'answer_leader_id',
     ];
 
+    /** Ab so vielen Stufen Unterschied gilt eine Einschätzung der Leitenden als Abweichung. */
+    public const DIFFERENCE_STEPS = 2;
+
+    /**
+     * Abweichung (Vergleich und Druckansicht): Leitende und die letzte offene Runde der Selbsteinschätzung liegen
+     * mindestens DIFFERENCE_STEPS Stufen auseinander. Ist die 2. Runde offen, zählt nur sie, auch wenn sie noch auf
+     * der Vorgabe «0» steht; sonst die 1. Runde.
+     */
+    public function differsFromLeader(bool $secondRoundOpen): bool
+    {
+        $self = $secondRoundOpen ? $this->answer_second : $this->answer_first;
+
+        return $self && $this->answer_leader && abs($this->answer_leader['count'] - $self['count']) >= self::DIFFERENCE_STEPS;
+    }
+
     public function answer_first()
     {
         return $this->belongsTo('App\Models\Answer', 'answer_first_id', 'id');

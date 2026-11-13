@@ -43,12 +43,8 @@
     ];
     $answers = \App\Models\Answer::all();
     $grid = 'grid grid-cols-[2.75rem_minmax(0,1fr)_repeat(3,13rem)] items-start gap-x-5';
-    // Abweichung wie im Vergleich: Leitende und letzte Selbsteinschätzung mindestens zwei Stufen auseinander
-    $differs = function ($question) {
-        $self = $question->answer_second ?? $question->answer_first;
-
-        return $self && $question->answer_leader && abs($question->answer_leader['count'] - $self['count']) >= 2;
-    };
+    // Abweichung wie im Vergleich (Regel in SurveyQuestion::differsFromLeader)
+    $differs = fn ($question) => $question->differsFromLeader((bool) ($camp['secondsurveyopen'] ?? false));
 @endphp
 <main class="mx-auto max-w-[1200px] px-[15px] py-6 md:px-8">
     @foreach ($surveys as $survey)

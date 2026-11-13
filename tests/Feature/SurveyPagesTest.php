@@ -123,10 +123,11 @@ class SurveyPagesTest extends TestCase
 
     public function test_print_view_has_the_compare_layout_with_all_assessments(): void
     {
+        $this->s->camp->update(['secondsurveyopen' => true]);
         [$differs] = $this->twoQuestions();
         SurveyQuestion::whereKey($differs->id)->update(['answer_second_id' => $this->answer('++'), 'answer_leader_id' => $this->answer('-')]);
 
-        $this->actingAs($this->s->gruppenleiter)->get(route('survey.downloadPDF', $this->s->survey))->assertOk()
+        $this->actingAs($this->s->gruppenleiter->fresh())->get(route('survey.downloadPDF', $this->s->survey))->assertOk()
             ->assertSee($this->s->participant->username)
             ->assertSee($this->s->campUser($this->s->participant)->leaderNames())
             ->assertSeeInOrder(['1. Selbsteinschätzung', '2. Selbsteinschätzung', 'Leitende'])
@@ -152,6 +153,31 @@ class SurveyPagesTest extends TestCase
 
         $this->assertStringContainsString('data-tooltip="Ausgezeichnet. Diese Kompetenz ist eine Stärke des Teilnehmenden."', $html);
         $this->assertStringNotContainsString('data-tooltip="Nicht in ausreichendem Masse. Es sind Defizite vorhanden"', $this->hintsOf($html), 'Leitenden-Bewertung bleibt verborgen');
+    }
+
+    /**
+     * Abweichung gegen die letzte offene Runde (SurveyQuestion::differsFromLeader), im Vergleich und in der Druckansicht
+     * gleich. Beim Erstellen stehen alle Runden auf «0» (AdminSurveysController@store), die 2. Runde ist also nie leer:
+     * 2. Runde zu → 1. Runde (die Druckansicht verglich mit der «0» der 2. Runde), 2. Runde offen → 2. Runde.
+     */
+    public function test_difference_uses_the_latest_open_round_in_compare_and_print(): void
+    {
+        [$question] = $this->twoQuestions();
+        SurveyQuestion::whereKey($question->id)->update(['answer_first_id' => $this->answer('++'), 'answer_second_id' => $this->answer('0'), 'answer_leader_id' => $this->answer('-')]);
+        $compare = route('survey.compare', $this->s->survey);
+        $print = route('survey.downloadPDF', $this->s->survey);
+        $badge = '>Abweichung</span>';
+
+        $this->actingAs($this->s->gruppenleiter->fresh())->get($compare)->assertOk()->assertSee('Nur Abweichungen (1)');
+        $this->get($print)->assertOk()->assertSee($badge, false);
+
+        $this->s->camp->update(['secondsurveyopen' => true]);
+        $this->actingAs($this->s->gruppenleiter->fresh())->get($compare)->assertOk()->assertDontSee('data-differs', false);
+        $this->get($print)->assertOk()->assertDontSee($badge, false);
+
+        SurveyQuestion::whereKey($question->id)->update(['answer_second_id' => $this->answer('+')]);
+        $this->actingAs($this->s->gruppenleiter->fresh())->get($compare)->assertOk()->assertSee('Nur Abweichungen (1)');
+        $this->get($print)->assertOk()->assertSee($badge, false);
     }
 
     /** Nur die Hinweise unter den Knöpfen, ohne Legende und Radio-Knöpfe. */
