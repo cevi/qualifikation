@@ -74,7 +74,7 @@
                                 $number = $question->question['number'];
                                 $current = $question[$answerField];
                             @endphp
-                            <div class="grid gap-x-5 gap-y-3 px-4 py-4 md:grid-cols-[3rem_minmax(0,1fr)_16.5rem] md:px-5">
+                            <div class="grid gap-x-5 gap-y-3 px-4 py-4 md:grid-cols-[3rem_minmax(0,1fr)_minmax(0,1fr)] md:px-5">
                                 <span class="hidden h-fit justify-center rounded-md bg-gray-100 py-0.5 text-sm font-bold text-gray-700 md:inline-flex dark:bg-gray-700 dark:text-gray-200">{{ $number }}</span>
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1">

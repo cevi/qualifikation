@@ -31,9 +31,11 @@
                 'post-card py-2' => ! $card,
                 'px-4 py-3 md:px-5 dark:text-gray-200' => $card,
             ])>
-                <div class="col-span-12 min-w-0 max-sm:w-full lg:col-span-8">
+                <div class="relative col-span-12 min-w-0 max-sm:w-full lg:col-span-8">
                     @if ($clamp && (mb_strlen($post->comment) > 220 || substr_count($post->comment, "\n") >= 3))
-                        {{-- «Mehr» ohne Skript: Checkbox vor dem Text, Labels zum Auf- und Zuklappen --}}
+                        {{-- «Mehr» ohne Skript: Checkbox vor dem Text, Labels zum Auf- und Zuklappen. Die Checkbox (sr-only = absolute) braucht
+                             das relative Elternelement oben: sonst liegt sie ausserhalb der scrollenden Liste, und beim Klick auf «Mehr»
+                             scrollt der Browser die ganze Karte (overflow-hidden) zu ihr - Kopf weg, Liste wirkt kleiner (Profil). --}}
                         <input type="checkbox" id="mehr-{{ $post->id }}" class="peer sr-only">
                         <div class="line-clamp-3 peer-checked:line-clamp-none">{!! nl2br(e($post->comment)) !!}</div>
                         <label for="mehr-{{ $post->id }}" class="mt-0.5 inline-block cursor-pointer text-sm font-medium text-blue-700 peer-checked:hidden peer-focus-visible:underline hover:underline dark:text-blue-400">Mehr</label>

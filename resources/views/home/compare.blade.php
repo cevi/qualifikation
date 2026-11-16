@@ -17,11 +17,11 @@
             if (! $isParticipant) {
                 $columns[] = ['label' => 'Leitende', 'short' => 'Leitende', 'answer' => 'answer_leader', 'comment' => 'comment_leader', 'leader' => true];
             }
-            // Feste Klassen, damit Tailwind sie findet
+            // Feste Klassen, damit Tailwind sie findet. Kompetenz 50 %, die Einschätzungen teilen sich die andere Hälfte.
             $grid = match (count($columns)) {
-                1 => 'md:grid-cols-[2.75rem_minmax(0,1fr)_15rem]',
-                2 => 'md:grid-cols-[2.75rem_minmax(0,1fr)_repeat(2,14rem)]',
-                default => 'md:grid-cols-[2.75rem_minmax(0,1fr)_repeat(3,12.5rem)]',
+                1 => 'md:grid-cols-[2.75rem_minmax(0,1fr)_minmax(0,1fr)]',
+                2 => 'md:grid-cols-[2.75rem_minmax(0,2fr)_repeat(2,minmax(0,1fr))]',
+                default => 'md:grid-cols-[2.75rem_minmax(0,3fr)_repeat(3,minmax(0,1fr))]',
             };
             // Abweichung nur für Leitende (Regel in SurveyQuestion::differsFromLeader, gleich wie in der Druckansicht)
             $differs = fn ($question) => ! $isParticipant && $question->differsFromLeader((bool) $camp['secondsurveyopen']);
@@ -100,7 +100,7 @@
                                 $diff = $differs($question);
                             @endphp
                             <div @class([
-                                'px-4 py-3 md:grid md:items-start md:gap-x-5 md:px-5',
+                                'px-4 py-3 md:grid md:items-start md:gap-x-5 md:px-5', 
                                 $grid,
                                 'group-has-[#nur-abweichungen:checked]/vergleich:hidden' => ! $diff,
                             ]) @if ($diff) data-differs @endif>
