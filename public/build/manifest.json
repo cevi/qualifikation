@@ -24,7 +24,7 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-DiQcBCi3.css",
+    "file": "assets/app-DqC18IRT.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
@@ -44,7 +44,7 @@
     ]
   },
   "resources/js/islands.js": {
-    "file": "assets/islands-CXimJtR8.js",
+    "file": "assets/islands-CsPaoVMT.js",
     "name": "islands",
     "src": "resources/js/islands.js",
     "isEntry": true
