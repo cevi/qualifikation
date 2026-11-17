@@ -24,6 +24,7 @@
         <env name="BCRYPT_ROUNDS" value="4" force="true"/>
         <env name="CACHE_DRIVER" value="array" force="true"/>
         <env name="MAIL_DRIVER" value="array" force="true"/>
+        <env name="MAIL_FROM_ADDRESS" value="noreply@example.com" force="true"/>
         <env name="MAIL_CAMP_ADDRESS" value="kursteam@example.com" force="true"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>
