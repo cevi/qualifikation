@@ -1,36 +1,33 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
-                {!! Form::open(['action'=>'AdminGroupsController@store']) !!}
-                    <div class="form-group">
-                        {!! Form::label('name', 'Name:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
+                <x-forms.form :action="action('AdminGroupsController@store')">
+                    <div class="mb-2.5">
+                        <x-forms.text name="name" label="Name:" required/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('foreign_id', 'Gruppen ID (Cevi-DB):') !!}
-                        {!! Form::text('foreign_id', null,  ['class' => 'form-control']) !!}
+                    <div class="mb-2.5">
+                        <x-forms.text name="foreign_id" label="Gruppen ID (Cevi-DB):"/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('url', 'URL (Cevi-DB):') !!}
-                        {!! Form::text('url', null,  ['class' => 'form-control']) !!}
+                    <div class="mb-2.5">
+                        <x-forms.text name="url" label="URL (Cevi-DB):"/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('api_token', 'API Token (Cevi-DB):') !!}
-                        {!! Form::text('api_token', null,  ['class' => 'form-control']) !!}
+                    <div class="mb-2.5">
+                        <x-forms.text name="api_token" label="API Token (Cevi-DB):"/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Gruppe erstellen', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        <x-forms.button type="submit">Gruppe erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($groups)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
@@ -52,6 +49,7 @@
                             </tbody>
                         @endforeach
                     </table>
+                    </div>
                 @endif
             </div>
         </div>

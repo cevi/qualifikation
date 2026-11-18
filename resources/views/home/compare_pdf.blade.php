@@ -15,99 +15,128 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#00aba9">
     <meta name="theme-color" content="#ffffff">
 
     <title>{{isset($title) ? $title . ' - ' : ''}}{{config('app.name')}}</title>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/da9e6dcf22.js" crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <!-- Styles -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
     @vite([
+        'resources/css/legacy.css',
         'resources/css/app.css',
         'resources/js/app.js'])
 </head>
 
-<body>
-<section>
-    @foreach($surveys as $survey)
-        <div class="container-fluid" style="page-break-inside:avoid; page-break-after:always;">
-            <!-- Page Header-->
-            <header>
-                <h2>Teilnehmer: {{$survey->campuser->user['username']}}</h2>
-                <h3>Leiter: {{$survey->campuser->user->leader ? $survey->campuser->user->leader['username'] : ''}} </h3>
+{{--
+    Druckansicht einer oder aller Qualis (SurveysController@downloadPDF, AdminSurveysController@downloadPDF). Aufbau
+    wie der Vergleich, aber als festes Raster mit allen drei Einschätzungen, eine Quali pro Seite. Farben der Marken
+    und der Leitenden-Spalte werden mitgedruckt (print-color-adjust). Papier: A3 aus legacy-base.css.
+--}}
+<body class="bg-white text-gray-900 [print-color-adjust:exact] [-webkit-print-color-adjust:exact]">
+@php
+    $lock = '<svg class="size-3 shrink-0" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="6" width="9" height="6.5" rx="1.2"/><path d="M4.5 6V4.2a2.5 2.5 0 0 1 5 0V6"/></svg>';
+    $columns = [
+        ['label' => '1. Selbsteinschätzung', 'answer' => 'answer_first', 'comment' => 'comment_first', 'leader' => false],
+        ['label' => '2. Selbsteinschätzung', 'answer' => 'answer_second', 'comment' => 'comment_second', 'leader' => false],
+        ['label' => 'Leitende', 'answer' => 'answer_leader', 'comment' => 'comment_leader', 'leader' => true],
+    ];
+    $answers = \App\Models\Answer::all();
+    $grid = 'grid grid-cols-[2.75rem_minmax(0,1fr)_repeat(3,13rem)] items-start gap-x-5';
+    // Abweichung wie im Vergleich (Regel in SurveyQuestion::differsFromLeader)
+    $differs = fn ($question) => $question->differsFromLeader((bool) ($camp['secondsurveyopen'] ?? false));
+@endphp
+<main class="mx-auto max-w-[1200px] px-[15px] py-6 md:px-8">
+    @foreach ($surveys as $survey)
+        <article @class(['break-after-page' => ! $loop->last, 'mb-10' => ! $loop->last])>
+            <header class="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-gray-200 pb-4">
+                <div class="min-w-0">
+                    <p class="mb-1 text-xs font-semibold tracking-wide text-gray-600 uppercase">Qualifikation{{ isset($camp) ? ' · '.$camp->name : '' }}</p>
+                    <h1 class="text-3xl leading-tight font-bold text-gray-900">
+                        {{ $survey->campuser->user['username'] }}
+                        @if (filled($survey->campuser->user->group['shortname'] ?? null))
+                            <span class="text-lg font-medium text-gray-500">{{ $survey->campuser->user->group['shortname'] }}</span>
+                        @endif
+                    </h1>
+                    <x-surveys.status-badge :survey="$survey" class="mt-2 inline-block"/>
+                </div>
+                <dl class="grid grid-cols-[auto_auto] gap-x-3 gap-y-0.5 text-sm">
+                    <dt class="text-gray-600">Leitende</dt>
+                    <dd class="m-0 font-medium">{{ $survey->campuser->leaderNames() ?: '–' }}</dd>
+                    <dt class="text-gray-600">Stand</dt>
+                    <dd class="m-0 font-medium">{{ now()->isoFormat('L') }}</dd>
+                </dl>
             </header>
+
+            <x-surveys.bewertungs-schluessel :answers="$answers" class="my-4"/>
+
             @foreach ($survey->chapters as $chapter)
-
-                <h2 class="display">
-                    {{$chapter->chapter['number']}}. {{$chapter->chapter['name']}}
-                </h2>
-
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th rowspan="2" width="50px">Nr.</th>
-                        <th rowspan="2" width="150px">Kompetenz</th>
-                        <th rowspan="2" width="300px">Thema</th>
-                        <th colspan="2" width="250">1. Selbsteinschätzung</th>
-                        <th colspan="2" width="250">2. Selbsteinschätzung</th>
-                        <th colspan="2" width="250">Leiter</th>
-                    </tr>
-                    <tr>
-                        <th width="50px"></th>
-                        <th width="200px">Kommentar</th>
-                        <th width="50px"></th>
-                        <th width="200px">Kommentar</th>
-                        <th width="50px"></th>
-                        <th width="200px">Kommentar</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($chapter->questions as $question)
-                        <tr class="{{$question->competence_text() ? 'core_competence':''}}">
-                            <td width="50px">{{$question->question['number']}}</td>
-                            <td width="150px">{{$question->question['competence']}}</td>
-                            <td width="300px">{{$question->question['name']}}</td>
-                            <td width="50px">{{$question->answer_first['name']}}</td>
-                            <td width="200px">{{$question['comment_first']}}</td>
-                            <td width="50px">{{$question->answer_second['name']}}</td>
-                            <td width="200px">{{$question['comment_second']}}</td>
-                            <td width="50px">{{$question->answer_leader['name']}}</td>
-                            <td width="200px">{{$question['comment_leader']}}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-                <br><br>
+                <section class="mb-4 overflow-hidden rounded-lg border border-gray-200 bg-white">
+                    <h2 class="m-0 break-after-avoid px-5 py-3 text-lg font-bold text-gray-900">{{ $chapter->chapter['number'] }}. {{ $chapter->chapter['name'] }}</h2>
+                    <div class="{{ $grid }} border-y border-gray-200 bg-gray-50 px-5 py-2 text-xs font-semibold tracking-wide text-gray-700 uppercase">
+                        <span>Nr.</span>
+                        <span>Kompetenz</span>
+                        @foreach ($columns as $column)
+                            <span @class(['inline-flex items-center gap-1.5', 'text-orange-600' => $column['leader']])>@if ($column['leader']){!! $lock !!}@endif{{ $column['label'] }}</span>
+                        @endforeach
+                    </div>
+                    <div class="divide-y divide-gray-100">
+                        @foreach ($chapter->questions as $question)
+                            <div class="{{ $grid }} break-inside-avoid px-5 py-3">
+                                <span class="pt-0.5 text-sm font-bold text-gray-700">{{ $question->question['number'] }}</span>
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                        <h3 class="m-0 text-sm font-semibold text-gray-900">{{ $question->question['competence'] }}</h3>
+                                        @if ($question->competence_text())
+                                            <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-800">
+                                                <svg class="size-3" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M6 1l1.5 3.2 3.5.4-2.6 2.4.7 3.5L6 8.8 2.9 10.5l.7-3.5L1 4.6l3.5-.4z"/></svg>Kern
+                                            </span>
+                                        @endif
+                                        @if ($differs($question))
+                                            <span class="inline-flex items-center rounded-full border border-orange-400 px-1.5 py-px text-[11px] font-semibold text-orange-900">Abweichung</span>
+                                        @endif
+                                    </div>
+                                    <p class="mt-0.5 mb-0 text-xs text-gray-600">{{ $question->question['name'] }}</p>
+                                </div>
+                                @foreach ($columns as $column)
+                                    <div @class([
+                                        'min-w-0',
+                                        '-mx-2 -my-1.5 rounded-md border border-orange-600 bg-orange-600/8 px-2 py-1.5' => $column['leader'],
+                                    ])>
+                                        <x-surveys.rating-chip :answer="$question->{$column['answer']}"/>
+                                        @if (filled($question[$column['comment']]))
+                                            <p class="mt-1 mb-0 text-xs text-gray-700">{!! nl2br(e($question[$column['comment']])) !!}</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
             @endforeach
-            <div>
-                <h2 class="display">Bemerkung:</h2>
-                {!! nl2br($survey['comment']) !!}
-            </div>
-            <br>
-            <div class="pagebreak">
+
+            <section class="mb-4 break-inside-avoid rounded-lg border border-gray-200 bg-white">
+                <div class="flex items-center justify-between gap-2 border-b border-gray-200 px-5 py-3">
+                    <h2 class="m-0 text-lg font-bold text-gray-900">Bemerkung</h2>
+                    <span class="inline-flex items-center gap-1 text-xs text-gray-600">{!! $lock !!} nur Leitende</span>
+                </div>
+                <div class="px-5 py-3 text-sm">
+                    @if (filled($survey['comment']))
+                        {!! nl2br(e($survey['comment'])) !!}
+                    @else
+                        <span class="text-gray-500">Keine Bemerkung.</span>
+                    @endif
+                </div>
+            </section>
+
+            <div class="break-before-page break-inside-avoid">
                 <x-surveys.radar-chart :id="$loop->iteration" :name="$survey->campuser->user['username']"/>
             </div>
-
-        </div>
-        @if(count($surveys)>1)
-            <div class="pagebreak"> </div>
-        @endif
+        </article>
     @endforeach
-</section>
+</main>
 
-
-<!-- jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
-    @include('home.radar')
+@include('home.radar')
 
 </body>
 

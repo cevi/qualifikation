@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Help;
-use App\Helper\Helper;
-use App\Models\Survey;
-use App\Models\CampUser;
+use App\Models\Post;
+use App\Services\CampChecklist;
+use App\Services\CampChecks;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -21,33 +22,24 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Übersicht nach dem Login: «Erste Schritte» (CampChecklist), Aufgaben, Zähler und eine Karte pro Quali (CampChecks).
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
-    public function index()
+    public function index(CampChecks $checks, CampChecklist $checklist)
     {
         $aktUser = Auth::user();
-        $camp = $aktUser->camp()->first();
-        $surveys = [];
-        if ($aktUser->camp) {
-            if ($aktUser->isCampleader() || $aktUser->role_id == config('status.role_Stabsleiter')) {
-                $camp_users_id = CampUser::where('camp_id', $aktUser->camp['id'])->pluck('id')->all();
-            } else {
-                $camp_users_id = CampUser::where('leader_id', $aktUser['id'])->where('camp_id', $aktUser->camp['id'])->pluck('id')->all();
-            }
-            $camp_user = CampUser::where('user_id', $aktUser['id'])->where('camp_id', $aktUser->camp['id'])->first();
-            $surveys = Survey::with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'chapters.questions.question'])
-                ->where('camp_user_id', $camp_user['id'])
-                ->orWhereIn('camp_user_id', $camp_users_id)->get()->sortBy('campuser.user.username')->values();
-        }
+        $camp = $aktUser->camp;
+        $surveys = $checks->surveysFor($aktUser);
+        // «Erste Schritte» nur für die Kursleitung, solange der Kurs offen ist
+        $steps = $camp && $aktUser->isCampleader() && $checklist->shows($camp) ? $checklist->for($camp) : null;
+        $stepsHidden = $camp && ($aktUser->demo ? session("checklist_hidden.{$camp->id}", false) : $camp->checklist_hidden);
+        $tasks = $checks->dashboardTasks($aktUser, $surveys);
+        $postCounts = Post::whereIn('camp_user_id', $surveys->pluck('camp_user_id'))
+            ->selectRaw('camp_user_id, count(*) as total')->groupBy('camp_user_id')->pluck('total', 'camp_user_id');
         $title = 'Übersicht';
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
 
-
-        $labels = Helper::GetSurveysLabels($surveys);
-        $datasets = Helper::GetSurveysDataset($surveys);
-
-        return view('home.surveys', compact('aktUser', 'camp', 'surveys', 'title', 'labels', 'datasets', 'help'));
+        return view('home.surveys', compact('aktUser', 'camp', 'surveys', 'tasks', 'postCounts', 'steps', 'stepsHidden', 'title', 'help'));
     }
 }

@@ -1,46 +1,42 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-4">
-                {!! Form::open(['method' => 'POST', 'action'=>'AdminQuestionsController@store']) !!}
-                <div class="form-group">
-                    {!! Form::label('chapter_id', 'Kapitel:') !!}
-                    {!! Form::select('chapter_id', [''=>'Wähle Kapitel'] + $chapters, null,  ['class' => 'form-control', 'required']) !!}
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-4">
+                <x-forms.form :action="action('AdminQuestionsController@store')">
+                <div class="mb-2.5">
+                    <x-forms.select name="chapter_id" label="Kapitel:" :collection="$chapters" placeholder="Wähle Kapitel" required/>
                 </div>
 
-                <div class="form-group">
-                    {!! Form::label('number', 'Nummer:') !!}
-                    {!! Form::text('number', null, ['class' => 'form-control', 'required']) !!}
+                <div class="mb-2.5">
+                    <x-forms.text name="number" label="Nummer:" required/>
                 </div>
 
-                <div class="form-group">
-                    {!! Form::label('name', 'Name:') !!}
-                    {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                <div class="mb-2.5">
+                    <x-forms.text name="name" label="Name:" required/>
                 </div>
 
-                <div class="form-group">
-                    {!! Form::label('competence', 'Kompetenz:') !!}
-                    {!! Form::text('competence', null, ['class' => 'form-control', 'required']) !!}
+                <div class="mb-2.5">
+                    <x-forms.text name="competence" label="Kompetenz:" required/>
                 </div>
 
-                <div class="form-group">
-                    {!! Form::label('sort-index', 'Index zur Anzeige im Radar (Im Uhrzeigensinn ab 12Uhr):') !!}
-                    {!! Form::text('sort-index', null, ['class' => 'form-control', 'required']) !!}
+                <div class="mb-2.5">
+                    <x-forms.text name="sort-index" label="Index zur Anzeige im Radar (Im Uhrzeigensinn ab 12Uhr):" required/>
                 </div>
 
-                <div class="form-group">
-                    {!! Form::submit('Kompetenz Erstellen', ['class' => 'btn btn-primary'])!!}
+                <div class="mb-2.5">
+                    <x-forms.button type="submit">Kompetenz erstellen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 @include('includes.form_error')
             </div>
-            <div class="col-sm-8">
+            <div class="min-w-0 col-span-12 sm:col-span-8">
                 @if ($questions)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Kapitel-Nr.</th>
@@ -64,6 +60,7 @@
                         </tbody>
                     @endforeach
                     </table>
+                    </div>
 
                 @endif
 

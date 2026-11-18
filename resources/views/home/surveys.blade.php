@@ -2,89 +2,97 @@
 
 @section('survey_content')
     <x-layouts.page-title :title="$title" :help="$help" :header=false/>
-    @if ($surveys)
-        <div class="card table-responsive">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        @if ($aktUser->isTeilnehmer() || ($aktUser->isLeader()))
-                            <th scope="col" class="px-6 py-3">Name</th>
-                        @endif
-                        @if (!$aktUser->isTeilnehmer())
-                            <th scope="col" class="px-6 py-3">Vergleich</th>
-                        @endif
-                        <th scope="col" class="px-6 py-3">Teilnehmer</th>
-                        <th scope="col" class="px-6 py-3">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @if ($surveys)
-                    @foreach ($surveys as $survey)
-                        {{-- @if($survey->MySurvey() || $aktUser->isCampleader()) --}}
-                        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-                            @if (($aktUser->isTeilnehmer() && $survey['survey_status_id'] < config('status.survey_tnAbgeschlossen')) ||
-                                $aktUser->isLeader())
-                                <td class="px-6 py-4">
-                                    @if ($survey->TNisAllowed())
-                                        <a href="{{route('survey.survey', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->SurveyName()}}</a>
-                                    @else
-                                        {{$survey->SurveyName()}}
-                                    @endif
-                                </td>
-                            @endif
-                            @if ($aktUser->isTeilnehmer() && $survey['survey_status_id'] >= config('status.survey_tnAbgeschlossen'))
-                                <td class="px-6 py-4"><a href="{{route('survey.compare', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->SurveyName()}}</a>
-                                </td>
-                            @endif
-                            @if (!$aktUser->isTeilnehmer())
-                                <td class="px-6 py-4"><a href="{{route('survey.compare', $survey->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Vergleich</a></td>
-                            @endif
-                            <td>
-                                @if (!$aktUser->isTeilnehmer())
-                                    <a href="{{route('home.profile', $survey->campuser->user->slug)}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{$survey->campuser->user['username']}} {{$survey->campuser->user->group['shortname'] ?? ''}}</a>
-                                @else
-                                    {{$survey->campuser->user['username']}} {{$survey->campuser->user->group['shortname'] ?? ''}}
-                                @endif
-                            </td>
-                            <td class="px-6 py-4">{{$survey->survey_status['name']}}</td>
-                        </tr>
-                        {{-- @endif --}}
-                    @endforeach
-
+    @if (! $camp || $camp->global_camp)
+        {{-- Neue Benutzer landen im Global-Camp, dort gibt es keine Qualifikationen --}}
+        @php
+            $otherCamps = $aktUser->camps->where('global_camp', false)->count();
+        @endphp
+        <section class="panel max-w-2xl">
+            <div class="panel-body">
+                <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Noch kein Kurs</h2>
+                @if ($otherCamps)
+                    <p class="mb-4 text-gray-600 dark:text-gray-300">Du bist im Global-Camp. Wechsle oben unter «Meine Kurse» zu einem deiner Kurse oder erstelle einen neuen.</p>
+                @else
+                    <p class="mb-4 text-gray-600 dark:text-gray-300">Erstelle deinen Kurs, um Leitende und Teilnehmende zu erfassen und die Qualifikationen zu starten.</p>
                 @endif
+                @unless ($aktUser->demo)
+                    <a href="{{ route('home.camps.create') }}" class="button-primary inline-block">Kurs erstellen</a>
+                @endunless
+                <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Nimmst du an einem Kurs teil? Dann fügt dich deine Kursleitung hinzu.</p>
+            </div>
+        </section>
+    @else
+        <p class="-mt-6 mb-6 text-sm text-gray-500 dark:text-gray-400">{{ collect([$camp->name, $camp->camp_type['name'] ?? null])->filter()->implode(' · ') }}</p>
 
-                </tbody>
-            </table>
-        </div>
-        @if ($aktUser->isLeader())
-            <div
-                class="grid mb-8 border border-gray-200 rounded-lg shadow-2xs dark:border-gray-700 md:mb-12 md:grid-cols-2">
+        @if ($steps)
+            <x-dashboard.checklist :checklist="$steps" :hidden="$stepsHidden"/>
+        @endif
 
-                @foreach($surveys as $survey)
-                    <figure
-                        class="flex flex-col items-center justify-center p-8 text-center border-b border-gray-200 rounded-t-lg md:rounded-t-none md:rounded-tl-lg md:border-r dark:bg-gray-800 dark:border-gray-700"
-                        id="Chart-{{$loop->iteration}}">
-                        <!-- Recent Activities Widget      -->
-                        <blockquote class="max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
-                            <a href="{{route('survey.compare',$survey['slug'])}}" target="blank">
-
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                    {{$survey->campuser->user['username']}} - {{$survey->survey_status['name']}}
-                                </h3>
-                            </a>
-                        </blockquote>
-                        <canvas id="radarChart-{{$loop->iteration}}" width="100%"
-                                height="100%"></canvas>
-                    </figure>
+        @unless ($aktUser->isTeilnehmer())
+            @php
+                $toClose = $surveys->filter(fn ($survey) => $survey->status() === \App\Enums\SurveyStatus::TnAbgeschlossen)->count();
+                $counters = [
+                    ['count' => $surveys->count(), 'label' => 'Teilnehmende', 'link' => '#teilnehmende'],
+                    ['count' => $toClose, 'label' => 'Zum Abschliessen', 'link' => '#teilnehmende'],
+                    ['count' => $postCounts->sum(), 'label' => 'Rückmeldungen', 'link' => '/posts'],
+                ];
+            @endphp
+            <div class="mb-6 grid grid-cols-3 gap-2 sm:max-w-xl">
+                @foreach ($counters as $counter)
+                    <a href="{{ $counter['link'] }}" class="rounded-lg border border-gray-200 bg-white px-2 py-3 text-center shadow-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <span class="block text-2xl font-bold text-gray-900 dark:text-white">{{ $counter['count'] }}</span>
+                        <span class="block text-xs text-gray-500 dark:text-gray-400">{{ $counter['label'] }}</span>
+                    </a>
                 @endforeach
             </div>
+        @endunless
+
+        @if ($tasks->isNotEmpty())
+            <section id="aufgaben" class="panel scroll-mt-24 overflow-hidden">
+                <h2 class="panel-header m-0 text-sm font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                    {{ $aktUser->isTeilnehmer() ? 'Aufgabe' : 'Aufgaben · '.$tasks->count() }}
+                </h2>
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach ($tasks->take(5) as $task)
+                        <x-dashboard.task :title="$task['title']" :subtitle="$task['subtitle']" :level="$task['level']" :link="$task['link']"/>
+                    @endforeach
+                </ul>
+                @if ($tasks->count() > 5)
+                    <details class="group border-t border-gray-200 dark:border-gray-700">
+                        <summary class="cursor-pointer list-none px-4 py-3 text-center text-sm text-blue-600 group-open:hidden dark:text-blue-500">
+                            + {{ $tasks->count() - 5 }} weitere anzeigen
+                        </summary>
+                        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach ($tasks->skip(5) as $task)
+                                <x-dashboard.task :title="$task['title']" :subtitle="$task['subtitle']" :level="$task['level']" :link="$task['link']"/>
+                            @endforeach
+                        </ul>
+                    </details>
+                @endif
+            </section>
         @endif
-    @endif
 
+        <section id="teilnehmende" class="scroll-mt-24">
+            <h2 class="mb-3 text-sm font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
+                @if ($aktUser->isTeilnehmer())
+                    Meine Qualifikation
+                @elseif ($aktUser->isCampleader())
+                    Teilnehmende
+                @else
+                    Meine Teilnehmenden
+                @endif
+            </h2>
+            @if ($surveys->isEmpty())
+                <p class="mb-8">
+                    {{ $aktUser->isTeilnehmer() ? 'Für dich ist noch keine Qualifikation erstellt.' : 'Hier erscheinen die Qualifikationen, sobald sie erstellt und dir Teilnehmende zugeteilt sind.' }}
+                </p>
+            @else
+                <div class="mb-8 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    @foreach ($surveys as $survey)
+                        <x-surveys.participant-card :survey="$survey" :akt-user="$aktUser" :post-count="$postCounts[$survey->camp_user_id] ?? 0"/>
+                    @endforeach
+                </div>
+            @endif
+        </section>
+    @endif
 @endsection
-
-@push('scripts')
-    @if ($aktUser->isLeader())
-        @include('home.radar')
-    @endif
-@endpush

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
+use App\Enums\SurveyStatus;
 use App\Helper\Helper;
 use App\Models\Answer;
 use App\Models\Chapter;
@@ -10,19 +12,20 @@ use App\Models\Question;
 use App\Models\Survey;
 use App\Models\SurveyChapter;
 use App\Models\SurveyQuestion;
-use App\Models\SurveyStatus;
+use App\Models\SurveyStatus as SurveyStatusModel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Validation\Rule;
 
 class AdminSurveysController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -30,91 +33,73 @@ class AdminSurveysController extends Controller
         $camp = Auth::user()->camp;
         $title = 'Qualifikationen';
 
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $hasSurveys = $camp->surveys()->exists();
 
         return view('admin.surveys.index', compact('camp', 'title', 'help', 'hasSurveys'));
     }
 
-    public function createDataTables()
+    /**
+     * Zeilen der Quali-Liste (admin/surveys/index, Vue-Tabelle): nur Text und URLs, Links und Status baut die Tabelle.
+     */
+    public function tableData()
     {
-        //
-
         if (! Auth::user()->isAdmin()) {
-            $camp = Auth::user()->camp;
-            $surveys = $camp->surveys;
+            $surveys = Auth::user()->camp->surveys;
         } else {
             $surveys = Survey::all();
         }
+        $surveys->load(['campuser.user.group', 'campuser.leaders', 'campuser.camp']);
+        $names = SurveyStatusModel::pluck('name', 'id');
 
-        return DataTables::of($surveys)
-            ->addColumn('user', function ($survey) {
-                $username = $survey->campuser ? $survey->campuser->user['username']: '';
+        return response()->json(['data' => $surveys->map(function (Survey $survey) use ($names) {
+            $campUser = $survey->campuser;
+            $status = $survey->status();
+            // Ohne zweite Runde fehlt der Schritt "2. offen".
+            $steps = array_filter(SurveyStatus::cases(), fn (SurveyStatus $step) => $campUser->camp['secondsurveyopen'] || $step !== SurveyStatus::ZweiteRundeOffen);
 
-                return '<a href='.\URL::route('home.profile', $survey->campuser->user['slug']).' title="Zum Profil" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">'.$username.'</a>';
-            })
-            ->addColumn('group', function (Survey $survey) {
-                return $survey->campuser->user->group ? $survey->campuser->user->group['shortname'] : '';
-            })
-            ->addColumn('responsible', function (Survey $survey) {
-                return $survey->campuser->leader ? $survey->campuser->leader['username'] : '';
-            })
-            ->addColumn('camp', function (Survey $survey) {
-                return $survey->campuser->camp['name'];
-            })
-            ->addIndexColumn()
-            ->addColumn('status', function ($survey) {
-                $camp = $survey->campuser->camp;
-                if(!$camp['secondsurveyopen']) {
-                    $survey_statuses_id = [config('status.survey_neu'),
-                        config('status.survey_1offen'),
-                        config('status.survey_tnAbgeschlossen'),
-                        config('status.survey_fertig'),];
-                }
-                else{
-                    $survey_statuses_id = [config('status.survey_neu'),
-                        config('status.survey_1offen'),
-                        config('status.survey_2offen'),
-                        config('status.survey_tnAbgeschlossen'),
-                        config('status.survey_fertig'), ];
-                }
-                $result = '<div class="card card-progress">
-                <ul id="progressbar" class="text-center">';
-                foreach ($survey_statuses_id as $status_id) {
-                    $survey_status = SurveyStatus::findOrFail($status_id);
-                    $step = $survey->survey_status_id >= $survey_status['id'] ? 'active' : '';
-                    $result = $result.'<li class="'.$step.' step0" title="'.$survey_status['name'].'"></li>';
-                }
-
-                return $result . "</ul></div>";
-            })
-            ->addColumn('Actions', function ($survey) {
-                return '<a href='.\URL::route('survey.compare', $survey['slug']).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Zur Qualifikationen</a><br><br>
-                <a href='.\URL::route('surveys.edit', $survey->slug).' class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Bearbeiten</a>';
-            })
-            ->rawColumns(['user', 'Actions', 'status'])
-            ->make(true);
+            return [
+                'id' => $survey->id,
+                'name' => $campUser->user->username,
+                'profile_url' => route('home.profile', $campUser->user->slug),
+                'leader' => $campUser->leaderNames(),
+                'camp' => $campUser->camp->name,
+                'group' => $campUser->user->group?->shortname ?? '',
+                // Badge mit Text, Fortschritt "Schritt x von y"; sortiert wird nach dem Ablauf
+                'status' => [
+                    'display' => $names[$status->value],
+                    'sort' => $status->value,
+                    'tone' => $status->tone(),
+                    'step' => count(array_filter($steps, fn (SurveyStatus $step) => $status->isAtLeast($step))),
+                    'steps' => count($steps),
+                ],
+                'phase' => $status->phase(),
+                'actions' => [
+                    ['label' => 'Zur Qualifikation', 'url' => route('survey.compare', $survey->slug)],
+                    ['label' => 'Bearbeiten', 'url' => route('surveys.edit', $survey->slug)],
+                ],
+            ];
+        })->values()]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Erstellt die Qualifikationen für alle Teilnehmenden des aktuellen Kurses, die noch keine haben.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function create()
+    public function store()
     {
-        //
+        $camp = Auth::user()->camp;
 
-        if (! Auth::user()->demo) {
-            $camp = Auth::user()->camp;
+        // Das Global-Camp hat keinen Kurstyp und damit keine Kapitel.
+        if (! Auth::user()->demo && $camp->camp_type) {
             $camp_users = $camp->camp_users()->doesntHave('surveys')->get();
             $camp_type = $camp->camp_type;
             $answer = Answer::where('name', '0')->first();
-            if($camp_type['default_type']) {
-                $chapters = Chapter::where('default_chapter',true)->get();
-            }
-            else{
-                $chapters = Chapter::where('camp_type_id',$camp_type['id'])->get();
+            if ($camp_type['default_type']) {
+                $chapters = Chapter::where('default_chapter', true)->get();
+            } else {
+                $chapters = Chapter::where('camp_type_id', $camp_type['id'])->get();
             }
 
             foreach ($camp_users as $camp_user) {
@@ -122,7 +107,7 @@ class AdminSurveysController extends Controller
                 $input['camp_user_id'] = $camp_user->id;
                 $user = User::find($camp_user['user_id']);
                 $input['slug'] = Str::uuid();
-                $input['survey_status_id'] = config('status.survey_neu');
+                $input['survey_status_id'] = SurveyStatus::Neu;
                 $survey = Survey::create($input);
                 foreach ($chapters as $chapter) {
                     $input['chapter_id'] = $chapter->id;
@@ -140,6 +125,12 @@ class AdminSurveysController extends Controller
                 }
             }
         }
+
+        // Aus «Erste Schritte» als normales Formular abgeschickt, sonst per fetch von der Quali-Liste
+        if (request()->input('from') === 'dashboard') {
+            return redirect('/home');
+        }
+
         return true;
     }
 
@@ -147,19 +138,18 @@ class AdminSurveysController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Survey $survey)
     {
-        //
-        // $survey = Survey::findOrFail($id);
+        $this->authorize('manage', $survey);
         $users = Auth::user()->camp->participants->pluck('username', 'id')->all();
-        $leaders = User::where('role_id', config('status.role_Gruppenleiter'))->pluck('username', 'id')->all();
-        $survey_statuses_id = SurveyStatus::pluck('name', 'id')->all();
+        $leaders = User::where('role_id', Role::Gruppenleiter)->pluck('username', 'id')->all();
+        $survey_statuses_id = SurveyStatusModel::pluck('name', 'id')->all();
         $user_id = $survey->campUser->user();
         $title = 'Qualifikation bearbeiten';
 
-        $help = Help::where('title',$title)->first();
+        $help = Help::where('title', $title)->first();
         $help['main_route'] = '/admin/surveys';
         $help['main_title'] = 'Qualifikationen';
 
@@ -169,26 +159,26 @@ class AdminSurveysController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $survey = Survey::findOrFail($id);
+        $this->authorize('manage', $survey);
+        $request->validate(['survey_status_id' => ['required', Rule::enum(SurveyStatus::class)]]);
         if (! Auth::user()->demo) {
-            $input = $request->all();
-            $survey = Survey::findOrFail($id);
-            $camp = Auth::user()->camp;
-            if (isset($input['update'])) {
-                if ($input['survey_status_id'] == config('status.survey_neu')) {
+            $status = SurveyStatus::from($request->integer('survey_status_id'));
+            // "Antworten zurücksetzen": zurück auf Neu leert beide Runden, zurück auf 1. offen die zweite.
+            if ($request->has('update')) {
+                if ($status === SurveyStatus::Neu) {
                     Helper::clearsurvey($survey, 'first');
                 }
-                if ($input['survey_status_id'] <= config('status.survey_1offen')) {
+                if ($status->isFirstRound()) {
                     Helper::clearsurvey($survey, 'second');
                 }
             }
-            $survey->update($input);
+            $survey->update(['survey_status_id' => $status]);
         }
 
         return redirect('/admin/surveys');
@@ -202,19 +192,22 @@ class AdminSurveysController extends Controller
         $labels = Helper::GetSurveysLabels($surveys);
         $datasets = Helper::GetSurveysDataset($surveys);
 
-        return view('home.compare_pdf', compact('surveys', 'camp', 'labels' , 'datasets'));
+        return view('home.compare_pdf', compact('surveys', 'camp', 'labels', 'datasets'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Survey $survey)
     {
-        //
-        $survey->delete();
+        $this->authorize('manage', $survey);
+        if (! Auth::user()->demo) {
+            $survey->delete();
+        }
+
         return redirect('/admin/surveys');
     }
 }

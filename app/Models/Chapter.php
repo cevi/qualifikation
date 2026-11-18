@@ -8,7 +8,7 @@ class Chapter extends Model
 {
     //
     protected $fillable = [
-        'name', 'number', 'camp_type_id'
+        'name', 'number', 'camp_type_id',
     ];
 
     public function questions()
@@ -28,7 +28,7 @@ class Chapter extends Model
 
     public function user()
     {
-        return $this->hasOneThrough(User::class,CampType::class,
-            'id','id','camp_type_id','user_id');
+        return $this->hasOneThrough(User::class, CampType::class,
+            'id', 'id', 'camp_type_id', 'user_id');
     }
 }

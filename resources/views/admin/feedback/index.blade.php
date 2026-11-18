@@ -1,42 +1,35 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
                 @if (session()->has('success'))
-                    <div class="alert alert-dismissable alert-success">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <strong>
-                            {!! session()->get('success') !!}
-                        </strong>
-                    </div>
+                    <x-layouts.alert id="alert-success"><strong>{!! session()->get('success') !!}</strong></x-layouts.alert>
                 @endif
-                {!! Form::open(['action'=>'FeedbackController@send']) !!}
-                    <div class="form-group">
-                        {!! Form::label('title', 'Titel:') !!}
-                        {!! Form::text('title', null, ['class' => 'form-control', 'required']) !!}
+                @include('includes.form_error')
+                <x-forms.form :action="action('FeedbackController@send')">
+                    <div class="mb-2.5">
+                        <x-forms.text name="title" label="Titel:" required/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('description', 'Beschreibung:') !!}
-                        {!! Form::textarea('description', null, ['class' => 'form-control', 'required', 'rows' => 3]) !!}
+                    <div class="mb-2.5">
+                        <x-forms.text-area name="description" label="Beschreibung:" required rows="3"/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('bug', 'Bug:') !!}
-                        {!! Form::checkbox('bug', '1', false) !!}
+                    <div class="mb-2.5">
+                        <label for="bug" class="field-label">Bug:</label>
+                        <x-forms.checkbox name="bug"/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Issue auf Github erstellen', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        <x-forms.button type="submit">Issue auf Github erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($feedbacks)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Feedback</th>
@@ -52,6 +45,7 @@
                             </tbody>
                         @endforeach
                     </table>
+                    </div>
                 @endif
             </div>
         </div>

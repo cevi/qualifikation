@@ -140,7 +140,7 @@ class LoginController extends Controller
     {
         $hitobitoEmail = $socialiteUser->getEmail();
         if ($user->email != $hitobitoEmail && User::where('email', $hitobitoEmail)->doesntExist()) {
-            //Update email only if it is not occupied by someone else
+            // Update email only if it is not occupied by someone else
             $user->email = $hitobitoEmail;
             $user->save();
         }

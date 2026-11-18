@@ -19,7 +19,6 @@ class LogVerifiedUser
     /**
      * Handle the event.
      *
-     * @param  \Illuminate\Auth\Events\Verified  $event
      * @return void
      */
     public function handle(Verified $event)

@@ -2,40 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use Validator;
-use App\Models\Help;
 use App\Models\Chapter;
-use App\Models\CampType;
+use App\Models\Help;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class AdminChaptersController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         //
         $user = Auth::user();
-        if($user->isAdmin()) {
+        if ($user->isAdmin()) {
             $chapters = Chapter::all();
-        }
-        else{
+        } else {
             $chapters = $user->camp->camp_type->chapters;
         }
-        $title = "Kapitel";
-        $help = Help::where('title',$title)->first();
+        $title = 'Kapitel';
+        $help = Help::where('title', $title)->first();
+
         return view('admin.chapters.index', compact('chapters', 'title', 'help'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -52,19 +51,21 @@ class AdminChaptersController extends Controller
 
         if ($validator->fails()) {
             return redirect('admin/chapters')
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $user = Auth::user();
-        if(!$user->demo) {
+        if (! $user->demo) {
 
             $input = $request->all();
-            if (!$user->isAdmin()) {
+            if (! $user->isAdmin()) {
                 $camp_type = $user->camp->camp_type;
                 $input['camp_type_id'] = $camp_type['id'];
             }
-            Chapter::create($input);
+            $chapter = new Chapter($input);
+            $this->authorize('manage', $chapter);
+            $chapter->save();
         }
 
         return redirect('admin/chapters');
@@ -74,14 +75,15 @@ class AdminChaptersController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
         //
         $chapter = Chapter::findOrFail($id);
-        $title = "Kapitel bearbeiten";
-        $help = Help::where('title',$title)->first();
+        $this->authorize('manage', $chapter);
+        $title = 'Kapitel bearbeiten';
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Kapitel';
         $help['main_route'] = '/admin/chapters';
 
@@ -91,14 +93,15 @@ class AdminChaptersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
         //
-        Chapter::findOrFail($id)->update($request->all());
+        $chapter = Chapter::findOrFail($id);
+        $this->authorize('manage', $chapter);
+        $chapter->update($request->only(['name', 'number']));
 
         return redirect('/admin/chapters');
     }
@@ -107,12 +110,14 @@ class AdminChaptersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
         //
-        Chapter::findOrFail($id)->delete();
+        $chapter = Chapter::findOrFail($id);
+        $this->authorize('manage', $chapter);
+        $chapter->delete();
 
         return redirect('/admin/chapters');
     }

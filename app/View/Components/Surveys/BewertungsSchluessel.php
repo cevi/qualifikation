@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Surveys;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class BewertungsSchluessel extends Component
@@ -22,7 +23,7 @@ class BewertungsSchluessel extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|\Closure|string
      */
     public function render()
     {

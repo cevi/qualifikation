@@ -45,7 +45,7 @@
                                     document.getElementById('camps-update-form-{{$userCamp['id']}}').submit();">
                             {{$userCamp['name']}}
                         </a>
-                        @if(!Auth::user()->demo && $userCamp->user['id']===Auth::user()->id)
+                        @if(!Auth::user()->demo && $userCamp->user_id === Auth::user()->id)
                             <a class="py-2 px-3 text-gray-400 hover:text-blue-600 dark:hover:text-white transition-colors duration-150 flex items-center justify-center"
                                href="{{route('admin.camps.edit',$userCamp)  }}">
                                 <i class="fa-solid fa-pen-to-square text-sm"></i>

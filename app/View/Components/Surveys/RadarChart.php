@@ -2,19 +2,21 @@
 
 namespace App\View\Components\Surveys;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class RadarChart extends Component
 {
-
     public $id;
+
     public $name;
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($id = 1, $name= '')
+    public function __construct($id = 1, $name = '')
     {
         $this->id = $id;
         $this->name = $name;
@@ -23,7 +25,7 @@ class RadarChart extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|\Closure|string
      */
     public function render()
     {

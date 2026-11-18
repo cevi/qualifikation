@@ -2,9 +2,8 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\UsersController;
+use App\Models\Camp;
 use App\Models\User;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
@@ -23,8 +22,8 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 // Route::get('/', 'HomeController@index');
 
 Route::get('/', function () {
-    $camp_counter = \App\Models\Camp::where('finish', '=', true)->where('counter', '>', 0)->get()->count();
-    $survey_counter = \App\Models\Camp::where('finish', '=', true)->where('counter', '>', 0)->sum('counter');
+    $camp_counter = Camp::where('finish', '=', true)->where('counter', '>', 0)->get()->count();
+    $survey_counter = Camp::where('finish', '=', true)->where('counter', '>', 0)->sum('counter');
 
     return view('welcome', compact('camp_counter', 'survey_counter'));
 });
@@ -56,18 +55,9 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
+
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
-Route::get('admin/run-migrations', function () {
-    return Artisan::call('migrate', ['--force' => true]);
-});
-
-Route::get('admin/run-deployment', function () {
-    Artisan::call('optimize:clear');
-
-    return true;
-});
 
 Auth::routes(['register' => false, 'verify' => true]);
 
@@ -91,59 +81,68 @@ Route::group(['middleware' => 'verified'], function () {
     Route::patch('/compare/{id}', ['as' => 'survey.finish', 'uses' => 'SurveysController@finish']);
     Route::get('/compare/{survey}/downloadPDF', ['as' => 'survey.downloadPDF', 'uses' => 'SurveysController@downloadPDF']);
 
-    Route::resource('/posts', 'PostController');
-    Route::get('/posts/downloadFile/{id}', ['as'=>'downloadFile','uses'=>'PostController@downloadFile']);
+    Route::resource('/posts', 'PostController')->except(['create', 'show', 'update']);
+    Route::get('/posts/downloadFile/{id}', ['as' => 'downloadFile', 'uses' => 'PostController@downloadFile']);
 
     Route::get('/user/{user}', ['as' => 'home.user', 'uses' => 'UsersController@index']);
     Route::get('/profile/{user}', ['as' => 'home.profile', 'uses' => 'UsersController@edit']);
-    Route::get('/profile/{user}/posts/{post}/edit', ['as' => 'profile.post.edit', 'uses' => 'UsersController@editPost']);
     Route::post('/profile/{user}/posts/storePost', ['as' => 'profile.post.store', 'uses' => 'UsersController@storePost']);
     Route::patch('/changeClassifications/{id}/{color}', ['as' => 'users.changeClassifications', 'uses' => 'UsersController@changeClassifications']);
     Route::patch('/user/{id}', ['as' => 'home.update', 'uses' => 'UsersController@update']);
 
     Route::resource('/camps', 'CampsController', ['as' => 'home'])->only(['create', 'store', 'update']);
-    Route::resource('/camp_types', 'CampTypesController')->only(['create','store']);
-
-    Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
+    Route::resource('/camp_types', 'CampTypesController')->only(['create', 'store']);
 
     Route::group(['middleware' => 'campleader'], function () {
         Route::get('/admin', 'AdminController@index');
 
         Route::get('/admin/changes', 'AdminController@changes');
-        Route::resource('/admin/feedback', 'FeedbackController');
-        Route::post('users/feedback/send', 'FeedbackController@send');
+        // Rückmeldungen zum Tool geben alle Kursleitenden ab, verwalten nur Admins (siehe unten).
+        Route::resource('/admin/feedback', 'FeedbackController')->only(['store']);
 
+        Route::get('admin/users/searchajaxuser', ['as' => 'searchajaxuser', 'uses' => 'AdminUsersController@searchResponseUser']);
+        // Vor der Ressource, sonst fängt admin/users/{user} die Adresse ab.
+        Route::get('admin/users/leaders', ['as' => 'admin.leaders.index', 'uses' => 'LeaderAssignmentController@index']);
+        // Ohne scoped bindings, sonst sucht Laravel {leader} nur unter den bereits zugeteilten Leitenden (CampUser::leaders()).
+        Route::put('admin/users/leaders/{campUser}/{leader:id}', ['as' => 'admin.leaders.assign', 'uses' => 'LeaderAssignmentController@update'])->withoutScopedBindings();
+        Route::delete('admin/users/leaders/{campUser}/{leader:id}', ['as' => 'admin.leaders.unassign', 'uses' => 'LeaderAssignmentController@destroy'])->withoutScopedBindings();
         Route::resource('admin/users', 'AdminUsersController', ['as' => 'admin']);
-        Route::get('users/createDataTables', ['as' => 'users.CreateDataTables', 'uses' => 'AdminUsersController@createDataTables']);
+        Route::get('users/table', ['as' => 'users.table', 'uses' => 'AdminUsersController@tableData']);
         Route::post('admin/users/uploadFile', 'AdminUsersController@uploadFile');
-        Route::get('admin/users/download', ['as' => 'users.download', 'uses' => 'AdminUsersController@download']);
         Route::post('admin/users/import', ['as' => 'users.import', 'uses' => 'AdminUsersController@import']);
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
 
-        Route::resource('admin/answers', 'AdminAnswersController');
-
-        Route::get('admin/camps/export/',  ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
+        Route::get('admin/camps/export/', ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
+        Route::post('admin/camps/checklist', ['as' => 'admin.camps.checklist', 'uses' => 'AdminCampsController@checklist']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
-        Route::get('camps/createDataTables', ['as' => 'camps.CreateDataTables', 'uses' => 'AdminCampsController@createDataTables']);
-        
+        Route::get('camps/table', ['as' => 'camps.table', 'uses' => 'AdminCampsController@tableData']);
+
         Route::resource('admin/camp_types', 'CampTypesController', ['as' => 'admin']);
 
-        Route::resource('admin/standard_texts', 'StandardTextsController', ['as' => 'admin']);
+        Route::resource('admin/standard_texts', 'StandardTextsController', ['as' => 'admin'])->except(['create']);
 
-        Route::resource('admin/questions', 'AdminQuestionsController');
-        Route::post('admin/questions/uploadFile', 'AdminQuestionsController@uploadFile');
+        Route::resource('admin/questions', 'AdminQuestionsController')->except(['show']);
 
-        Route::resource('admin/surveys', 'AdminSurveysController');
-        Route::get('surveys/createDataTables', ['as' => 'surveys.CreateDataTables', 'uses' => 'AdminSurveysController@createDataTables']);
+        Route::resource('admin/surveys', 'AdminSurveysController')->except(['create', 'show']);
+        Route::get('surveys/table', ['as' => 'surveys.table', 'uses' => 'AdminSurveysController@tableData']);
         Route::get('surveys/downloadPDF', ['as' => 'surveys.downloadPDF', 'uses' => 'AdminSurveysController@downloadPDF']);
 
-        Route::resource('admin/chapters', 'AdminChaptersController');
-        Route::resource('admin/competences', 'AdminCompetencesController');
-        Route::resource('admin/classifications', 'AdminClassificationController');
-        Route::resource('admin/groups', 'AdminGroupsController');
+        Route::resource('admin/chapters', 'AdminChaptersController')->except(['create', 'show']);
+        Route::resource('admin/competences', 'AdminCompetencesController')->except(['create', 'show']);
 
-        Route::resource('admin/helps', 'AdminHelpController');
-
+        // Globale Stammdaten. Kursleitende können sich selbst registrieren und sind dafür nicht berechtigt.
+        Route::group(['middleware' => 'admin'], function () {
+            // Wartung ohne SSH (Migrationen, Cache leeren); der Container migriert zusätzlich beim Start selbst.
+            Route::get('admin/maintenance', ['as' => 'admin.maintenance', 'uses' => 'MaintenanceController@index']);
+            Route::post('admin/maintenance/migrate', ['as' => 'admin.maintenance.migrate', 'uses' => 'MaintenanceController@migrate']);
+            Route::post('admin/maintenance/clear-cache', ['as' => 'admin.maintenance.clear-cache', 'uses' => 'MaintenanceController@clearCache']);
+            Route::resource('/admin/feedback', 'FeedbackController')->except(['store']);
+            Route::post('users/feedback/send', 'FeedbackController@send');
+            Route::resource('admin/answers', 'AdminAnswersController');
+            Route::resource('admin/classifications', 'AdminClassificationController')->only(['index', 'edit', 'update']);
+            Route::resource('admin/groups', 'AdminGroupsController');
+            Route::resource('admin/helps', 'AdminHelpController');
+        });
     });
 });

@@ -1,35 +1,33 @@
 @extends('layouts.admin')
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help_article"/>
-        <div class="row">
+        <div class="grid grid-cols-12 sm:gap-x-8">
 
-            <div class="col-sm-6">
+            <div class="min-w-0 col-span-12 sm:col-span-6">
 
-                {!! Form::model($help, ['method' => 'PATCH', 'action'=>['AdminHelpController@update' , $help]]) !!}
-                <div class="form-group">
-                    {!! Form::label('title', 'Titel:') !!}
-                    {!! Form::text('title', null, ['class' => 'form-control']) !!}
+                <x-forms.form method="PATCH" :model="$help" :action="action('AdminHelpController@update', $help)">
+                <div class="mb-2.5">
+                    <x-forms.text name="title" label="Titel:"/>
                 </div>
-                <div class="form-group">
-                    {!! Form::label('content', 'Inhalt:') !!}
-                    {!! Form::textarea('content', null, ['class' => 'form-control','required' ,'rows' => 10]) !!}
+                <div class="mb-2.5">
+                    <x-forms.text-area name="content" label="Inhalt:" required rows="10"/>
                 </div>
 
-                <div class="form-group">
-                    {!! Form::submit('Hilfe-Artikel aktualisieren', ['class' => 'btn btn-primary'])!!}
+                <div class="mb-2.5">
+                    <x-forms.button type="submit">Hilfe-Artikel aktualisieren</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
-                {!! Form::open(['method' => 'DELETE', 'action'=>['AdminHelpController@destroy',$help]]) !!}
-                <div class="form-group">
-                    {!! Form::submit('Lösche Hilfe-Artikel', ['class' => 'btn btn-danger'])!!}
+                <x-forms.form method="DELETE" :action="action('AdminHelpController@destroy', $help)">
+                <div class="mb-2.5">
+                    <x-forms.button type="submit" delete>Lösche Hilfe-Artikel</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>
         </div>
-        <div class="row">
+        <div class="grid grid-cols-12 sm:gap-x-8">
             @include('includes.form_error')
         </div>
     </div>

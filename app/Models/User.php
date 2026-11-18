@@ -2,21 +2,20 @@
 
 namespace App\Models;
 
-use App\Exports\UsersExport;
+use App\Enums\Role;
 use App\Helper\Helper;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use HasFactory;
     use Notifiable;
     use SearchableTrait;
-    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -24,8 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'role_id', 'camp_id', 'leader_id', 'password_change_at',
-        'avatar', 'slug', 'foreign_id', 'email', 'email_verified_at', 'group_id'
+        'username', 'password', 'role_id', 'camp_id', 'password_change_at',
+        'avatar', 'slug', 'foreign_id', 'email', 'email_verified_at', 'group_id',
     ];
 
     /**
@@ -34,7 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'remember_token', 'password_change_at', ];
+        'password', 'remember_token', 'password_change_at', 'last_login_ip', ];
 
     /**
      * The attributes that should be cast to native types.
@@ -43,6 +42,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        // Rolle im aktuellen Kurs
+        'role_id' => Role::class,
         'demo' => 'boolean',
     ];
 
@@ -73,16 +74,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany('App\Models\Camp', 'camp_users')->where('finish', '=', false);
     }
 
-    public function leader()
-    {
-        return $this->belongsTo('App\Models\User');
-    }
-
-    public function leaders()
-    {
-        return $this->belongsToMany('App\Models\User', 'camp_users');
-    }
-
     public function posts()
     {
         return $this->hasMany(Post::class, 'leader_id');
@@ -92,7 +83,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(CampType::class);
     }
-
 
     public function chapters()
     {
@@ -128,14 +118,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isTeilnehmer()
     {
-        return !$this->isLeader() && !$this->isCampleader();
+        return ! $this->isLeader() && ! $this->isCampleader();
     }
 
     public function getRouteKeyName()
     {
         return 'slug';
     }
-
 
     public function getAvatar()
     {
@@ -145,13 +134,13 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($camp_user) {
             $path = Helper::getAvatarPath($camp_user->avatar);
         }
-        if($path === null){
+        if ($path === null) {
             $path = Helper::getAvatarPath($this->avatar);
         }
-        if($path === null){
+        if ($path === null) {
             $path = '/img/default_avatar.svg';
         }
+
         return $path;
     }
-
 }

@@ -1,0 +1,91 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - 'develop'
+  pull_request:
+  # Vom Prod-Build aufgerufen, damit auf master nur getestete Stände gebaut werden.
+  workflow_call:
+
+jobs:
+  pint:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+
+      - name: 🗄️ Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      # Stil nach pint.json. Lokal beheben mit: ./vendor/bin/pint
+      - name: 🎨 Check code style
+        run: vendor/bin/pint --test
+
+  phpunit:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo_sqlite, sqlite3, gd, zip, curl, xml, fileinfo
+          coverage: none
+
+      - name: 🗄️ Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: 📦 Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: 🧹 Create Environment File
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      # Datenbank: SQLite in-memory aus phpunit.xml, kein MySQL nötig.
+      - name: 🧪 Run tests
+        run: vendor/bin/phpunit
+
+  vitest:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+
+      # Wie im Sail-Container (docker/8.5/Dockerfile) und im Prod-Build
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 📦 Install NPM dependencies
+        run: npm ci
+
+      # JS-Module und Seitenskripte (tests/js). Lokal: npm test
+      - name: 🧪 Run JS tests
+        run: npm test

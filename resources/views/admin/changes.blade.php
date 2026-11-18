@@ -1,30 +1,22 @@
 @extends('layouts.admin')
 
 @section('content')
+    <div class="px-[15px] md:px-12">
     <x-layouts.page-title :title="$title" :help="$help"/>
-    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i></button>
     <section
         class="section-features block p-6 bg-gray-100 border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Rückmeldungen</h5>
         @if (session()->has('success'))
-            <div class="alert alert-dismissable alert-success">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <strong>
-                    {!! session()->get('success') !!}
-                </strong>
-            </div>
+            <x-layouts.alert id="alert-success"><strong>{!! session()->get('success') !!}</strong></x-layouts.alert>
         @endif
-        {!! Form::open(['method' => 'POST', 'action'=>'FeedbackController@store']) !!}
-        <div class="form-group">
-            {!! Form::label('feedback', 'Rückmeldung:', ['class' => 'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-            {!! Form::textarea('feedback', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', 'required', 'rows' => 3]) !!}
+        <x-forms.form :action="action('FeedbackController@store')">
+        <div class="mb-2.5">
+            <x-forms.text-area name="feedback" label="Rückmeldung:" required rows="3"/>
         </div>
-        <div class="form-group">
-            {!! Form::submit('Rückmeldung absenden', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800'])!!}
+        <div class="mb-2.5">
+            <x-forms.button type="submit">Rückmeldung absenden</x-forms.button>
         </div>
-        {!! Form::close()!!}
+        </x-forms.form>
     </section>
 
     <section
@@ -127,4 +119,5 @@
         </ol>
     </section>
 
+    </div>
 @endsection

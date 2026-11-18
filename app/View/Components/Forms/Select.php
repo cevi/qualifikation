@@ -2,23 +2,38 @@
 
 namespace App\View\Components\Forms;
 
+use App\View\Components\Forms\Concerns\ResolvesValue;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Select extends Component
 {
+    use ResolvesValue;
+
     public string $name;
+
     public string $label;
+
     public string $id;
+
     public bool $required;
+
     public $collection;
+
     public bool $withEmptyOption;
+
     public bool $withoutLabel;
+
+    public $value;
+
+    /** Text der leeren ersten Option («Wähle Kapitel»); ohne placeholder und withEmptyOption keine. */
+    public ?string $placeholder;
+
     /**
      * Create a new component instance.
      */
-    public function __construct(string $name, string $label = '', ?string $id = null, bool $required = false, $collection = [], bool $withEmptyOption = false, bool $withoutLabel = false)
+    public function __construct(string $name, string $label = '', ?string $id = null, bool $required = false, $collection = [], bool $withEmptyOption = false, bool $withoutLabel = false, $value = null, ?string $placeholder = null)
     {
         $this->name = $name;
         $this->label = $label;
@@ -27,6 +42,8 @@ class Select extends Component
         $this->id = $id ?? $name;
         $this->withEmptyOption = $withEmptyOption;
         $this->withoutLabel = $withoutLabel;
+        $this->value = $value;
+        $this->placeholder = $placeholder ?? ($withEmptyOption ? __('Wähle eine Option') : null);
     }
 
     /**

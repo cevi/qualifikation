@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Str;
+use App\Helper\Helper;
 use App\Models\Help;
 use App\Models\Post;
-use App\Helper\Helper;
-use App\Models\StandardText;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use PhpParser\PrettyPrinter\Standard;
 
 class PostController extends Controller
 {
@@ -22,7 +20,7 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -34,24 +32,24 @@ class PostController extends Controller
                 return $chapter->questions;
             })
             ->mapWithKeys(function ($question) {
-                return [$question->id => $question->number . ' - ' . $question->competence];
+                return [$question->id => $question->number.' - '.$question->competence];
             })
             ->all();
         $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
         $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
         $campusers_select = $aktUser->camp->camp_users->pluck('user.username', 'id')->all();
         $title = 'Rückmeldungen';
-        $help = Help::where('title',$title)->first();
-        $post_new = new Post();   
-        $standard_texts = Helper::getStandardTextsForCamp($camp->id); 
+        $help = Help::where('title', $title)->first();
+        $post_new = new Post;
+        $standard_texts = Helper::getStandardTextsForCamp($camp->id);
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts', 'questions'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title', 'help', 'post_new', 'standard_texts', 'questions'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -61,13 +59,12 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         //
-       Helper::storePost($request, null);
+        Helper::storePost($request, null);
 
         return redirect('/posts');
     }
@@ -76,21 +73,23 @@ class PostController extends Controller
     {
         //
         $post = Post::where('uuid', $id)->firstOrFail();
-        $camp_post = $post->campUser->camp;
         $aktUser = Auth::user();
-        $camp_user = $aktUser->camp;
-        if (($camp_post->id == $camp_user->id) && !$aktUser->isTeilnehmer()){
-            return response()->download(storage_path($post['file']));
-        } else {
+        // Über camp_id, damit auch allgemeine Rückmeldungen ohne Person funktionieren.
+        if ($post->camp_id != $aktUser->camp_id || $aktUser->isTeilnehmer()) {
             return redirect()->back();
         }
+        // Nur Dateien aus dem Upload-Ordner der Rückmeldungen ausliefern.
+        $path = realpath(storage_path((string) $post['file']));
+        abort_unless($path && str_starts_with($path, realpath(storage_path('app/files')).DIRECTORY_SEPARATOR), 404);
+
+        return response()->download($path);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Post $post)
     {
@@ -101,10 +100,11 @@ class PostController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Post $post)
     {
+        $this->authorize('manage', $post);
         //
         $aktUser = Auth::user();
         $camp = $aktUser->camp()->first();
@@ -113,26 +113,25 @@ class PostController extends Controller
                 return $chapter->questions;
             })
             ->mapWithKeys(function ($question) {
-                return [$question->id => $question->number . ' - ' . $question->competence];
+                return [$question->id => $question->number.' - '.$question->competence];
             })
             ->all();
         $posts_no_user = $aktUser->posts->whereNull('camp_user_id')->where('camp_id', $camp->id);
         $posts_user = $aktUser->posts->whereNotNull('camp_user_id')->where('camp_id', $camp->id);
         $campusers_select = $aktUser->camp->camp_users->pluck('user.username', 'id')->all();
         $title = 'Rückmeldungen';
-        $help = Help::where('title',$title)->first();
-        $post_new = $post;    
+        $help = Help::where('title', $title)->first();
+        $post_new = $post;
         $standard_texts = Helper::getStandardTextsForCamp($camp->id);
 
-        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title','help', 'post_new', 'standard_texts', 'questions'));
+        return view('home.posts.index', compact('aktUser', 'camp', 'posts_user', 'posts_no_user', 'campusers_select', 'title', 'help', 'post_new', 'standard_texts', 'questions'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Post $post)
     {
@@ -143,17 +142,17 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Post $post)
     {
+        $this->authorize('manage', $post);
         //
-        if($post['file']){
-            unlink(storage_path($post['file']));
+        if ($post['file']) {
+            File::delete(storage_path($post['file']));
         }
         $post->delete();
 
         return redirect()->back();
     }
-
 }

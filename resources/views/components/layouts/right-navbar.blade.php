@@ -4,7 +4,7 @@
         <x-layouts.user-dropdown/>
     </div>
     @guest
-        <div class="flex items-center space-x-2 xl:hidden">
+        <div class="flex items-center gap-2 xl:hidden">
             <a href="{{ route('login') }}" class="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 transition-colors duration-150 p-2">Login</a>
             @if (Route::has('register'))
                 <a href="{{ route('register') }}" class="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 transition-colors duration-150 p-2">Registrieren</a>

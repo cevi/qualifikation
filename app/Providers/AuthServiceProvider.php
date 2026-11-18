@@ -2,11 +2,29 @@
 
 namespace App\Providers;
 
+use App\Auth\HitobitoJEMKProvider;
+use App\Auth\HitobitoProvider;
+use App\Models\Camp;
+use App\Models\CampType;
+use App\Models\Chapter;
+use App\Models\Competence;
+use App\Models\Post;
+use App\Models\Question;
+use App\Models\StandardText;
+use App\Models\Survey;
+use App\Models\User;
+use App\Policies\CampPolicy;
+use App\Policies\CampTypePolicy;
+use App\Policies\ChapterPolicy;
+use App\Policies\CompetencePolicy;
+use App\Policies\PostPolicy;
+use App\Policies\QuestionPolicy;
+use App\Policies\StandardTextPolicy;
+use App\Policies\SurveyPolicy;
+use App\Policies\UserPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\Auth\HitobitoProvider;
-use App\Auth\HitobitoJEMKProvider;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -16,7 +34,15 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        Camp::class => CampPolicy::class,
+        CampType::class => CampTypePolicy::class,
+        Chapter::class => ChapterPolicy::class,
+        Competence::class => CompetencePolicy::class,
+        Post::class => PostPolicy::class,
+        Question::class => QuestionPolicy::class,
+        StandardText::class => StandardTextPolicy::class,
+        Survey::class => SurveyPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**
@@ -73,7 +99,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $config = config("services.$provider");
 
-        if (!is_array($config)) {
+        if (! is_array($config)) {
             throw new \RuntimeException("Missing configuration for services.$provider. Clear and rebuild the Laravel configuration cache.");
         }
 
@@ -89,7 +115,6 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Format the callback URL, resolving a relative URI if needed.
      *
-     * @param  array  $config
      * @return string
      */
     public function formatRedirectUrl(array $config)

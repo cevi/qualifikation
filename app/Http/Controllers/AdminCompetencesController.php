@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Help;
 use App\Models\CampType;
-use App\Models\Question;
 use App\Models\Competence;
+use App\Models\Help;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AdminCompetencesController extends Controller
@@ -14,25 +15,24 @@ class AdminCompetencesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         //
         $user = Auth::user();
-        if($user->isAdmin()) {
+        if ($user->isAdmin()) {
             $competences = Competence::all();
             $camp_types = CampType::pluck('name', 'id')->all();
             $questions = Question::pluck('competence', 'id')->all();
-        }
-        else{
+        } else {
             $camp_type = $user->camp->camp_type;
             $questions = $camp_type->questions()->pluck('competence', 'id')->toArray();
             $competences = $camp_type->competences;
-            $camp_types =  $user->camp->camp_type()->pluck('name', 'id')->toArray();
+            $camp_types = $user->camp->camp_type()->pluck('name', 'id')->toArray();
         }
-        $title = "Kernkompetenzen";
-        $help = Help::where('title',$title)->first();
+        $title = 'Kernkompetenzen';
+        $help = Help::where('title', $title)->first();
 
         return view('admin.competences.index', compact('competences', 'questions', 'camp_types', 'help', 'title'));
     }
@@ -40,13 +40,14 @@ class AdminCompetencesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         //
-        Competence::create($request->all());
+        $competence = new Competence($request->only(['name', 'camp_type_id', 'question_id']));
+        $this->authorize('manage', $competence);
+        $competence->save();
 
         return redirect('admin/competences');
     }
@@ -55,15 +56,16 @@ class AdminCompetencesController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Competence  $competence
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Competence $competence)
     {
+        $this->authorize('manage', $competence);
         //
         $questions = Question::pluck('competence', 'id')->all();
         $camp_types = CampType::pluck('name', 'id')->all();
-        $title = "Kernkompetenz bearbeiten";
-        $help = Help::where('title',$title)->first();
+        $title = 'Kernkompetenz bearbeiten';
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Kernkompetenzen';
         $help['main_route'] = '/admin/competences';
 
@@ -73,14 +75,17 @@ class AdminCompetencesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Competence  $competence
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Competence $competence)
     {
         //
-        $competence->update($request->all());
+        $this->authorize('manage', $competence);
+        // Auch Kurstyp und Frage aus dem Formular müssen eigene sein.
+        $competence->fill($request->only(['name', 'camp_type_id', 'question_id']));
+        $this->authorize('manage', $competence->setRelations([]));
+        $competence->save();
 
         return redirect('/admin/competences');
     }
@@ -89,10 +94,11 @@ class AdminCompetencesController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Competence  $competence
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Competence $competence)
     {
+        $this->authorize('manage', $competence);
         //
         $competence->delete();
 

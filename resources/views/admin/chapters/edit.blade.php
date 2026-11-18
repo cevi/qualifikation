@@ -1,30 +1,28 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-6">
-                {!! Form::model($chapter, ['method' => 'Patch', 'action'=>['AdminChaptersController@update',$chapter->id]]) !!}
-                    <div class="form-group">
-                        {!! Form::label('number', 'Nummer:') !!}
-                        {!! Form::text('number', null, ['class' => 'form-control', 'required']) !!}
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-6">
+                <x-forms.form method="PATCH" :model="$chapter" :action="action('AdminChaptersController@update', $chapter->id)">
+                    <div class="mb-2.5">
+                        <x-forms.text name="number" label="Nummer:" required/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('name', 'Kapitel:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        <x-forms.text name="name" label="Kapitel:" required/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Update Kapitel', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        <x-forms.button type="submit">Änderungen speichern</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
 
-                {!! Form::model($chapter, ['method' => 'DELETE', 'action'=>['AdminChaptersController@destroy',$chapter->id]]) !!}
-                <div class="form-group">
-                    {!! Form::submit('Kapitel löschen', ['class' => 'btn btn-danger'])!!}
+                <x-forms.form method="DELETE" :model="$chapter" :action="action('AdminChaptersController@destroy', $chapter->id)">
+                <div class="mb-2.5">
+                    <x-forms.button type="submit" delete>Kapitel löschen</x-forms.button>
                 </div>
-                {!! Form::close()!!}
+                </x-forms.form>
                 </div>
         </div>
     </div>    

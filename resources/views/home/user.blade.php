@@ -2,47 +2,39 @@
 
 @section('survey_content')
     <x-layouts.page-title :title="$title" :help="$help" :header=false/>
-    {!! Form::model($aktUser, ['method' => 'PATCH', 'class' => 'card', 'action'=>['UsersController@update', $aktUser->id]]) !!}
+    <x-forms.form method="PATCH" :model="$aktUser" :action="action('UsersController@update', $aktUser->id)" class="panel">
         
-        <div class="card-header">
-            <h3 class="card-title">Mein Profil</h3>
+        <div class="panel-header">
+            <h3 class="text-xl font-medium">Mein Profil</h3>
         </div>
-        <div class="card-body">
+        <div class="panel-body">
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+                @include('includes.form_error')
             @endif
-            <div class="form-group">
-                {!! Form::label('username', 'Name:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::text('username', null, ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'readonly' => true]) !!}
+            <div class="mb-2.5">
+                {{-- Nur zur Anzeige, eigener grauer Stil statt field-input --}}
+                <label for="username" class="field-label">Name:</label>
+                <input type="text" name="username" id="username" value="{{ $aktUser->username }}" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly>
             </div>
-            <div class="form-group">
-                {!! Form::label('leader', 'Leiter:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                {!! Form::text('leader', $aktUser->leader ? $aktUser->leader ['username'] : '', ['class' => 'mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500', 'readonly' => true]) !!}
+            <div class="mb-2.5">
+                <label for="leader" class="field-label">Leitende:</label>
+                <input type="text" name="leader" id="leader" value="{{ $leaderNames }}" class="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" readonly>
             </div>
             @if (!$aktUser['demo'])
 
-                <div class="form-group">
-                    {!! Form::label('email', 'E-Mail:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::text('email', null, ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <div class="mb-2.5">
+                    <x-forms.text name="email" label="E-Mail:"/>
                 </div>
-                <div class="form-group">
-                    {!! Form::label('password', 'Passwort:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::password('password', ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <div class="mb-2.5">
+                    <x-forms.text type="password" name="password" label="Passwort:"/>
                 </div> 
-                <div class="form-group">
-                    {!! Form::label('password_confirmation', 'Passwort Wiederholen:', ['class' =>'block mb-2 text-sm font-medium text-gray-900 dark:text-white']) !!}
-                    {!! Form::password('password_confirmation', ['class' => 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500']) !!}
+                <div class="mb-2.5">
+                    <x-forms.text type="password" name="password_confirmation" label="Passwort Wiederholen:"/>
                 </div> 
             @endif
         </div>
-        <div class="card-footer text-right">
-            {!! Form::submit('Speichern', ['class' => 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-hidden dark:focus:ring-blue-800'])!!}
+        <div class="panel-footer">
+            <x-forms.button type="submit">Speichern</x-forms.button>
         </div>
-    {!! Form::close()!!}
+    </x-forms.form>
 @endsection

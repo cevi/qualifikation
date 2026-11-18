@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-6">
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-6">
                 <x-forms.form :action="route('admin.camps.update', $camp)" accept-charset="UTF-8" method="Patch" :model="$camp">
                     <x-forms.container> 
                         <x-forms.text label="Name:" name="name" required=true/>
                     </x-forms.container> 
                     <x-forms.container>
-                        <x-forms.select label="Kursleiter:" name="user_id" :collection="$users"/>
+                        <x-forms.select label="Kursleitung:" name="user_id" :collection="$users"/>
                     </x-forms.container> 
                     <x-forms.container>
                         <x-forms.select label="Kurstyp:" name="camp_type_id" :collection="$camptypes" :withEmptyOption="true" required=true/>
@@ -39,7 +39,7 @@
                 </x-forms.form>
                 <x-forms.form :action="route('admin.camps.destroy', $camp)" accept-charset="UTF-8" method="DELETE" id="DeleteForm" :model="$camp">
                     <x-forms.container>
-                        <x-forms.button type="submit" class="confirm" delete=true>
+                        <x-forms.button type="submit" class="confirm" delete=true data-confirm="Kurs abschliessen / löschen?" data-confirm-text="Beim Kurs abschliessen/löschen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.">
                             Kurs abschliessen / löschen
                         </x-forms.button>
                     </x-forms.container> 
@@ -49,29 +49,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-        <script type="module">
-        $(document).ready(function(){
-            $('.confirm').on('click', function(e){
-                e.preventDefault(); //cancel default action
-
-                Swal.fire({
-                    title: 'Kurs abschliessen / löschen?',
-                    text: "Beim Kurs abschliessen/löschen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ja',
-                    cancelButtonText: 'Abbrechen',
-                    confirmButtonColor: 'blue',
-                    cancelButtonColor: 'red',
-                    theme:(localStorage.getItem('color-theme') === 'dark') ? 'dark' : 'light',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById("DeleteForm").submit();
-                    }
-                });
-            });
-        });
-    </script>
-@endpush

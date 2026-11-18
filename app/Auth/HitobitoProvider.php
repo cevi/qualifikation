@@ -27,7 +27,6 @@ class HitobitoProvider extends AbstractProvider implements ProviderInterface
     /**
      * Create a new provider instance.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  string  $baseUrl
      * @param  string  $clientId
      * @param  string  $clientSecret

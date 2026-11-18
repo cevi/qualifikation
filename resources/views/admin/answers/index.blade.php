@@ -1,32 +1,30 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="px-[15px] md:px-12">
         <!-- Page Header-->
         <x-layouts.page-title :title="$title" :help="$help"/>
-        <div class="row">
-            <div class="col-sm-3">
-                {!! Form::open(['action'=>'AdminAnswersController@store']) !!}
-                    <div class="form-group">
-                        {!! Form::label('name', 'Antwort:') !!}
-                        {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
+        <div class="grid grid-cols-12 sm:gap-x-8">
+            <div class="min-w-0 col-span-12 sm:col-span-3">
+                <x-forms.form :action="action('AdminAnswersController@store')">
+                    <div class="mb-2.5">
+                        <x-forms.text name="name" label="Antwort:" required/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('count', 'Wertung:') !!}
-                        {!! Form::text('count', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        <x-forms.text name="count" label="Wertung:" required/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::label('description', 'Beschreibung:') !!}
-                        {!! Form::text('description', null, ['class' => 'form-control', 'required']) !!}
+                    <div class="mb-2.5">
+                        <x-forms.text name="description" label="Beschreibung:" required/>
                     </div>
-                    <div class="form-group">
-                        {!! Form::submit('Antwort erstellen', ['class' => 'btn btn-primary'])!!}
+                    <div class="mb-2.5">
+                        <x-forms.button type="submit">Antwort erstellen</x-forms.button>
                     </div>
-                {!! Form::close()!!}
+                </x-forms.form>
             </div>    
-            <div class="col-sm-9">
+            <div class="min-w-0 col-span-12 sm:col-span-9">
                 @if ($answers)
-                    <table class="table">
+                    <div class="relative overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                    <table class="list-table">
                         <thead>
                             <tr>
                                 <th scope="col">Wertung</th>
@@ -48,6 +46,7 @@
                         </tbody>
                     @endforeach
                     </table>
+                    </div>
                 
                 @endif
 

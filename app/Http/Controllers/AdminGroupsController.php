@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Help;
+use App\Models\Camp;
 use App\Models\Group;
+use App\Models\Help;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
 
 class AdminGroupsController extends Controller
@@ -12,14 +15,14 @@ class AdminGroupsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         //
         $groups = Group::all();
-        $title = "Gruppen";
-        $help = Help::where('title',$title)->first();
+        $title = 'Gruppen';
+        $help = Help::where('title', $title)->first();
 
         return view('admin.groups.index', compact('groups', 'title', 'help'));
     }
@@ -27,7 +30,7 @@ class AdminGroupsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -37,14 +40,13 @@ class AdminGroupsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
         //
         $input = $request->all();
-        $input['api_token'] = Crypt::encryptString($request->api_token);
+        $input['api_token'] = $request->filled('api_token') ? Crypt::encryptString($request->api_token) : null;
         $input['campgroup'] = true;
         Group::create($input);
 
@@ -55,7 +57,7 @@ class AdminGroupsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -66,14 +68,14 @@ class AdminGroupsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
         //
         $group = Group::findOrFail($id);
-        $title = "Gruppe bearbeiten";
-        $help = Help::where('title',$title)->first();
+        $title = 'Gruppe bearbeiten';
+        $help = Help::where('title', $title)->first();
         $help['main_title'] = 'Gruppen';
         $help['main_route'] = '/admin/groups';
 
@@ -83,15 +85,19 @@ class AdminGroupsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
         $group = Group::findOrFail($id);
         $input = $request->all();
-        $input['api_token'] = Crypt::encryptString($request->api_token);
+        // Das Feld ist ein leeres Passwortfeld: leer lassen heisst "Token nicht ändern"
+        if ($request->filled('api_token')) {
+            $input['api_token'] = Crypt::encryptString($request->api_token);
+        } else {
+            unset($input['api_token']);
+        }
         $group->update($input);
 
         return redirect('/admin/groups');
@@ -101,16 +107,20 @@ class AdminGroupsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Group $group)
     {
-        //
-        // $surveys = $camp->surveys();
-        // foreach($surveys as $survey)
-        // {
-        //     $survey->delete();
-        // }
+        // users.group_id und camps.group_id verweisen ohne cascade auf die Gruppe; die Datenbank würde das Löschen
+        // mit einem Fehler ablehnen.
+        $users = User::where('group_id', $group->id)->count();
+        $camps = Camp::where('group_id', $group->id)->count();
+        if ($users > 0 || $camps > 0) {
+            return back()->withErrors([
+                'group' => "Die Gruppe wird noch von {$users} Person(en) und {$camps} Kurs(en) verwendet und kann nicht gelöscht werden.",
+            ]);
+        }
+
         $group->delete();
 
         return redirect('/admin/groups');
