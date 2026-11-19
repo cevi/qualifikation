@@ -26,6 +26,8 @@ class CrossCampManagementTest extends TestCase
             'Kurs bearbeiten' => ['get', static fn (CampScenario $b) => route('admin.camps.edit', $b->camp)],
             'Kurs ändern' => ['put', static fn (CampScenario $b) => route('admin.camps.update', $b->camp)],
             'Kurs abschliessen' => ['delete', static fn (CampScenario $b) => route('admin.camps.destroy', $b->camp)],
+            'Rückmeldungen exportieren' => ['get', static fn (CampScenario $b) => route('admin.camps.export', $b->camp)],
+            'Qualifikationen drucken' => ['get', static fn (CampScenario $b) => route('surveys.downloadPDF', $b->camp)],
             'Person bearbeiten' => ['get', static fn (CampScenario $b) => route('admin.users.edit', $b->participant)],
             'Person ändern' => ['put', static fn (CampScenario $b) => route('admin.users.update', $b->participant->id)],
             'Person entfernen' => ['delete', static fn (CampScenario $b) => route('admin.users.destroy', $b->participant)],

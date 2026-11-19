@@ -97,6 +97,31 @@ describe('Admin-Tabelle', () => {
         expect(cells[6].find('a').attributes('href')).toBe('/surveys/1/edit');
     });
 
+    it('baut Aktionen mit method als Formular mit CSRF-Token und Rückfrage', async () => {
+        document.head.innerHTML = '<meta name="csrf-token" content="token-123">';
+        const finish = {
+            label: 'Kurs abschliessen',
+            url: '/admin/camps/1',
+            method: 'DELETE',
+            danger: true,
+            confirm: 'Kurs «A» abschliessen / löschen?',
+            confirmText: 'Löscht alles.',
+        };
+        respond([{ ...person(1, 'Zora', 'Teilnehmer', 1, '2026-01-01'), actions: [finish] }]);
+        const wrapper = await render();
+
+        const form = wrapper.find('tbody td form');
+        expect(form.attributes()).toMatchObject({ method: 'POST', action: '/admin/camps/1' });
+        expect(form.find('input[name="_token"]').element.value).toBe('token-123');
+        expect(form.find('input[name="_method"]').element.value).toBe('DELETE');
+        const button = form.find('button[type="submit"]');
+        expect(button.text()).toBe('Kurs abschliessen');
+        expect(button.attributes()).toMatchObject({ 'data-confirm': finish.confirm, 'data-confirm-text': 'Löscht alles.' });
+        expect(button.attributes()).toHaveProperty('data-confirm-danger');
+        expect(button.classes()).toContain('bg-red-700');
+        document.head.innerHTML = '';
+    });
+
     it('zeigt Namen mit spitzen Klammern als Text', async () => {
         respond([person(1, '<img src=x onerror=alert(1)>', 'Teilnehmer', 1, '2026-01-01')]);
         const wrapper = await render();

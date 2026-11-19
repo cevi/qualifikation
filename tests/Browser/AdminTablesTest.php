@@ -63,8 +63,38 @@ class AdminTablesTest extends DuskTestCase
 
             $browser->loginAs($s->admin)->visit(route('admin.camps.index'))
                 ->waitForText($s->camp->name)
-                ->assertSeeLink('Export der Rückmeldungen');
+                ->assertSeeLink('Rückmeldungen exportieren');
         });
+    }
+
+    /** Kursname öffnet «Kurs bearbeiten» als Dialog; zur Wahl steht als Kursleitung nur die Kursleitung des Kurses. */
+    public function test_camp_name_opens_edit_dialog(): void
+    {
+        $s = CampScenario::create();
+        // Pflichtfeld «Organisierende Gruppe» bietet nur Kursgruppen an
+        $s->group->update(['campgroup' => true]);
+
+        $this->browse(function (Browser $browser) use ($s) {
+            $browser->loginAs($s->kursleiter)->visit(route('admin.camps.index'))
+                ->waitForText($s->camp->name)
+                ->click('a[data-open-dialog]')
+                ->waitFor('#camp-edit-dialog[open]')
+                ->assertPathIs('/admin/camps')
+                ->assertInputValue('#edit_name', $s->camp->name)
+                ->assertSelected('#edit_user_id', (string) $s->kursleiter->id)
+                ->assertSelectMissingOption('#edit_user_id', (string) $s->gruppenleiter->id)
+                ->assertVisible('#camp-edit-dialog form#DeleteForm .confirm')
+                ->type('#edit_name', 'Umbenannt')
+                ->press('Änderungen speichern')
+                ->waitForText('Umbenannt');
+
+            $browser->press('Neuer Kurs')
+                ->waitFor('#camp-create-dialog[open]')
+                ->assertMissing('#camp-create-dialog [name="user_id"]')
+                ->assertMissing('#camp-create-dialog form#DeleteForm');
+        });
+
+        $this->assertSame('Umbenannt', $s->camp->fresh()->name);
     }
 
     public function test_quali_list_filters_by_phase(): void

@@ -6,6 +6,7 @@ use App\Enums\Role;
 use App\Enums\SurveyStatus;
 use App\Helper\Helper;
 use App\Models\Answer;
+use App\Models\Camp;
 use App\Models\Chapter;
 use App\Models\Help;
 use App\Models\Question;
@@ -184,9 +185,11 @@ class AdminSurveysController extends Controller
         return redirect('/admin/surveys');
     }
 
-    public function downloadPDF()
+    /** Druckversion aller Qualis eines Kurses (Kursübersicht: Kurs der Zeile), ohne {camp} des aktuellen Kurses. */
+    public function downloadPDF(?Camp $camp = null)
     {
-        $camp = Auth::user()->camp;
+        $camp ??= Auth::user()->camp;
+        $this->authorize('manage', $camp);
         $surveys = $camp->surveys()->with(['chapters.questions.answer_first', 'chapters.questions.answer_second', 'chapters.questions.answer_leader', 'campuser.user', 'chapters.questions.question'])->get()->sortBy('campuser.user.username')->values();
 
         $labels = Helper::GetSurveysLabels($surveys);

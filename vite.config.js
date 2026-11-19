@@ -31,6 +31,7 @@ export default defineConfig({
                 'resources/js/pages/tooltips.js',
                 'resources/js/pages/radar.js',
                 'resources/js/pages/feedback-modal.js',
+                'resources/js/pages/camps-index.js',
                 'resources/js/pages/photo-cropper.js',
             ],
             refresh: true
