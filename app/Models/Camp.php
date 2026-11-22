@@ -92,6 +92,14 @@ class Camp extends Model
         return User::whereIn('id', $userIds)->orderBy('username')->pluck('username', 'id')->all();
     }
 
+    /** Mögliche Kursleitung (Rolle Kursleitung in diesem Kurs) als [user_id => Name], nach Name sortiert. */
+    public function campLeaderOptions(): array
+    {
+        $userIds = CampUser::where('camp_id', $this->id)->where('role_id', Role::Kursleiter)->pluck('user_id');
+
+        return User::whereIn('id', $userIds)->orderBy('username')->pluck('username', 'id')->all();
+    }
+
     public function camp_users()
     {
         return $this->hasMany(CampUser::class)->where('camp_users.role_id', Role::Teilnehmer);

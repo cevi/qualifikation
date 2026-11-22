@@ -112,7 +112,8 @@ Route::group(['middleware' => 'verified'], function () {
         Route::post('admin/users/import', ['as' => 'users.import', 'uses' => 'AdminUsersController@import']);
         Route::post('admin/users/add', ['as' => 'users.add', 'uses' => 'AdminUsersController@add']);
 
-        Route::get('admin/camps/export/', ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
+        // Ohne {camp} der aktuelle Kurs
+        Route::get('admin/camps/export/{camp?}', ['as' => 'admin.camps.export', 'uses' => 'AdminCampsController@export']);
         Route::post('admin/camps/opensurvey', ['as' => 'admin.camps.opensurvey', 'uses' => 'AdminCampsController@opensurvey']);
         Route::post('admin/camps/checklist', ['as' => 'admin.camps.checklist', 'uses' => 'AdminCampsController@checklist']);
         Route::resource('admin/camps', 'AdminCampsController', ['as' => 'admin']);
@@ -126,7 +127,7 @@ Route::group(['middleware' => 'verified'], function () {
 
         Route::resource('admin/surveys', 'AdminSurveysController')->except(['create', 'show']);
         Route::get('surveys/table', ['as' => 'surveys.table', 'uses' => 'AdminSurveysController@tableData']);
-        Route::get('surveys/downloadPDF', ['as' => 'surveys.downloadPDF', 'uses' => 'AdminSurveysController@downloadPDF']);
+        Route::get('surveys/downloadPDF/{camp?}', ['as' => 'surveys.downloadPDF', 'uses' => 'AdminSurveysController@downloadPDF']);
 
         Route::resource('admin/chapters', 'AdminChaptersController')->except(['create', 'show']);
         Route::resource('admin/competences', 'AdminCompetencesController')->except(['create', 'show']);

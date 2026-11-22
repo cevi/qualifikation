@@ -284,7 +284,7 @@ const mobileSort = computed({
                             v-for="header in headerGroup.headers"
                             :key="header.id"
                             scope="col"
-                            class="px-4 py-3 whitespace-nowrap"
+                            class="px-3 py-3 whitespace-nowrap"
                             :aria-sort="ariaSort(header.column)"
                         >
                             <button
@@ -307,7 +307,7 @@ const mobileSort = computed({
                 <tbody :aria-busy="status === 'loading'">
                     <template v-if="status === 'loading'">
                         <tr v-for="n in 5" :key="n" class="border-t border-gray-200 dark:border-gray-700">
-                            <td v-for="column in columns" :key="column.key" class="px-4 py-3">
+                            <td v-for="column in columns" :key="column.key" class="px-3 py-3">
                                 <div class="h-3 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
                             </td>
                         </tr>
@@ -321,7 +321,7 @@ const mobileSort = computed({
                             :key="row.original.id"
                             class="border-t border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
                         >
-                            <td v-for="cell in row.getVisibleCells()" :key="cell.id" class="px-4 py-3">
+                            <td v-for="cell in row.getVisibleCells()" :key="cell.id" class="px-3 py-3">
                                 <DataTableCell :column="cell.column.columnDef.meta.column" :row="row.original" />
                             </td>
                         </tr>

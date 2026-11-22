@@ -48,6 +48,8 @@ class ProfileTest extends TestCase
     public function test_profile_shows_everything_in_one_header_and_two_cards(): void
     {
         $s = CampScenario::create();
+        // Fester kurzer Text: der Faker-Absatz der Factory ist ab und zu länger als 220 Zeichen und hätte dann auch «Mehr»
+        $s->post->update(['comment' => 'Kurze Rückmeldung.']);
         $long = str_repeat('Sehr ausführliche Beobachtung aus dem Lager. ', 8);
         $post = Post::factory()->for($s->campUser($s->participant), 'campUser')->for($s->gruppenleiter, 'leader')
             ->create(['camp_id' => $s->camp->id, 'comment' => $long]);

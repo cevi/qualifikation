@@ -18,6 +18,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use Str;
 
@@ -36,12 +38,44 @@ class AdminCampsController extends Controller
             return redirect('/home');
         }
 
+        return $this->indexView();
+    }
+
+    /** Kursübersicht; mit $editCamp ist der Dialog «Kurs bearbeiten» beim Laden offen. */
+    private function indexView(?array $editCamp = null)
+    {
         $camptypes = CampType::pluck('name', 'id')->all();
         $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
         $title = 'Kursübersicht';
         $help = Help::where('title', $title)->first();
 
-        return view('admin.camps.index', compact('camptypes', 'groups', 'title', 'help'));
+        return view('admin.camps.index', compact('camptypes', 'groups', 'title', 'help', 'editCamp'));
+    }
+
+    /** Abschliessen nur bei offenen Kursen; das Global-Camp nimmt beim Abschliessen alle Personen auf und bleibt. */
+    private function canFinish(Camp $camp): bool
+    {
+        return ! $camp->finish && ! $camp->global_camp;
+    }
+
+    /** Werte für den Dialog «Kurs bearbeiten» (resources/js/pages/camps-index.js). */
+    private function editData(Camp $camp): array
+    {
+        return [
+            'id' => $camp->id,
+            'name' => $camp->name,
+            'user_id' => $camp->user_id,
+            'camp_type_id' => $camp->camp_type_id,
+            'group_id' => $camp->group_id,
+            'status_control' => (bool) $camp->status_control,
+            'end_date' => $camp->end_date ? date('Y-m-d', strtotime($camp->end_date)) : '',
+            'foreign_id' => $camp->foreign_id,
+            'can_finish' => $this->canFinish($camp),
+            // Liste statt Objekt, sonst sortiert JavaScript nach ID statt nach Name
+            'leaders' => collect($camp->campLeaderOptions())->map(fn ($name, $id) => ['id' => $id, 'name' => $name])->values()->all(),
+            'update_url' => route('admin.camps.update', $camp),
+            'destroy_url' => route('admin.camps.destroy', $camp),
+        ];
     }
 
     /**
@@ -58,10 +92,24 @@ class AdminCampsController extends Controller
 
         return response()->json(['data' => $camps->map(function (Camp $camp) use ($aktUser) {
             $actions = [];
-            if (! $camp->finish && ($aktUser->camp['id'] === $camp['id']) || $aktUser->isAdmin()) {
+            $manage = $aktUser->can('manage', $camp);
+            // Export und Druck gelten für den Kurs der Zeile; abgeschlossene Kurse haben keine Daten mehr, das
+            // Global-Camp ist nur Sammelstelle ohne eigene Qualis
+            if (! $camp->finish && ! $camp->global_camp && $manage) {
                 $actions = [
-                    ['label' => 'Export der Rückmeldungen', 'url' => route('admin.camps.export'), 'button' => true],
-                    ['label' => 'Druckversion aller Qualifikationen', 'url' => route('surveys.downloadPDF'), 'button' => true, 'newTab' => true],
+                    ['label' => 'Rückmeldungen exportieren', 'url' => route('admin.camps.export', $camp), 'button' => true],
+                    ['label' => 'Qualifikationen drucken', 'url' => route('surveys.downloadPDF', $camp), 'button' => true, 'newTab' => true],
+                ];
+            }
+            // Wie im Dialog «Kurs bearbeiten»: nur offene Kurse, die man verwalten darf, nie das Global-Camp
+            if ($this->canFinish($camp) && $manage) {
+                $actions[] = [
+                    'label' => 'Kurs abschliessen',
+                    'url' => route('admin.camps.destroy', $camp),
+                    'method' => 'DELETE',
+                    'danger' => true,
+                    'confirm' => 'Kurs «'.$camp->name.'» abschliessen / löschen?',
+                    'confirmText' => 'Beim Kurs abschliessen/löschen werden alle Qualifikationen und hochgeladenen Dokumente gelöscht.',
                 ];
             }
 
@@ -143,36 +191,34 @@ class AdminCampsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
+     * Dialog «Kurs bearbeiten»: als JSON für die Kursübersicht, sonst die Übersicht mit offenem Dialog
+     * (Links aus «Erste Schritte», der Kursauswahl und der Mail «Kurs abschliessen»).
      */
-    public function edit($id)
+    public function edit(Request $request, Camp $camp)
     {
-        //
-        $camp = Camp::findOrFail($id);
         $this->authorize('manage', $camp);
-        $camptypes = CampType::pluck('name', 'id')->all();
-        $groups = Group::where('campgroup', true)->pluck('name', 'id')->all();
-        $users = User::where('role_id', Role::Kursleiter)->pluck('username', 'id')->all();
-        $title = 'Kurs bearbeiten';
-        $help = Help::where('title', $title)->first();
-        $help['main_title'] = 'Kursübersicht';
-        $help['main_route'] = '/admin/camps';
+        $data = $this->editData($camp);
 
-        return view('admin.camps.edit', compact('camp', 'users', 'camptypes', 'groups', 'title', 'help'));
+        return $request->wantsJson() ? response()->json($data) : $this->indexView($data);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
      * @return Response
      */
     public function update(Request $request, Camp $camp)
     {
         $this->authorize('manage', $camp);
+        // Kursleitung nur aus den Personen mit Rolle Kursleitung in diesem Kurs
+        $validator = Validator::make($request->only('user_id'), [
+            'user_id' => ['nullable', Rule::in(array_keys($camp->campLeaderOptions()))],
+        ], [
+            'user_id.in' => 'Als Kursleitung kann nur eine Person mit der Rolle Kursleitung in diesem Kurs gewählt werden.',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('admin.camps.edit', $camp)->withErrors($validator);
+        }
         if (! Auth::user()->demo) {
             $input = $request->only(['name', 'user_id', 'camp_type_id', 'end_date', 'group_id', 'foreign_id']);
             $input['status_control'] = $request->has('status_control');
@@ -194,6 +240,7 @@ class AdminCampsController extends Controller
     public function destroy(Camp $camp)
     {
         $this->authorize('manage', $camp);
+        abort_if($camp->global_camp, 403, 'Das Global-Camp kann nicht abgeschlossen werden.');
         if (! Auth::user()->demo) {
             $users = $camp->allUsers;
             $camp_global = Camp::where('global_camp', true)->first();
@@ -259,9 +306,11 @@ class AdminCampsController extends Controller
         return redirect('/home');
     }
 
-    public function export()
+    /** Rückmeldungen eines Kurses als Excel (Kursübersicht: Kurs der Zeile), ohne {camp} des aktuellen Kurses. */
+    public function export(?Camp $camp = null)
     {
-        $camp = Auth::user()->camp;
+        $camp ??= Auth::user()->camp;
+        $this->authorize('manage', $camp);
 
         //        $save_path = 'files/' . $camp['id'] . '_' . Str::slug($camp['name']);
         //        $directory = storage_path($save_path);
@@ -269,7 +318,7 @@ class AdminCampsController extends Controller
         //            File::makeDirectory($directory, 0775, true);
         //        }
         //        $posts_name = $save_path . '/exports/posts.xlsx';
-        return Excel::download(new PostsExport, 'Rückmeldungen_'.Str::slug($camp['name']).'.xlsx');
+        return Excel::download(new PostsExport($camp), 'Rückmeldungen_'.Str::slug($camp['name']).'.xlsx');
         //        $users_name = $save_path .'/exports/users.xlsx';
         //        Excel::store(new UsersExport, $users_name);
 

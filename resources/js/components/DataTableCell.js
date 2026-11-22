@@ -6,19 +6,34 @@ import { displayValue } from '../libs/table-data.js';
  * Der Server liefert nur Text und URLs; Links, Bilder, Status und Knöpfe entstehen hier mit h(), Daten
  * werden nie als HTML gelesen (AdminTableEscapingTest).
  *
- * Spalte: { key, label, type?: 'image' | 'status' | 'actions', link?: Schlüssel der URL in der Zeile, linkTitle? }
+ * Spalte: { key, label, type?: 'image' | 'status' | 'actions', link?: Schlüssel der URL in der Zeile, linkTitle?,
+ *   dialog?: Link mit data-open-dialog, die Seite fängt den Klick ab }
  * Status: { display, sort, tone: gray | blue | orange | green, step, steps } (AdminSurveysController@tableData).
+ * Aktion: { label, url, button?, newTab? } als Link, mit method (DELETE …) als Formular: { confirm?, confirmText?, danger? }.
  */
 export const LINK_CLASS = 'font-medium text-blue-600 dark:text-blue-500 hover:underline';
 const BUTTON_CLASS =
-    'inline-block text-center focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900';
+    'inline-block text-center focus:outline-hidden text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900';
+
+const DANGER_CLASS =
+    'inline-block text-center focus:outline-hidden text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900';
 
 function link(row, column, content) {
     const href = column.link ? row[column.link] : null;
     if (!href) {
         return content;
     }
-    return h('a', { href, title: column.linkTitle, class: column.type === 'image' ? undefined : LINK_CLASS }, content);
+    return h(
+        'a',
+        {
+            href,
+            title: column.linkTitle,
+            class: column.type === 'image' ? undefined : LINK_CLASS,
+            // Die Seite öffnet statt der Adresse einen Dialog (Kursübersicht: camps-index.js)
+            'data-open-dialog': column.dialog ? '' : undefined,
+        },
+        content,
+    );
 }
 
 // Gleiche Klassen wie der Status-Badge der Übersicht (components/surveys/status-badge.blade.php)
@@ -45,17 +60,43 @@ function status(value) {
     ]);
 }
 
+/**
+ * Aktion mit method (DELETE …): kleines Formular mit CSRF-Token; data-confirm fragt vorher nach (confirm-submit.js),
+ * danger macht Knopf und Bestätigen-Knopf rot.
+ */
+// Auf der Karte gross und über die ganze Breite, in der Tabelle kompakt und ohne Umbruch
+const buttonSize = (block) => (block ? 'w-full px-5 py-2.5' : 'whitespace-nowrap px-3 py-1.5');
+
+function formAction(action, block) {
+    const token = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+    return h('form', { method: 'POST', action: action.url, class: block ? 'w-full' : undefined }, [
+        h('input', { type: 'hidden', name: '_token', value: token }),
+        h('input', { type: 'hidden', name: '_method', value: action.method }),
+        h(
+            'button',
+            {
+                type: 'submit',
+                class: [action.danger ? DANGER_CLASS : BUTTON_CLASS, buttonSize(block)],
+                'data-confirm': action.confirm,
+                'data-confirm-text': action.confirmText,
+                'data-confirm-danger': action.danger ? '' : undefined,
+            },
+            action.label,
+        ),
+    ]);
+}
+
 function actions(value, block) {
     return h(
         'div',
-        { class: ['flex gap-2', block ? 'flex-col' : 'flex-col items-start'] },
+        // In der Tabelle nebeneinander (umbrechen nur, wenn der Platz fehlt), auf der Karte untereinander
+        { class: ['flex gap-2', block ? 'flex-col' : 'flex-wrap items-center'] },
         value.map((action) =>
-            h(
+            action.method ? formAction(action, block) : h(
                 'a',
                 {
                     href: action.url,
-                    // Auf der Karte über die ganze Breite, in der Tabelle ohne Umbruch
-                    class: [action.button ? BUTTON_CLASS : LINK_CLASS, block && action.button ? 'w-full' : 'whitespace-nowrap'],
+                    class: action.button ? [BUTTON_CLASS, buttonSize(block)] : [LINK_CLASS, 'whitespace-nowrap'],
                     role: action.button ? 'button' : undefined,
                     target: action.newTab ? '_blank' : undefined,
                     rel: action.newTab ? 'noopener' : undefined,

@@ -3,7 +3,7 @@ import { confirmDialog } from './lib/dialog.js';
 /**
  * Absende-Knöpfe mit Rückfrage auf jeder Seite: data-confirm="Frage" (optional data-confirm-text) fragt im eigenen
  * Dialog nach und schickt erst nach dem Bestätigen das Formular ab, in dem der Knopf steht. Der Bestätigen-Knopf
- * heisst wie der Knopf selbst ("Person löschen"); rot bei button-danger und bei "… löschen".
+ * heisst wie der Knopf selbst ("Person löschen"); rot bei button-danger, data-confirm-danger und bei "… löschen".
  * Für Personen, Kurse, Gruppen, Rückmeldungen, die Selbsteinschätzung und «Erste Schritte» (Browser:
  * DeleteConfirmationTest, CampChecklistTest).
  */
@@ -24,7 +24,7 @@ document.addEventListener('click', async (event) => {
     const confirmed = await confirmDialog(button.dataset.confirm, {
         text: button.dataset.confirmText,
         confirmLabel: label,
-        danger: button.classList.contains('button-danger') || /löschen/i.test(label),
+        danger: button.classList.contains('button-danger') || 'confirmDanger' in button.dataset || /löschen/i.test(label),
     });
     if (confirmed) {
         // requestSubmit(button) schickt name/value des Knopfs mit (Quali: action=close)

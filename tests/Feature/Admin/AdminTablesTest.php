@@ -97,7 +97,7 @@ class AdminTablesTest extends TestCase
 
         $this->assertSame([$s->camp->id], $rows->pluck('id')->all());
         $this->assertSame(['display' => '05.03.2026', 'sort' => '2026-03-05'], $rows[0]['end_date']);
-        $this->assertSame(['Export der Rückmeldungen', 'Druckversion aller Qualifikationen'], array_column($rows[0]['actions'], 'label'));
+        $this->assertSame(['Rückmeldungen exportieren', 'Qualifikationen drucken', 'Kurs abschliessen'], array_column($rows[0]['actions'], 'label'));
     }
 
     public function test_camp_rows_show_all_camps_with_actions_for_admin()
@@ -109,7 +109,11 @@ class AdminTablesTest extends TestCase
 
         $this->assertSame('Fremder Kurs', $row['name']);
         $this->assertSame('Ja', $row['finish']);
-        $this->assertNotEmpty($row['actions']);
+        // Abgeschlossene Kurse haben keine Rückmeldungen und Qualis mehr
+        $this->assertSame([], $row['actions']);
+
+        $open = $this->rows($s->admin, route('camps.table'))->firstWhere('id', $s->camp->id);
+        $this->assertSame(['Rückmeldungen exportieren', 'Qualifikationen drucken', 'Kurs abschliessen'], array_column($open['actions'], 'label'));
     }
 
     public function test_index_pages_mount_the_table_with_its_data_url()

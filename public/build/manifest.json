@@ -24,7 +24,7 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-DqC18IRT.css",
+    "file": "assets/app-CYHZeh87.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
@@ -34,7 +34,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-Ctd6z3FR.js",
+    "file": "assets/app-DucjNJGf.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -44,9 +44,15 @@
     ]
   },
   "resources/js/islands.js": {
-    "file": "assets/islands-CsPaoVMT.js",
+    "file": "assets/islands-DQB21r14.js",
     "name": "islands",
     "src": "resources/js/islands.js",
+    "isEntry": true
+  },
+  "resources/js/pages/camps-index.js": {
+    "file": "assets/camps-index-1v8RvgA6.js",
+    "name": "camps-index",
+    "src": "resources/js/pages/camps-index.js",
     "isEntry": true
   },
   "resources/js/pages/counter-up.js": {

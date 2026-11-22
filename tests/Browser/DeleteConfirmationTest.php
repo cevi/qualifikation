@@ -51,6 +51,24 @@ class DeleteConfirmationTest extends DuskTestCase
         });
     }
 
+    public function test_camp_is_finished_from_table_only_after_confirming(): void
+    {
+        $s = CampScenario::create();
+        $s->camp->update(['name' => 'Dusk Testkurs']);
+        $button = 'form[action$="/admin/camps/'.$s->camp->id.'"] [data-confirm]';
+
+        $this->browse(function (Browser $browser) use ($s, $button) {
+            $browser->loginAs($s->kursleiter)->visit(route('admin.camps.index'))->waitFor($button);
+
+            $this->cancelDialog($browser, $button);
+            $this->assertFalse((bool) Camp::findOrFail($s->camp->id)->finish);
+
+            $this->confirmDialog($browser, $button);
+            $browser->waitForLocation('/home');
+            $this->assertTrue((bool) Camp::findOrFail($s->camp->id)->finish);
+        });
+    }
+
     public function test_group_is_deleted_only_after_confirming(): void
     {
         $s = CampScenario::create();
